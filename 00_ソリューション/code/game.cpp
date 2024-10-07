@@ -37,6 +37,7 @@
 #include "title.h"
 #include "ice.h"
 #include "iceManager.h"
+#include "player.h"
 
 //*****************************************************
 // マクロ定義
@@ -49,8 +50,8 @@ const int NUM_LIGHT = 3;	// ライトの数
 const D3DXCOLOR COL_LIGHT_DEFAULT = { 0.9f,0.9f,0.9f,1.0f };	// ライトのデフォルト色
 const float SPEED_CHANGE_LIGHTCOL = 0.1f;	// ライトの色が変わる速度
 
-const int NUM_GRID_V = 5;	// 縦グリッドの数
-const int NUM_GRID_H = 5;	// 横グリッドの数
+const int NUM_GRID_V = 10;	// 縦グリッドの数
+const int NUM_GRID_H = 10;	// 横グリッドの数
 }
 
 //*****************************************************
@@ -115,6 +116,9 @@ HRESULT CGame::Init(void)
 
 	// 氷マネージャー
 	CIceManager::Create(NUM_GRID_V, NUM_GRID_H);
+
+	// プレイヤー生成
+	CPlayer::Create();
 
 	return S_OK;
 }
@@ -319,7 +323,7 @@ void CGame::Debug(void)
 		CIceManager *pIceManager = CIceManager::GetInstance();
 
 		if (pIceManager != nullptr)
-			pIceManager->CreateIce(2);
+			pIceManager->CreateIce(2,-1);
 	}
 
 	pDebugProc->Print("\n中心座標[%f,%f,%f]", m_posMid.x, m_posMid.y, m_posMid.z);
