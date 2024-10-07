@@ -137,7 +137,7 @@ void CPlayer::Input(void)
 		if (pIceManager != nullptr)
 		{
 			D3DXVECTOR3 pos = GetPosition();
-			pIceManager->PeckIce(pos);	// Š„‚éˆ—
+			pIceManager->PeckIce(pos,CIceManager::E_Direction::DIRECTION_LEFT);	// Š„‚éˆ—
 		}
 	}
 }

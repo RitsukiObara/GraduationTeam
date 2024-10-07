@@ -23,6 +23,16 @@ class CIce;	// 氷
 class CIceManager : public CObject
 {
 public:
+	// 列挙型定義
+	enum E_Direction
+	{// 方向
+		DIRECTION_UP = 0,	// 上
+		DIRECTION_RIGHT,	// 右
+		DIRECTION_DOWN,	// 下
+		DIRECTION_LEFT,	// 左
+		DIRECTION_MAX
+	};
+
 	CIceManager(int nPriority = 2);	// コンストラクタ
 	~CIceManager();	// デストラクタ
 
@@ -35,8 +45,9 @@ public:
 
 	// 変数取得・設定関数
 	void StopIce(CIce *pIce);	// 氷の停止
-	void PeckIce(D3DXVECTOR3 pos);	// 氷をつつく
+	void PeckIce(D3DXVECTOR3 pos, E_Direction direction);	// 氷をつつく
 	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// 氷の追加
+	void FindIce(int nNumV,int nNumH);	// アイスの発見
 
 	// 静的メンバ関数
 	static CIceManager *Create(int nNumV, int nNumH);

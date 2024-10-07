@@ -40,6 +40,10 @@ public:
 	// 変数取得・設定関数
 	void SetState(E_State state) { m_state = state; }	// 状態
 	E_State GetState(void) { return m_state; }
+	void EnableCanFind(bool bCanFind) { m_bCanFind = bCanFind; }	// 探索可能フラグ
+	bool IsCanFind(void) { return m_bCanFind; }
+	void EnableBreak(bool bBreak) { m_bBreak = bBreak; }	// 破壊フラグ
+	bool IsBreak(void) { return m_bBreak; }
 
 	// 静的メンバ関数
 	static CIce *Create(E_State state = E_State::STATE_FLOWS);	// 生成処理
@@ -51,6 +55,8 @@ private:
 
 	// メンバ変数
 	E_State m_state;	// 状態
+	bool m_bCanFind;	// 探索できるフラグ
+	bool m_bBreak;	// 壊れるフラグ
 
 	// 静的メンバ変数
 	static int s_nNumAll;	// 総数

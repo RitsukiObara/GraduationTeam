@@ -28,7 +28,7 @@ int CIce::s_nNumAll = 0;
 //=====================================================
 // コンストラクタ
 //=====================================================
-CIce::CIce(int nPriority) : CPolygon3D(nPriority), m_state(E_State::STATE_NONE)
+CIce::CIce(int nPriority) : CPolygon3D(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false)
 {
 	s_nNumAll++;
 }
@@ -72,6 +72,8 @@ HRESULT CIce::Init(void)
 
 	int nIdx = Texture::GetIdx(&PATH_TEX[0]);
 	SetIdxTexture(nIdx);
+
+	EnableCanFind(true);
 
 	return S_OK;
 }

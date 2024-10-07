@@ -74,9 +74,6 @@ HRESULT CIceManager::Init(void)
 	for (int i = 0; i < m_nNumGridVirtical; i++)
 		m_aGrid[i].resize(m_nNumGridHorizontal);
 
-	// 初期の氷の生成
-	CIce *pIce = CreateIce(5, 9);
-
 	CreateIce(5, 9);
 	CreateIce(5, 8);
 	CreateIce(5, 7);
@@ -86,8 +83,6 @@ HRESULT CIceManager::Init(void)
 	CreateIce(5, 3);
 	CreateIce(4, 6);
 	CreateIce(6, 6);
-
-	StopIce(pIce);
 
 	return S_OK;
 }
@@ -159,16 +154,92 @@ void CIceManager::StopIce(CIce *pIce)
 //=====================================================
 // 氷をつつく
 //=====================================================
-void CIceManager::PeckIce(D3DXVECTOR3 pos)
+void CIceManager::PeckIce(D3DXVECTOR3 pos, E_Direction direction)
 {
 	// 場所からグリッドを計算
-	int nH = (pos.x + Grid::SIZE * m_nNumGridHorizontal * 0.5f) / Grid::SIZE * m_nNumGridHorizontal * 0.1f;
-	int nV = (pos.z + Grid::SIZE * m_nNumGridVirtical * 0.5f) / Grid::SIZE * m_nNumGridVirtical * 0.1f;
+	int nH = (int)((pos.x + Grid::SIZE * m_nNumGridHorizontal * 0.5f) / Grid::SIZE * m_nNumGridHorizontal * 0.1f);
+	int nV = (int)((pos.z + Grid::SIZE * m_nNumGridVirtical * 0.5f) / Grid::SIZE * m_nNumGridVirtical * 0.1f);
 
 	D3DXVECTOR3 posEffect;
 	posEffect = { nH * Grid::SIZE - Grid::SIZE * m_nNumGridHorizontal * 0.5f,0.0f,nV * Grid::SIZE - Grid::SIZE * m_nNumGridVirtical * 0.5f };
 
 	CEffect3D::Create(posEffect, 100.0f, 100, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+
+	// 今いる氷を見つけられないようにする
+	m_aGrid[nV][nH].pIce->EnableCanFind(false);
+
+	switch (direction)
+	{
+	case CIceManager::DIRECTION_UP:
+		nV--;
+		break;
+	case CIceManager::DIRECTION_RIGHT:
+		nH++;
+		break;
+	case CIceManager::DIRECTION_DOWN:
+		nV++;
+		break;
+	case CIceManager::DIRECTION_LEFT:
+		nH--;
+		break;
+	default:
+		break;
+	}
+
+	FindIce(nV, nH);
+}
+
+//=====================================================
+// 氷の探索
+//=====================================================
+void CIceManager::FindIce(int nNumV, int nNumH)
+{
+	// 探索済みフラグを立てる
+	m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
+
+	vector<CIce*> apIce(DIRECTION_MAX);
+
+	apIce[DIRECTION_UP] = m_aGrid[nNumV][nNumH - 1].pIce;
+	apIce[DIRECTION_DOWN] = m_aGrid[nNumV][nNumH + 1].pIce;
+	apIce[DIRECTION_RIGHT] = m_aGrid[nNumV - 1][nNumH].pIce;
+	apIce[DIRECTION_UP] = m_aGrid[nNumV + 1][nNumH].pIce;
+	
+	// 四方向氷がないか探索できない状態なら終了
+	bool bNothing = true;
+
+	for (int i = 0; i < DIRECTION_MAX; i++)
+	{
+		if (apIce[i] == nullptr)
+			continue;
+
+		if (apIce[i]->IsCanFind() == false)
+			continue;
+		
+		switch (i)
+		{
+		case CIceManager::DIRECTION_UP:
+			FindIce(nNumV, nNumH - 1);
+			break;
+		case CIceManager::DIRECTION_RIGHT:
+			FindIce(nNumV, nNumH - 1);
+			break;
+		case CIceManager::DIRECTION_DOWN:
+			FindIce(nNumV, nNumH + 1);
+			break;
+		case CIceManager::DIRECTION_LEFT:
+			FindIce(nNumV, nNumH + 1);
+			break;
+		default:
+			break;
+		}
+
+		bNothing = false;
+	}
+
+	if (bNothing)
+	{
+		return;
+	}
 }
 
 //=====================================================
@@ -180,8 +251,8 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 		return;
 
 	// 場所からグリッドを計算
-	int nH = (pos.x + Grid::SIZE * m_nNumGridHorizontal * 0.5f) / Grid::SIZE * m_nNumGridHorizontal * 0.1f;
-	int nV = (pos.z + Grid::SIZE * m_nNumGridVirtical * 0.5f) / Grid::SIZE * m_nNumGridVirtical * 0.1f;
+	int nH = (int)((pos.x + Grid::SIZE * m_nNumGridHorizontal * 0.5f) / Grid::SIZE * m_nNumGridHorizontal * 0.1f);
+	int nV = (int)((pos.z + Grid::SIZE * m_nNumGridVirtical * 0.5f) / Grid::SIZE * m_nNumGridVirtical * 0.1f);
 
 	m_aGrid[nV][nH].pIce = pIce;
 }
@@ -208,8 +279,13 @@ void CIceManager::Debug(void)
 			else if(m_aGrid[i][j].state == E_StateGrid::STATE_CORNER)
 				col = { 0.0f,0.0f,1.0f,1.0f };
 
-			if(m_aGrid[i][j].pIce != nullptr)
-				col = { 1.0f,0.0f,0.0f,1.0f };
+			if (m_aGrid[i][j].pIce != nullptr)
+			{
+				if (m_aGrid[i][j].pIce->IsCanFind() == false)
+				{
+					col = { 1.0f,0.0f,0.0f,1.0f };
+				}
+			}
 
 			CEffect3D::Create(pos, 50.0f, 5, col);
 		}
