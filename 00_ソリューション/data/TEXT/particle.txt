@@ -1,0 +1,43 @@
+#====================================================================
+#
+# パーティクルスクリプトファイル[particle.txt]
+# Author：Momoya Takayama
+#
+#====================================================================
+SCRIPT
+
+PARTICLESET		#1 疾走のパーティクル
+	TEXTURE_PATH = data//TEXTURE//EFFECT//effect000.png
+    LIFE_PARTICLE = 7
+    NUM_EFFECT = 3
+    LIFE_EFFECT = 9
+    RADIUS_EFFECT = 13.82
+    SPEED_EFFECT = 18.65
+    GRAVITY = -0.00
+    DECREASE = -0.13
+    RANGEROT = 2.71
+    IS_ADD = 0
+    IS_ROT = 1
+    IS_TURN = 0
+    MODE_RENDER = 1
+    COLOR = 0.86 0.86 0.86 1.00
+END_PARTICLESET
+
+PARTICLESET		#2 リザルトの煙
+	TEXTURE_PATH = data//TEXTURE//EFFECT//smoke.png
+    LIFE_PARTICLE = 7
+    NUM_EFFECT = 2
+    LIFE_EFFECT = 67
+    RADIUS_EFFECT = 23.13
+    SPEED_EFFECT = 2.82
+    GRAVITY = -0.00
+    DECREASE = -0.53
+    RANGEROT = 2.71
+    IS_ADD = 0
+    IS_ROT = 1
+    IS_TURN = 0
+    MODE_RENDER = 1
+    COLOR = 0.86 0.86 0.86 1.00
+END_PARTICLESET
+
+END_SCRIPT
