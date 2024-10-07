@@ -23,6 +23,16 @@ class CIce;	// 氷
 class CIceManager : public CObject
 {
 public:
+	// 列挙型定義
+	enum E_Direction
+	{// 方向
+		DIRECTION_UP = 0,	// 上
+		DIRECTION_RIGHT,	// 右
+		DIRECTION_DOWN,	// 下
+		DIRECTION_LEFT,	// 左
+		DIRECTION_MAX
+	};
+
 	CIceManager(int nPriority = 2);	// コンストラクタ
 	~CIceManager();	// デストラクタ
 
@@ -31,10 +41,13 @@ public:
 	void Uninit(void);	// 終了
 	void Update(void);	// 更新
 	void Draw(void);	// 描画
-	CIce *CreateIce(int nGridV);	// 氷の生成
+	CIce *CreateIce(int nGridV,int nGridH);	// 氷の生成
 
 	// 変数取得・設定関数
 	void StopIce(CIce *pIce);	// 氷の停止
+	void PeckIce(D3DXVECTOR3 pos, E_Direction direction);	// 氷をつつく
+	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// 氷の追加
+	void FindIce(int nNumV,int nNumH);	// アイスの発見
 
 	// 静的メンバ関数
 	static CIceManager *Create(int nNumV, int nNumH);
@@ -53,6 +66,7 @@ private:
 	struct S_Grid
 	{// グリッド情報
 		E_StateGrid state;	// 状態
+		CIce *pIce;	// 氷のポインタ
 	};
 	
 	// メンバ関数
@@ -66,6 +80,11 @@ private:
 	// 静的メンバ変数
 	static CIceManager *s_pIceManager;	// 自身のポインタ
 };
+
+namespace Grid
+{
+const float SIZE = 200.0f;	// グリッドのサイズ
+}
 
 #endif
 
