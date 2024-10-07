@@ -18,8 +18,7 @@
 //*****************************************************
 namespace
 {
-const float SIZE_GRID = 200.0f;	// グリッドのサイズ
-const float DIST_SPAWN_ICE = 200.0f;	// アイスのスポーン距離
+
 }
 
 //*****************************************************
@@ -75,6 +74,21 @@ HRESULT CIceManager::Init(void)
 	for (int i = 0; i < m_nNumGridVirtical; i++)
 		m_aGrid[i].resize(m_nNumGridHorizontal);
 
+	// 初期の氷の生成
+	CIce *pIce = CreateIce(5, 9);
+
+	CreateIce(5, 9);
+	CreateIce(5, 8);
+	CreateIce(5, 7);
+	CreateIce(5, 6);
+	CreateIce(5, 5);
+	CreateIce(5, 4);
+	CreateIce(5, 3);
+	CreateIce(4, 6);
+	CreateIce(6, 6);
+
+	StopIce(pIce);
+
 	return S_OK;
 }
 
@@ -101,7 +115,7 @@ void CIceManager::Update(void)
 //=====================================================
 // 氷の生成
 //=====================================================
-CIce *CIceManager::CreateIce(int nGridV)
+CIce *CIceManager::CreateIce(int nGridV, int nGridH)
 {
 	CIce *pIce = nullptr;
 
@@ -111,8 +125,11 @@ CIce *CIceManager::CreateIce(int nGridV)
 		return nullptr;
 
 	D3DXVECTOR3 pos;
-	pos = { -SIZE_GRID * m_nNumGridHorizontal * 0.5f - DIST_SPAWN_ICE,0.0f,nGridV * SIZE_GRID - SIZE_GRID * m_nNumGridVirtical * 0.5f };
+	pos = { nGridH * Grid::SIZE - Grid::SIZE * m_nNumGridHorizontal * 0.5f ,10.0f,nGridV * Grid::SIZE - Grid::SIZE * m_nNumGridVirtical * 0.5f };
 	pIce->SetPosition(pos);
+	pIce->SetSize(Grid::SIZE * 0.5f, Grid::SIZE * 0.5f);
+
+	StopIce(pIce);
 
 	return pIce;
 }
@@ -122,13 +139,34 @@ CIce *CIceManager::CreateIce(int nGridV)
 //=====================================================
 void CIceManager::StopIce(CIce *pIce)
 {
+	if (pIce == nullptr)
+		return;
+
 	pIce->SetState(CIce::E_State::STATE_STOP);
+
+	// 今いるグリッドの計算
+	D3DXVECTOR3 pos = GetPosition();
 
 	// 今いるグリッドとその周辺の状態を設定
 
 	// 真ん中
 
 	// 端っこ
+}
+
+//=====================================================
+// 氷をつつく
+//=====================================================
+void CIceManager::PeckIce(D3DXVECTOR3 pos)
+{
+	// 場所からグリッドを計算
+	int nH = (pos.x + Grid::SIZE * m_nNumGridHorizontal * 0.5f) / Grid::SIZE * m_nNumGridHorizontal * 0.1f;
+	int nV = (pos.z + Grid::SIZE * m_nNumGridVirtical * 0.5f) / Grid::SIZE * m_nNumGridVirtical * 0.1f;
+
+	D3DXVECTOR3 posEffect;
+	posEffect = { nH * Grid::SIZE - Grid::SIZE * m_nNumGridHorizontal * 0.5f,0.0f,nV * Grid::SIZE - Grid::SIZE * m_nNumGridVirtical * 0.5f };
+
+	CEffect3D::Create(posEffect, 100.0f, 100, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 }
 
 //=====================================================
@@ -145,7 +183,7 @@ void CIceManager::Debug(void)
 			m_aGrid[i][j];
 
 			D3DXVECTOR3 pos;
-			pos = { j * SIZE_GRID - SIZE_GRID * m_nNumGridHorizontal * 0.5f,0.0f,i * SIZE_GRID - SIZE_GRID * m_nNumGridVirtical * 0.5f };
+			pos = { j * Grid::SIZE - Grid::SIZE * m_nNumGridHorizontal * 0.5f,0.0f,i * Grid::SIZE - Grid::SIZE * m_nNumGridVirtical * 0.5f };
 			D3DXCOLOR col = { 1.0f,1.0f,1.0f,1.0f };
 
 			if (m_aGrid[i][j].state == E_StateGrid::STATE_MID)

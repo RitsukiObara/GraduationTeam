@@ -31,10 +31,11 @@ public:
 	void Uninit(void);	// 終了
 	void Update(void);	// 更新
 	void Draw(void);	// 描画
-	CIce *CreateIce(int nGridV);	// 氷の生成
+	CIce *CreateIce(int nGridV,int nGridH);	// 氷の生成
 
 	// 変数取得・設定関数
 	void StopIce(CIce *pIce);	// 氷の停止
+	void PeckIce(D3DXVECTOR3 pos);	// 氷をつつく
 
 	// 静的メンバ関数
 	static CIceManager *Create(int nNumV, int nNumH);
@@ -66,6 +67,11 @@ private:
 	// 静的メンバ変数
 	static CIceManager *s_pIceManager;	// 自身のポインタ
 };
+
+namespace Grid
+{
+const float SIZE = 200.0f;	// グリッドのサイズ
+}
 
 #endif
 

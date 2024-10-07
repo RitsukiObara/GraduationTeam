@@ -9,6 +9,7 @@
 // インクルード
 //*****************************************************
 #include "ice.h"
+#include "texture.h"
 
 //*****************************************************
 // 定数定義
@@ -16,6 +17,7 @@
 namespace
 {
 const float SPEED_FLOWS = 1.0f;	// 流れる速度
+const string PATH_TEX = "data\\TEXTURE\\UI\\ranking00.png";	// テクスチャパス
 }
 
 //*****************************************************
@@ -26,7 +28,7 @@ int CIce::s_nNumAll = 0;
 //=====================================================
 // コンストラクタ
 //=====================================================
-CIce::CIce(int nPriority) : CObjectX(nPriority), m_state(E_State::STATE_NONE)
+CIce::CIce(int nPriority) : CPolygon3D(nPriority), m_state(E_State::STATE_NONE)
 {
 	s_nNumAll++;
 }
@@ -66,11 +68,10 @@ CIce *CIce::Create(E_State state)
 HRESULT CIce::Init(void)
 {
 	// 継承クラスの初期化
-	CObjectX::Init();
+	CPolygon3D::Init();
 
-	// モデルの読込
-	int nIdx = CModel::Load("data\\MODEL\\block\\ice00.x");
-	BindModel(nIdx);
+	int nIdx = Texture::GetIdx(&PATH_TEX[0]);
+	SetIdxTexture(nIdx);
 
 	return S_OK;
 }
@@ -81,7 +82,7 @@ HRESULT CIce::Init(void)
 void CIce::Uninit(void)
 {
 	// 継承クラスの終了
-	CObjectX::Uninit();
+	CPolygon3D::Uninit();
 }
 
 //=====================================================
@@ -90,7 +91,7 @@ void CIce::Uninit(void)
 void CIce::Update(void)
 {
 	// 継承クラスの更新
-	CObjectX::Update();
+	CPolygon3D::Update();
 
 	if (m_state == E_State::STATE_FLOWS)
 	{// 流れる状態では移動を続ける
@@ -112,5 +113,5 @@ void CIce::Flows(void)
 void CIce::Draw(void)
 {
 	// 継承クラスの描画
-	CObjectX::Draw();
+	CPolygon3D::Draw();
 }

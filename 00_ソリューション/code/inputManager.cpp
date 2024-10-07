@@ -207,18 +207,11 @@ void CInputManager::Update(void)
 		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_LEFT, 0)
 	);
 
-	// 右攻撃
-	m_info.abTrigger[BUTTON_RIGHTATTACK] =
+	// つつき
+	m_info.abTrigger[BUTTON_PECK] =
 	(
-		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_RB, 0) ||
-		pKeyboard->GetTrigger(DIK_RIGHT)
-	);
-
-	// 左攻撃
-	m_info.abTrigger[BUTTON_LEFTATTACK] =
-	(
-		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_LB, 0) ||
-		pKeyboard->GetTrigger(DIK_LEFT)
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_A, 0) ||
+		pKeyboard->GetTrigger(DIK_RETURN)
 	);
 
 	// 方向のリセット
