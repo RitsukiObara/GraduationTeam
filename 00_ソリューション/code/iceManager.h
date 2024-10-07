@@ -36,6 +36,7 @@ public:
 	// 変数取得・設定関数
 	void StopIce(CIce *pIce);	// 氷の停止
 	void PeckIce(D3DXVECTOR3 pos);	// 氷をつつく
+	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// 氷の追加
 
 	// 静的メンバ関数
 	static CIceManager *Create(int nNumV, int nNumH);
@@ -54,6 +55,7 @@ private:
 	struct S_Grid
 	{// グリッド情報
 		E_StateGrid state;	// 状態
+		CIce *pIce;	// 氷のポインタ
 	};
 	
 	// メンバ関数

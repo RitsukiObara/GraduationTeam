@@ -145,7 +145,9 @@ void CIceManager::StopIce(CIce *pIce)
 	pIce->SetState(CIce::E_State::STATE_STOP);
 
 	// 今いるグリッドの計算
-	D3DXVECTOR3 pos = GetPosition();
+	D3DXVECTOR3 pos = pIce->GetPosition();
+
+	AddIce(pIce, pos);
 
 	// 今いるグリッドとその周辺の状態を設定
 
@@ -170,6 +172,21 @@ void CIceManager::PeckIce(D3DXVECTOR3 pos)
 }
 
 //=====================================================
+// 氷の追加
+//=====================================================
+void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
+{
+	if (pIce == nullptr)
+		return;
+
+	// 場所からグリッドを計算
+	int nH = (pos.x + Grid::SIZE * m_nNumGridHorizontal * 0.5f) / Grid::SIZE * m_nNumGridHorizontal * 0.1f;
+	int nV = (pos.z + Grid::SIZE * m_nNumGridVirtical * 0.5f) / Grid::SIZE * m_nNumGridVirtical * 0.1f;
+
+	m_aGrid[nV][nH].pIce = pIce;
+}
+
+//=====================================================
 // デバッグ処理
 //=====================================================
 void CIceManager::Debug(void)
@@ -190,6 +207,9 @@ void CIceManager::Debug(void)
 				col = { 0.0f,1.0f,0.0f,1.0f };
 			else if(m_aGrid[i][j].state == E_StateGrid::STATE_CORNER)
 				col = { 0.0f,0.0f,1.0f,1.0f };
+
+			if(m_aGrid[i][j].pIce != nullptr)
+				col = { 1.0f,0.0f,0.0f,1.0f };
 
 			CEffect3D::Create(pos, 50.0f, 5, col);
 		}
