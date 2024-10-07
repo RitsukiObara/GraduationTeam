@@ -51,7 +51,7 @@ HRESULT CScene::Init(void)
 
 	if (pMapX)
 	{
-		int nIdx = CModel::Load("data\\MODEL\\block\\map01.x");
+		int nIdx = CModel::Load("data\\MODEL\\block\\map00.x");
 		pMapX->BindModel(nIdx);
 	}
 

@@ -183,6 +183,8 @@
     <ClCompile Include="code\frame.cpp" />
     <ClCompile Include="code\gameObject.cpp" />
     <ClCompile Include="code\gauge.cpp" />
+    <ClCompile Include="code\ice.cpp" />
+    <ClCompile Include="code\iceManager.cpp" />
     <ClCompile Include="code\logo.cpp" />
     <ClCompile Include="code\meshCube.cpp" />
     <ClCompile Include="code\MyEffekseer.cpp" />
@@ -261,6 +263,8 @@
     <ClInclude Include="code\frame.h" />
     <ClInclude Include="code\gameObject.h" />
     <ClInclude Include="code\gauge.h" />
+    <ClInclude Include="code\ice.h" />
+    <ClInclude Include="code\iceManager.h" />
     <ClInclude Include="code\logo.h" />
     <ClInclude Include="code\meshCube.h" />
     <ClInclude Include="code\MyEffekseer.h" />

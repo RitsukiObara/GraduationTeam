@@ -273,6 +273,12 @@
     <ClCompile Include="code\ranking.cpp">
       <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
+    <ClCompile Include="code\iceManager.cpp">
+      <Filter>ソース ファイル\gameobject</Filter>
+    </ClCompile>
+    <ClCompile Include="code\ice.cpp">
+      <Filter>ソース ファイル\gameobject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\game.h">
@@ -499,6 +505,12 @@
     </ClInclude>
     <ClInclude Include="code\ranking.h">
       <Filter>ソース ファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="code\iceManager.h">
+      <Filter>ソース ファイル\gameobject</Filter>
+    </ClInclude>
+    <ClInclude Include="code\ice.h">
+      <Filter>ソース ファイル\gameobject</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
