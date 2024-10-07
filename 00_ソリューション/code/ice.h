@@ -20,7 +20,7 @@ class CIce : public CObjectX
 {
 public:
 	// 列挙型定義
-	enum STATE
+	enum E_State
 	{// 状態
 		STATE_NONE = 0,	// 何でもない状態
 		STATE_STOP,	// 停止状態
@@ -38,16 +38,22 @@ public:
 	void Draw(void);
 
 	// 変数取得・設定関数
+	void SetState(E_State state) { m_state = state; }	// 状態
+	E_State GetState(void) { return m_state; }
 
 	// 静的メンバ関数
-	static CIce *Create(STATE state = STATE::STATE_FLOWS);
+	static CIce *Create(E_State state = E_State::STATE_FLOWS);	// 生成処理
+	static int GetNumAll(void) { return s_nNumAll; }	// 総数取得
 
 private:
 	// メンバ関数
 	void Flows(void);	// 流れる処理
 
 	// メンバ変数
-	STATE m_state;	// 状態
+	E_State m_state;	// 状態
+
+	// 静的メンバ変数
+	static int s_nNumAll;	// 総数
 };
 
 #endif

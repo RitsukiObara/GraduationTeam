@@ -13,6 +13,11 @@
 #include "object.h"
 
 //*****************************************************
+// 前方宣言
+//*****************************************************
+class CIce;	// 氷
+
+//*****************************************************
 // クラスの定義
 //*****************************************************
 class CIceManager : public CObject
@@ -22,12 +27,14 @@ public:
 	~CIceManager();	// デストラクタ
 
 	// メンバ関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init(void);	// 初期化
+	void Uninit(void);	// 終了
+	void Update(void);	// 更新
+	void Draw(void);	// 描画
+	CIce *CreateIce(int nGridV);	// 氷の生成
 
 	// 変数取得・設定関数
+	void StopIce(CIce *pIce);	// 氷の停止
 
 	// 静的メンバ関数
 	static CIceManager *Create(int nNumV, int nNumH);
@@ -43,7 +50,7 @@ private:
 		STATE_MAX
 	};
 	// 構造体定義
-	struct Grid
+	struct S_Grid
 	{// グリッド情報
 		E_StateGrid state;	// 状態
 	};
@@ -54,7 +61,7 @@ private:
 	// メンバ変数
 	int m_nNumGridVirtical;	// 縦グリッドの数
 	int m_nNumGridHorizontal;	// 横グリッドの数
-	vector<vector<Grid>> m_aGrid;
+	vector<vector<S_Grid>> m_aGrid;
 
 	// 静的メンバ変数
 	static CIceManager *s_pIceManager;	// 自身のポインタ

@@ -314,6 +314,14 @@ void CGame::Debug(void)
 		CResult::Create(false);
 	}
 
+	if (pKeyboard->GetTrigger(DIK_I))
+	{// アイス仮生成
+		CIceManager *pIceManager = CIceManager::GetInstance();
+
+		if (pIceManager != nullptr)
+			pIceManager->CreateIce(2);
+	}
+
 	pDebugProc->Print("\n中心座標[%f,%f,%f]", m_posMid.x, m_posMid.y, m_posMid.z);
 }
 

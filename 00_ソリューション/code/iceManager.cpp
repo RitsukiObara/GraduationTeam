@@ -10,6 +10,8 @@
 //*****************************************************
 #include "iceManager.h"
 #include "effect3D.h"
+#include "ice.h"
+#include "debugproc.h"
 
 //*****************************************************
 // 定数定義
@@ -17,6 +19,7 @@
 namespace
 {
 const float SIZE_GRID = 200.0f;	// グリッドのサイズ
+const float DIST_SPAWN_ICE = 200.0f;	// アイスのスポーン距離
 }
 
 //*****************************************************
@@ -45,21 +48,19 @@ CIceManager::~CIceManager()
 //=====================================================
 CIceManager *CIceManager::Create(int nNumV, int nNumH)
 {
-	CIceManager *pIceManager = nullptr;
-
-	if (pIceManager == nullptr)
+	if (s_pIceManager == nullptr)
 	{
-		pIceManager = new CIceManager;
+		s_pIceManager = new CIceManager;
 
-		if (pIceManager != nullptr)
+		if (s_pIceManager != nullptr)
 		{
-			pIceManager->m_nNumGridVirtical = nNumV;
-			pIceManager->m_nNumGridHorizontal = nNumH;
-			pIceManager->Init();
+			s_pIceManager->m_nNumGridVirtical = nNumV;
+			s_pIceManager->m_nNumGridHorizontal = nNumH;
+			s_pIceManager->Init();
 		}
 	}
 
-	return pIceManager;
+	return s_pIceManager;
 }
 
 //=====================================================
@@ -82,6 +83,8 @@ HRESULT CIceManager::Init(void)
 //=====================================================
 void CIceManager::Uninit(void)
 {
+	s_pIceManager = nullptr;
+
 	Release();
 }
 
@@ -93,6 +96,39 @@ void CIceManager::Update(void)
 #ifdef _DEBUG
 	Debug();
 #endif
+}
+
+//=====================================================
+// 氷の生成
+//=====================================================
+CIce *CIceManager::CreateIce(int nGridV)
+{
+	CIce *pIce = nullptr;
+
+	pIce = CIce::Create();
+
+	if (pIce == nullptr)
+		return nullptr;
+
+	D3DXVECTOR3 pos;
+	pos = { -SIZE_GRID * m_nNumGridHorizontal * 0.5f - DIST_SPAWN_ICE,0.0f,nGridV * SIZE_GRID - SIZE_GRID * m_nNumGridVirtical * 0.5f };
+	pIce->SetPosition(pos);
+
+	return pIce;
+}
+
+//=====================================================
+// 氷の停止
+//=====================================================
+void CIceManager::StopIce(CIce *pIce)
+{
+	pIce->SetState(CIce::E_State::STATE_STOP);
+
+	// 今いるグリッドとその周辺の状態を設定
+
+	// 真ん中
+
+	// 端っこ
 }
 
 //=====================================================
@@ -120,6 +156,13 @@ void CIceManager::Debug(void)
 			CEffect3D::Create(pos, 50.0f, 5, col);
 		}
 	}
+
+	CDebugProc *pDebugProc = CDebugProc::GetInstance();
+
+	if (pDebugProc == nullptr)
+		return;
+
+	pDebugProc->Print("\n氷の総数[%d]", CIce::GetNumAll());
 }
 
 //=====================================================

@@ -21,14 +21,14 @@ const float SPEED_FLOWS = 1.0f;	// 流れる速度
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-
+int CIce::s_nNumAll = 0;
 
 //=====================================================
 // コンストラクタ
 //=====================================================
-CIce::CIce(int nPriority) : CObjectX(nPriority), m_state(STATE::STATE_NONE)
+CIce::CIce(int nPriority) : CObjectX(nPriority), m_state(E_State::STATE_NONE)
 {
-
+	s_nNumAll++;
 }
 
 //=====================================================
@@ -36,13 +36,13 @@ CIce::CIce(int nPriority) : CObjectX(nPriority), m_state(STATE::STATE_NONE)
 //=====================================================
 CIce::~CIce()
 {
-
+	s_nNumAll--;
 }
 
 //=====================================================
 // 生成処理
 //=====================================================
-CIce *CIce::Create(STATE state)
+CIce *CIce::Create(E_State state)
 {
 	CIce *pIce = nullptr;
 
@@ -92,7 +92,7 @@ void CIce::Update(void)
 	// 継承クラスの更新
 	CObjectX::Update();
 
-	if (m_state == STATE::STATE_FLOWS)
+	if (m_state == E_State::STATE_FLOWS)
 	{// 流れる状態では移動を続ける
 		Flows();
 	}
