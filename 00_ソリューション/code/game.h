@@ -64,7 +64,6 @@ private:
 	// ƒƒ“ƒoŠÖ”
 	void UpdateCamera(void);
 	void ManageState(void);
-	void JudgeGame(void);	// Ÿ”s‚Ì”»’è
 	void ToggleStop(void);
 	void Debug(void);
 	void CreateLight(void);	// ƒ‰ƒCƒg‚Ì¶¬

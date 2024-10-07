@@ -193,7 +193,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindow)
 	m_fogInfo.fEnd = FOG_END;
 
 #ifdef _DEBUG
-	m_bDispimGui = true;
+	m_bDispimGui = false;
 #else
 	m_bDispimGui = false;
 #endif

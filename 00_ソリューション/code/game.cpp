@@ -35,6 +35,8 @@
 #include "light.h"
 #include "result.h"
 #include "title.h"
+#include "ice.h"
+#include "iceManager.h"
 
 //*****************************************************
 // マクロ定義
@@ -47,8 +49,8 @@ const int NUM_LIGHT = 3;	// ライトの数
 const D3DXCOLOR COL_LIGHT_DEFAULT = { 0.9f,0.9f,0.9f,1.0f };	// ライトのデフォルト色
 const float SPEED_CHANGE_LIGHTCOL = 0.1f;	// ライトの色が変わる速度
 
-const float RADIUS_STAGE = 500.0f;	// ステージの半径
-const float HEIGHT_STAGE = 550.0f;	// ステージの高さ
+const int NUM_GRID_V = 5;	// 縦グリッドの数
+const int NUM_GRID_H = 5;	// 横グリッドの数
 }
 
 //*****************************************************
@@ -74,8 +76,6 @@ HRESULT CGame::Init(void)
 {
 	// 親クラスの初期化
 	CScene::Init();
-
-	m_posMid = { 0.0f,HEIGHT_STAGE,0.0f };
 
 	m_pGame = this;
 
@@ -113,6 +113,9 @@ HRESULT CGame::Init(void)
 	m_pTimer->SetPosition(D3DXVECTOR3(0.48f, 0.07f, 0.0f));
 	m_pTimer->SetSecond(MAX_TIME);
 
+	// 氷マネージャー
+	CIceManager::Create(NUM_GRID_V, NUM_GRID_H);
+
 	return S_OK;
 }
 
@@ -149,9 +152,6 @@ void CGame::Update(void)
 
 	// 状態管理
 	ManageState();
-
-	// 勝敗の判定
-	JudgeGame();
 
 	// ライトの更新
 	UpdateLight();
@@ -206,40 +206,6 @@ void CGame::ManageState(void)
 		break;
 	default:
 		break;
-	}
-}
-
-//=====================================================
-// 勝敗の判定
-//=====================================================
-void CGame::JudgeGame(void)
-{
-	CResult *pResult = CResult::GetInstance();
-
-	if (pResult != nullptr)
-		return;
-
-	if (m_posMid.x < -RADIUS_STAGE)
-	{// 勝利
-		CResult::Create(true);
-	}
-	else if (m_posMid.x > RADIUS_STAGE)
-	{// 敗北
-		CResult::Create(false);
-	}
-
-	float fTime = m_pTimer->GetSecond();
-
-	if (fTime <= 0.0f)
-	{// タイムアップ
-		if (m_posMid.x <= 0)
-		{// 勝利
-			CResult::Create(true);
-		}
-		else
-		{// 敗北
-			CResult::Create(false);
-		}
 	}
 }
 

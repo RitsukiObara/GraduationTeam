@@ -30,6 +30,7 @@ public:
 	// •Ï”æ“¾Eİ’èŠÖ”
 	D3DXVECTOR3 GetPosition(void) { return m_pos; }	// ˆÊ’u
 	void SetPosition(D3DXVECTOR3 pos) { m_pos = pos; }
+	void AddPosition(D3DXVECTOR3 pos) { m_pos += pos; }
 	D3DXVECTOR3 GetRotation(void) { return m_rot; }	// Œü‚«
 	void SetRotation(D3DXVECTOR3 rot) { m_rot = rot; }
 

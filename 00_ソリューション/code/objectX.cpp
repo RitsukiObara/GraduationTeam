@@ -19,7 +19,7 @@
 //*****************************************************
 namespace
 {
-const char* INITIAL_MODEL = "data\\MODEL\\block\\ice.x";	// ‰Šúƒ‚ƒfƒ‹
+const char* INITIAL_MODEL = "data\\MODEL\\block\\ice00.x";	// ‰Šúƒ‚ƒfƒ‹
 }
 
 //====================================================

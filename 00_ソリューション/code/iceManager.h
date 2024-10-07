@@ -49,6 +49,7 @@ private:
 	};
 	
 	// メンバ関数
+	void Debug(void);	// デバッグ処理
 
 	// メンバ変数
 	int m_nNumGridVirtical;	// 縦グリッドの数

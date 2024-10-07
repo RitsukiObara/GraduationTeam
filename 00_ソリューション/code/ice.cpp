@@ -15,7 +15,7 @@
 //*****************************************************
 namespace
 {
-
+const float SPEED_FLOWS = 1.0f;	// 流れる速度
 }
 
 //*****************************************************
@@ -26,7 +26,7 @@ namespace
 //=====================================================
 // コンストラクタ
 //=====================================================
-CIce::CIce(int nPriority) : CObjectX(nPriority)
+CIce::CIce(int nPriority) : CObjectX(nPriority), m_state(STATE::STATE_NONE)
 {
 
 }
@@ -37,6 +37,27 @@ CIce::CIce(int nPriority) : CObjectX(nPriority)
 CIce::~CIce()
 {
 
+}
+
+//=====================================================
+// 生成処理
+//=====================================================
+CIce *CIce::Create(STATE state)
+{
+	CIce *pIce = nullptr;
+
+	if (pIce == nullptr)
+	{
+		pIce = new CIce;
+
+		if (pIce != nullptr)
+		{
+			pIce->m_state = state;
+			pIce->Init();
+		}
+	}
+
+	return pIce;
 }
 
 //=====================================================
@@ -70,6 +91,19 @@ void CIce::Update(void)
 {
 	// 継承クラスの更新
 	CObjectX::Update();
+
+	if (m_state == STATE::STATE_FLOWS)
+	{// 流れる状態では移動を続ける
+		Flows();
+	}
+}
+
+//=====================================================
+// 流れる処理
+//=====================================================
+void CIce::Flows(void)
+{
+	AddPosition(D3DXVECTOR3(SPEED_FLOWS, 0.0f, 0.0f));
 }
 
 //=====================================================
@@ -79,25 +113,4 @@ void CIce::Draw(void)
 {
 	// 継承クラスの描画
 	CObjectX::Draw();
-}
-
-//=====================================================
-// 生成処理
-//=====================================================
-CIce *CIce::Create()
-{
-	CIce *pIce = nullptr;
-
-	if (pIce == nullptr)
-	{
-		pIce = new CIce;
-
-		if (pIce != nullptr)
-		{
-			// 初期化
-			pIce->Init();
-		}
-	}
-
-	return pIce;
 }

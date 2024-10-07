@@ -46,25 +46,6 @@ CScene::~CScene()
 //=====================================================
 HRESULT CScene::Init(void)
 {
-	// マップモデルの生成
-	CObjectX* pMapX = CObjectX::Create();
-
-	if (pMapX)
-	{
-		int nIdx = CModel::Load("data\\MODEL\\block\\map00.x");
-		pMapX->BindModel(nIdx);
-	}
-
-	//	土俵モデルの生成
-	CObjectX* pDohyou = CObjectX::Create();
-
-	if (pDohyou)
-	{
-		int nIdx = CModel::Load("data\\MODEL\\dohyou\\dohyou01.x");
-		pDohyou->BindModel(nIdx);
-		pDohyou->SetRotation({0.0f, 1.57f, 0.0f});
-	}
-
 	// 山シリンダーの生成
 	CMeshCylinder* pCylinder = CMeshCylinder::Create();
 
