@@ -21,14 +21,12 @@
 #include "polygon3D.h"
 #include "objectX.h"
 #include "skybox.h"
-#include "smoke.h"
 #include "meshcylinder.h"
 #include "meshfield.h"
 #include "particle.h"
 #include "orbit.h"
 #include "debugproc.h"
 #include "UI.h"
-#include "blink2D.h"
 
 //*****************************************************
 // 定数定義
@@ -58,7 +56,6 @@ namespace
 CTutorial::CTutorial()
 {
 	m_pManual = nullptr;
-	m_pControl = nullptr;
 	m_fCurTime = 0.0f;
 }
 
@@ -93,21 +90,6 @@ HRESULT CTutorial::Init(void)
 		m_pManual->SetVtx();	// 頂点反映
 	}
 
-	// 終了操作の生成
-	m_pControl = CBlink2D::Create
-	( // 引数
-		control::POS,
-		D3DXVECTOR3(control::WIDTH, control::HEIGHT, 0.0f),
-		0.28f
-	);
-	if (m_pControl != nullptr)
-	{
-		// 終了操作の設定
-		m_pControl->SetIdxTexture(CTexture::GetInstance()->Regist(control::PATH));	// テクスチャ割当
-		m_pControl->SetVtx();		// 頂点反映
-		m_pControl->SetBlink(true);	// ちかちか開始
-	}
-
 	// BGMの再生
 	CSound* pSound = CSound::GetInstance();
 	assert(pSound != nullptr);
@@ -122,7 +104,6 @@ HRESULT CTutorial::Init(void)
 void CTutorial::Uninit(void)
 {
 	Object::DeleteObject((CObject**)&m_pManual);
-	Object::DeleteObject((CObject**)&m_pControl);
 
 	// シーンの終了
 	CScene::Uninit();

@@ -167,6 +167,18 @@ void CInputManager::Update(void)
 		pKeyboard->GetTrigger(DIK_S)
 	);
 
+	// 左方向キー
+	m_info.abTrigger[BUTTON_AXIS_LEFT] =
+		(
+			pKeyboard->GetTrigger(DIK_A)
+		);
+
+	// 右方向キー
+	m_info.abTrigger[BUTTON_AXIS_RIGHT] =
+		(
+			pKeyboard->GetTrigger(DIK_D)
+		);
+
 	// 上方向弾き
 	m_info.abTrigger[BUTTON_TRIGGER_UP] =
 	(

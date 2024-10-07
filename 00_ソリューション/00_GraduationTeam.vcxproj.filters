@@ -261,19 +261,7 @@
     <ClCompile Include="code\resultBehavior.cpp">
       <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
-    <ClCompile Include="code\player.cpp">
-      <Filter>ソース ファイル\character</Filter>
-    </ClCompile>
-    <ClCompile Include="code\rikishi.cpp">
-      <Filter>ソース ファイル\character</Filter>
-    </ClCompile>
-    <ClCompile Include="code\enemy.cpp">
-      <Filter>ソース ファイル\character</Filter>
-    </ClCompile>
     <ClCompile Include="code\result.cpp">
-      <Filter>ソース ファイル\gameobject</Filter>
-    </ClCompile>
-    <ClCompile Include="code\start.cpp">
       <Filter>ソース ファイル\gameobject</Filter>
     </ClCompile>
     <ClCompile Include="code\random.cpp">
@@ -281,9 +269,6 @@
     </ClCompile>
     <ClCompile Include="code\tutorial.cpp">
       <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="code\blink2D.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="code\ranking.cpp">
       <Filter>ソース ファイル\scene</Filter>
@@ -503,19 +488,7 @@
     <ClInclude Include="code\resultBehavior.h">
       <Filter>ソース ファイル\scene</Filter>
     </ClInclude>
-    <ClInclude Include="code\player.h">
-      <Filter>ソース ファイル\character</Filter>
-    </ClInclude>
-    <ClInclude Include="code\rikishi.h">
-      <Filter>ソース ファイル\character</Filter>
-    </ClInclude>
-    <ClInclude Include="code\enemy.h">
-      <Filter>ソース ファイル\character</Filter>
-    </ClInclude>
     <ClInclude Include="code\result.h">
-      <Filter>ソース ファイル\gameobject</Filter>
-    </ClInclude>
-    <ClInclude Include="code\start.h">
       <Filter>ソース ファイル\gameobject</Filter>
     </ClInclude>
     <ClInclude Include="code\random.h">
@@ -523,9 +496,6 @@
     </ClInclude>
     <ClInclude Include="code\tutorial.h">
       <Filter>ソース ファイル\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="code\blink2D.h">
-      <Filter>ソース ファイル</Filter>
     </ClInclude>
     <ClInclude Include="code\ranking.h">
       <Filter>ソース ファイル\scene</Filter>

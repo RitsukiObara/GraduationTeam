@@ -1,7 +1,7 @@
 //*****************************************************
 //
 // タイトル処理[title.h]
-// Author:藤田勇一
+// Author:髙山桃也
 //
 //*****************************************************
 #ifndef _TITLE_H_
@@ -10,14 +10,16 @@
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "main.h"
 #include "scene.h"
+#include "motion.h"
 
 //*****************************************************
 // 前方宣言
 //*****************************************************
-class CObjectX;
-class CUI;
+class CMenu;
+class CPolygon2D;
+class CMotion;
+class CTitleBehavior;
 
 //*****************************************************
 // クラスの定義
@@ -27,12 +29,9 @@ class CTitle : public CScene
 public:
 	enum STATE
 	{
-		STATE_NONE = 0,		// 何もしてない状態
-		STATE_LOGO_MOVE,	// ロゴの移動状態
-		STATE_SELECT_MOVE,	// 選択項目の移動状態
-		STATE_SELECT,		// 選択状態
-		STATE_END,			// 終了状態
-		STATE_MAX
+		STATE_NONE = 0,	// 何もしてない状態
+		STATE_OUT,		// フェードアウト状態
+		START_MAX
 	};
 
 	CTitle();	// コンストラクタ
@@ -42,35 +41,62 @@ public:
 	virtual void Uninit(void);
 	virtual void Update(void);
 	virtual void Draw(void);
+	void ChangeBehavior(CTitleBehavior *pBehavior);
 	STATE GetState(void) { return m_state; }
-	
+
 private:
-	enum SELECT
+	STATE m_state;				// 状態
+	CPolygon2D* m_pLogo;		// タイトルロゴのポインタ
+	CMotion *m_pMotion;	// プレイヤーモデル
+	CTitleBehavior *m_pBehavior;	// ビヘイビア
+	float m_fTImerSmoke;	// 煙のスポーンタイマー
+};
+
+class CTitleBehavior
+{// 基本ビヘイビア
+public:
+	CTitleBehavior();	// コンストラクタ
+	virtual ~CTitleBehavior();	// デストラクタ
+
+	virtual void Update(CTitle *pTItle) = 0;
+
+private:
+};
+
+class CTitleStart : public CTitleBehavior
+{// スタート表示状態
+public:
+	CTitleStart();	// コンストラクタ
+	virtual ~CTitleStart();	// デストラクタ
+	void Update(CTitle *pTItle) override;
+
+private:
+	CPolygon2D *m_pStart;	// スタート表示のポインタ
+	CPolygon2D *m_pAfter;	// スタート表示の残像
+};
+
+class CTitleMenu : public CTitleBehavior
+{// メニュー
+public:
+	enum MENU
 	{
-		SELECT_GAME = 0,	// ゲーム開始
-		SELECT_TUTORIAL,	// チュートリアル表示
-		SELECT_MAX
+		MENU_GAME = 0,	// ゲーム
+		MENU_TRANING,	// 訓練場
+		MENU_MAX
 	};
 
-	// 状態更新の関数ポインタ型エイリアス定義
-	typedef void (CTitle::*AFuncUpdateState)(void);
+	CTitleMenu();	// コンストラクタ
+	virtual ~CTitleMenu();	// デストラクタ
+	void Update(CTitle *pTItle) override;
 
-	// 静的メンバ変数
-	static AFuncUpdateState m_aFuncUpdateState[];	// 状態更新関数
+private:
+	void Input(void);
+	void ManageCursor(void);
+	void Fade(void);
 
-	// メンバ関数
-	void UpdateLogoMove(void);		// ロゴの移動状態の更新
-	void UpdateSelectMove(void);	// 選択項目の移動状態の更新
-	void UpdateSelect(void);		// 選択状態の更新
-	void CreateLight(void);			// ライトの生成
-
-	// メンバ変数
-	STATE m_state;					// 状態
-	CUI *m_apSelect[SELECT_MAX];	// 選択肢のポインタ
-	CUI *m_pLogo;					// ロゴのポインタ
-	float m_fCurTime;				// 現在の待機時間
-	int m_nCurSelect;				// 現在の選択肢
-	int m_nOldSelect;				// 前回の選択肢
+	CPolygon2D *m_apMenu[MENU_MAX];	// メニュー項目
+	CPolygon2D *m_pCursor;	// カーソル
+	MENU m_menu;	// 選択メニュー項目
 };
 
 #endif

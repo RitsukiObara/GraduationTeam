@@ -33,10 +33,7 @@
 #include "meshCube.h"
 #include "blur.h"
 #include "light.h"
-#include "player.h"
-#include "enemy.h"
 #include "result.h"
-#include "start.h"
 #include "title.h"
 
 //*****************************************************
@@ -110,16 +107,7 @@ HRESULT CGame::Init(void)
 	CreateLight();
 
 	Camera::ChangeState(new CFollowPlayer);
-
-	// プレイヤー生成
-	CPlayer::Create();
-
-	// 敵生成
-	CEnemy::Create();
-
-	// スタート表示の生成
-	CStart::Create();
-
+	
 	// タイマー表示の生成
 	m_pTimer = CTimer::Create();
 	m_pTimer->SetPosition(D3DXVECTOR3(0.48f, 0.07f, 0.0f));

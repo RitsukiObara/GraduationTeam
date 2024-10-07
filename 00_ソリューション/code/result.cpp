@@ -416,7 +416,7 @@ void CResult::UpdateSelect(void)
 	m_nOldSelect = m_nCurSelect;
 
 	// 選択肢操作
-	if (pInput->GetTrigger(CInputManager::BUTTON_TRIGGER_LEFT))
+	if (pInput->GetTrigger(CInputManager::BUTTON_AXIS_LEFT))
 	{
 		// 左に選択をずらす
 		m_nCurSelect = (m_nCurSelect + 1) % SELECT_MAX;
@@ -424,7 +424,7 @@ void CResult::UpdateSelect(void)
 		// サウンドの再生
 		pSound->Play(CSound::LABEL_SE_PAUSE_ARROW);
 	}
-	if (pInput->GetTrigger(CInputManager::BUTTON_TRIGGER_RIGHT))
+	if (pInput->GetTrigger(CInputManager::BUTTON_AXIS_RIGHT))
 	{
 		// 右に選択をずらす
 		m_nCurSelect = (m_nCurSelect + (SELECT_MAX - 1)) % SELECT_MAX;

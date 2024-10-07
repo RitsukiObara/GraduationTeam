@@ -171,7 +171,6 @@
     <ClCompile Include="code\animEffect3D.cpp" />
     <ClCompile Include="code\backends\imgui_impl_dx9.cpp" />
     <ClCompile Include="code\backends\imgui_impl_win32.cpp" />
-    <ClCompile Include="code\blink2D.cpp" />
     <ClCompile Include="code\blur.cpp" />
     <ClCompile Include="code\blurEvent.cpp" />
     <ClCompile Include="code\camera.cpp" />
@@ -181,7 +180,6 @@
     <ClCompile Include="code\debugproc.cpp" />
     <ClCompile Include="code\effect2D.cpp" />
     <ClCompile Include="code\effect3D.cpp" />
-    <ClCompile Include="code\enemy.cpp" />
     <ClCompile Include="code\frame.cpp" />
     <ClCompile Include="code\gameObject.cpp" />
     <ClCompile Include="code\gauge.cpp" />
@@ -215,7 +213,6 @@
     <ClCompile Include="code\number3D.cpp" />
     <ClCompile Include="code\object.cpp" />
     <ClCompile Include="code\object3D.cpp" />
-    <ClCompile Include="code\player.cpp" />
     <ClCompile Include="code\polygon2D.cpp" />
     <ClCompile Include="code\polygon3D.cpp" />
     <ClCompile Include="code\objectX.cpp" />
@@ -232,13 +229,11 @@
     <ClCompile Include="code\renderer.cpp" />
     <ClCompile Include="code\result.cpp" />
     <ClCompile Include="code\resultBehavior.cpp" />
-    <ClCompile Include="code\rikishi.cpp" />
     <ClCompile Include="code\scene.cpp" />
     <ClCompile Include="code\skybox.cpp" />
     <ClCompile Include="code\slow.cpp" />
     <ClCompile Include="code\smoke.cpp" />
     <ClCompile Include="code\sound.cpp" />
-    <ClCompile Include="code\start.cpp" />
     <ClCompile Include="code\texture.cpp" />
     <ClCompile Include="code\timer.cpp" />
     <ClCompile Include="code\title.cpp" />
@@ -254,7 +249,6 @@
     <ClInclude Include="code\animEffect3D.h" />
     <ClInclude Include="code\backends\imgui_impl_dx9.h" />
     <ClInclude Include="code\backends\imgui_impl_win32.h" />
-    <ClInclude Include="code\blink2D.h" />
     <ClInclude Include="code\blur.h" />
     <ClInclude Include="code\blurEvent.h" />
     <ClInclude Include="code\camera.h" />
@@ -264,7 +258,6 @@
     <ClInclude Include="code\debugproc.h" />
     <ClInclude Include="code\effect2D.h" />
     <ClInclude Include="code\effect3D.h" />
-    <ClInclude Include="code\enemy.h" />
     <ClInclude Include="code\frame.h" />
     <ClInclude Include="code\gameObject.h" />
     <ClInclude Include="code\gauge.h" />
@@ -300,7 +293,6 @@
     <ClInclude Include="code\number3D.h" />
     <ClInclude Include="code\object.h" />
     <ClInclude Include="code\object3D.h" />
-    <ClInclude Include="code\player.h" />
     <ClInclude Include="code\polygon2D.h" />
     <ClInclude Include="code\polygon3D.h" />
     <ClInclude Include="code\objectX.h" />
@@ -314,13 +306,11 @@
     <ClInclude Include="code\renderer.h" />
     <ClInclude Include="code\result.h" />
     <ClInclude Include="code\resultBehavior.h" />
-    <ClInclude Include="code\rikishi.h" />
     <ClInclude Include="code\scene.h" />
     <ClInclude Include="code\skybox.h" />
     <ClInclude Include="code\slow.h" />
     <ClInclude Include="code\smoke.h" />
     <ClInclude Include="code\sound.h" />
-    <ClInclude Include="code\start.h" />
     <ClInclude Include="code\texture.h" />
     <ClInclude Include="code\timer.h" />
     <ClInclude Include="code\title.h" />
