@@ -74,7 +74,12 @@ HRESULT CIceManager::Init(void)
 	for (int i = 0; i < m_nNumGridVirtical; i++)
 		m_aGrid[i].resize(m_nNumGridHorizontal);
 
-	CreateIce(5, 9);
+	CreateIce(3, 6);
+	CreateIce(3, 5);
+	CreateIce(3, 4);
+	CreateIce(3, 3);
+	CreateIce(4, 3);
+	CreateIce(5, 3);
 	CreateIce(5, 8);
 	CreateIce(5, 7);
 	CreateIce(5, 6);
@@ -157,8 +162,8 @@ void CIceManager::StopIce(CIce *pIce)
 void CIceManager::PeckIce(D3DXVECTOR3 pos, E_Direction direction)
 {
 	// 場所からグリッドを計算
-	int nH = (int)((pos.x + Grid::SIZE * m_nNumGridHorizontal * 0.5f) / Grid::SIZE * m_nNumGridHorizontal * 0.1f);
-	int nV = (int)((pos.z + Grid::SIZE * m_nNumGridVirtical * 0.5f) / Grid::SIZE * m_nNumGridVirtical * 0.1f);
+	int nH = (int)(((pos.x + Grid::SIZE * m_nNumGridHorizontal * 0.5f) / Grid::SIZE * m_nNumGridHorizontal) * 0.1f);
+	int nV = (int)(((pos.z + Grid::SIZE * m_nNumGridVirtical * 0.5f) / Grid::SIZE * m_nNumGridVirtical) * 0.1f);
 
 	D3DXVECTOR3 posEffect;
 	posEffect = { nH * Grid::SIZE - Grid::SIZE * m_nNumGridHorizontal * 0.5f,0.0f,nV * Grid::SIZE - Grid::SIZE * m_nNumGridVirtical * 0.5f };
@@ -171,13 +176,13 @@ void CIceManager::PeckIce(D3DXVECTOR3 pos, E_Direction direction)
 	switch (direction)
 	{
 	case CIceManager::DIRECTION_UP:
-		nV--;
+		nV++;
 		break;
 	case CIceManager::DIRECTION_RIGHT:
 		nH++;
 		break;
 	case CIceManager::DIRECTION_DOWN:
-		nV++;
+		nV--;
 		break;
 	case CIceManager::DIRECTION_LEFT:
 		nH--;
@@ -199,10 +204,10 @@ void CIceManager::FindIce(int nNumV, int nNumH)
 
 	vector<CIce*> apIce(DIRECTION_MAX);
 
-	apIce[DIRECTION_UP] = m_aGrid[nNumV][nNumH - 1].pIce;
-	apIce[DIRECTION_DOWN] = m_aGrid[nNumV][nNumH + 1].pIce;
-	apIce[DIRECTION_RIGHT] = m_aGrid[nNumV - 1][nNumH].pIce;
 	apIce[DIRECTION_UP] = m_aGrid[nNumV + 1][nNumH].pIce;
+	apIce[DIRECTION_DOWN] = m_aGrid[nNumV - 1][nNumH].pIce;
+	apIce[DIRECTION_RIGHT] = m_aGrid[nNumV][nNumH + 1].pIce;
+	apIce[DIRECTION_LEFT] = m_aGrid[nNumV][nNumH - 1].pIce;
 	
 	// 四方向氷がないか探索できない状態なら終了
 	bool bNothing = true;
@@ -218,16 +223,16 @@ void CIceManager::FindIce(int nNumV, int nNumH)
 		switch (i)
 		{
 		case CIceManager::DIRECTION_UP:
-			FindIce(nNumV, nNumH - 1);
+			FindIce(nNumV + 1, nNumH);
 			break;
 		case CIceManager::DIRECTION_RIGHT:
-			FindIce(nNumV, nNumH - 1);
+			FindIce(nNumV, nNumH + 1);
 			break;
 		case CIceManager::DIRECTION_DOWN:
-			FindIce(nNumV, nNumH + 1);
+			FindIce(nNumV - 1, nNumH);
 			break;
 		case CIceManager::DIRECTION_LEFT:
-			FindIce(nNumV, nNumH + 1);
+			FindIce(nNumV, nNumH - 1);
 			break;
 		default:
 			break;
@@ -272,7 +277,7 @@ void CIceManager::Debug(void)
 
 			D3DXVECTOR3 pos;
 			pos = { j * Grid::SIZE - Grid::SIZE * m_nNumGridHorizontal * 0.5f,0.0f,i * Grid::SIZE - Grid::SIZE * m_nNumGridVirtical * 0.5f };
-			D3DXCOLOR col = { 1.0f,1.0f,1.0f,1.0f };
+			D3DXCOLOR col = { (float)i / m_nNumGridHorizontal,(float)i / m_nNumGridHorizontal,(float)i / m_nNumGridHorizontal,1.0f };
 
 			if (m_aGrid[i][j].state == E_StateGrid::STATE_MID)
 				col = { 0.0f,1.0f,0.0f,1.0f };
