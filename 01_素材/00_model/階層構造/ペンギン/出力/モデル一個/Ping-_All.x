@@ -1763,7 +1763,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "data\\TEXTURE\\pingu-_UV.jpg";
+    "data\\TEXTURE\\Ping-_UV.jpg";
    }
   }
  }
