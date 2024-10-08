@@ -26,10 +26,12 @@ public:
 	// 列挙型定義
 	enum E_Direction
 	{// 方向
-		DIRECTION_UP = 0,	// 上
+		DIRECTION_RIGHTUP = 0,	// 右上
 		DIRECTION_RIGHT,	// 右
-		DIRECTION_DOWN,	// 下
+		DIRECTION_RIGHTDOWN,	// 右下
+		DIRECTION_LEFTDOWN,	// 左下
 		DIRECTION_LEFT,	// 左
+		DIRECTION_LEFTUP,	// 左上
 		DIRECTION_MAX
 	};
 
@@ -43,7 +45,7 @@ public:
 	void Draw(void);	// 描画
 	CIce *CreateIce(int nGridV,int nGridH);	// 氷の生成
 	void StopIce(CIce *pIce);	// 氷の停止
-	void PeckIce(D3DXVECTOR3 pos, E_Direction direction);	// 氷をつつく
+	void PeckIce(int nNumV, int nNumH, E_Direction direction);	// 氷をつつく
 	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// 氷の追加
 	void FindIce(int nNumV, int nNumH, int nIdx,CIce *pIceStand);	// アイスの発見
 

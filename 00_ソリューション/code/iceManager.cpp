@@ -171,18 +171,14 @@ CIce *CIceManager::CreateIce(int nGridV, int nGridH)
 	if (pIce == nullptr)
 		return nullptr;
 
-	D3DXVECTOR3 pos;
-	pos = { nGridH * Grid::SIZE - Grid::SIZE * m_nNumGridHorizontal * 0.5f ,10.0f,nGridV * Grid::SIZE * 0.67f - Grid::SIZE * m_nNumGridVirtical * 0.5f };
-
-	// 縦で偶数列だったらずらす
-	if (nGridV % 2 == 0)
-	{
-		pos.x += Grid::SIZE * 0.5f;
-	}
-
-	pIce->SetPosition(pos);
+	// 氷のトランスフォーム設定
+	pIce->SetPosition(m_aGrid[nGridV][nGridH].pos);
 	pIce->SetSize(Grid::SIZE * 0.5f, Grid::SIZE * 0.5f);
 
+	// 氷を配列にセット
+	m_aGrid[nGridV][nGridH].pIce = pIce;
+
+	// 氷の停止
 	StopIce(pIce);
 
 	return pIce;
@@ -198,64 +194,52 @@ void CIceManager::StopIce(CIce *pIce)
 
 	pIce->SetState(CIce::E_State::STATE_STOP);
 
-	// 今いるグリッドの計算
-	D3DXVECTOR3 pos = pIce->GetPosition();
-
-	AddIce(pIce, pos);
-
 	// グリッドに属性を割り振る
 }
 
 //=====================================================
 // 氷をつつく
 //=====================================================
-void CIceManager::PeckIce(D3DXVECTOR3 pos, E_Direction direction)
+void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 {
-	// 場所からグリッドを計算
-	int nH = (int)(((pos.x + Grid::SIZE * m_nNumGridHorizontal * 0.5f) / Grid::SIZE * m_nNumGridHorizontal) * 0.1f);
-	int nV = (int)(((pos.z + Grid::SIZE * m_nNumGridVirtical * 0.5f) / Grid::SIZE * m_nNumGridVirtical) * 0.1f);
-
-	D3DXVECTOR3 posEffect;
-	posEffect = { nH * Grid::SIZE - Grid::SIZE * m_nNumGridHorizontal * 0.5f,0.0f,nV * Grid::SIZE - Grid::SIZE * m_nNumGridVirtical * 0.5f };
-
-	if (m_aGrid[nV][nH].pIce != nullptr)
+	if (m_aGrid[nNumV][nNumH].pIce != nullptr)
 	{
 		// 今いる氷を見つけられないようにする
-		m_aGrid[nV][nH].pIce->EnableCanFind(false);
+		m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
 
 		// 氷破壊フラグをたてる
 		m_bBreakIce = true;
 	}
 
-	CIce *pIceStand = m_aGrid[nV][nH].pIce;
+	CIce *pIceStand = m_aGrid[nNumV][nNumH].pIce;
 
 	switch (direction)
 	{
-	case CIceManager::DIRECTION_UP:
-		nV++;
-		break;
+	/*case CIceManager::DIRECTION_UP:
+		nNumV++;
+		break;*/
 	case CIceManager::DIRECTION_RIGHT:
-		nH++;
+		nNumH++;
 		break;
-	case CIceManager::DIRECTION_DOWN:
-		nV--;
-		break;
+	/*case CIceManager::DIRECTION_DOWN:
+		nNumV--;
+		break;*/
 	case CIceManager::DIRECTION_LEFT:
-		nH--;
+		nNumH--;
 		break;
 	default:
 		break;
 	}
 
 	// 氷を突っついた判定にする
-	if (m_aGrid[nV][nH].pIce)
+	if (m_aGrid[nNumV][nNumH].pIce)
 	{
-		m_aGrid[nV][nH].pIce->EnablePeck(true);
-		m_aGrid[nV][nH].pIce->EnableBreak(true);
+		m_aGrid[nNumV][nNumH].pIce->EnablePeck(true);
+		m_aGrid[nNumV][nNumH].pIce->EnableBreak(true);
 	}
 
 	// 氷探索の再帰関数
-	FindIce(nV, nH, 0, pIceStand);
+	FindIce(nNumV, nNumH, 0, pIceStand);
 
 	// 氷が壊れるフラグが立っていたら氷を壊す
 	if (m_bBreakIce)
@@ -280,16 +264,53 @@ void CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand)
 
 	vector<CIce*> apIce(DIRECTION_MAX);
 
-	apIce[DIRECTION_UP] = m_aGrid[nNumV + 1][nNumH].pIce;
-	apIce[DIRECTION_DOWN] = m_aGrid[nNumV - 1][nNumH].pIce;
-	apIce[DIRECTION_RIGHT] = m_aGrid[nNumV][nNumH + 1].pIce;
-	apIce[DIRECTION_LEFT] = m_aGrid[nNumV][nNumH - 1].pIce;
-	
+	int aV[DIRECTION_MAX] = {};
+	int aH[DIRECTION_MAX] = {};
+
+	// 右上
+	aV[DIRECTION_RIGHTUP] = nNumV + 1;
+	aV[DIRECTION_RIGHTDOWN] = nNumV - 1;
+
+	if (nNumV % 2 == 0)
+	{// 偶数の時
+		// グリッド番号を保存
+		aH[DIRECTION_RIGHTUP] = nNumH + 1;
+		aH[DIRECTION_RIGHTDOWN] = nNumH + 1;
+
+		// 左ななめ
+		aH[DIRECTION_LEFTUP] = nNumH;
+		aH[DIRECTION_LEFTDOWN] = nNumH;
+	}
+	else
+	{// 奇数の時
+
+		// グリッド番号を保存
+		aH[DIRECTION_RIGHTUP] = nNumH;
+		aH[DIRECTION_RIGHTDOWN] = nNumH;
+
+		// 左ななめ
+		aH[DIRECTION_LEFTUP] = nNumH - 1;
+		aH[DIRECTION_LEFTDOWN] = nNumH - 1;
+	}
+
+	// 左側
+	aV[DIRECTION_LEFTUP] = nNumV + 1;
+	aV[DIRECTION_LEFTDOWN] = nNumV - 1;
+
+	// 左右
+	aV[DIRECTION_RIGHT] = nNumV;
+	aV[DIRECTION_LEFT] = nNumV;
+	aH[DIRECTION_RIGHT] = nNumH + 1;
+	aH[DIRECTION_LEFT] = nNumH - 1;
+
 	// 四方向氷がないか探索できない状態なら終了
 	bool bNothing = true;
 
 	for (int i = 0; i < DIRECTION_MAX; i++)
 	{
+		// 氷のポインタの保存
+		apIce[i] = m_aGrid[aV[i]][aH[i]].pIce;
+
 		if (apIce[i] == nullptr)
 			continue;
 
@@ -304,23 +325,7 @@ void CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand)
 		if (apIce[i]->IsCanFind() == false)
 			continue;
 		
-		switch (i)
-		{
-		case CIceManager::DIRECTION_UP:
-			FindIce(nNumV + 1, nNumH, nIdx, pIceStand);
-			break;
-		case CIceManager::DIRECTION_RIGHT:
-			FindIce(nNumV, nNumH + 1, nIdx, pIceStand);
-			break;
-		case CIceManager::DIRECTION_DOWN:
-			FindIce(nNumV - 1, nNumH, nIdx, pIceStand);
-			break;
-		case CIceManager::DIRECTION_LEFT:
-			FindIce(nNumV, nNumH - 1, nIdx, pIceStand);
-			break;
-		default:
-			break;
-		}
+		FindIce(aV[i], aH[i], nIdx, pIceStand);
 
 		bNothing = false;
 	}
@@ -336,14 +341,7 @@ void CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand)
 //=====================================================
 void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 {
-	if (pIce == nullptr)
-		return;
 
-	// 場所からグリッドを計算
-	int nH = (int)((pos.x + Grid::SIZE * m_nNumGridHorizontal * 0.5f) / Grid::SIZE * m_nNumGridHorizontal * 0.1f);
-	int nV = (int)((pos.z + Grid::SIZE * m_nNumGridVirtical * 0.5f) / Grid::SIZE * m_nNumGridVirtical * 0.1f);
-
-	m_aGrid[nV][nH].pIce = pIce;
 }
 
 //=====================================================

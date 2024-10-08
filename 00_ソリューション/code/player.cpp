@@ -11,6 +11,7 @@
 #include "player.h"
 #include "inputManager.h"
 #include "iceManager.h"
+#include "debugproc.h"
 
 //*****************************************************
 // 定数定義
@@ -95,6 +96,10 @@ void CPlayer::Update(void)
 	Input();
 
 	CMotion::Update();
+
+#ifdef _DEBUG
+	Debug();
+#endif
 }
 
 //=====================================================
@@ -138,9 +143,21 @@ void CPlayer::Input(void)
 	// つつきの入力========================================
 	if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_PECK))
 	{// 乗っている氷を割る
-		D3DXVECTOR3 pos = GetPosition();
-		pIceManager->PeckIce(pos, CIceManager::E_Direction::DIRECTION_LEFT);	// 割る処理
+		pIceManager->PeckIce(m_nGridV,m_nGridH, CIceManager::E_Direction::DIRECTION_LEFT);	// 割る処理
 	}
+}
+
+//=====================================================
+// デバッグ処理
+//=====================================================
+void CPlayer::Debug(void)
+{
+	CDebugProc *pDebugProc = CDebugProc::GetInstance();
+
+	if (pDebugProc == nullptr)
+		return;
+
+	pDebugProc->Print("\n縦[%d]横[%d]", m_nGridV, m_nGridH);
 }
 
 //=====================================================
