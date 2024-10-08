@@ -17,7 +17,7 @@
 namespace
 {
 const float SPEED_FLOWS = 1.0f;	// 流れる速度
-const string PATH_TEX = "data\\TEXTURE\\UI\\ranking00.png";	// テクスチャパス
+const string PATH_TEX = "data\\TEXTURE\\UI\\ice.png";	// テクスチャパス
 }
 
 //*****************************************************
@@ -28,7 +28,7 @@ int CIce::s_nNumAll = 0;
 //=====================================================
 // コンストラクタ
 //=====================================================
-CIce::CIce(int nPriority) : CPolygon3D(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false)
+CIce::CIce(int nPriority) : CPolygon3D(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false), m_bPeck(false)
 {
 	s_nNumAll++;
 }

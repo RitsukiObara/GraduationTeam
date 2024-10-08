@@ -39,8 +39,11 @@ public:
 private:
 	// メンバ関数
 	void Input(void);	// 入力
+	void Debug(void);	// デバッグ処理
 
 	// メンバ変数
+	int m_nGridV;	// 今いるグリッドの縦番号
+	int m_nGridH;	// 今いるグリッドの横番号
 
 	// 静的メンバ変数
 	static CPlayer *m_pPlayer;	// 自身のポインタ
