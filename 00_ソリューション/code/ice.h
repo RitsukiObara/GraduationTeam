@@ -44,6 +44,8 @@ public:
 	bool IsCanFind(void) { return m_bCanFind; }
 	void EnableBreak(bool bBreak) { m_bBreak = bBreak; }	// 破壊フラグ
 	bool IsBreak(void) { return m_bBreak; }
+	void EnablePeck(bool bPeck) { m_bPeck = bPeck; }	// 突っつかれたフラグ
+	bool IsPeck(void) { return m_bPeck; }
 
 	// 静的メンバ関数
 	static CIce *Create(E_State state = E_State::STATE_FLOWS);	// 生成処理
@@ -57,6 +59,7 @@ private:
 	E_State m_state;	// 状態
 	bool m_bCanFind;	// 探索できるフラグ
 	bool m_bBreak;	// 壊れるフラグ
+	bool m_bPeck;	// 突っつかれたフラグ
 
 	// 静的メンバ変数
 	static int s_nNumAll;	// 総数

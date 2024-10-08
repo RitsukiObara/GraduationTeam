@@ -42,12 +42,15 @@ public:
 	void Update(void);	// 更新
 	void Draw(void);	// 描画
 	CIce *CreateIce(int nGridV,int nGridH);	// 氷の生成
-
-	// 変数取得・設定関数
 	void StopIce(CIce *pIce);	// 氷の停止
 	void PeckIce(D3DXVECTOR3 pos, E_Direction direction);	// 氷をつつく
 	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// 氷の追加
-	void FindIce(int nNumV,int nNumH);	// アイスの発見
+	void FindIce(int nNumV, int nNumH, int nIdx,CIce *pIceStand);	// アイスの発見
+
+	// 変数取得・設定関数
+	void EnableBreakIce(bool bBreakIce) { m_bBreakIce = bBreakIce; }	// 氷破壊フラグ
+	bool IsBreakIce(void) { return m_bBreakIce; }
+	D3DXVECTOR3 GetGridPosition(int nNumV, int nNumH);
 
 	// 静的メンバ関数
 	static CIceManager *Create(int nNumV, int nNumH);
@@ -65,17 +68,22 @@ private:
 	// 構造体定義
 	struct S_Grid
 	{// グリッド情報
+		D3DXVECTOR3 pos;	// 位置
 		E_StateGrid state;	// 状態
 		CIce *pIce;	// 氷のポインタ
 	};
 	
 	// メンバ関数
+	void SetGridPos(void);	// グリッドの位置を計算
+	void ManageStateIce(void);	// 氷の状態管理
 	void Debug(void);	// デバッグ処理
+	void BreakIce(void);	// 氷の破壊
 
 	// メンバ変数
 	int m_nNumGridVirtical;	// 縦グリッドの数
 	int m_nNumGridHorizontal;	// 横グリッドの数
-	vector<vector<S_Grid>> m_aGrid;
+	vector<vector<S_Grid>> m_aGrid;	// グリッドの配列
+	bool m_bBreakIce;	// 氷を壊すかのフラグ
 
 	// 静的メンバ変数
 	static CIceManager *s_pIceManager;	// 自身のポインタ
