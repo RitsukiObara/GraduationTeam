@@ -17,7 +17,7 @@
 namespace
 {
 const float SPEED_FLOWS = 1.0f;	// 流れる速度
-const string PATH_TEX = "data\\TEXTURE\\UI\\ranking00.png";	// テクスチャパス
+const string PATH_TEX = "data\\TEXTURE\\UI\\ice.png";	// テクスチャパス
 }
 
 //*****************************************************

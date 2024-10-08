@@ -50,6 +50,7 @@ public:
 	// 変数取得・設定関数
 	void EnableBreakIce(bool bBreakIce) { m_bBreakIce = bBreakIce; }	// 氷破壊フラグ
 	bool IsBreakIce(void) { return m_bBreakIce; }
+	D3DXVECTOR3 GetGridPosition(int nNumV, int nNumH);
 
 	// 静的メンバ関数
 	static CIceManager *Create(int nNumV, int nNumH);
@@ -67,11 +68,13 @@ private:
 	// 構造体定義
 	struct S_Grid
 	{// グリッド情報
+		D3DXVECTOR3 pos;	// 位置
 		E_StateGrid state;	// 状態
 		CIce *pIce;	// 氷のポインタ
 	};
 	
 	// メンバ関数
+	void SetGridPos(void);	// グリッドの位置を計算
 	void ManageStateIce(void);	// 氷の状態管理
 	void Debug(void);	// デバッグ処理
 	void BreakIce(void);	// 氷の破壊

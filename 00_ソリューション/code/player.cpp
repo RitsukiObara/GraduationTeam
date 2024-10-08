@@ -28,7 +28,7 @@ CPlayer *CPlayer::m_pPlayer = nullptr;	// 自身のポインタ
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
-CPlayer::CPlayer(int nPriority)
+CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0)
 {
 	m_pPlayer = this;
 }
@@ -107,38 +107,39 @@ void CPlayer::Input(void)
 	if (pInputManager == nullptr)
 		return;
 
+	CIceManager *pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return;
+
 	// 移動の入力========================================
 	D3DXVECTOR3 pos = { 0.0f,0.0f,0.0f };
 
 	if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_LEFT))
 	{
-		pos.x -= Grid::SIZE;
+		m_nGridH--;
 	}
 	else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_RIGHT))
 	{
-		pos.x += Grid::SIZE;
+		m_nGridH++;
 	}
 	else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_UP))
 	{
-		pos.z += Grid::SIZE;
+		m_nGridV++;
 	}
 	else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_DOWN))
 	{
-		pos.z -= Grid::SIZE;
+		m_nGridV--;
 	}
 
-	AddPosition(pos);
+	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(m_nGridV, m_nGridH);
+	SetPosition(posGrid);
 
 	// つつきの入力========================================
 	if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_PECK))
 	{// 乗っている氷を割る
-		CIceManager *pIceManager = CIceManager::GetInstance();
-
-		if (pIceManager != nullptr)
-		{
-			D3DXVECTOR3 pos = GetPosition();
-			pIceManager->PeckIce(pos,CIceManager::E_Direction::DIRECTION_LEFT);	// 割る処理
-		}
+		D3DXVECTOR3 pos = GetPosition();
+		pIceManager->PeckIce(pos, CIceManager::E_Direction::DIRECTION_LEFT);	// 割る処理
 	}
 }
 

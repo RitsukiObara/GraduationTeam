@@ -74,6 +74,10 @@ HRESULT CIceManager::Init(void)
 	for (int i = 0; i < m_nNumGridVirtical; i++)
 		m_aGrid[i].resize(m_nNumGridHorizontal);
 
+	// グリッドの位置設定
+	SetGridPos();
+
+	// 仮マップ生成
 	CreateIce(3, 6);
 	CreateIce(3, 5);
 	CreateIce(3, 4);
@@ -89,6 +93,29 @@ HRESULT CIceManager::Init(void)
 	CreateIce(6, 6);
 
 	return S_OK;
+}
+
+//=====================================================
+// グリッドの位置を設定
+//=====================================================
+void CIceManager::SetGridPos(void)
+{
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			D3DXVECTOR3 pos;
+			pos = { j * Grid::SIZE - Grid::SIZE * m_nNumGridHorizontal * 0.5f ,10.0f,i * Grid::SIZE * 0.67f - Grid::SIZE * m_nNumGridVirtical * 0.5f };
+
+			// 縦で偶数列だったらずらす
+			if (i % 2 == 0)
+			{
+				pos.x += Grid::SIZE * 0.5f;
+			}
+
+			m_aGrid[i][j].pos = pos;
+		}
+	}
 }
 
 //=====================================================
@@ -145,7 +172,14 @@ CIce *CIceManager::CreateIce(int nGridV, int nGridH)
 		return nullptr;
 
 	D3DXVECTOR3 pos;
-	pos = { nGridH * Grid::SIZE - Grid::SIZE * m_nNumGridHorizontal * 0.5f ,10.0f,nGridV * Grid::SIZE - Grid::SIZE * m_nNumGridVirtical * 0.5f };
+	pos = { nGridH * Grid::SIZE - Grid::SIZE * m_nNumGridHorizontal * 0.5f ,10.0f,nGridV * Grid::SIZE * 0.67f - Grid::SIZE * m_nNumGridVirtical * 0.5f };
+
+	// 縦で偶数列だったらずらす
+	if (nGridV % 2 == 0)
+	{
+		pos.x += Grid::SIZE * 0.5f;
+	}
+
 	pIce->SetPosition(pos);
 	pIce->SetSize(Grid::SIZE * 0.5f, Grid::SIZE * 0.5f);
 
@@ -345,11 +379,6 @@ void CIceManager::Debug(void)
 	{
 		for (int j = 0; j < m_nNumGridHorizontal; j++)
 		{
-			// 今のグリッド
-			m_aGrid[i][j];
-
-			D3DXVECTOR3 pos;
-			pos = { j * Grid::SIZE - Grid::SIZE * m_nNumGridHorizontal * 0.5f,0.0f,i * Grid::SIZE - Grid::SIZE * m_nNumGridVirtical * 0.5f };
 			D3DXCOLOR col = { (float)i / m_nNumGridHorizontal,(float)i / m_nNumGridHorizontal,(float)i / m_nNumGridHorizontal,1.0f };
 
 			if (m_aGrid[i][j].state == E_StateGrid::STATE_MID)
@@ -370,7 +399,7 @@ void CIceManager::Debug(void)
 				}
 			}
 
-			CEffect3D::Create(pos, 50.0f, 5, col);
+			CEffect3D::Create(m_aGrid[i][j].pos, 50.0f, 5, col);
 		}
 	}
 
@@ -380,6 +409,17 @@ void CIceManager::Debug(void)
 		return;
 
 	pDebugProc->Print("\n氷の総数[%d]", CIce::GetNumAll());
+}
+
+//=====================================================
+// グリッド位置の取得
+//=====================================================
+D3DXVECTOR3 CIceManager::GetGridPosition(int nNumV, int nNumH)
+{
+	if (m_aGrid.empty())
+		return D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	return m_aGrid[nNumV][nNumH].pos;
 }
 
 //=====================================================
