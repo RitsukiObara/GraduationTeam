@@ -188,23 +188,26 @@ void CMotion::Update(void)
 		universal::LimitRot(&DiffRotZ);
 
 		// 目的の値=======================================================================================================
+		float fRate = (float)(1.0f / (float)m_nFrame) * m_fCounterMotion;
+		fRate = easing::EaseInOutExpo(fRate);
+
 		float DestPosX = pos.x + m_aKeyOld[nCntParts].fPosX +
-			DiffPosX * (float)(1.0f / (float)m_nFrame) * m_fCounterMotion;
+			DiffPosX * fRate;
 
 		float DestPosY = pos.y + m_aKeyOld[nCntParts].fPosY +
-			DiffPosY * (float)(1.0f / (float)m_nFrame) * m_fCounterMotion;
+			DiffPosY * fRate;
 
 		float DestPosZ = pos.z + m_aKeyOld[nCntParts].fPosZ +
-			DiffPosZ * (float)(1.0f / (float)m_nFrame) * m_fCounterMotion;
+			DiffPosZ * fRate;
 
 		float DestRotX = m_aKeyOld[nCntParts].fRotX +
-			DiffRotX * (float)(1.0f / (float)m_nFrame) * m_fCounterMotion;
+			DiffRotX * fRate;
 
 		float DestRotY = m_aKeyOld[nCntParts].fRotY +
-			DiffRotY * (float)(1.0f / (float)m_nFrame) * m_fCounterMotion;
+			DiffRotY * fRate;
 
 		float DestRotZ = m_aKeyOld[nCntParts].fRotZ +
-			DiffRotZ * (float)(1.0f / (float)m_nFrame) * m_fCounterMotion;
+			DiffRotZ * fRate;
 
 		// パーツの向き・位置設定
 		m_apParts[nCntParts]->pParts->SetPosition(D3DXVECTOR3(DestPosX, DestPosY, DestPosZ));

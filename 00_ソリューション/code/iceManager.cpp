@@ -249,7 +249,7 @@ void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 //=====================================================
 // •X‚Ì’Tõ
 //=====================================================
-void CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand)
+bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand)
 {
 	if (m_aGrid[nNumV][nNumH].pIce != nullptr)
 	{
@@ -319,21 +319,21 @@ void CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand)
 			m_bBreakIce = false;
 		}
 
-		if (apIce[i]->IsPeck())
-			continue;
-
 		if (apIce[i]->IsCanFind() == false)
 			continue;
-		
+
+		if (apIce[i]->IsPeck())
+		{// ‚Â‚Â‚¢‚Ä‚éƒuƒƒbƒN‚É“–‚½‚Á‚½‚ç‚»‚ê‚à‰ó‚·”»’è
+			apIce[i]->EnableBreak(true);
+			continue;
+		}
+
 		FindIce(aV[i], aH[i], nIdx, pIceStand);
 
 		bNothing = false;
 	}
 
-	if (bNothing)
-	{
-		return;
-	}
+	return bNothing;
 }
 
 //=====================================================
@@ -356,8 +356,7 @@ void CIceManager::BreakIce(void)
 			if (m_aGrid[i][j].pIce != nullptr)
 			{
 				// ‰ó‚ê‚é”»’è‚Æ“Ë‚Á‚Â‚¢‚½•X‚ð‰ó‚·
-				if (m_aGrid[i][j].pIce->IsBreak() || 
-					m_aGrid[i][j].pIce->IsPeck())
+				if (m_aGrid[i][j].pIce->IsBreak())
 				{
 					m_aGrid[i][j].pIce->Uninit();
 					m_aGrid[i][j].pIce = nullptr;

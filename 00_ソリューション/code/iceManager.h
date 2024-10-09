@@ -47,7 +47,7 @@ public:
 	void StopIce(CIce *pIce);	// 氷の停止
 	void PeckIce(int nNumV, int nNumH, E_Direction direction);	// 氷をつつく
 	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// 氷の追加
-	void FindIce(int nNumV, int nNumH, int nIdx,CIce *pIceStand);	// アイスの発見
+	bool FindIce(int nNumV, int nNumH, int nIdx,CIce *pIceStand);	// アイスの発見
 
 	// 変数取得・設定関数
 	void EnableBreakIce(bool bBreakIce) { m_bBreakIce = bBreakIce; }	// 氷破壊フラグ

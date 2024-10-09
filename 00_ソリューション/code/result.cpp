@@ -249,27 +249,7 @@ void CResult::Create2D(bool bWin)
 //=====================================================
 void CResult::UpdateFade(void)
 {
-	// タイマーを加算
-	m_fCurTime += CManager::GetDeltaTime();
 
-	// 経過時刻の割合を計算
-	float fRate = easing::InQuad(m_fCurTime, 0.0f, bg::MOVE_TIME);
-
-	// フェードの透明度を反映
-	m_pBg->SetAlpha(bg::INIT_ALPHA + (bg::DIFF_ALPHA * fRate));
-
-	if (m_fCurTime >= bg::MOVE_TIME)
-	{ // 待機が終了した場合
-
-		// タイマーを初期化
-		m_fCurTime = 0.0f;
-
-		// フェードの透明度を補正
-		m_pBg->SetAlpha(bg::DEST_ALPHA);
-
-		// 下線出現状態にする
-		m_state = STATE_CLEAR_MOVE;
-	}
 }
 
 //=====================================================
@@ -277,35 +257,7 @@ void CResult::UpdateFade(void)
 //=====================================================
 void CResult::UpdateClearMove(void)
 {
-	// タイマーを加算
-	m_fCurTime += CManager::GetDeltaTime();
 
-	// 経過時刻の割合を計算
-	float fRate = easing::InOutQuad(m_fCurTime, 0.0f, caption::MOVE_TIME);
-
-	m_pCaption->SetCol(caption::INIT_COL + (caption::DIFF_COL * fRate));
-	m_pCaption->SetPosition(caption::INIT_POS + (caption::DIFF_POS * fRate));
-	m_pCaption->SetVtx();	// 頂点反映
-
-	m_pCurTime->SetColor(CTimer::NUMBER_MAX, caption::INIT_COL + (caption::DIFF_COL * fRate));
-	m_pCurTime->SetPosition(curtime::INIT_POS + (curtime::DIFF_POS * fRate));
-
-	if (m_fCurTime >= caption::MOVE_TIME)
-	{ // 待機が終了した場合
-
-		// タイマーを初期化
-		m_fCurTime = 0.0f;
-
-		m_pCaption->SetCol(caption::DEST_COL);
-		m_pCaption->SetPosition(caption::DEST_POS);
-		m_pCaption->SetVtx();	// 頂点反映
-
-		m_pCurTime->SetColor(CTimer::NUMBER_MAX, caption::DEST_COL);
-		m_pCurTime->SetPosition(curtime::DEST_POS);
-
-		// 下線出現状態にする
-		m_state = STATE_CONT_MOVE;
-	}
 }
 
 //=====================================================
@@ -313,29 +265,7 @@ void CResult::UpdateClearMove(void)
 //=====================================================
 void CResult::UpdateContMove(void)
 {
-	// タイマーを加算
-	m_fCurTime += CManager::GetDeltaTime();
 
-	// 経過時刻の割合を計算
-	float fRate = easing::InOutQuad(m_fCurTime, 0.0f, cont::MOVE_TIME);
-
-	m_pContinue->SetCol(cont::INIT_COL + (cont::DIFF_COL * fRate));
-	m_pContinue->SetPosition(cont::INIT_POS + (cont::DIFF_POS * fRate));
-	m_pContinue->SetVtx();	// 頂点反映
-
-	if (m_fCurTime >= cont::MOVE_TIME)
-	{ // 待機が終了した場合
-
-		// タイマーを初期化
-		m_fCurTime = 0.0f;
-
-		m_pContinue->SetCol(cont::DEST_COL);
-		m_pContinue->SetPosition(cont::DEST_POS);
-		m_pContinue->SetVtx();	// 頂点反映
-
-		// 下線出現状態にする
-		m_state = STATE_SELECT_MOVE;
-	}
 }
 
 //=====================================================
@@ -343,59 +273,7 @@ void CResult::UpdateContMove(void)
 //=====================================================
 void CResult::UpdateSelectMove(void)
 {
-	// タイマーを加算
-	m_fCurTime += CManager::GetDeltaTime();
 
-	// 選択肢の移動
-	for (int i = 0; i < SELECT_MAX; i++)
-	{ // 選択肢の総数分繰り返す
-
-		// アイコン背景それぞれの経過時間を計算
-		float fRateTime = m_fCurTime - (select::PLUS_TIME * (float)i);
-		universal::LimitNum(fRateTime, 0.0f, select::MOVE_TIME);	// 経過時間を補正
-
-		// それぞれの経過時刻から割合を計算
-		float fRate = easing::InOutQuad(fRateTime, 0.0f, select::MOVE_TIME);
-
-		// 選択肢の位置を計算
-		D3DXVECTOR3 posInit = select::INIT_POS + (select::SPACE * (float)i);
-
-		// 選択肢の色を計算
-		D3DXCOLOR colCur = select::INIT_COL;
-		colCur.a = select::INIT_ALPHA + (select::DIFF_ALPHA * fRate);	// 現在の透明度を設定
-
-		// 選択肢の位置を反映
-		m_apSelect[i]->SetPosition(posInit + (select::DIFF_POS * fRate));
-		m_apSelect[i]->SetVtx();	// 頂点反映
-
-		// 選択肢の色を反映
-		m_apSelect[i]->SetCol(colCur);
-	}
-
-	// 選択肢の移動補正
-	if (m_fCurTime >= select::MOVE_TIME + select::PLUS_TIME * (SELECT_MAX - 1))
-	{ // 全選択肢の待機が終了した場合
-
-		// タイマーを初期化
-		m_fCurTime = 0.0f;
-
-		for (int i = 0; i < SELECT_MAX; i++)
-		{ // 選択肢の総数分繰り返す
-
-			// 選択肢の目標生成位置を計算
-			D3DXVECTOR3 posDest = select::DEST_POS + (select::SPACE * (float)i);
-
-			// 選択肢の位置を補正
-			m_apSelect[i]->SetPosition(posDest);
-			m_apSelect[i]->SetVtx();	// 頂点反映
-
-			// 選択肢の色を補正
-			m_apSelect[i]->SetCol(select::DEST_COL);
-		}
-
-		// 選択状態にする
-		m_state = STATE_SELECT;
-	}
 }
 
 //=====================================================

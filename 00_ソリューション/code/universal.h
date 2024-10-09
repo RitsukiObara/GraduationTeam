@@ -88,183 +88,141 @@ D3DXVECTOR3 CollideOBBToPlane(D3DXVECTOR3* posOBB, D3DXVECTOR3 vecAxial, D3DXVEC
 // 補完系
 //======================================
 D3DXVECTOR3 Lerp(D3DXVECTOR3 start, D3DXVECTOR3 end, float fTime);
-inline float EaseOutCubic(float fTime) { return 1 - powf(1.0f - fTime, 3.0f); };
-inline float EaseInCubic(float fTime) { return powf(fTime, 3.0f); };
 float EaseOutBack(float fTime);
-inline float EaseOutExpo(float fTime) { return fTime == 1 ? 1 : 1 - powf(2, -10 * fTime); }
-
-template<class T> bool LimitNum		// 値の範囲内制限
-( // 引数
-	T& rNum,		// 制限数値
-	const T min,	// 最小範囲
-	const T max		// 最大範囲
-);
-template<class T> bool LimitMinNum	// 値の最小値制限
-( // 引数
-	T& rNum,		// 制限数値
-	const T min		// 最小範囲
-);
-template<class T> bool LimitMaxNum	// 値の最大値制限
-( // 引数
-	T& rNum,		// 制限数値
-	const T max		// 最大範囲
-);
-template<class T> float ValueToRate	// 値の割合変換
-( // 引数
-	const T num,	// 割合化する数値
-	const T min,	// 最小範囲
-	const T max		// 最大範囲
-);
 }
 
-// イージング関数空間
+//======================================
+// イージング
+//======================================
 namespace easing
 {
-	// 通常関数
-	inline float Liner(const float x)		{ return x; }
+inline float EaseInSine(float fTime) { return 1 - cosf((fTime * D3DX_PI) / 2); }
+inline float EaseOutSine(float fTime) { return sinf((fTime * D3DX_PI) / 2); }
+inline float EaseInOutSine(float fTime) { return -(cosf(D3DX_PI * fTime) - 1) / 2; }
 
-	inline float InSine(const float x)		{ return 1.0f - cosf((x * D3DX_PI) * 0.5f); }
-	inline float OutSine(const float x)		{ return sinf((x * D3DX_PI) * 0.5f); }
-	inline float InOutSine(const float x)	{ return -(cosf(x * D3DX_PI) - 1.0f) * 0.5f; }
+inline float EaseInCubic(float fTime) { return powf(fTime, 3.0f); };
+inline float EaseOutCubic(float fTime) { return 1 - powf(1.0f - fTime, 3.0f); };
+inline float EaseInOutCubic(float fTime) { return fTime < 0.5 ? 4 * fTime * fTime * fTime : 1 - powf(-2 * fTime + 2, 3) / 2; }
 
-	inline float InQuad(const float x)		{ return x * x; }
-	inline float OutQuad(const float x)		{ return 1.0f - (1.0f - x) * (1.0f - x); }
-	inline float InOutQuad(const float x)	{ return (x < 0.5f) ? (2.0f * x * x) : (1.0f - powf(-2.0f * x + 2.0f, 2.0f) * 0.5f); }
+inline float EaseInQuint(float fTime) { return fTime * fTime * fTime * fTime * fTime; }
+inline float EaseOutQuint(float fTime) { return 1 - powf(1 - fTime, 5); }
+inline float EaseInOutQuint(float fTime) { return fTime < 0.5 ? 16 * fTime * fTime * fTime * fTime * fTime : 1 - powf(-2 * fTime + 2, 5) / 2; }
 
-	inline float InCubic(const float x)		{ return x * x * x; }
-	inline float OutCubic(const float x)	{ return 1.0f - powf(1.0f - x, 3.0f); }
-	inline float InOutCubic(const float x)	{ return (x < 0.5f) ? (4.0f * x * x * x) : (1.0f - powf(-2.0f * x + 2.0f, 3.0f) * 0.5f); }
-
-	inline float InQuart(const float x)		{ return x * x * x * x; }
-	inline float OutQuart(const float x)	{ return 1.0f - powf(1.0f - x, 4.0f); }
-	inline float InOutQuart(const float x)	{ return (x < 0.5f) ? (8.0f * x * x * x * x) : (1.0f - powf(-2.0f * x + 2.0f, 4.0f) * 0.5f); }
-
-	inline float InQuint(const float x)		{ return x * x * x * x * x; }
-	inline float OutQuint(const float x)	{ return 1.0f - powf(1.0f - x, 5.0f); }
-	inline float InOutQuint(const float x)	{ return (x < 0.5f) ? (16.0f * x * x * x * x * x) : (1.0f - powf(-2.0f * x + 2.0f, 5.0f) * 0.5f); }
-
-	// テンプレート関数
-	template<class T> inline float Liner(T num, const T min, const T max)		{ return Liner(universal::ValueToRate(num, min, max)); }
-
-	template<class T> inline float InSine(T num, const T min, const T max)		{ return InSine(universal::ValueToRate(num, min, max)); }
-	template<class T> inline float OutSine(T num, const T min, const T max)		{ return OutSine(universal::ValueToRate(num, min, max)); }
-	template<class T> inline float InOutSine(T num, const T min, const T max)	{ return InOutSine(universal::ValueToRate(num, min, max)); }
-
-	template<class T> inline float InQuad(T num, const T min, const T max)		{ return InQuad(universal::ValueToRate(num, min, max)); }
-	template<class T> inline float OutQuad(T num, const T min, const T max)		{ return OutQuad(universal::ValueToRate(num, min, max)); }
-	template<class T> inline float InOutQuad(T num, const T min, const T max)	{ return InOutQuad(universal::ValueToRate(num, min, max)); }
-
-	template<class T> inline float InCubic(T num, const T min, const T max)		{ return InCubic(universal::ValueToRate(num, min, max)); }
-	template<class T> inline float OutCubic(T num, const T min, const T max)	{ return OutCubic(universal::ValueToRate(num, min, max)); }
-	template<class T> inline float InOutCubic(T num, const T min, const T max)	{ return InOutCubic(universal::ValueToRate(num, min, max)); }
-
-	template<class T> inline float InQuart(T num, const T min, const T max)		{ return InQuart(universal::ValueToRate(num, min, max)); }
-	template<class T> inline float OutQuart(T num, const T min, const T max)	{ return OutQuart(universal::ValueToRate(num, min, max)); }
-	template<class T> inline float InOutQuart(T num, const T min, const T max)	{ return InOutQuart(universal::ValueToRate(num, min, max)); }
-
-	template<class T> inline float InQuint(T num, const T min, const T max)		{ return InQuint(universal::ValueToRate(num, min, max)); }
-	template<class T> inline float OutQuint(T num, const T min, const T max)	{ return OutQuint(universal::ValueToRate(num, min, max)); }
-	template<class T> inline float InOutQuint(T num, const T min, const T max)	{ return InOutQuint(universal::ValueToRate(num, min, max)); }
+inline float EaseInQric(float fTime) { return 1 - sqrtf(1 - powf(fTime, 2)); }
+inline float EaseOutQric(float fTime) { return sqrtf(1 - powf(fTime - 1, 2)); }
+inline float EaseInOutQric(float fTime)
+{
+	return fTime < 0.5
+		? (1 - sqrtf(1 - powf(2 * fTime, 2))) / 2
+		: (sqrtf(1 - powf(-2 * fTime + 2, 2)) + 1) / 2;
 }
 
-//************************************************************
-//	テンプレート関数
-//************************************************************
-//============================================================
-//	値の範囲内制限処理
-//============================================================
-template<class T> bool universal::LimitNum
-(
-	T& rNum,		// 制限数値
-	const T min,	// 最小範囲
-	const T max		// 最大範囲
-)
+inline float EaseInElastic(float fTime)
+{ 
+	const float c4 = (2 * D3DX_PI) / 3;
+
+	return fTime == 0
+		? 0
+		: fTime == 1
+		? 1
+		: -powf(2, 10 * fTime - 10) * sinf((fTime * 10 - 10.75f) * c4);
+}
+inline float EaseOutElastic(float fTime)
 {
-	if (rNum < min)
-	{ // 制限数値が最小範囲を超えていた場合
+	const float c4 = (2 * D3DX_PI) / 3;
 
-		// 範囲内に補正
-		rNum = min;
+	return fTime == 0
+		? 0
+		: fTime == 1
+		? 1
+		: powf(2, -10 * fTime) * sinf((fTime * 10 - 0.75f) * c4) + 1;
+}
+inline float EaseInOutElastic(float fTime)
+{
+	const float c5 = (2 * D3DX_PI) / 4.5f;
 
-		// 真を返す
-		return true;
-	}
-	else if (rNum > max)
-	{ // 制限数値が最大範囲を超えていた場合
-
-		// 範囲内に補正
-		rNum = max;
-
-		// 真を返す
-		return true;
-	}
-
-	// 偽を返す
-	return false;
+	return fTime == 0
+		? 0
+		: fTime == 1
+		? 1
+		: fTime < 0.5
+		? -(powf(2, 20 * fTime - 10) * sinf((20 * fTime - 11.125f) * c5)) / 2
+		: (powf(2, -20 * fTime + 10) * sinf((20 * fTime - 11.125f) * c5)) / 2 + 1;
 }
 
-//============================================================
-//	値の最小値制限処理
-//============================================================
-template<class T> bool universal::LimitMinNum
-(
-	T& rNum,	// 制限数値
-	const T min	// 最小範囲
-)
-{
-	if (rNum < min)
-	{ // 制限数値が最小範囲を超えていた場合
+inline float EaseInQuad(float fTime) { return fTime * fTime; }
+inline float EaseOutQuad(float fTime) { return 1 - (1 - fTime) * (1 - fTime); }
+inline float EaseInOutQuad(float fTime) { return fTime < 0.5 ? 2 * fTime * fTime : 1 - powf(-2 * fTime + 2, 2) / 2; }
 
-		// 範囲内に補正
-		rNum = min;
+inline float EaseInQuart(float fTime) { return fTime * fTime * fTime * fTime; }
+inline float EaseOutQuart(float fTime) { return 1 - powf(1 - fTime, 4); }
+inline float EaseInOutQuart(float fTime) { return fTime < 0.5 ? 8 * fTime * fTime * fTime * fTime : 1 - powf(-2 * fTime + 2, 4) / 2; }
 
-		// 真を返す
-		return true;
-	}
-
-	// 偽を返す
-	return false;
+inline float EaseInExpo(float fTime) { return fTime == 0 ? 0 : powf(2, 10 * fTime - 10); }
+inline float EaseOutExpo(float fTime) { return fTime == 1 ? 1 : 1 - powf(2, -10 * fTime); }
+inline float EaseInOutExpo(float fTime) 
+{ 
+	return fTime == 0
+		? 0
+		: fTime == 1
+		? 1
+		: fTime < 0.5 ? powf(2, 20 * fTime - 10) / 2
+		: (2 - powf(2, -20 * fTime + 10)) / 2;
 }
 
-//============================================================
-//	値の最大値制限処理
-//============================================================
-template<class T> bool universal::LimitMaxNum
-(
-	T& rNum,	// 制限数値
-	const T max	// 最大範囲
-)
+inline float EaseInBack(float fTime)
 {
-	if (rNum > max)
-	{ // 制限数値が最大範囲を超えていた場合
+	const float c1 = 1.70158f;
+	const float c3 = c1 + 1;
 
-		// 範囲内に補正
-		rNum = max;
+	return c3 * fTime * fTime * fTime - c1 * fTime * fTime;
+}
+inline float EaseOutBack(float fTime)
+{ 
+	const float c1 = 1.70158f;
+	const float c3 = c1 + 1;
 
-		// 真を返す
-		return true;
-	}
+	return 1 + c3 * powf(fTime - 1, 3) + c1 * powf(fTime - 1, 2);
+}
+inline float EaseInOutBack(float fTime)
+{
+	const float c1 = 1.70158f;
+	const float c2 = c1 * 1.525f;
 
-	// 偽を返す
-	return false;
+	return fTime < 0.5f
+		? (powf(2 * fTime, 2) * ((c2 + 1) * 2 * fTime - c2)) / 2
+		: (powf(2 * fTime - 2, 2) * ((c2 + 1) * (fTime * 2 - 2) + c2) + 2) / 2;
 }
 
-//============================================================
-//	値の割合変換
-//============================================================
-template<class T> float universal::ValueToRate
-(
-	const T num,	// 割合化する数値
-	const T min,	// 最小範囲
-	const T max		// 最大範囲
-)
+inline float EaseOutBounce(float fTime)
 {
-	// 割る数を求める
-	float fDiv = static_cast<float>(max) - static_cast<float>(min);
-	if (fDiv == 0.0f) { return 0.0f; }	// 0除算対策
+	const float n1 = 7.5625f;
+	const float d1 = 2.75f;
 
-	// 割合変換した値を返す
-	return (static_cast<float>(num) - static_cast<float>(min)) / fDiv;
+	if (fTime < 1 / d1) 
+	{
+		return n1 * fTime * fTime;
+	}
+	else if (fTime < 2 / d1) 
+	{
+		return n1 * (fTime -= 1.5f / d1) * fTime + 0.75f;
+	}
+	else if (fTime < 2.5 / d1) 
+	{
+		return n1 * (fTime -= 2.25f / d1) * fTime + 0.9375f;
+	}
+	else 
+	{
+		return n1 * (fTime -= 2.625f / d1) * fTime + 0.984375f;
+	}
+}
+inline float EaseInBounce(float fTime) { return 1 - EaseOutBounce(1 - fTime); }
+inline float EaseInOutBounce(float fTime)
+{
+	return fTime < 0.5f
+		? (1 - EaseOutBounce(1 - 2 * fTime)) / 2
+		: (1 + EaseOutBounce(2 * fTime - 1)) / 2;
+}
 }
 
 #endif

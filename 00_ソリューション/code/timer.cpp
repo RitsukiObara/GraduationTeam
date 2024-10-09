@@ -190,8 +190,7 @@ void CTimer::Uninit(void)
 //=====================================================
 void CTimer::Update(void)
 {
-	universal::LimitNum(m_fSecond, TIME_MIN, TIME_MAX);
-	UpdateNumber();
+
 }
 
 //=====================================================
