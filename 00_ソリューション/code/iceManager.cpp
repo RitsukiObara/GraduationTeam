@@ -206,9 +206,6 @@ void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 	{
 		// ¡‚¢‚é•X‚ğŒ©‚Â‚¯‚ç‚ê‚È‚¢‚æ‚¤‚É‚·‚é
 		m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
-
-		// •X”j‰óƒtƒ‰ƒO‚ğ‚½‚Ä‚é
-		m_bBreakIce = true;
 	}
 
 	CIce *pIceStand = m_aGrid[nNumV][nNumH].pIce;
@@ -235,15 +232,13 @@ void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 	if (m_aGrid[nNumV][nNumH].pIce)
 	{
 		m_aGrid[nNumV][nNumH].pIce->EnablePeck(true);
-		m_aGrid[nNumV][nNumH].pIce->EnableBreak(true);
 	}
 
 	// •X’Tõ‚ÌÄ‹AŠÖ”
 	FindIce(nNumV, nNumH, 0, pIceStand);
 
 	// •X‚ª‰ó‚ê‚éƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚½‚ç•X‚ğ‰ó‚·
-	if (m_bBreakIce)
-		BreakIce();
+	BreakIce();
 }
 
 //=====================================================
@@ -255,7 +250,6 @@ bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand)
 	{
 		// ’TõÏ‚İƒtƒ‰ƒO‚ğ—§‚Ä‚é
 		m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
-		m_aGrid[nNumV][nNumH].pIce->EnableBreak(true);
 
 		CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 
@@ -305,6 +299,9 @@ bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand)
 
 	// l•ûŒü•X‚ª‚È‚¢‚©’Tõ‚Å‚«‚È‚¢ó‘Ô‚È‚çI—¹
 	bool bNothing = true;
+	int nNumIce = 0;
+	int nNumPeckIce = 0;
+	bool bAliveStandBlock = false;
 
 	for (int i = 0; i < DIRECTION_MAX; i++)
 	{
@@ -314,26 +311,56 @@ bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand)
 		if (apIce[i] == nullptr)
 			continue;
 
+		nNumIce++;
+
+		if (apIce[i]->IsPeck())
+		{// ‚Â‚Â‚¢‚Ä‚éƒuƒƒbƒN‚É“–‚½‚Á‚½‚ç‚»‚ê‚à‰ó‚·”»’è
+			nNumPeckIce++;
+			continue;
+		}
+
 		if(apIce[i] == pIceStand && nIdx != 1)
 		{// —§‚Á‚Ä‚¢‚é•X‚É’H‚è’…‚¢‚½‚ç•X‚ğ‰ó‚³‚È‚¢
-			m_bBreakIce = false;
+			bAliveStandBlock = true;
 		}
 
 		if (apIce[i]->IsCanFind() == false)
 			continue;
 
-		if (apIce[i]->IsPeck())
-		{// ‚Â‚Â‚¢‚Ä‚éƒuƒƒbƒN‚É“–‚½‚Á‚½‚ç‚»‚ê‚à‰ó‚·”»’è
-			apIce[i]->EnableBreak(true);
-			continue;
-		}
+		if (FindIce(aV[i], aH[i], nIdx, pIceStand) == false)
+		{
 
-		FindIce(aV[i], aH[i], nIdx, pIceStand);
+		}
 
 		bNothing = false;
 	}
 
-	return bNothing;
+	if (bNothing)
+	{// ‚±‚êˆÈãM†‚ğ‘—‚ê‚È‚¢ó‘Ô
+
+	}
+
+	if (nNumPeckIce > 0 && nNumIce - nNumPeckIce <= 1)
+	{// ü‚è‚ª‘S‚Ä‚Â‚Á‚Â‚¢‚½•X‚¾‚Á‚½ê‡A‰ó‚ê‚é”»’è‚É‚·‚é
+		if (nNumPeckIce == nNumIce)
+		{
+			m_aGrid[nNumV][nNumH].pIce->EnableBreak(true);
+
+			// ü‚è‚Ì•X‚à‰ó‚·
+			for (int i = 0; i < DIRECTION_MAX; i++)
+			{
+				if (apIce[i] == nullptr)
+					continue;
+
+				if (apIce[i]->IsPeck() == false)
+					continue;
+
+				apIce[i]->EnableBreak(true);
+			}
+		}
+	}
+
+	return bAliveStandBlock;
 }
 
 //=====================================================
@@ -353,14 +380,14 @@ void CIceManager::BreakIce(void)
 	{
 		for (int j = 0; j < m_nNumGridHorizontal; j++)
 		{
-			if (m_aGrid[i][j].pIce != nullptr)
+			if (m_aGrid[i][j].pIce == nullptr)
+				continue;
+
+			// ‰ó‚ê‚é”»’è‚Æ“Ë‚Á‚Â‚¢‚½•X‚ğ‰ó‚·
+			if (m_aGrid[i][j].pIce->IsBreak())
 			{
-				// ‰ó‚ê‚é”»’è‚Æ“Ë‚Á‚Â‚¢‚½•X‚ğ‰ó‚·
-				if (m_aGrid[i][j].pIce->IsBreak())
-				{
-					m_aGrid[i][j].pIce->Uninit();
-					m_aGrid[i][j].pIce = nullptr;
-				}
+				m_aGrid[i][j].pIce->Uninit();
+				m_aGrid[i][j].pIce = nullptr;
 			}
 		}
 	}
