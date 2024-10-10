@@ -9,58 +9,51 @@ SCRIPT
 #====================================================================
 # モデル数
 #====================================================================
-NUM_MODEL = 6
+NUM_MODEL = 5
 
 #====================================================================
 # モデルファイル名
 #====================================================================
-MODEL_FILENAME = data/MODEL/Player/00_Body.x
-MODEL_FILENAME = data/MODEL/Player/01_Head.x
-MODEL_FILENAME = data/MODEL/Player/02_RArm.x
-MODEL_FILENAME = data/MODEL/Player/03_LArm.x
-MODEL_FILENAME = data/MODEL/Player/04_RLeg.x
-MODEL_FILENAME = data/MODEL/Player/05_LLeg.x
+MODEL_FILENAME = data/MODEL/enemy/Seals/00_Body.x
+MODEL_FILENAME = data/MODEL/enemy/Seals/01_RArm.x
+MODEL_FILENAME = data/MODEL/enemy/Seals/02_LArm.x
+MODEL_FILENAME = data/MODEL/enemy/Seals/03_RLeg.x
+MODEL_FILENAME = data/MODEL/enemy/Seals/04_LLeg.x
 
 #====================================================================
 # キャラクター情報
 #====================================================================
 CHARACTERSET
-    NUM_PARTS = 6
+    NUM_PARTS = 5
 
     PARTSSET
         INDEX = 0
         PARENT = -1
-        POS = 17.0 41.8 0.0
+        POS = 0.0 33.0 0.0
         ROT = 0.0 0.0 0.0
     END_PARTSSET
     PARTSSET
         INDEX = 1
         PARENT = 0
-        POS = 0.6 25.9 0.4
+        POS = -25.0 -19.0 -14.0
         ROT = 0.0 0.0 0.0
     END_PARTSSET
     PARTSSET
         INDEX = 2
         PARENT = 0
-        POS = -14.4 17.0 0.0
+        POS = 25.0 -19.0 -14.0
         ROT = 0.0 0.0 0.0
     END_PARTSSET
     PARTSSET
         INDEX = 3
         PARENT = 0
-        POS = 14.4 17.0 0.0
+        POS = -7.2 -16.2 79.0
         ROT = 0.0 0.0 0.0
     END_PARTSSET
     PARTSSET
         INDEX = 4
         PARENT = 0
-        POS = -20.0 -34.0 -5.2
-        ROT = 0.0 0.0 0.0
-    END_PARTSSET
-    PARTSSET
-        INDEX = 5
-        PARENT = 0
-        POS = 20.0 -34.0 -5.2
+        POS = 7.0 -16.2 79.0
         ROT = 0.0 0.0 0.0
     END_PARTSSET
 END_CHARACTERSET
@@ -97,10 +90,6 @@ MOTIONSET
             POS = 0.00 0.00 0.00
             ROT = 0.00 0.00 0.00
         END_KEY
-        KEY # -----[5]----
-            POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 0.00
-        END_KEY
     END_KEYSET
     KEYSET     #---<< 1 / 4 >>
         FRAME = 2
@@ -121,10 +110,6 @@ MOTIONSET
             ROT = 0.00 1.51 0.00
         END_KEY
         KEY # -----[4]----
-            POS = 0.00 0.00 0.00
-            ROT = 0.00 1.51 0.00
-        END_KEY
-        KEY # -----[5]----
             POS = 0.00 0.00 0.00
             ROT = 0.00 1.51 0.00
         END_KEY
@@ -151,10 +136,6 @@ MOTIONSET
             POS = 0.00 0.00 0.00
             ROT = 0.00 1.51 0.00
         END_KEY
-        KEY # -----[5]----
-            POS = 0.00 0.00 0.00
-            ROT = 0.00 1.51 0.00
-        END_KEY
     END_KEYSET
     KEYSET     #---<< 3 / 4 >>
         FRAME = 2
@@ -175,10 +156,6 @@ MOTIONSET
             ROT = 0.00 1.51 0.00
         END_KEY
         KEY # -----[4]----
-            POS = 0.00 0.00 0.00
-            ROT = 0.00 1.51 0.00
-        END_KEY
-        KEY # -----[5]----
             POS = 0.00 0.00 0.00
             ROT = 0.00 1.51 0.00
         END_KEY
