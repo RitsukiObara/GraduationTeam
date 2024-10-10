@@ -1,0 +1,94 @@
+#==============================================================================
+#
+# 『モーションビューワ』スクリプトファイル [motion_runningman.txt]
+# Author : AKIRA TANAKA
+#
+#==============================================================================
+SCRIPT			# この行は絶対消さないこと！
+
+#------------------------------------------------------------------------------
+# モデル数
+#------------------------------------------------------------------------------
+NUM_MODEL = 9
+
+#------------------------------------------------------------------------------
+# モデルファイル名
+#------------------------------------------------------------------------------
+MODEL_FILENAME = data/MODEL/garage/00_body.x	# [0]腰
+MODEL_FILENAME = data/MODEL/garage/01_armLu.x		# [1]左腿
+MODEL_FILENAME = data/MODEL/garage/02_handLu.x	# [2]左脛
+MODEL_FILENAME = data/MODEL/garage/03_armLd.x	# [3]左足
+MODEL_FILENAME = data/MODEL/garage/04_handLd.x	# [4]右腿
+MODEL_FILENAME = data/MODEL/garage/05_armRu.x	# [5]右脛
+MODEL_FILENAME = data/MODEL/garage/06_handRu.x	# [6]右足
+MODEL_FILENAME = data/MODEL/garage/07_armRd.x	# [7]右足先
+MODEL_FILENAME = data/MODEL/garage/08_handRd.x	# [7]右足先
+
+#------------------------------------------------------------------------------
+# キャラクター情報
+#------------------------------------------------------------------------------
+CHARACTERSET
+	NUM_PARTS = 9					# パーツ数
+	MOVE = 5.0						# 移動量
+	RADIUS = 40.0					# 半径
+	JUMP = 8.65						# ジャンプ量
+
+	PARTSSET						# [0]腰
+		INDEX = 0
+		PARENT = -1					# (親)なし
+		POS = 0.0 180.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET						# [1]左腿
+		INDEX = 1
+		PARENT = 0					# (親)腰
+		POS = 20.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET						# [2]左脛
+		INDEX = 2
+		PARENT = 0					# (親)左腿
+		POS = 0.0 -60.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET						# [3]左足
+		INDEX = 3
+		PARENT = 2				# (親)左脛
+		POS = 0.0 -90.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET						# [4]左腿
+		INDEX = 4
+		PARENT = 0					# (親)腰
+		POS = -20.0 0.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET						# [5]左脛
+		INDEX = 5
+		PARENT = 0					# (親)右腿
+		POS = 0.0 -60.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET						# [6]左足
+		INDEX = 6
+		PARENT = 5					# (親)右脛
+		POS = 0.0 -90.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+	
+	PARTSSET						# [7]左足
+		INDEX = 7
+		PARENT = 6					# (親)右脛
+		POS = 0.0 -90.0 0.0
+		ROT = 0.0 0.0 0.0
+	END_PARTSSET
+
+END_CHARACTERSET
+
+END_SCRIPT		# この行は絶対消さないこと！
