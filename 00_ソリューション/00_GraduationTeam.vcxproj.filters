@@ -282,7 +282,7 @@
     <ClCompile Include="code\player.cpp">
       <Filter>ソース ファイル\character</Filter>
     </ClCompile>
-    <ClCompile Include="Score.cpp">
+    <ClCompile Include="code\score.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -521,7 +521,7 @@
     <ClInclude Include="code\player.h">
       <Filter>ソース ファイル\character</Filter>
     </ClInclude>
-    <ClInclude Include="Score.h">
+    <ClInclude Include="code\score.h">
       <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
   </ItemGroup>

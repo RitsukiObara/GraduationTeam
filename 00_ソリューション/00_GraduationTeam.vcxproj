@@ -233,6 +233,7 @@
     <ClCompile Include="code\result.cpp" />
     <ClCompile Include="code\resultBehavior.cpp" />
     <ClCompile Include="code\scene.cpp" />
+    <ClCompile Include="code\score.cpp" />
     <ClCompile Include="code\skybox.cpp" />
     <ClCompile Include="code\slow.cpp" />
     <ClCompile Include="code\smoke.cpp" />
@@ -244,7 +245,6 @@
     <ClCompile Include="code\UI.cpp" />
     <ClCompile Include="code\UIManager.cpp" />
     <ClCompile Include="code\universal.cpp" />
-    <ClCompile Include="Score.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\afterimage.h" />
@@ -314,6 +314,7 @@
     <ClInclude Include="code\result.h" />
     <ClInclude Include="code\resultBehavior.h" />
     <ClInclude Include="code\scene.h" />
+    <ClInclude Include="code\score.h" />
     <ClInclude Include="code\skybox.h" />
     <ClInclude Include="code\slow.h" />
     <ClInclude Include="code\smoke.h" />
@@ -325,7 +326,6 @@
     <ClInclude Include="code\UI.h" />
     <ClInclude Include="code\UIManager.h" />
     <ClInclude Include="code\universal.h" />
-    <ClInclude Include="Score.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
