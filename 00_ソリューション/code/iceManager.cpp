@@ -321,17 +321,18 @@ vector<CIce*> CIceManager::GetAroundIce(int nNumV, int nNumH)
 //=====================================================
 bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand, vector<CIce*> apIceLast, bool bBreakLast)
 {
-	if (m_aGrid[nNumV][nNumH].pIce != nullptr)
-	{
-		// 探索済みフラグを立てる
-		m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
+	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
+		return false;
+	
+	// 探索済みフラグを立てる
+	m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
 
 #ifdef _DEBUG
-		CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+	CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 #endif
 
-		nIdx++;
-	}
+	// 再帰関数の深さをインクリメント
+	nIdx++;
 
 	vector<CIce*> apIce(DIRECTION_MAX);
 
@@ -598,12 +599,30 @@ void CIceManager::Debug(void)
 //=====================================================
 // グリッド位置の取得
 //=====================================================
-D3DXVECTOR3 CIceManager::GetGridPosition(int nNumV, int nNumH)
+D3DXVECTOR3 CIceManager::GetGridPosition(int *pNumV, int *pNumH)
 {
 	if (m_aGrid.empty())
 		return D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	return m_aGrid[nNumV][nNumH].pos;
+	if (*pNumV > (int)m_aGrid.size() - 1)
+	{// 上から飛び出てた時の補正
+		*pNumV = m_aGrid.size() - 1;
+	}
+	else if (*pNumV < 0)
+	{// 下から飛び出た時の補正
+		*pNumV = 0;
+	}
+
+	if (*pNumH > (int)m_aGrid[*pNumV].size() - 1)
+	{// 右から飛び出てた時の補正
+		*pNumH = m_aGrid[*pNumV].size() - 1;
+	}
+	else if (*pNumH < 0)
+	{// 左から飛び出た時の補正
+		*pNumH = 0;
+	}
+
+	return m_aGrid[*pNumV][*pNumH].pos;
 }
 
 //=====================================================

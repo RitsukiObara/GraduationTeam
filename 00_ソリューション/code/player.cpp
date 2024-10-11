@@ -138,7 +138,7 @@ void CPlayer::Input(void)
 		m_nGridV--;
 	}
 
-	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(m_nGridV, m_nGridH);
+	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
 	SetPosition(posGrid);
 
 	// ‚Â‚Â‚«‚Ì“ü—Í========================================
