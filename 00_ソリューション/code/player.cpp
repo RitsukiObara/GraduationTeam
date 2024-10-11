@@ -10,6 +10,7 @@
 //*****************************************************
 #include "player.h"
 #include "inputManager.h"
+#include "inputkeyboard.h"
 #include "iceManager.h"
 #include "debugproc.h"
 
@@ -153,11 +154,22 @@ void CPlayer::Input(void)
 void CPlayer::Debug(void)
 {
 	CDebugProc *pDebugProc = CDebugProc::GetInstance();
+	CInputKeyboard *pInputKeyboard = CInputKeyboard::GetInstance();
 
-	if (pDebugProc == nullptr)
+	if (pDebugProc == nullptr || pInputKeyboard == nullptr)
 		return;
 
 	pDebugProc->Print("\nc[%d]‰¡[%d]", m_nGridV, m_nGridH);
+
+	if (pInputKeyboard->GetTrigger(DIK_RSHIFT))
+	{
+		CIceManager *pIceManager = CIceManager::GetInstance();
+
+		if (pIceManager != nullptr)
+		{
+			pIceManager->CreateIce(m_nGridV, m_nGridH);
+		}
+	}
 }
 
 //=====================================================

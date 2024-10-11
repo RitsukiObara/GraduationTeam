@@ -176,6 +176,9 @@ bool CIceManager::JudgeBetweenPeck(int nNumV, int nNumH)
 //=====================================================
 CIce *CIceManager::CreateIce(int nGridV, int nGridH)
 {
+	if (m_aGrid[nGridV][nGridH].pIce != nullptr)
+		return m_aGrid[nGridV][nGridH].pIce;
+
 	CIce *pIce = nullptr;
 
 	pIce = CIce::Create();
