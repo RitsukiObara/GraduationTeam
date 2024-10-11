@@ -386,11 +386,10 @@ bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand, vecto
 
 	bool bBreak = true;
 
-	if (!bBreakLast)
+	if (!bBreakLast)	// 前回のブロックが破壊しないブロックの場合に判定
 	{
-		// 前の氷と共通の氷を見ているかのチェックを行う
 		for (int i = 0; i < (int)apIceLast.size(); i++)
-		{
+		{// 前の氷と共通の氷を見ているかのチェックを行う
 			if (apIceLast[i] == nullptr)
 				continue;
 
@@ -402,17 +401,18 @@ bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand, vecto
 				if (apIce[j] != apIceLast[i])
 					continue;	// 同じポインタかどうか
 
-				// 同じポインタだったとき、壊れるものかチェック
+				// 一つでも壊れないブロックがあったら破壊しない判定
 				if (!apIceLast[i]->IsPeck() && !apIceLast[i]->IsBreak())
 					bBreak = false;
 			}
 		}
 
-		// この時点で隣り合うブロックが大丈夫なら壊れない判定
+#ifdef _DEBUG
 		if (!bBreak)
 		{
 			CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
 		}
+#endif
 	}
 
 	for (int i = 0; i < DIRECTION_MAX; i++)
@@ -441,10 +441,6 @@ bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand, vecto
 		if (!bFindIce && bBreak)
 		{
 			bBreak = false;
-		}
-		else
-		{
-			int n = 0;
 		}
 
 		bNothing = false;
@@ -480,13 +476,16 @@ void CIceManager::BreakIce(void)
 			if (m_aGrid[i][j].pIce == nullptr)
 				continue;
 
-			// 壊れる判定と突っついた氷を壊す
+			// 壊れない氷の場合は無視
 			if (!m_aGrid[i][j].pIce->IsBreak())
 				continue;
-			
+
 			// 周りの氷が全部壊れない判定ならキャンセルする
 			if (CheckCorner(i, j))
 				continue;
+			
+			// 突っついた氷の破壊
+			BreakPeck(i, j);
 
 			m_aGrid[i][j].pIce->Uninit();
 		}
@@ -535,6 +534,23 @@ bool CIceManager::CheckCorner(int nNumV, int nNumH)
 	CEffect3D::Create(m_aGrid[nNumV][nNumH].pos, 300.0f, 60, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
 
 	return true;
+}
+
+//=====================================================
+// 突っついた氷を沈める処理
+//=====================================================
+void CIceManager::BreakPeck(int nNumV, int nNumH)
+{
+	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
+
+	for (int i = 0; i < (int)apIce.size(); i++)
+	{
+		if (apIce[i] == nullptr)
+			continue;
+
+		if (apIce[i]->IsPeck())
+			apIce[i]->Uninit();
+	}
 }
 
 //=====================================================

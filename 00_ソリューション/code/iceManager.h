@@ -83,6 +83,7 @@ private:
 	void Debug(void);	// デバッグ処理
 	void BreakIce(void);	// 氷の破壊
 	bool CheckCorner(int nNumV, int nNumH);	// 角の確認
+	void BreakPeck(int nNumV, int nNumH);	// 突っついた氷を沈める
 
 	// メンバ変数
 	int m_nNumGridVirtical;	// 縦グリッドの数
