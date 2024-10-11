@@ -60,6 +60,7 @@ private:
 	bool m_bCanFind;	// 探索できるフラグ
 	bool m_bBreak;	// 壊れるフラグ
 	bool m_bPeck;	// 突っつかれたフラグ
+	bool m_bDeath;	// 死亡フラグ
 
 	// 静的メンバ変数
 	static int s_nNumAll;	// 総数
