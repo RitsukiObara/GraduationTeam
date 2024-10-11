@@ -53,7 +53,7 @@ public:
 	// 変数取得・設定関数
 	void EnableBreakIce(bool bBreakIce) { m_bBreakIce = bBreakIce; }	// 氷破壊フラグ
 	bool IsBreakIce(void) { return m_bBreakIce; }
-	D3DXVECTOR3 GetGridPosition(int nNumV, int nNumH);
+	D3DXVECTOR3 GetGridPosition(int *pNumV, int *pNumH);
 
 	// 静的メンバ関数
 	static CIceManager *Create(int nNumV, int nNumH);
@@ -83,6 +83,7 @@ private:
 	void Debug(void);	// デバッグ処理
 	void BreakIce(void);	// 氷の破壊
 	bool CheckCorner(int nNumV, int nNumH);	// 角の確認
+	void BreakPeck(int nNumV, int nNumH);	// 突っついた氷を沈める
 
 	// メンバ変数
 	int m_nNumGridVirtical;	// 縦グリッドの数
