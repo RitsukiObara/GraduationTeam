@@ -117,7 +117,7 @@ HRESULT CGame::Init(void)
 
 	// スコア表示の生成
 	m_pScore = CScore::Create();
-	m_pScore->SetPosition(D3DXVECTOR3(0.48f, 0.07f, 0.0f));
+	m_pScore->SetPosition(D3DXVECTOR3(0.4f, 0.9f, 0.0f));
 	m_pScore->SetScore(MAX_TIME);
 
 

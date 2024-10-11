@@ -214,6 +214,12 @@ void CInputManager::Update(void)
 		pKeyboard->GetTrigger(DIK_RETURN)
 	);
 
+	// スコア加算
+	m_info.abTrigger[BUTTON_SCORE] =
+	(
+		pKeyboard->GetTrigger(DIK_L)
+	);
+
 	// 方向のリセット
 	ZeroMemory(&m_axis, sizeof(SAxis));
 
