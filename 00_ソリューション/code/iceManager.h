@@ -47,7 +47,8 @@ public:
 	void StopIce(CIce *pIce);	// 氷の停止
 	void PeckIce(int nNumV, int nNumH, E_Direction direction);	// 氷をつつく
 	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// 氷の追加
-	bool FindIce(int nNumV, int nNumH, int nIdx,CIce *pIceStand);	// アイスの発見
+	bool FindIce(int nNumV, int nNumH, int nIdx,CIce *pIceStand,vector<CIce*> apIceLast,bool bBreak);	// アイスの発見
+	vector<CIce*> GetAroundIce(int nNumV, int nNumH);	// 周辺の氷を取得
 
 	// 変数取得・設定関数
 	void EnableBreakIce(bool bBreakIce) { m_bBreakIce = bBreakIce; }	// 氷破壊フラグ
@@ -78,8 +79,10 @@ private:
 	// メンバ関数
 	void SetGridPos(void);	// グリッドの位置を計算
 	void ManageStateIce(void);	// 氷の状態管理
+	bool JudgeBetweenPeck(int nNumV, int nNumH);	// つっついた氷に挟まれてる判定
 	void Debug(void);	// デバッグ処理
 	void BreakIce(void);	// 氷の破壊
+	bool CheckCorner(int nNumV, int nNumH);	// 角の確認
 
 	// メンバ変数
 	int m_nNumGridVirtical;	// 縦グリッドの数
