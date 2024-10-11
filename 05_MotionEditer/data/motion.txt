@@ -277,7 +277,7 @@ END_MOTIONSET
 # [2]î‘ñ⁄ÇÃÉÇÅ[ÉVÉáÉì
 #===============================
 MOTIONSET
-    LOOP = -1
+    LOOP = 255
     NUM_KEY = 2
 
     KEYSET     #---<< 0 / 2 >>
@@ -331,7 +331,7 @@ MOTIONSET
         END_KEY
         KEY # -----[5]----
             POS = 0.00 0.00 0.00
-            ROT = -0.27 0.00 0.00
+            ROT = 0.00 0.00 0.00
         END_KEY
     END_KEYSET
 END_MOTIONSET
@@ -343,7 +343,7 @@ MOTIONSET
     NUM_KEY = 2
 
     KEYSET     #---<< 0 / 2 >>
-        FRAME = 20
+        FRAME = 10
         KEY # -----[0]----
             POS = 0.00 -2.80 0.00
             ROT = -0.25 0.00 0.00
@@ -370,30 +370,30 @@ MOTIONSET
         END_KEY
     END_KEYSET
     KEYSET     #---<< 1 / 2 >>
-        FRAME = 2
+        FRAME = 10
         KEY # -----[0]----
-            POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 0.00
+            POS = 0.00 -2.80 0.00
+            ROT = -0.52 0.00 0.00
         END_KEY
         KEY # -----[1]----
             POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 0.00
+            ROT = -0.10 0.00 0.00
         END_KEY
         KEY # -----[2]----
             POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 0.00
+            ROT = -0.87 -0.71 0.00
         END_KEY
         KEY # -----[3]----
             POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 0.00
+            ROT = -0.87 0.72 0.00
         END_KEY
         KEY # -----[4]----
             POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 0.00
+            ROT = 0.49 0.00 0.00
         END_KEY
         KEY # -----[5]----
             POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 0.00
+            ROT = 0.35 0.00 0.00
         END_KEY
     END_KEYSET
 END_MOTIONSET
