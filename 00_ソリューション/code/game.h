@@ -13,6 +13,7 @@
 #include "main.h"
 #include "scene.h"
 #include "timer.h"
+#include "score.h"
 
 //*****************************************************
 // 前方宣言
@@ -74,6 +75,7 @@ private:
 	bool m_bStop;	// 停止状態
 	vector<CLight*> m_aLight;	// ゲーム中のライト
 	CTimer* m_pTimer;		// タイマー
+	CScore* m_pScore;		// スコア
 	D3DXCOLOR m_colLight;	// ライト色
 	D3DXVECTOR3 m_posMid;	// プレイヤーと敵の中心座標
 

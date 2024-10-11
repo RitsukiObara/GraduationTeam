@@ -233,6 +233,7 @@
     <ClCompile Include="code\result.cpp" />
     <ClCompile Include="code\resultBehavior.cpp" />
     <ClCompile Include="code\scene.cpp" />
+    <ClCompile Include="code\score.cpp" />
     <ClCompile Include="code\skybox.cpp" />
     <ClCompile Include="code\slow.cpp" />
     <ClCompile Include="code\smoke.cpp" />
@@ -313,6 +314,7 @@
     <ClInclude Include="code\result.h" />
     <ClInclude Include="code\resultBehavior.h" />
     <ClInclude Include="code\scene.h" />
+    <ClInclude Include="code\score.h" />
     <ClInclude Include="code\skybox.h" />
     <ClInclude Include="code\slow.h" />
     <ClInclude Include="code\smoke.h" />

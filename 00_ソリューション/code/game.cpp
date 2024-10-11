@@ -38,6 +38,7 @@
 #include "ice.h"
 #include "iceManager.h"
 #include "player.h"
+#include "score.h"
 
 //*****************************************************
 // マクロ定義
@@ -113,6 +114,12 @@ HRESULT CGame::Init(void)
 	m_pTimer = CTimer::Create();
 	m_pTimer->SetPosition(D3DXVECTOR3(0.48f, 0.07f, 0.0f));
 	m_pTimer->SetSecond(MAX_TIME);
+
+	// スコア表示の生成
+	m_pScore = CScore::Create();
+	m_pScore->SetPosition(D3DXVECTOR3(0.4f, 0.9f, 0.0f));
+	m_pScore->SetScore(MAX_TIME);
+
 
 	// 氷マネージャー
 	CIceManager::Create(NUM_GRID_V, NUM_GRID_H);
