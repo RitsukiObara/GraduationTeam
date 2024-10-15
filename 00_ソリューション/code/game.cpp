@@ -124,7 +124,7 @@ HRESULT CGame::Init(void)
 	// 氷マネージャー
 	CIceManager::Create(NUM_GRID_V, NUM_GRID_H);
 
-	// 敵マネージャー
+	// 敵生成
 	CEnemy::Create(0);
 
 	// プレイヤー生成
