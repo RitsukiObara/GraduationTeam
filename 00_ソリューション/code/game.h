@@ -14,6 +14,7 @@
 #include "scene.h"
 #include "timer.h"
 #include "score.h"
+#include "UI_enemy.h"
 
 //*****************************************************
 // 前方宣言
@@ -78,6 +79,7 @@ private:
 	CScore* m_pScore;		// スコア
 	D3DXCOLOR m_colLight;	// ライト色
 	D3DXVECTOR3 m_posMid;	// プレイヤーと敵の中心座標
+	CUI_Enemy* m_pUI_Enemy;   //敵UI
 
 	// 静的メンバ変数
 	static STATE m_state;	// 状態
