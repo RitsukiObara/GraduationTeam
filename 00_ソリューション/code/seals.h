@@ -1,16 +1,17 @@
 //*****************************************************
 //
-// 敵の処理[enemy.h]
+// アザラシの処理[seals.h]
 // Author:早川友貴
 //
 //*****************************************************
-#ifndef _ENEMY_H_
-#define _ENEMY_H_
+#ifndef _SEALS_H_
+#define _SEALS_H_
 
 //*****************************************************
 // インクルード
 //*****************************************************
 #include "motion.h"
+#include "enemy.h"
 
 //*****************************************************
 // 前方宣言
@@ -20,18 +21,11 @@ class CPolygon3D;
 //*****************************************************
 // クラスの定義
 //*****************************************************
-class CEnemy : public CMotion
+class CSeals : public CEnemy
 {
 public:
-
-	typedef enum
-	{
-		TYPE_SEALS = 0,
-		TYPE_MAX
-	}TYPE;
-
-	CEnemy(int nPriority = 4);	// コンストラクタ
-	~CEnemy();	// デストラクタ
+	CSeals(int nPriority = 4);	// コンストラクタ
+	~CSeals();	// デストラクタ
 
 	// メンバ関数
 	HRESULT Init(void);
@@ -40,19 +34,10 @@ public:
 	void Draw(void);
 
 	// 静的メンバ関数
-	static CEnemy* Create(int nType);
-	static std::vector<CEnemy*> GetInstance(void) { return m_Vector; }
+	static CSeals* Create(void);
 
 private:
-	// メンバ関数
-	void Debug(void);	// デバッグ処理
-
-	// メンバ変数
-	int m_nGridV;	// 今いるグリッドの縦番号
-	int m_nGridH;	// 今いるグリッドの横番号
-
-	// 静的メンバ変数
-	static std::vector<CEnemy*> m_Vector;	// 自身のポインタ
+	
 };
 
 #endif

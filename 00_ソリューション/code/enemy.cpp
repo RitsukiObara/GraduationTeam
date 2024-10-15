@@ -13,14 +13,7 @@
 #include "inputkeyboard.h"
 #include "iceManager.h"
 #include "debugproc.h"
-
-//*****************************************************
-// 定数定義
-//*****************************************************
-namespace
-{
-	const std::string PATH_BODY = "data\\MOTION\\motionSeals.txt";	// ボディのパス
-}
+#include "seals.h"
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -46,11 +39,33 @@ CEnemy::~CEnemy()
 //=====================================================
 // 生成処理
 //=====================================================
-CEnemy* CEnemy::Create(void)
+CEnemy* CEnemy::Create(int nType)
 {
 	CEnemy* pEnemy = nullptr;
 
 	pEnemy = new CEnemy;
+
+	switch (nType)
+	{
+	case CEnemy::TYPE_SEALS:
+
+		pEnemy = new CSeals;
+
+		break;
+	
+	default:
+
+		assert(false);
+
+		break;
+	}
+
+	if (pEnemy != nullptr)
+	{// 敵生成
+		pEnemy->Init();
+	}
+
+	return pEnemy;
 
 	if (pEnemy != nullptr)
 	{
@@ -66,13 +81,8 @@ CEnemy* CEnemy::Create(void)
 //=====================================================
 HRESULT CEnemy::Init(void)
 {
-	// 読込
-	Load((char*)&PATH_BODY[0]);
-
 	// 継承クラスの初期化
 	CMotion::Init();
-
-	InitPose(0);
 
 	return S_OK;
 }
