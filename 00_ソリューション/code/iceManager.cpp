@@ -12,6 +12,7 @@
 #include "effect3D.h"
 #include "ice.h"
 #include "debugproc.h"
+#include "particle.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -515,6 +516,8 @@ void CIceManager::BreakIce(void)
 			
 			// “Ë‚Á‚Â‚¢‚½•X‚Ì”j‰ó
 			BreakPeck(i, j);
+
+			//CParticle::Create();
 
 			m_aGrid[i][j].pIce->Uninit();
 		}
