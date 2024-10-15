@@ -330,7 +330,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "data\\TEXTURE\\small_ice.png";
+    "data\\TEXTURE\\MATERIAL\\small_ice.png";
    }
   }
  }
