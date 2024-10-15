@@ -34,17 +34,23 @@ void LimitValuefloat(float *pValue, float fMax, float fMin)
 //=========================================
 // intílÇÃêßå¿
 //=========================================
-void LimitValueInt(int *pValue, int nMax, int nMin)
+bool LimitValueInt(int *pValue, int nMax, int nMin)
 {
 	if (nMax < *pValue)
 	{
 		*pValue = nMax;
+
+		return true;
 	}
 
 	if (nMin > *pValue)
 	{
 		*pValue = nMin;
+
+		return true;
 	}
+
+	return false;
 }
 
 //=========================================

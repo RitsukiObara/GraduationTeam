@@ -46,6 +46,8 @@ public:
 	bool IsBreak(void) { return m_bBreak; }
 	void EnablePeck(bool bPeck) { m_bPeck = bPeck; }	// 突っつかれたフラグ
 	bool IsPeck(void) { return m_bPeck; }
+	void EnableAliveStandIce(bool bPeck) { m_bAliveStandBlock = bPeck; }	// 立っている氷に辿り着いたフラグ
+	bool IsAliveStandIce(void) { return m_bAliveStandBlock; }
 
 	// 静的メンバ関数
 	static CIce *Create(E_State state = E_State::STATE_FLOWS);	// 生成処理
@@ -60,7 +62,7 @@ private:
 	bool m_bCanFind;	// 探索できるフラグ
 	bool m_bBreak;	// 壊れるフラグ
 	bool m_bPeck;	// 突っつかれたフラグ
-	bool m_bDeath;	// 死亡フラグ
+	bool m_bAliveStandBlock;	// 立っているブロックに到達したフラグ
 
 	// 静的メンバ変数
 	static int s_nNumAll;	// 総数
