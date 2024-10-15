@@ -12,13 +12,15 @@
 #include "effect3D.h"
 #include "ice.h"
 #include "debugproc.h"
+#include "particle.h"
 
 //*****************************************************
 // 定数定義
 //*****************************************************
 namespace
 {
-
+const float RATE_HEX_X = 0.13f;	// 六角形の割合X
+const float RATE_HEX_Z = -0.1f;	// 六角形の割合Z
 }
 
 //*****************************************************
@@ -105,12 +107,12 @@ void CIceManager::SetGridPos(void)
 		for (int j = 0; j < m_nNumGridHorizontal; j++)
 		{
 			D3DXVECTOR3 pos;
-			pos = { j * Grid::SIZE - Grid::SIZE * m_nNumGridHorizontal * 0.5f ,10.0f,i * Grid::SIZE * 0.67f - Grid::SIZE * m_nNumGridVirtical * 0.5f };
+			pos = { j * (Grid::SIZE - Grid::SIZE * RATE_HEX_X) - Grid::SIZE * m_nNumGridHorizontal * 0.5f,10.0f,i * (Grid::SIZE - Grid::SIZE * RATE_HEX_Z) * 0.67f - Grid::SIZE * m_nNumGridVirtical * 0.5f };
 
 			// 縦で偶数列だったらずらす
 			if (i % 2 == 0)
 			{
-				pos.x += Grid::SIZE * 0.5f;
+				pos.x += (Grid::SIZE - Grid::SIZE * RATE_HEX_X) * 0.5f;
 			}
 
 			m_aGrid[i][j].pos = pos;
@@ -194,7 +196,7 @@ CIce *CIceManager::CreateIce(int nGridV, int nGridH)
 
 	// 氷のトランスフォーム設定
 	pIce->SetPosition(m_aGrid[nGridV][nGridH].pos);
-	pIce->SetSize(Grid::SIZE * 0.5f, Grid::SIZE * 0.5f);
+	pIce->SetTransform(Grid::SIZE);
 
 	// 氷を配列にセット
 	m_aGrid[nGridV][nGridH].pIce = pIce;
@@ -514,6 +516,8 @@ void CIceManager::BreakIce(void)
 			
 			// 突っついた氷の破壊
 			BreakPeck(i, j);
+
+			//CParticle::Create();
 
 			m_aGrid[i][j].pIce->Uninit();
 		}
