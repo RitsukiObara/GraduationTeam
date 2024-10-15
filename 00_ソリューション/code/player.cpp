@@ -13,6 +13,7 @@
 #include "inputkeyboard.h"
 #include "iceManager.h"
 #include "debugproc.h"
+#include "particle.h"
 
 //*****************************************************
 // íËêîíËã`
@@ -145,6 +146,8 @@ void CPlayer::Input(void)
 	if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_PECK))
 	{// èÊÇ¡ÇƒÇ¢ÇÈïXÇäÑÇÈ
 		pIceManager->PeckIce(m_nGridV,m_nGridH, CIceManager::E_Direction::DIRECTION_LEFT);	// äÑÇÈèàóù
+
+		CParticle::Create(D3DXVECTOR3(posGrid.x, posGrid.y - 20.0f, posGrid.z), CParticle::TYPE_ICEBREAK, D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	}
 }
 
