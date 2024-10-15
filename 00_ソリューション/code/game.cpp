@@ -40,6 +40,7 @@
 #include "player.h"
 #include "score.h"
 #include "enemy.h"
+#include "seals.h"
 
 //*****************************************************
 // マクロ定義
@@ -124,7 +125,7 @@ HRESULT CGame::Init(void)
 	CIceManager::Create(NUM_GRID_V, NUM_GRID_H);
 
 	// 敵マネージャー
-	CEnemy::Create();
+	CEnemy::Create(0);
 
 	// プレイヤー生成
 	CPlayer::Create();

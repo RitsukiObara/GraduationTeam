@@ -103,15 +103,6 @@ HRESULT CMeshCylinder::Init(void)
 		&m_pIdxBuff,
 		NULL);
 
-	// テクスチャの読込
-	CTexture *pTexture = CTexture::GetInstance();
-
-	if (pTexture != nullptr)
-	{
-		int nIdx = pTexture->Regist(TEX_PATH);
-		SetIdxTexture(nIdx);
-	}
-
 	//頂点情報のポインタ
 	VERTEX_3D *pVtx;
 
