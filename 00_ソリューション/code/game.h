@@ -14,6 +14,7 @@
 #include "scene.h"
 #include "timer.h"
 #include "score.h"
+#include "UI_enemy.h"
 
 //*****************************************************
 // ‘O•ûéŒ¾
