@@ -34,19 +34,18 @@ public:
 
 	// 静的メンバ関数
 	static CEnemy* Create(void);
-	//static std::vector<CEnemy*> GetInstance(void) { return m_Vector; }
+	static std::vector<CEnemy*> GetInstance(void) { return m_Vector; }
 
 private:
 	// メンバ関数
 	void Debug(void);	// デバッグ処理
 
-	//// メンバ変数
-	//std::vector<CEnemy*>::iterator m_Itr;
+	// メンバ変数
 	int m_nGridV;	// 今いるグリッドの縦番号
 	int m_nGridH;	// 今いるグリッドの横番号
 
-	//// 静的メンバ変数
-	//static std::vector<CEnemy*> m_Vector;	// 自身のポインタ
+	// 静的メンバ変数
+	static std::vector<CEnemy*> m_Vector;	// 自身のポインタ
 };
 
 #endif

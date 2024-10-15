@@ -25,16 +25,14 @@ namespace
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-//std::vector<CEnemy*> CEnemy::m_Vector = {};	// 自身のポインタ
+std::vector<CEnemy*> CEnemy::m_Vector = {};	// 自身のポインタ
 
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
 CEnemy::CEnemy(int nPriority) : m_nGridV(0), m_nGridH(0)
 {
-	/*m_Vector.push_back(this);
-
-	m_Itr = m_Vector[m_Vector.size() - 1];*/
+	m_Vector.push_back(this);
 }
 
 //=====================================================
@@ -84,8 +82,18 @@ HRESULT CEnemy::Init(void)
 //=====================================================
 void CEnemy::Uninit(void)
 {
-	////Vectorから削除
-	//m_Vector.erase(m_Itr);
+	for (auto itr = m_Vector.begin(); itr < m_Vector.end(); itr++ )
+	{
+		//削除対象じゃない場合
+		if (*itr != this)
+		{
+			continue;
+		}
+		//Vectorから削除
+		m_Vector.erase(itr);
+
+		return;
+	}
 
 	// 継承クラスの終了
 	CMotion::Uninit();
