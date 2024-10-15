@@ -18,7 +18,8 @@
 //*****************************************************
 namespace
 {
-
+const float RATE_HEX_X = 0.13f;	// ˜ZŠpŒ`‚ÌŠ„‡X
+const float RATE_HEX_Z = -0.1f;	// ˜ZŠpŒ`‚ÌŠ„‡Z
 }
 
 //*****************************************************
@@ -105,12 +106,12 @@ void CIceManager::SetGridPos(void)
 		for (int j = 0; j < m_nNumGridHorizontal; j++)
 		{
 			D3DXVECTOR3 pos;
-			pos = { j * Grid::SIZE - Grid::SIZE * m_nNumGridHorizontal * 0.5f ,10.0f,i * Grid::SIZE * 0.67f - Grid::SIZE * m_nNumGridVirtical * 0.5f };
+			pos = { j * (Grid::SIZE - Grid::SIZE * RATE_HEX_X) - Grid::SIZE * m_nNumGridHorizontal * 0.5f,10.0f,i * (Grid::SIZE - Grid::SIZE * RATE_HEX_Z) * 0.67f - Grid::SIZE * m_nNumGridVirtical * 0.5f };
 
 			// c‚Å‹ô”—ñ‚¾‚Á‚½‚ç‚¸‚ç‚·
 			if (i % 2 == 0)
 			{
-				pos.x += Grid::SIZE * 0.5f;
+				pos.x += (Grid::SIZE - Grid::SIZE * RATE_HEX_X) * 0.5f;
 			}
 
 			m_aGrid[i][j].pos = pos;
