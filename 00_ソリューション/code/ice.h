@@ -11,12 +11,18 @@
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "polygon3D.h"
+#include "gameObject.h"
+
+//*****************************************************
+// 前方宣言
+//*****************************************************
+class CMeshCylinder;
+class CFan3D;
 
 //*****************************************************
 // クラスの定義
 //*****************************************************
-class CIce : public CPolygon3D
+class CIce : public CGameObject
 {
 public:
 	// 列挙型定義
@@ -36,6 +42,8 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	void CreateMesh(void);	// メッシュの生成
+	void SetTransform(float fRadius);	// トランスフォーム設定
 
 	// 変数取得・設定関数
 	void SetState(E_State state) { m_state = state; }	// 状態
@@ -63,6 +71,8 @@ private:
 	bool m_bBreak;	// 壊れるフラグ
 	bool m_bPeck;	// 突っつかれたフラグ
 	bool m_bAliveStandBlock;	// 立っているブロックに到達したフラグ
+	CFan3D *m_pUp;	// 上側に貼る扇ポリゴン
+	CMeshCylinder *m_pSide;	// サイドのシリンダー
 
 	// 静的メンバ変数
 	static int s_nNumAll;	// 総数

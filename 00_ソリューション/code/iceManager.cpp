@@ -194,7 +194,7 @@ CIce *CIceManager::CreateIce(int nGridV, int nGridH)
 
 	// 氷のトランスフォーム設定
 	pIce->SetPosition(m_aGrid[nGridV][nGridH].pos);
-	pIce->SetSize(Grid::SIZE * 0.5f, Grid::SIZE * 0.5f);
+	pIce->SetTransform(Grid::SIZE);
 
 	// 氷を配列にセット
 	m_aGrid[nGridV][nGridH].pIce = pIce;
