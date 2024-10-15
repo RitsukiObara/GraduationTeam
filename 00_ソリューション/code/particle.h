@@ -24,6 +24,8 @@ public:
 		TYPE_NONE = 0,	// ‰½‚Å‚à‚È‚¢
 		TYPE_RUN,	// Ž¾‘–
 		TYPE_RESULTSMOKE,	// ƒŠƒUƒ‹ƒg‚Ì‰Œ
+		TYPE_ICEBREAK,	// •X”j‰óŽž
+
 		TYPE_MAX
 	}TYPE;
 
