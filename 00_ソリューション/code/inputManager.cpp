@@ -217,7 +217,7 @@ void CInputManager::Update(void)
 	// スコア加算
 	m_info.abTrigger[BUTTON_SCORE] =
 	(
-		pKeyboard->GetTrigger(DIK_L)
+		pKeyboard->GetPress(DIK_L)
 	);
 
 	// 方向のリセット
