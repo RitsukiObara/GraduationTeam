@@ -121,10 +121,6 @@ HRESULT CGame::Init(void)
 	m_pScore = CScore::Create();
 	m_pScore->SetPosition(D3DXVECTOR3(0.09f, 0.07f, 0.0f));
 
-	//敵UI生成
-	m_pUI_Enemy = CUI_Enemy::Create(2);
-	m_pUI_Enemy->SetPosition(D3DXVECTOR3(100.0f,0.5f, 0.0f));
-
 	// 氷マネージャー
 	CIceManager::Create(NUM_GRID_V, NUM_GRID_H);
 
