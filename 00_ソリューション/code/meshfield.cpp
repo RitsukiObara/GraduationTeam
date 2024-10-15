@@ -763,6 +763,34 @@ void CMeshField::Reset(void)
 }
 
 //=====================================================
+// 波打つ処理
+//=====================================================
+void CMeshField::Wave(float fRot)
+{
+	// 頂点情報のポインタ
+	VERTEX_3D* pVtx;
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	int nCountV, nCountU;
+
+	for (nCountV = 0; nCountV < m_nDivNumV + 1; nCountV++)
+	{// 頂点座標の設定
+		for (nCountU = 0; nCountU < m_nDivNumU + 1; nCountU++)
+		{
+			// 頂点座標
+			pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.y = sinf(fRot) * 80;
+		}
+		fRot += 1.0f;
+		universal::LimitRot(&fRot);
+	}
+
+	// 頂点バッファをアンロック
+	m_pVtxBuff->Unlock();
+}
+
+//=====================================================
 // 描画処理
 //=====================================================
 void CMeshField::Draw(void)

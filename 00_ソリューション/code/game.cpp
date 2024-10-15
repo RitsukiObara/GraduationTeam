@@ -41,6 +41,7 @@
 #include "score.h"
 #include "enemy.h"
 #include "seals.h"
+#include "ocean.h"
 
 //*****************************************************
 // マクロ定義
@@ -92,6 +93,9 @@ HRESULT CGame::Init(void)
 
 	// スカイボックスの生成
 	CSkybox::Create();
+
+	// メッシュフィールドの追加
+	COcean::Create();
 
 	// フォグをかける
 	CRenderer *pRenderer = CRenderer::GetInstance();
