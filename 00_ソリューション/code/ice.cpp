@@ -98,6 +98,7 @@ void CIce::CreateMesh(void)
 		if (m_pUp != nullptr)
 		{
 			m_pUp->SetRotation(ROT_UP_INIT);
+			m_pUp->SetCol(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
 		}
 	}
 

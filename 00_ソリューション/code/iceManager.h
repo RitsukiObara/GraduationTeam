@@ -80,6 +80,9 @@ private:
 	void SetGridPos(void);	// グリッドの位置を計算
 	void ManageStateIce(void);	// 氷の状態管理
 	bool JudgeBetweenPeck(int nNumV, int nNumH);	// つっついた氷に挟まれてる判定
+	void DisableFind(void);	// 探索フラグの無効化
+	void DisableFromPlayer(int nNumV, int nNumH, CIce *pIcePeck,vector<CIce*> apIce);	// プレイヤーから信号を出して、破壊信号を解除
+	void DisableBreak(int nNumV, int nNumH);	// 氷の破壊を解除
 	void BreakIce(void);	// 氷の破壊
 	void CalcAroundGrids(int nNumV, int nNumH, int* aV, int* aH);	// 周辺グリッドの計算
 	bool CheckStandBlock(vector<CIce*> apIce, CIce *pIce,int nIdx);
