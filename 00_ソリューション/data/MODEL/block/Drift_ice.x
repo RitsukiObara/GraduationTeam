@@ -911,7 +911,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "data\\TEXTURE\\ice001.jpg";
+    "data\\TEXTURE\\MATERIAL\\ice001.jpg";
    }
   }
  }

@@ -234,35 +234,61 @@ void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 	CIce *pIceStand = m_aGrid[nNumV][nNumH].pIce;
 	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
 
+	int nNumBreakV = nNumV;
+	int nNumBreakH = nNumH;
+
 	switch (direction)
 	{
 	/*case CIceManager::DIRECTION_UP:
 		nNumV++;
 		break;*/
 	case CIceManager::DIRECTION_RIGHT:
-		nNumH++;
+		nNumBreakH++;
 		break;
 	/*case CIceManager::DIRECTION_DOWN:
 		nNumV--;
 		break;*/
 	case CIceManager::DIRECTION_LEFT:
-		nNumH--;
+		nNumBreakH--;
 		break;
 	default:
 		break;
 	}
 
 	// 氷を突っついた判定にする
-	if (m_aGrid[nNumV][nNumH].pIce)
+	if (m_aGrid[nNumBreakV][nNumBreakH].pIce)
 	{
-		m_aGrid[nNumV][nNumH].pIce->EnablePeck(true);
+		m_aGrid[nNumBreakV][nNumBreakH].pIce->EnablePeck(true);
 	}
 
 	// 氷探索の再帰関数
-	FindIce(nNumV, nNumH, 0, pIceStand, apIce,false);
+	FindIce(nNumBreakV, nNumBreakH, 0, pIceStand, apIce,false);
+
+	// 探索フラグの無効化
+	DisableFind();
+
+	// プレイヤーから壊さないブロックの流れを出す
+	DisableFromPlayer(nNumV, nNumH, m_aGrid[nNumBreakV][nNumBreakH].pIce, apIce);
 
 	// 氷が壊れるフラグが立っていたら氷を壊す
 	BreakIce();
+}
+
+//=====================================================
+// 探索済みフラグの無効化
+//=====================================================
+void CIceManager::DisableFind(void)
+{
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			if (m_aGrid[i][j].pIce == nullptr)
+				continue;
+
+			m_aGrid[i][j].pIce->EnableCanFind(true);
+		}
+	}
 }
 
 //=====================================================
@@ -342,6 +368,11 @@ bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand, vecto
 	// 探索済みフラグを立てる
 	m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
 
+	if (!m_aGrid[nNumV][nNumH].pIce->IsPeck())
+	{
+		m_aGrid[nNumV][nNumH].pIce->EnableBreak(true);
+	}
+
 #ifdef _DEBUG
 	CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 #endif
@@ -375,65 +406,18 @@ bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand, vecto
 		}
 	}
 
-	bool bBreak = bBreakLast;
-
-	if (!bBreakLast)	// 前回のブロックが破壊しないブロックの場合に判定
-	{
-		// 共通した氷の確認
-		bBreak = CheckCommon(apIce, apIceLast, pIceStand, nNumV, nNumH, bBreakLast);
-	}
-
-	// 立っているブロックについているか、優先してチェック
-	if (CheckStandBlock(apIce, pIceStand, nIdx))
-	{
-#ifdef _DEBUG
-		CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
-#endif
-
-		return false;
-	}
-
 	for (int i = 0; i < DIRECTION_MAX; i++)
 	{
 		if (apIce[i] == nullptr)
 			continue;
 
-		nNumIce++;
-		
-		if(apIce[i] == pIceStand && nIdx != 1)
-		{// 立っている氷か立っている氷のとなりに辿り着いたら氷を壊さない
-			return false;
-		}
-
 		if (apIce[i]->IsCanFind() == false)
 			continue;
 
-		if (apIce[i]->IsPeck())
-		{// つついてるブロックに当たったらそれも壊す判定
-			nNumPeckIce++;
-			continue;
-		}
-
-		if (bBreak || nIdx == 1)
-		{
-			bool bFindIce = FindIce(aV[i], aH[i], nIdx, pIceStand, apIce, bBreak);
-
-			if (!bFindIce && bBreak)
-			{// 壊す判定だったとしても、先の氷から壊さない判定だったら壊さない
-				bBreak = false;
-			}
-		}
-		else
-		{
-#ifdef _DEBUG
-			CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f));
-#endif
-		}
+		FindIce(aV[i], aH[i], nIdx, pIceStand, apIce, true);
 	}
 
-	m_aGrid[nNumV][nNumH].pIce->EnableBreak(bBreak);
-
-	return bBreak;
+	return false;
 }
 
 //=====================================================
@@ -477,7 +461,7 @@ bool CIceManager::CheckStandBlock(vector<CIce*> apIce, CIce *pIceStand, int nIdx
 		if (apIce[i] == nullptr)
 			continue;
 
-		if (apIce[i] == pIceStand && nIdx != 1)
+		if ((apIce[i] == pIceStand || apIce[i]->IsAliveStandIce()) && nIdx != 1)
 		{
 			return true;
 		}
@@ -495,6 +479,125 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 }
 
 //=====================================================
+// プレイヤーから信号発射で破壊信号解除
+//=====================================================
+void CIceManager::DisableFromPlayer(int nNumV, int nNumH, CIce *pIcePeck, vector<CIce*> apIce)
+{
+	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
+		return;
+
+	if (m_aGrid[nNumV][nNumH].pIce->IsPeck())
+		return;
+
+	// 探索済みフラグを立てる
+	m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
+	m_aGrid[nNumV][nNumH].pIce->EnableBreak(false);
+
+#ifdef _DEBUG
+	CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+#endif
+
+	// 周辺グリッドの計算
+	int aV[DIRECTION_MAX] = {};
+	int aH[DIRECTION_MAX] = {};
+
+	CalcAroundGrids(nNumV, nNumH, aV, aH);
+
+	// 四方向氷がないか探索できない状態なら終了
+	bool bNothing = true;
+	int nNumIce = 0;
+	int nNumPeckIce = 0;
+	bool bAliveStandBlock = false;
+
+	// 氷のポインタの保存
+	for (int i = 0; i < DIRECTION_MAX; i++)
+	{
+		int nV = aV[i];
+		int nH = aH[i];
+
+		if (!universal::LimitValueInt(&nV, m_nNumGridVirtical - 1, 0) &&
+			!universal::LimitValueInt(&nH, m_nNumGridHorizontal - 1, 0))
+		{// 指定した番号がグリッドを越えていない場合のみ保存
+			apIce[i] = m_aGrid[aV[i]][aH[i]].pIce;
+		}
+	}
+
+	for (int i = 0; i < DIRECTION_MAX; i++)
+	{
+		if (apIce[i] == nullptr)
+			continue;
+
+		if (apIce[i] == pIcePeck)
+			continue;
+
+		if (!apIce[i]->IsCanFind())
+			continue;
+
+		if (apIce[i]->IsPeck())
+			continue;
+
+		DisableBreak(aV[i], aH[i]);
+	}
+}
+
+//=====================================================
+// 破壊信号の解除
+//=====================================================
+void CIceManager::DisableBreak(int nNumV, int nNumH)
+{
+	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
+		return;
+
+	// 探索済みフラグを立てる
+	m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
+	m_aGrid[nNumV][nNumH].pIce->EnableBreak(false);
+
+#ifdef _DEBUG
+	CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+#endif
+
+	// 周辺グリッドの計算
+	vector<CIce*> apIce(DIRECTION_MAX);
+	int aV[DIRECTION_MAX] = {};
+	int aH[DIRECTION_MAX] = {};
+
+	CalcAroundGrids(nNumV, nNumH, aV, aH);
+
+	// 四方向氷がないか探索できない状態なら終了
+	bool bNothing = true;
+	int nNumIce = 0;
+	int nNumPeckIce = 0;
+	bool bAliveStandBlock = false;
+
+	// 氷のポインタの保存
+	for (int i = 0; i < DIRECTION_MAX; i++)
+	{
+		int nV = aV[i];
+		int nH = aH[i];
+
+		if (!universal::LimitValueInt(&nV, m_nNumGridVirtical - 1, 0) &&
+			!universal::LimitValueInt(&nH, m_nNumGridHorizontal - 1, 0))
+		{// 指定した番号がグリッドを越えていない場合のみ保存
+			apIce[i] = m_aGrid[aV[i]][aH[i]].pIce;
+		}
+	}
+
+	for (int i = 0; i < DIRECTION_MAX; i++)
+	{
+		if (apIce[i] == nullptr)
+			continue;
+
+		if (apIce[i]->IsCanFind() == false)
+			continue;
+
+		if (apIce[i]->IsPeck())
+			continue;
+
+		DisableBreak(aV[i], aH[i]);
+	}
+}
+
+//=====================================================
 // 氷の破壊
 //=====================================================
 void CIceManager::BreakIce(void)
@@ -506,18 +609,10 @@ void CIceManager::BreakIce(void)
 			if (m_aGrid[i][j].pIce == nullptr)
 				continue;
 
-			// 壊れない氷の場合は無視
 			if (!m_aGrid[i][j].pIce->IsBreak())
 				continue;
 
-			// 周りの氷が全部壊れない判定ならキャンセルする
-			if (CheckCorner(i, j))
-				continue;
-			
-			// 突っついた氷の破壊
 			BreakPeck(i, j);
-
-			//CParticle::Create();
 
 			m_aGrid[i][j].pIce->Uninit();
 		}

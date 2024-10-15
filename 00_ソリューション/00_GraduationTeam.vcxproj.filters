@@ -291,6 +291,9 @@
     <ClCompile Include="code\seals.cpp">
       <Filter>ソース ファイル\character</Filter>
     </ClCompile>
+    <ClCompile Include="code\UI_enemy.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\game.h">
@@ -535,6 +538,9 @@
     </ClInclude>
     <ClInclude Include="code\seals.h">
       <Filter>ソース ファイル\character</Filter>
+    </ClInclude>
+    <ClInclude Include="code\UI_enemy.h">
+      <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
