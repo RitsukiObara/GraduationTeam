@@ -82,6 +82,7 @@ private:
 	bool JudgeBetweenPeck(int nNumV, int nNumH);	// ‚Â‚Á‚Â‚¢‚½•X‚É‹²‚Ü‚ê‚Ä‚é”»’è
 	void BreakIce(void);	// •X‚Ì”j‰ó
 	void CalcAroundGrids(int nNumV, int nNumH, int* aV, int* aH);	// Žü•ÓƒOƒŠƒbƒh‚ÌŒvŽZ
+	bool CheckStandBlock(vector<CIce*> apIce, CIce *pIce,int nIdx);
 	bool CheckCorner(int nNumV, int nNumH);	// Šp‚ÌŠm”F
 	bool CheckCommon(vector<CIce*> apIce, vector<CIce*> apIceLast,CIce* pIceStand, int nNumV, int nNumH,bool bBreakLast);
 	void BreakPeck(int nNumV, int nNumH);	// “Ë‚Á‚Â‚¢‚½•X‚ð’¾‚ß‚é

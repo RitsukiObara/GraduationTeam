@@ -125,6 +125,8 @@ void CIceManager::Uninit(void)
 {
 	s_pIceManager = nullptr;
 
+	m_aGrid.clear();
+
 	Release();
 }
 
@@ -146,6 +148,9 @@ void CIceManager::Update(void)
 //=====================================================
 void CIceManager::ManageStateIce(void)
 {
+	if (m_aGrid.empty())
+		return;
+
 	for (int i = 0; i < m_nNumGridVirtical; i++)
 	{
 		for (int j = 0; j < m_nNumGridHorizontal; j++)
@@ -368,12 +373,22 @@ bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand, vecto
 		}
 	}
 
-	bool bBreak = true;
+	bool bBreak = bBreakLast;
 
-	if (bBreakLast)	// 前回のブロックが破壊しないブロックの場合に判定
+	if (!bBreakLast)	// 前回のブロックが破壊しないブロックの場合に判定
 	{
 		// 共通した氷の確認
-		bBreak = CheckCommon(apIce, apIceLast, pIceStand, nNumV, nNumH,bBreak);
+		bBreak = CheckCommon(apIce, apIceLast, pIceStand, nNumV, nNumH, bBreakLast);
+	}
+
+	// 立っているブロックについているか、優先してチェック
+	if (CheckStandBlock(apIce, pIceStand, nIdx))
+	{
+#ifdef _DEBUG
+		CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
+#endif
+
+		return false;
 	}
 
 	for (int i = 0; i < DIRECTION_MAX; i++)
@@ -382,8 +397,8 @@ bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand, vecto
 			continue;
 
 		nNumIce++;
-
-		if((apIce[i] == pIceStand) && nIdx != 1)
+		
+		if(apIce[i] == pIceStand && nIdx != 1)
 		{// 立っている氷か立っている氷のとなりに辿り着いたら氷を壊さない
 			return false;
 		}
@@ -397,14 +412,21 @@ bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand, vecto
 			continue;
 		}
 
-		bool bFindIce = FindIce(aV[i], aH[i], nIdx, pIceStand, apIce, bBreak);
+		if (bBreak || nIdx == 1)
+		{
+			bool bFindIce = FindIce(aV[i], aH[i], nIdx, pIceStand, apIce, bBreak);
 
-		if (!bFindIce && bBreak)
-		{// 壊す判定だったとしても、先の氷から壊さない判定だったら壊さない
-			bBreak = false;
+			if (!bFindIce && bBreak)
+			{// 壊す判定だったとしても、先の氷から壊さない判定だったら壊さない
+				bBreak = false;
+			}
 		}
-
-		bNothing = false;
+		else
+		{
+#ifdef _DEBUG
+			CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f));
+#endif
+		}
 	}
 
 	m_aGrid[nNumV][nNumH].pIce->EnableBreak(bBreak);
@@ -441,6 +463,25 @@ void CIceManager::CalcAroundGrids(int nNumV, int nNumH, int* aV, int* aH)
 	aV[DIRECTION_LEFT] = nNumV;
 	aH[DIRECTION_RIGHT] = nNumH + 1;
 	aH[DIRECTION_LEFT] = nNumH - 1;
+}
+
+//=====================================================
+// 立っているブロックの確認
+//=====================================================
+bool CIceManager::CheckStandBlock(vector<CIce*> apIce, CIce *pIceStand, int nIdx)
+{
+	for (int i = 0; i < DIRECTION_MAX; i++)
+	{
+		if (apIce[i] == nullptr)
+			continue;
+
+		if (apIce[i] == pIceStand && nIdx != 1)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 //=====================================================
@@ -528,7 +569,7 @@ bool CIceManager::CheckCorner(int nNumV, int nNumH)
 //=====================================================
 bool CIceManager::CheckCommon(vector<CIce*> apIce, vector<CIce*> apIceLast, CIce* pIceStand, int nNumV, int nNumH,bool bBreakLast)
 {
-	bool bBreak = bBreakLast;
+	bool bBreak = true;
 
 	for (int i = 0; i < (int)apIceLast.size(); i++)
 	{// 前の氷と共通の氷を見ているかのチェックを行う
