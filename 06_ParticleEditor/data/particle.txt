@@ -1,0 +1,22 @@
+#====================================================================
+#
+# パーティクルスクリプトファイル[particle.txt]
+# Author：Momoya Takayama
+#
+#====================================================================
+SCRIPT
+
+    LIFE_PARTICLE = 7
+    NUM_EFFECT = 5
+    LIFE_EFFECT = 67
+    RADIUS_EFFECT = 23.13
+    SPEED_EFFECT = 2.82
+    GRAVITY = -0.00
+    DECREASE = -0.53
+    RANGEROT = 2.71
+    IS_ADD = 0
+    IS_ROT = 1
+    IS_TURN = 0
+    COLOR = 0.86 0.86 0.86 1.00
+
+END_SCRIPT

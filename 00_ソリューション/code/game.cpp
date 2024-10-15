@@ -39,6 +39,7 @@
 #include "iceManager.h"
 #include "player.h"
 #include "score.h"
+#include "enemy.h"
 
 //*****************************************************
 // マクロ定義
@@ -121,6 +122,9 @@ HRESULT CGame::Init(void)
 
 	// 氷マネージャー
 	CIceManager::Create(NUM_GRID_V, NUM_GRID_H);
+
+	// 敵マネージャー
+	CEnemy::Create();
 
 	// プレイヤー生成
 	CPlayer::Create();
