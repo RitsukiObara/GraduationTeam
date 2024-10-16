@@ -10,12 +10,12 @@
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "object.h"
+#include "gameObject.h"
 
 //*****************************************************
 // クラスの定義
 //*****************************************************
-class CPolygon2D	: public CObject
+class CPolygon2D	: public CGameObject
 {
 public:
 	CPolygon2D(int nPriority = 6);	// コンストラク
@@ -39,13 +39,9 @@ public:
 	void SetAnim(int nAnim, int nNumAnim, int nNumV);	// アニメーション
 	void SetTex(D3DXVECTOR2 texLeftUp, D3DXVECTOR2 texRightDown);	// テクスチャ座標
 	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff(void) { return m_pVtxBuff; }	// 頂点バッファ
-	virtual void SetPosition(D3DXVECTOR3 pos);	// 位置
-	virtual D3DXVECTOR3 GetPosition(void) { return m_pos; }
 	void SetMove(D3DXVECTOR3 move);	// 移動量設定処理
 	D3DXVECTOR3 GetPositionOld(void) { return m_posOld; }	// 前回の位置
 	D3DXVECTOR3 GetMove(void) { return m_move; }	// 移動量取得処理
-	void SetRotation(float fRot);// 向き
-	float GetRotation(void) { return m_fRot; }
 	D3DXCOLOR GetCol(void) { return m_col; }	// 色
 	float GetAlpha(void) { return m_col.a; }	// 透明度
 	void SetCol(D3DXCOLOR col);
@@ -61,11 +57,9 @@ public:
 private:
 	// メンバ変数
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点バッファ
-	D3DXVECTOR3 m_pos;	// 位置
 	D3DXVECTOR3 m_posOld;	// 前回の位置
 	D3DXVECTOR3 m_move;	// 移動量
 	D3DXCOLOR m_col;	// 色
-	float m_fRot;	// 向き
 	float m_width;	// 幅
 	float m_heigth;	// 高さ
 	float m_fCenterHeight;	// 中心の高さ

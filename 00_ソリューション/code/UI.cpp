@@ -167,7 +167,7 @@ void CUI::SetPosition(D3DXVECTOR3 pos)
 	pos.x *= SCREEN_WIDTH;
 	pos.y *= SCREEN_HEIGHT;
 
-	CPolygon2D::SetPosition(pos);
+	CGameObject::SetPosition(pos);
 }
 
 //=====================================================
