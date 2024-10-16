@@ -60,6 +60,7 @@ public:
 	// 静的メンバ関数
 	static CIce *Create(E_State state = E_State::STATE_FLOWS);	// 生成処理
 	static int GetNumAll(void) { return s_nNumAll; }	// 総数取得
+	static std::vector<CIce*> GetInstance(void) { return m_Vector; }
 
 private:
 	// メンバ関数
@@ -76,6 +77,7 @@ private:
 
 	// 静的メンバ変数
 	static int s_nNumAll;	// 総数
+	static std::vector<CIce*> m_Vector;	// 自身のポインタ
 };
 
 #endif

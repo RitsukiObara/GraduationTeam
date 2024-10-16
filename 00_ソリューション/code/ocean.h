@@ -23,6 +23,7 @@ public:
 	~COcean();	// デストラクタ
 
 	static COcean* Create(void);
+	static COcean* GetInstance(void) { return m_pOcean; }
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
@@ -30,5 +31,7 @@ public:
 
 private:
 	float m_fRot;
+	static COcean* m_pOcean;	// 自身のポインタ
+
 };
 #endif
