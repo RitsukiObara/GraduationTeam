@@ -21,6 +21,7 @@
 namespace
 {
 const std::string PATH_BODY = "data\\MOTION\\motionPlayer.txt";	// ボディのパス
+const int MOVE_FRAME = 10;	// 移動にかかるフレーム数
 }
 
 //*****************************************************
@@ -119,35 +120,43 @@ void CPlayer::Input(void)
 	if (pIceManager == nullptr)
 		return;
 
-	// 移動の入力========================================
-	D3DXVECTOR3 pos = { 0.0f,0.0f,0.0f };
-
-	if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_LEFT))
+	// 移動していなければ入力受付========================================
+	D3DXVECTOR3 pos = GetPosition();
+	if (pos == GetPositionDest())
 	{
-		m_nGridH--;
-	}
-	else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_RIGHT))
-	{
-		m_nGridH++;
-	}
-	else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_UP))
-	{
-		m_nGridV++;
-	}
-	else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_DOWN))
-	{
-		m_nGridV--;
-	}
+		// 移動の入力========================================
+		if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_LEFT))
+		{
+			m_nGridH--;
+		}
+		else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_RIGHT))
+		{
+			m_nGridH++;
+		}
+		else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_UP))
+		{
+			m_nGridV++;
+		}
+		else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_DOWN))
+		{
+			m_nGridV--;
+		}
 
-	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
-	SetPosition(posGrid);
+		// グリッド取得して目標位置設定========================================
+		D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
+		SetPositionDest(posGrid);
 
-	// つつきの入力========================================
-	if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_PECK))
-	{// 乗っている氷を割る
-		pIceManager->PeckIce(m_nGridV,m_nGridH, CIceManager::E_Direction::DIRECTION_LEFT);	// 割る処理
+		// 移動量設定========================================
+		D3DXVECTOR3 move = (posGrid - pos) / MOVE_FRAME;
+		SetMove(move);
 
-		CParticle::Create(D3DXVECTOR3(posGrid.x, posGrid.y - 20.0f, posGrid.z), CParticle::TYPE_ICEBREAK, D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		// つつきの入力========================================
+		if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_PECK))
+		{// 乗っている氷を割る
+			pIceManager->PeckIce(m_nGridV, m_nGridH, CIceManager::E_Direction::DIRECTION_LEFT);	// 割る処理
+
+			CParticle::Create(D3DXVECTOR3(posGrid.x, posGrid.y - 20.0f, posGrid.z), CParticle::TYPE_ICEBREAK, D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		}
 	}
 }
 

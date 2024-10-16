@@ -14,6 +14,7 @@
 #include "iceManager.h"
 #include "debugproc.h"
 #include "seals.h"
+#include "UI_enemy.h"
 
 //*****************************************************
 // Ã“Iƒƒ“ƒo•Ï”éŒ¾
@@ -63,15 +64,12 @@ CEnemy* CEnemy::Create(int nType)
 	if (pEnemy != nullptr)
 	{// “G¶¬
 		pEnemy->Init();
+
+		CUIEnemy *pUIEnemy = CUIEnemy::GetInstance();
+
+		if (pUIEnemy != nullptr)
+			pUIEnemy->AddEnemy();
 	}
-
-	return pEnemy;
-
-	if (pEnemy != nullptr)
-	{
-		pEnemy->Init();
-	}
-
 
 	return pEnemy;
 }
@@ -92,6 +90,11 @@ HRESULT CEnemy::Init(void)
 //=====================================================
 void CEnemy::Uninit(void)
 {
+	CUIEnemy *pUIEnemy = CUIEnemy::GetInstance();
+
+	if (pUIEnemy != nullptr)
+		pUIEnemy->DeleteEnemy();
+
 	for (auto itr = s_vector.begin(); itr < s_vector.end(); itr++ )
 	{
 		//íœ‘ÎÛ‚¶‚á‚È‚¢ê‡
