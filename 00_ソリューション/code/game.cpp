@@ -97,7 +97,7 @@ HRESULT CGame::Init(void)
 	CSkybox::Create();
 
 	// メッシュフィールドの追加
-	//COcean::Create();
+	COcean::Create();
 
 	// フォグをかける
 	CRenderer *pRenderer = CRenderer::GetInstance();

@@ -127,6 +127,31 @@ public:
 private:
 };
 
+class CIceStaeteFlow : public CIceState
+{// 氷の流れステイト
+public:
+	CIceStaeteFlow();	// コンストラクタ
+	~CIceStaeteFlow();	// デストラクタ
+
+	void Init(CIce *pIce) override;	// 初期化
+	void Uninit(CIce *pIce) override;	// 終了
+	void Update(CIce *pIce) override;	// 更新
+
+private:
+};
+
+class CIceStaeteSink : public CIceState
+{// 氷の沈むステイト
+public:
+	CIceStaeteSink();	// コンストラクタ
+	~CIceStaeteSink();	// デストラクタ
+
+	void Init(CIce *pIce) override;	// 初期化
+	void Uninit(CIce *pIce) override;	// 終了
+	void Update(CIce *pIce) override;	// 更新
+
+private:
+};
 
 #endif
 
