@@ -9,6 +9,7 @@
 // インクルード
 //*****************************************************
 #include "iceHard.h"
+#include "fan3D.h"
 
 //*****************************************************
 // 定数定義
@@ -44,6 +45,13 @@ CIceHard::~CIceHard()
 HRESULT CIceHard::Init(void)
 {
 	CIce::Init();
+
+	CFan3D *pFan3D = CIce::GetFan3D();
+
+	if (pFan3D == nullptr)
+		return E_FAIL;
+
+	pFan3D->SetCol(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
 
 	return S_OK;
 }

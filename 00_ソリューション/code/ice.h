@@ -63,6 +63,7 @@ public:
 	bool IsPeck(void) { return m_bPeck; }
 	void EnableAliveStandIce(bool bPeck) { m_bAliveStandBlock = bPeck; }	// 立っている氷に辿り着いたフラグ
 	bool IsAliveStandIce(void) { return m_bAliveStandBlock; }
+	CFan3D *GetFan3D(void) { return m_pUp; }	// 上側の扇ポリゴン取得
 
 	// 静的メンバ関数
 	static CIce *Create(E_Type type = E_Type::TYPE_NORMAL, E_State state = E_State::STATE_FLOWS);	// 生成処理
