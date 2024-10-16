@@ -241,6 +241,7 @@
     <ClCompile Include="code\slow.cpp" />
     <ClCompile Include="code\smoke.cpp" />
     <ClCompile Include="code\sound.cpp" />
+    <ClCompile Include="code\stageResultUI.cpp" />
     <ClCompile Include="code\texture.cpp" />
     <ClCompile Include="code\timer.cpp" />
     <ClCompile Include="code\title.cpp" />
@@ -326,6 +327,7 @@
     <ClInclude Include="code\slow.h" />
     <ClInclude Include="code\smoke.h" />
     <ClInclude Include="code\sound.h" />
+    <ClInclude Include="code\stageResultUI.h" />
     <ClInclude Include="code\texture.h" />
     <ClInclude Include="code\timer.h" />
     <ClInclude Include="code\title.h" />
