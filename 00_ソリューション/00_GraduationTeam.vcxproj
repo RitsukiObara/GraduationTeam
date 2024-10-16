@@ -185,6 +185,7 @@
     <ClCompile Include="code\gameObject.cpp" />
     <ClCompile Include="code\gauge.cpp" />
     <ClCompile Include="code\ice.cpp" />
+    <ClCompile Include="code\iceHard.cpp" />
     <ClCompile Include="code\iceManager.cpp" />
     <ClCompile Include="code\logo.cpp" />
     <ClCompile Include="code\meshCube.cpp" />
@@ -272,6 +273,7 @@
     <ClInclude Include="code\gameObject.h" />
     <ClInclude Include="code\gauge.h" />
     <ClInclude Include="code\ice.h" />
+    <ClInclude Include="code\iceHard.h" />
     <ClInclude Include="code\iceManager.h" />
     <ClInclude Include="code\logo.h" />
     <ClInclude Include="code\meshCube.h" />

@@ -11,6 +11,7 @@
 // インクルード
 //*****************************************************
 #include "object.h"
+#include "ice.h"
 
 //*****************************************************
 // 前方宣言
@@ -43,7 +44,7 @@ public:
 	void Uninit(void);	// 終了
 	void Update(void);	// 更新
 	void Draw(void);	// 描画
-	CIce *CreateIce(int nGridV,int nGridH);	// 氷の生成
+	CIce *CreateIce(int nGridV,int nGridH, CIce::E_Type type = CIce::E_Type::TYPE_NORMAL);	// 氷の生成
 	void StopIce(CIce *pIce);	// 氷の停止
 	void PeckIce(int nNumV, int nNumH, E_Direction direction);	// 氷をつつく
 	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// 氷の追加
@@ -54,6 +55,7 @@ public:
 	void EnableBreakIce(bool bBreakIce) { m_bBreakIce = bBreakIce; }	// 氷破壊フラグ
 	bool IsBreakIce(void) { return m_bBreakIce; }
 	D3DXVECTOR3 GetGridPosition(int *pNumV, int *pNumH);
+	CIce* GetGridObject(int* pNumV, int* pNumH);
 
 	// 静的メンバ関数
 	static CIceManager *Create(int nNumV, int nNumH);
@@ -81,6 +83,7 @@ private:
 	void ManageStateIce(void);	// 氷の状態管理
 	bool JudgeBetweenPeck(int nNumV, int nNumH);	// つっついた氷に挟まれてる判定
 	void DisableFind(void);	// 探索フラグの無効化
+	void DisableFromHardIce(int nNumV, int nNumH,vector<CIce*> apIce);	// 硬い氷から信号を出して、破壊信号を解除
 	void DisableFromPlayer(int nNumV, int nNumH, CIce *pIcePeck,vector<CIce*> apIce);	// プレイヤーから信号を出して、破壊信号を解除
 	void DisableBreak(int nNumV, int nNumH);	// 氷の破壊を解除
 	void BreakIce(void);	// 氷の破壊

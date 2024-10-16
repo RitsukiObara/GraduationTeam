@@ -14,6 +14,7 @@
 #include "fan3D.h"
 #include "meshcylinder.h"
 #include "ocean.h"
+#include "iceHard.h"
 
 //*****************************************************
 // 定数定義
@@ -38,7 +39,7 @@ std::vector<CIce*> CIce::m_Vector = {};	// 自身のポインタ
 // コンストラクタ
 //=====================================================
 CIce::CIce(int nPriority) : CGameObject(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false), m_bPeck(false), m_bAliveStandBlock(false),
-m_pSide(nullptr),m_pUp(nullptr)
+m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr)
 {
 	s_nNumAll++;
 	m_Vector.push_back(this);
@@ -55,13 +56,24 @@ CIce::~CIce()
 //=====================================================
 // 生成処理
 //=====================================================
-CIce *CIce::Create(E_State state)
+CIce *CIce::Create(E_Type type,E_State state)
 {
 	CIce *pIce = nullptr;
 
 	if (pIce == nullptr)
 	{
-		pIce = new CIce;
+		switch (type)
+		{
+		case CIce::TYPE_NORMAL:
+			pIce = new CIce;
+			break;
+		case CIce::TYPE_HARD:
+			pIce = new CIceHard;
+			break;
+		default:
+			assert(false);
+			break;
+		}
 
 		if (pIce != nullptr)
 		{
@@ -85,6 +97,8 @@ HRESULT CIce::Init(void)
 
 	// トランスフォームの初期設定
 	SetTransform(SIZE_INIT);
+
+	ChangeState(new CIceStaeteNormal);
 
 	return S_OK;
 }
@@ -127,7 +141,7 @@ void CIce::Uninit(void)
 		//Vectorから削除
 		m_Vector.erase(itr);
 
-		return;
+		break;
 	}
 
 	CGameObject::Uninit();
@@ -138,19 +152,31 @@ void CIce::Uninit(void)
 //=====================================================
 void CIce::Update(void)
 {
-	if (m_state == E_State::STATE_FLOWS)
-	{// 流れる状態では移動を続ける
-		Flows();
+	if (m_pState != nullptr)
+		m_pState->Update(this);
+
+	if (COcean::GetInstance() == nullptr)
+	{
+		return;
 	}
 
-	//// 海と一緒に氷を動かす処理
-	//D3DXVECTOR3 pos = GetPosition();
+	// 海と一緒に氷を動かす処理
+	D3DXVECTOR3 pos = GetPosition();
 
-	//D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);y
+	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	//pos.y = COcean::GetInstance()->GetHeight(pos,&move);
+	pos.y = COcean::GetInstance()->GetHeight(pos,&move) + HEIGHT_ICE;
 
-	//SetPosition(pos);
+	if (m_pUp != nullptr)
+	{
+		m_pUp->SetPosition(pos);
+	}
+	if (m_pSide != nullptr)
+	{
+		m_pSide->SetPosition(pos + D3DXVECTOR3(0.0f, -HEIGHT_ICE, 0.0f));
+	}
+
+	SetPosition(pos);
 }
 
 //=====================================================
@@ -190,4 +216,129 @@ void CIce::SetTransform(float fRadius)
 	D3DXVECTOR3 posSide = posIce;
 	posSide.y -= HEIGHT_ICE;
 	m_pSide->SetPosition(posSide);
+}
+
+//=====================================================
+// ステイトの変更
+//=====================================================
+void CIce::ChangeState(CIceState *pState)
+{
+	if (m_pState != nullptr)
+	{
+		m_pState->Uninit(this);
+		m_pState = nullptr;
+	}
+
+	m_pState = pState;
+
+	if (m_pState != nullptr)
+		m_pState->Init(this);
+}
+
+//*******************************************************************************
+// 通常ステイト
+//*******************************************************************************
+//=====================================================
+// 初期化処理
+//=====================================================
+void CIceStaeteNormal::Init(CIce *pIce)
+{
+
+}
+
+//=====================================================
+// 終了処理
+//=====================================================
+void CIceStaeteNormal::Uninit(CIce *pIce)
+{
+
+}
+
+//=====================================================
+// 更新処理
+//=====================================================
+void CIceStaeteNormal::Update(CIce *pIce)
+{
+
+}
+
+//*******************************************************************************
+// 崩壊ステイト
+//*******************************************************************************
+//=====================================================
+// 初期化処理
+//=====================================================
+void CIceStaeteBreak::Init(CIce *pIce)
+{
+
+}
+
+//=====================================================
+// 終了処理
+//=====================================================
+void CIceStaeteBreak::Uninit(CIce *pIce)
+{
+
+}
+
+//=====================================================
+// 更新処理
+//=====================================================
+void CIceStaeteBreak::Update(CIce *pIce)
+{
+
+}
+
+//*******************************************************************************
+// 流れるステイト
+//*******************************************************************************
+//=====================================================
+// 初期化処理
+//=====================================================
+void CIceStaeteFlow::Init(CIce *pIce)
+{
+
+}
+
+//=====================================================
+// 終了処理
+//=====================================================
+void CIceStaeteFlow::Uninit(CIce *pIce)
+{
+
+}
+
+//=====================================================
+// 更新処理
+//=====================================================
+void CIceStaeteFlow::Update(CIce *pIce)
+{
+	pIce->AddPosition(D3DXVECTOR3(-SPEED_FLOWS, 0.0f, 0.0f));
+}
+
+//*******************************************************************************
+// 沈むステイト
+//*******************************************************************************
+//=====================================================
+// 初期化処理
+//=====================================================
+void CIceStaeteSink::Init(CIce *pIce)
+{
+
+}
+
+//=====================================================
+// 終了処理
+//=====================================================
+void CIceStaeteSink::Uninit(CIce *pIce)
+{
+
+}
+
+//=====================================================
+// 更新処理
+//=====================================================
+void CIceStaeteSink::Update(CIce *pIce)
+{
+
 }
