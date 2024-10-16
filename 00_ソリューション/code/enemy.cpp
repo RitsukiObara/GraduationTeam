@@ -102,7 +102,7 @@ void CEnemy::Uninit(void)
 		//Vector‚©‚çíœ
 		m_Vector.erase(itr);
 
-		return;
+		break;
 	}
 
 	// Œp³ƒNƒ‰ƒX‚ÌI—¹

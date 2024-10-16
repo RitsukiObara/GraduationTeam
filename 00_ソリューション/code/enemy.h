@@ -23,9 +23,9 @@ class CPolygon3D;
 class CEnemy : public CMotion
 {
 public:
-
+	// 列挙型定義
 	typedef enum
-	{
+	{// 種類
 		TYPE_SEALS = 0,
 		TYPE_MAX
 	}TYPE;
@@ -38,6 +38,9 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+
+	// 変数取得・設定関数
+
 
 	// 静的メンバ関数
 	static CEnemy* Create(int nType);

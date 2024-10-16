@@ -125,7 +125,7 @@ HRESULT CGame::Init(void)
 	CIceManager::Create(NUM_GRID_V, NUM_GRID_H);
 
 	// “G¶¬
-	CEnemy::Create(0);
+	CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
 
 	// ƒvƒŒƒCƒ„[¶¬
 	CPlayer::Create();

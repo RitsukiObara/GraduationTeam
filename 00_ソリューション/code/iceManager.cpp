@@ -713,14 +713,25 @@ void CIceManager::BreakPeck(int nNumV, int nNumH)
 {
 	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
 
+	int nNumIce = 0;
+	int nNumPeck = 0;
+
 	for (int i = 0; i < (int)apIce.size(); i++)
 	{
 		if (apIce[i] == nullptr)
 			continue;
 
+		nNumIce++;
+
 		if (apIce[i]->IsPeck())
+		{
+			nNumPeck++;
 			apIce[i]->Uninit();
+		}
 	}
+
+	if (nNumIce == nNumPeck)
+		m_aGrid[nNumV][nNumH].pIce->Uninit();
 }
 
 //=====================================================
