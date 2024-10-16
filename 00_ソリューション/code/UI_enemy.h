@@ -17,6 +17,7 @@
 // 前方宣言
 //*****************************************************
 class CNumber;
+class CUI;
 
 //*****************************************************
 // クラスの定義
@@ -41,8 +42,12 @@ public:
 	static CUIEnemy *GetInstance(void) { return m_pUIEnemy; }
 
 private:
+	// メンバ関数
+	void ManageNumber(void);	// 数字の管理
+
 	// メンバ変数
 	CNumber *m_pNumber;	// 数字のポインタ
+	CUI *m_pIcon;	// アイコンのポインタ
 
 	// 静的メンバ変数
 	static CUIEnemy *m_pUIEnemy;	// 自身のポインタ

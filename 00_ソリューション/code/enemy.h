@@ -34,17 +34,16 @@ public:
 	~CEnemy();	// デストラクタ
 
 	// メンバ関数
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	HRESULT Init(void);	// 初期化
+	void Uninit(void);	// 終了
+	void Update(void);	// 更新
+	void Draw(void);	// 描画
 
 	// 変数取得・設定関数
 
-
 	// 静的メンバ関数
-	static CEnemy* Create(int nType);
-	static std::vector<CEnemy*> GetInstance(void) { return m_Vector; }
+	static CEnemy* Create(int nType);	// 生成処理
+	static std::vector<CEnemy*> GetArray(void) { return s_vector; }	// 配列の取得
 
 private:
 	// メンバ関数
@@ -55,7 +54,7 @@ private:
 	int m_nGridH;	// 今いるグリッドの横番号
 
 	// 静的メンバ変数
-	static std::vector<CEnemy*> m_Vector;	// 自身のポインタ
+	static std::vector<CEnemy*> s_vector;	// 自身のポインタ
 };
 
 #endif

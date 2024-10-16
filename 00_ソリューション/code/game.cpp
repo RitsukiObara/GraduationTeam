@@ -42,6 +42,7 @@
 #include "enemy.h"
 #include "seals.h"
 #include "ocean.h"
+#include "UI_enemy.h"
 
 //*****************************************************
 // マクロ定義
@@ -130,6 +131,9 @@ HRESULT CGame::Init(void)
 
 	// 敵生成
 	CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
+
+	// 敵数表示UI生成
+	CUIEnemy::Create();
 
 	// プレイヤー生成
 	CPlayer::Create();
