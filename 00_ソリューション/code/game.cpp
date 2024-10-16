@@ -129,11 +129,11 @@ HRESULT CGame::Init(void)
 	// 氷マネージャー
 	CIceManager::Create(NUM_GRID_V, NUM_GRID_H);
 
-	// 敵生成
-	CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
-
 	// 敵数表示UI生成
 	CUIEnemy::Create();
+
+	// 敵生成
+	CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
 
 	// プレイヤー生成
 	CPlayer::Create();

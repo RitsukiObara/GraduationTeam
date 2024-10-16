@@ -34,23 +34,24 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	void AddEnemy(void);	// 敵の追加
+	void DeleteEnemy(void);	// 敵の削除
 
 	// 変数取得・設定関数
 
 	// 静的メンバ関数
 	static CUIEnemy *Create(void);
-	static CUIEnemy *GetInstance(void) { return m_pUIEnemy; }
+	static CUIEnemy *GetInstance(void) { return s_pUIEnemy; }
 
 private:
 	// メンバ関数
-	void ManageNumber(void);	// 数字の管理
+	void Debug(void);	// デバッグ処理
 
 	// メンバ変数
-	CNumber *m_pNumber;	// 数字のポインタ
-	CUI *m_pIcon;	// アイコンのポインタ
+	vector<CUI*> m_apIcon;	// アイコンの配列
 
 	// 静的メンバ変数
-	static CUIEnemy *m_pUIEnemy;	// 自身のポインタ
+	static CUIEnemy *s_pUIEnemy;	// 自身のポインタ
 };
 
 #endif
