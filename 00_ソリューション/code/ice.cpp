@@ -155,14 +155,21 @@ void CIce::Update(void)
 		Flows();
 	}
 
-	//// ŠC‚Æˆê‚É•X‚ð“®‚©‚·ˆ—
-	//D3DXVECTOR3 pos = GetPosition();
+	// ŠC‚Æˆê‚É•X‚ð“®‚©‚·ˆ—
+	D3DXVECTOR3 pos = GetPosition();
 
-	//D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);y
+	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	//pos.y = COcean::GetInstance()->GetHeight(pos,&move);
+	pos.y = COcean::GetInstance()->GetHeight(pos,&move);
 
-	//SetPosition(pos);
+	if (m_pUp != nullptr)
+	{
+		m_pUp->SetPosition(pos + D3DXVECTOR3(0.0f, HEIGHT_ICE, 0.0f));
+	}
+	if (m_pSide != nullptr)
+	{
+		m_pSide->SetPosition(pos);
+	}
 }
 
 //=====================================================

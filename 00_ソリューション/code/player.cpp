@@ -172,6 +172,15 @@ void CPlayer::Input(void)
 		}
 	}
 
+#ifdef _DEBUG
+	if (m_isMove == true)
+	{// デバッグ時瞬間移動
+		posGrid = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
+		SetPosition(posGrid);
+		SetMotion(MOTION_NEUTRAL);
+		m_isMove = false;
+	}
+#else
 	if (m_isMove == true && GetMotion() == MOTION_JUMPSTART && IsFinish() == true)
 	{// どこか移動した
 		// 目標位置設定========================================
@@ -185,6 +194,7 @@ void CPlayer::Input(void)
 		// ジャンプモーション
 		SetMotion(MOTION_JUMPFLY);
 	}
+#endif
 }
 
 //=====================================================
@@ -226,7 +236,6 @@ void CPlayer::MotionFinishCheck(void)
 		if (CMotion::GetMotion() == MOTION_PECK)
 		{// 氷割り終了（通常状態遷移）
 			SetMotion(MOTION_NEUTRAL);
-			m_isMove = false;
 		}
 	}
 }
