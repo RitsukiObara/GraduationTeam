@@ -57,12 +57,13 @@ public:
 	E_State GetState(void) { return m_state; }
 	void EnableCanFind(bool bCanFind) { m_bCanFind = bCanFind; }	// 探索可能フラグ
 	bool IsCanFind(void) { return m_bCanFind; }
-	void EnableBreak(bool bBreak) { m_bBreak = bBreak; }	// 破壊フラグ
+	virtual void EnableBreak(bool bBreak) { m_bBreak = bBreak; }	// 破壊フラグ
 	bool IsBreak(void) { return m_bBreak; }
 	void EnablePeck(bool bPeck) { m_bPeck = bPeck; }	// 突っつかれたフラグ
 	bool IsPeck(void) { return m_bPeck; }
 	void EnableAliveStandIce(bool bPeck) { m_bAliveStandBlock = bPeck; }	// 立っている氷に辿り着いたフラグ
 	bool IsAliveStandIce(void) { return m_bAliveStandBlock; }
+	CFan3D *GetFan3D(void) { return m_pUp; }	// 上側の扇ポリゴン取得
 
 	// 静的メンバ関数
 	static CIce *Create(E_Type type = E_Type::TYPE_NORMAL, E_State state = E_State::STATE_FLOWS);	// 生成処理

@@ -139,7 +139,7 @@ void CIce::Uninit(void)
 		//Vector‚©‚çíœ
 		m_Vector.erase(itr);
 
-		return;
+		break;
 	}
 
 	CGameObject::Uninit();
