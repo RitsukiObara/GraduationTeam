@@ -20,8 +20,8 @@
 //*****************************************************
 namespace
 {
-const std::string PATH_BODY = "data\\MOTION\\motionPlayer.txt";	// ボディのパス
-const int MOVE_FRAME = 10;	// 移動にかかるフレーム数
+const std::string PATH_BODY = "data\\MOTION\\motionPing-.txt";	// ボディのパス
+const int MOVE_FRAME = 25;	// 移動にかかるフレーム数
 }
 
 //*****************************************************
@@ -34,6 +34,7 @@ CPlayer *CPlayer::m_pPlayer = nullptr;	// 自身のポインタ
 //=====================================================
 CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0)
 {
+	m_isMove = false;
 	m_pPlayer = this;
 }
 
@@ -98,7 +99,11 @@ void CPlayer::Update(void)
 	// 入力処理
 	Input();
 
+	// モーション更新
 	CMotion::Update();
+
+	// モーション完了後の処理
+	MotionFinishCheck();
 
 #ifdef _DEBUG
 	Debug();
@@ -120,35 +125,40 @@ void CPlayer::Input(void)
 	if (pIceManager == nullptr)
 		return;
 
+	// グリッド取得========================================
+	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
+
 	// 移動していなければ入力受付========================================
 	D3DXVECTOR3 pos = GetPosition();
-	if (pos == GetPositionDest())
+	if (m_isMove == false)
 	{
 		// 移動の入力========================================
 		if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_LEFT))
 		{
 			m_nGridH--;
+			m_isMove = true;
 		}
 		else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_RIGHT))
 		{
 			m_nGridH++;
+			m_isMove = true;
 		}
 		else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_UP))
 		{
 			m_nGridV++;
+			m_isMove = true;
 		}
 		else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_DOWN))
 		{
 			m_nGridV--;
+			m_isMove = true;
 		}
 
-		// グリッド取得して目標位置設定========================================
-		D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
-		SetPositionDest(posGrid);
-
-		// 移動量設定========================================
-		D3DXVECTOR3 move = (posGrid - pos) / MOVE_FRAME;
-		SetMove(move);
+		if (m_isMove == true && GetMotion() == 0)
+		{
+			// ジャンプモーション
+			SetMotion(1);
+		}
 
 		// つつきの入力========================================
 		if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_PECK))
@@ -157,6 +167,20 @@ void CPlayer::Input(void)
 
 			CParticle::Create(D3DXVECTOR3(posGrid.x, posGrid.y - 20.0f, posGrid.z), CParticle::TYPE_ICEBREAK, D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 		}
+	}
+
+	if (m_isMove == true && GetMotion() == 1 && IsFinish() == true)
+	{// どこか移動した
+		// 目標位置設定========================================
+		SetPositionDest(posGrid);
+
+		// 移動量設定========================================
+		D3DXVECTOR3 move = (posGrid - pos) / MOVE_FRAME;
+		move.y = 10.0f;
+		SetMove(move);
+
+		// ジャンプモーション
+		SetMotion(2);
 	}
 }
 
@@ -180,6 +204,21 @@ void CPlayer::Debug(void)
 		if (pIceManager != nullptr)
 		{
 			pIceManager->CreateIce(m_nGridV, m_nGridH);
+		}
+	}
+}
+
+//=====================================================
+// モーション完了後の処理
+//=====================================================
+void CPlayer::MotionFinishCheck(void)
+{
+	if (CMotion::IsFinish() == true)
+	{// 何かしらのモーション終了
+		if (CMotion::GetMotion() == 3)
+		{// 着地終了（通常状態遷移）
+			SetMotion(0);
+			m_isMove = false;
 		}
 	}
 }

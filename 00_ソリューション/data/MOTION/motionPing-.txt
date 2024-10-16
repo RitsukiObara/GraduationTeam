@@ -14,12 +14,12 @@ NUM_MODEL = 6
 #====================================================================
 # モデルファイル名
 #====================================================================
-MODEL_FILENAME = data/MODEL/Player/00_Body.x
-MODEL_FILENAME = data/MODEL/Player/01_Head.x
-MODEL_FILENAME = data/MODEL/Player/02_RArm.x
-MODEL_FILENAME = data/MODEL/Player/03_LArm.x
-MODEL_FILENAME = data/MODEL/Player/04_RLeg.x
-MODEL_FILENAME = data/MODEL/Player/05_LLeg.x
+MODEL_FILENAME = data/MODEL/Ping-/00_Body.x
+MODEL_FILENAME = data/MODEL/Ping-/01_Head.x
+MODEL_FILENAME = data/MODEL/Ping-/02_RArm.x
+MODEL_FILENAME = data/MODEL/Ping-/03_LArm.x
+MODEL_FILENAME = data/MODEL/Ping-/04_RLeg.x
+MODEL_FILENAME = data/MODEL/Ping-/05_LLeg.x
 
 #====================================================================
 # キャラクター情報

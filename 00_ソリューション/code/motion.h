@@ -139,6 +139,7 @@ private:
 	D3DXVECTOR3 m_posDest;	// 目標位置
 	D3DXVECTOR3 m_posShadow;	// 影の位置
 	D3DXVECTOR3 m_move;	// 移動量
+	float m_jumpTime;	// ジャンプ時間
 	D3DXCOLOR m_col;	// 色
 	bool m_bFinish;	// モーションが終わったかどうか
 	bool m_bShadow;	// 影を描画するかどうか
