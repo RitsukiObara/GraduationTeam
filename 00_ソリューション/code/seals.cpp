@@ -27,7 +27,7 @@ namespace
 //=====================================================
 CSeals::CSeals(int nPriority) : CEnemy()
 {
-	
+	m_State = STATE_STOP;
 }
 
 //=====================================================
@@ -86,6 +86,29 @@ void CSeals::Uninit(void)
 //=====================================================
 void CSeals::Update(void)
 {
+	switch (m_State)
+	{
+	case STATE_STOP:
+
+		 break;
+
+	case STATE_MOVE:
+
+		 break;
+
+	case STATE_ATTACK:
+
+		 break;
+
+	case STATE_DRIFT:
+
+		break;
+
+	default:
+		assert(false);
+		break;
+	}
+
 	CEnemy::Update();
 }
 
