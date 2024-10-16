@@ -50,6 +50,7 @@ public:
 	void Draw(void);
 	void CreateMesh(void);	// メッシュの生成
 	void SetTransform(float fRadius);	// トランスフォーム設定
+	virtual bool IsCanPeck(void) { return true; };	// 突っつけるかの判定を返す
 
 	// 変数取得・設定関数
 	void SetState(E_State state) { m_state = state; }	// 状態

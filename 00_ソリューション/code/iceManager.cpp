@@ -229,6 +229,9 @@ void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 	{
 		// ¡‚¢‚é•X‚ğŒ©‚Â‚¯‚ç‚ê‚È‚¢‚æ‚¤‚É‚·‚é
 		m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
+
+		if (!m_aGrid[nNumV][nNumH].pIce->IsCanPeck())
+			return;	// “Ë‚Á‚Â‚¯‚È‚¢ƒuƒƒbƒN‚È‚çŒã‚Ìˆ—‚ğ’Ê‚ç‚È‚¢
 	}
 
 	CIce *pIceStand = m_aGrid[nNumV][nNumH].pIce;

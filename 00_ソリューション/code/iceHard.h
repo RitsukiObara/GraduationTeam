@@ -30,6 +30,7 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	bool IsCanPeck(void) override { return false; };	// “Ë‚Á‚Â‚¯‚é‚©‚Ì”»’è‚ğ•Ô‚·
 
 	// •Ï”æ“¾Eİ’èŠÖ”
 
