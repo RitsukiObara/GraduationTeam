@@ -215,7 +215,7 @@ void CIceManager::StopIce(CIce *pIce)
 	if (pIce == nullptr)
 		return;
 
-	//pIce->SetState(CIce::E_State::STATE_STOP);
+	pIce->SetState(CIce::E_State::STATE_NORMAL);
 
 	// グリッドに属性を割り振る
 }
@@ -254,6 +254,9 @@ void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 	default:
 		break;
 	}
+
+	if (m_aGrid[nNumBreakV][nNumBreakH].pIce == nullptr)
+		return;
 
 	if (!m_aGrid[nNumBreakV][nNumBreakH].pIce->IsCanPeck())
 		return;	// 突っつけないブロックなら後の処理を通らない
