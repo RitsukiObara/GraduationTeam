@@ -58,17 +58,6 @@ HRESULT CScene::Init(void)
 		pCylinder->SetVtx();
 	}
 
-	// ’n–Êƒ|ƒŠƒSƒ“‚Ì¶¬
-	CPolygon3D* pPoly = CPolygon3D::Create({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.57f });
-
-	if (pPoly)
-	{
-		int nIdx = CTexture::GetInstance()->Regist("data\\TEXTURE\\BG\\field00.jpg");
-		pPoly->SetIdxTexture(nIdx);
-		pPoly->SetSize(20000.0f, 20000.0f);
-		pPoly->SetVtx();
-	}
-
 	return S_OK;
 }
 

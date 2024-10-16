@@ -44,6 +44,7 @@ public:
 	void SetCol(D3DXCOLOR col);
 	void SetIdxTexture(int nIdxTexture) { m_nIdxTexture = nIdxTexture; }
 	void Reset(void);
+	void Wave(float fRot);
 
 private:
 	int m_nIdxTexture;	// テクスチャ番号
