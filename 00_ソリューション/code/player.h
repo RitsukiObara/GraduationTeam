@@ -39,6 +39,7 @@ public:
 private:
 	// メンバ関数
 	void Input(void);	// 入力
+	void Move(void);	// 移動
 	void Debug(void);	// デバッグ処理
 	void MotionFinishCheck(void);	// モーションが終了したか確認
 

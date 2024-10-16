@@ -692,21 +692,10 @@ void CIceManager::BreakIce(void)
 			if (!m_aGrid[i][j].pIce->IsBreak())
 				continue;
 
+			m_aGrid[i][j].pIce->ChangeState(new CIceStaeteFlow);
+			m_aGrid[i][j].pIce = nullptr;
+
 			BreakPeck(i, j);
-
-			m_aGrid[i][j].pIce->Uninit();
-		}
-	}
-
-	for (int i = 0; i < m_nNumGridVirtical; i++)
-	{
-		for (int j = 0; j < m_nNumGridHorizontal; j++)
-		{
-			if (m_aGrid[i][j].pIce == nullptr)
-				continue;
-
-			if (m_aGrid[i][j].pIce->IsDeath())
-				m_aGrid[i][j].pIce = nullptr;
 		}
 	}
 }
@@ -791,6 +780,9 @@ bool CIceManager::CheckCommon(vector<CIce*> apIce, vector<CIce*> apIceLast, CIce
 //=====================================================
 void CIceManager::BreakPeck(int nNumV, int nNumH)
 {
+	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
+		return;
+
 	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
 
 	int nNumIce = 0;
@@ -811,7 +803,10 @@ void CIceManager::BreakPeck(int nNumV, int nNumH)
 	}
 
 	if (nNumIce == nNumPeck)
+	{
 		m_aGrid[nNumV][nNumH].pIce->Uninit();
+		m_aGrid[nNumV][nNumH].pIce = nullptr;
+	}
 }
 
 //=====================================================
@@ -883,6 +878,35 @@ D3DXVECTOR3 CIceManager::GetGridPosition(int *pNumV, int *pNumH)
 	}
 
 	return m_aGrid[*pNumV][*pNumH].pos;
+}
+
+//=====================================================
+// グリッドオブジェクトの取得
+//=====================================================
+CIce* CIceManager::GetGridObject(int* pNumV, int* pNumH)
+{
+	if (m_aGrid.empty())
+		return nullptr;
+
+	if (*pNumV > (int)m_aGrid.size() - 1)
+	{// 上から飛び出てた時の補正
+		*pNumV = m_aGrid.size() - 1;
+	}
+	else if (*pNumV < 0)
+	{// 下から飛び出た時の補正
+		*pNumV = 0;
+	}
+
+	if (*pNumH > (int)m_aGrid[*pNumV].size() - 1)
+	{// 右から飛び出てた時の補正
+		*pNumH = m_aGrid[*pNumV].size() - 1;
+	}
+	else if (*pNumH < 0)
+	{// 左から飛び出た時の補正
+		*pNumH = 0;
+	}
+
+	return m_aGrid[*pNumV][*pNumH].pIce;
 }
 
 //=====================================================

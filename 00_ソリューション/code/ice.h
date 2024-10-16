@@ -18,6 +18,7 @@
 //*****************************************************
 class CMeshCylinder;
 class CFan3D;
+class CIceState;
 
 //*****************************************************
 // クラスの定義
@@ -51,6 +52,7 @@ public:
 	void CreateMesh(void);	// メッシュの生成
 	void SetTransform(float fRadius);	// トランスフォーム設定
 	virtual bool IsCanPeck(void) { return true; };	// 突っつけるかの判定を返す
+	void ChangeState(CIceState *pState);
 
 	// 変数取得・設定関数
 	void SetState(E_State state) { m_state = state; }	// 状態
@@ -82,6 +84,7 @@ private:
 	bool m_bAliveStandBlock;	// 立っているブロックに到達したフラグ
 	CFan3D *m_pUp;	// 上側に貼る扇ポリゴン
 	CMeshCylinder *m_pSide;	// サイドのシリンダー
+	CIceState *m_pState;	// ステイトのポインタ
 
 	// 静的メンバ変数
 	static int s_nNumAll;	// 総数
@@ -91,8 +94,8 @@ private:
 class CIceState
 {// 氷の基底ステイト
 public:
-	CIceState();	// コンストラクタ
-	~CIceState();	// デストラクタ
+	CIceState() {};	// コンストラクタ
+	~CIceState() {};	// デストラクタ
 
 	virtual void Init(CIce *pIce) = 0;	// 初期化
 	virtual void Uninit(CIce *pIce) = 0;	// 終了
@@ -104,8 +107,8 @@ private:
 class CIceStaeteNormal : public CIceState
 {// 氷の通常ステイト
 public:
-	CIceStaeteNormal();	// コンストラクタ
-	~CIceStaeteNormal();	// デストラクタ
+	CIceStaeteNormal() {};	// コンストラクタ
+	~CIceStaeteNormal() {};	// デストラクタ
 
 	void Init(CIce *pIce) override;	// 初期化
 	void Uninit(CIce *pIce) override;	// 終了
@@ -114,11 +117,11 @@ public:
 private:
 };
 
-class CIceStaetePeck : public CIceState
-{// 氷のつっつかれステイト
+class CIceStaeteBreak : public CIceState
+{// 氷の崩壊ステイト
 public:
-	CIceStaetePeck();	// コンストラクタ
-	~CIceStaetePeck();	// デストラクタ
+	CIceStaeteBreak() {};	// コンストラクタ
+	~CIceStaeteBreak() {};	// デストラクタ
 
 	void Init(CIce *pIce) override;	// 初期化
 	void Uninit(CIce *pIce) override;	// 終了
@@ -130,8 +133,8 @@ private:
 class CIceStaeteFlow : public CIceState
 {// 氷の流れステイト
 public:
-	CIceStaeteFlow();	// コンストラクタ
-	~CIceStaeteFlow();	// デストラクタ
+	CIceStaeteFlow() {};	// コンストラクタ
+	~CIceStaeteFlow() {};	// デストラクタ
 
 	void Init(CIce *pIce) override;	// 初期化
 	void Uninit(CIce *pIce) override;	// 終了
@@ -143,8 +146,8 @@ private:
 class CIceStaeteSink : public CIceState
 {// 氷の沈むステイト
 public:
-	CIceStaeteSink();	// コンストラクタ
-	~CIceStaeteSink();	// デストラクタ
+	CIceStaeteSink() {};	// コンストラクタ
+	~CIceStaeteSink() {};	// デストラクタ
 
 	void Init(CIce *pIce) override;	// 初期化
 	void Uninit(CIce *pIce) override;	// 終了
