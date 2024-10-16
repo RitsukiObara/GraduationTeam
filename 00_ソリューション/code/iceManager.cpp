@@ -229,9 +229,6 @@ void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 	{
 		// 今いる氷を見つけられないようにする
 		m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
-
-		if (!m_aGrid[nNumV][nNumH].pIce->IsCanPeck())
-			return;	// 突っつけないブロックなら後の処理を通らない
 	}
 
 	CIce *pIceStand = m_aGrid[nNumV][nNumH].pIce;
@@ -258,6 +255,9 @@ void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 		break;
 	}
 
+	if (!m_aGrid[nNumBreakV][nNumBreakH].pIce->IsCanPeck())
+		return;	// 突っつけないブロックなら後の処理を通らない
+
 	// 氷を突っついた判定にする
 	if (m_aGrid[nNumBreakV][nNumBreakH].pIce)
 	{
@@ -270,8 +270,26 @@ void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 	// 探索フラグの無効化
 	DisableFind();
 
-	// 壊れないブロックが行う信号解除
-	//DisableFromHardIce(nNumV, nNumH, m_aGrid[nNumBreakV][nNumBreakH].pIce, apIce);
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			if (m_aGrid[i][j].pIce == nullptr)
+				continue;
+
+			if (m_aGrid[i][j].pIce->IsCanPeck())
+				continue;
+
+			// 探索フラグの無効化
+			DisableFind();
+
+			// 壊れないブロックが行う信号解除
+			DisableFromHardIce(i, j, apIce);
+		}
+	}
+
+	// 探索フラグの無効化
+	DisableFind();
 
 	// プレイヤーから壊さないブロックの流れを出す
 	DisableFromPlayer(nNumV, nNumH, m_aGrid[nNumBreakV][nNumBreakH].pIce, apIce);
@@ -487,7 +505,7 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 //=====================================================
 // 硬い氷から信号を出して、破壊信号を解除
 //=====================================================
-void CIceManager::DisableFromHardIce(int nNumV, int nNumH, CIce *pIcePeck, vector<CIce*> apIce)
+void CIceManager::DisableFromHardIce(int nNumV, int nNumH, vector<CIce*> apIce)
 {
 	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
 		return;
@@ -509,12 +527,6 @@ void CIceManager::DisableFromHardIce(int nNumV, int nNumH, CIce *pIcePeck, vecto
 
 	CalcAroundGrids(nNumV, nNumH, aV, aH);
 
-	// 四方向氷がないか探索できない状態なら終了
-	bool bNothing = true;
-	int nNumIce = 0;
-	int nNumPeckIce = 0;
-	bool bAliveStandBlock = false;
-
 	// 氷のポインタの保存
 	for (int i = 0; i < DIRECTION_MAX; i++)
 	{
@@ -533,16 +545,10 @@ void CIceManager::DisableFromHardIce(int nNumV, int nNumH, CIce *pIcePeck, vecto
 		if (apIce[i] == nullptr)
 			continue;
 
-		if (apIce[i] == pIcePeck)
-			continue;
-
 		if (!apIce[i]->IsCanFind())
 			continue;
 
 		if (apIce[i]->IsPeck())
-			continue;
-
-		if (apIce[i]->IsBreak())
 			continue;
 
 		DisableBreak(aV[i], aH[i]);
@@ -658,7 +664,7 @@ void CIceManager::DisableBreak(int nNumV, int nNumH)
 		if (apIce[i] == nullptr)
 			continue;
 
-		if (apIce[i]->IsCanFind() == false)
+		if (!apIce[i]->IsCanFind())
 			continue;
 
 		if (apIce[i]->IsPeck())

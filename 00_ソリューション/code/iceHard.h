@@ -33,6 +33,7 @@ public:
 	bool IsCanPeck(void) override { return false; };	// “Ë‚Á‚Â‚¯‚é‚©‚Ì”»’è‚ğ•Ô‚·
 
 	// •Ï”æ“¾Eİ’èŠÖ”
+	void EnableBreak(bool bBreak) override {};
 
 	// Ã“Iƒƒ“ƒoŠÖ”
 

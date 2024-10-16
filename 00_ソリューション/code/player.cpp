@@ -197,7 +197,7 @@ void CPlayer::Debug(void)
 
 	if (pDebugProc == nullptr || pInputKeyboard == nullptr)
 		return;
-
+	
 	pDebugProc->Print("\nc[%d]‰¡[%d]", m_nGridV, m_nGridH);
 
 	if (pInputKeyboard->GetTrigger(DIK_RSHIFT))
@@ -207,6 +207,16 @@ void CPlayer::Debug(void)
 		if (pIceManager != nullptr)
 		{
 			pIceManager->CreateIce(m_nGridV, m_nGridH);
+		}
+	}
+
+	if (pInputKeyboard->GetTrigger(DIK_RCONTROL))
+	{
+		CIceManager *pIceManager = CIceManager::GetInstance();
+
+		if (pIceManager != nullptr)
+		{
+			pIceManager->CreateIce(m_nGridV, m_nGridH,CIce::E_Type::TYPE_HARD);
 		}
 	}
 }
