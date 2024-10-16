@@ -42,6 +42,7 @@
 #include "enemy.h"
 #include "seals.h"
 #include "ocean.h"
+#include "stageResultUI.h"
 #include "UI_enemy.h"
 
 //*****************************************************
@@ -126,14 +127,18 @@ HRESULT CGame::Init(void)
 	m_pScore = CScore::Create();
 	m_pScore->SetPosition(D3DXVECTOR3(0.09f, 0.07f, 0.0f));
 
+	// ステージリザルト表示の生成
+	m_pStageResultUI = CStageResultUI::Create();
+	m_pStageResultUI->SetPosition(D3DXVECTOR3(0.4f, 0.07f, 0.0f));
+
 	// 氷マネージャー
 	CIceManager::Create(NUM_GRID_V, NUM_GRID_H);
 
-	// 敵生成
-	CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
-
 	// 敵数表示UI生成
 	CUIEnemy::Create();
+
+	// 敵生成
+	CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
 
 	// プレイヤー生成
 	CPlayer::Create();

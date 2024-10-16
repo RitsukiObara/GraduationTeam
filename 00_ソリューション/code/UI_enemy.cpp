@@ -13,30 +13,33 @@
 #include "enemy.h"
 #include "UI.h"
 #include "texture.h"
+#include "inputkeyboard.h"
 
 //*****************************************************
 // 定数定義
 //*****************************************************
 namespace
 {
-const int NUM_PLACE = 2;	// 数字の桁数
-const D3DXVECTOR3 POS_INIT_NUMBER = { 0.9f,0.08f,0.0f };	// 数字の初期位置
-const D3DXVECTOR2 SIZE_INIT_NUMBER = { 0.02f,0.05f };	// 数字の初期サイズ
-
-const D3DXVECTOR3 POS_INIT_ICON = { 0.83f,0.08f,0.0f };	// アイコンの初期位置
-const D3DXVECTOR2 SIZE_INIT_ICON = { 0.04f,0.06f };	// 数字の初期サイズ
+const D3DXVECTOR3 POS_INIT_ICON = { 0.9f,0.08f,0.0f };	// アイコンの初期位置
+const D3DXVECTOR2 SIZE_INIT_ICON = { 0.02f,0.03f };	// 数字の初期サイズ
 const string PATH_ICON = "data\\TEXTURE\\UI\\icon_seal.png";	// アイコンのパス
+
+const int NUM_ROW = 2; // 行の数
+const int NUM_COLUMN = 5; // 列の数
+
+const float GRAVITY_ICON = 0.98f;	// アイコンにかかる重力
+const D3DXVECTOR3 MOVE_STARTFALL_ICON = { 0.0f,-10.0f,0.0f };	// アイコンが落ち始めるときにかかる移動量
 }
 
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CUIEnemy *CUIEnemy::m_pUIEnemy = nullptr;	// 自身のポインタ
+CUIEnemy *CUIEnemy::s_pUIEnemy = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
 //=====================================================
-CUIEnemy::CUIEnemy() : m_pNumber(nullptr), m_pIcon(nullptr)
+CUIEnemy::CUIEnemy()
 {
 
 }
@@ -54,17 +57,17 @@ CUIEnemy::~CUIEnemy()
 //=====================================================
 CUIEnemy *CUIEnemy::Create(void)
 {
-	if (m_pUIEnemy == nullptr)
+	if (s_pUIEnemy == nullptr)
 	{// インスタンス生成
-		m_pUIEnemy = new CUIEnemy;
+		s_pUIEnemy = new CUIEnemy;
 
-		if (m_pUIEnemy == nullptr)
+		if (s_pUIEnemy == nullptr)
 			return nullptr;
 
-		m_pUIEnemy->Init();
+		s_pUIEnemy->Init();
 	}
 
-	return m_pUIEnemy;
+	return s_pUIEnemy;
 }
 
 //=====================================================
@@ -72,30 +75,6 @@ CUIEnemy *CUIEnemy::Create(void)
 //=====================================================
 HRESULT CUIEnemy::Init(void)
 {
-	// 数字の生成
-	m_pNumber = CNumber::Create(NUM_PLACE, 0);
-
-	if (m_pNumber == nullptr)
-		return E_FAIL;
-
-	// 数字の初期化
-	m_pNumber->SetPosition(POS_INIT_NUMBER);
-	m_pNumber->SetSizeAll(SIZE_INIT_NUMBER.x, SIZE_INIT_NUMBER.y);
-
-	// アイコンの生成
-	m_pIcon = CUI::Create();
-
-	if (m_pIcon == nullptr)
-		return E_FAIL;
-
-	// アイコンの初期化
-	m_pIcon->SetPosition(POS_INIT_ICON);
-	m_pIcon->SetSize(SIZE_INIT_ICON.x, SIZE_INIT_ICON.y);
-	m_pIcon->SetVtx();
-
-	int nIdx = Texture::GetIdx(&PATH_ICON[0]);
-	m_pIcon->SetIdxTexture(nIdx);
-
 	return S_OK;
 }
 
@@ -104,10 +83,7 @@ HRESULT CUIEnemy::Init(void)
 //=====================================================
 void CUIEnemy::Uninit(void)
 {
-	m_pUIEnemy = nullptr;
-
-	Object::DeleteObject((CObject**)&m_pNumber);
-	Object::DeleteObject((CObject**)&m_pIcon);
+	s_pUIEnemy = nullptr;
 
 	Release();
 }
@@ -117,23 +93,40 @@ void CUIEnemy::Uninit(void)
 //=====================================================
 void CUIEnemy::Update(void)
 {
-	// 数字の管理
-	ManageNumber();
+	// アイコンの管理
+	ManageIcon();
+
+#ifdef _DEBUG
+	Debug();	// デバッグ処理
+#endif
 }
 
 //=====================================================
-// 数字の管理
+// アイコンの管理
 //=====================================================
-void CUIEnemy::ManageNumber(void)
+void CUIEnemy::ManageIcon(void)
 {
-	if (m_pNumber == nullptr)
+
+}
+
+//=====================================================
+// デバッグ処理
+//=====================================================
+void CUIEnemy::Debug(void)
+{
+	CInputKeyboard *pInputKeyboard = CInputKeyboard::GetInstance();
+
+	if (pInputKeyboard == nullptr)
 		return;
 
-	vector<CEnemy*> aEnemy = CEnemy::GetArray();
-
-	int nSize = (int)aEnemy.size();
-
-	m_pNumber->SetValue(nSize);
+	if (pInputKeyboard->GetTrigger(DIK_UP))
+	{
+		AddEnemy();
+	}
+	else if (pInputKeyboard->GetTrigger(DIK_DOWN))
+	{
+		DeleteEnemy();
+	}
 }
 
 //=====================================================
@@ -141,7 +134,125 @@ void CUIEnemy::ManageNumber(void)
 //=====================================================
 void CUIEnemy::Draw(void)
 {
-#ifdef _DEBUG
 
-#endif
+}
+
+//=====================================================
+// 敵の追加
+//=====================================================
+void CUIEnemy::AddEnemy(void)
+{
+	// アイコンを増やす
+	CIcon *pIcon = CIcon::Create();
+
+	if (pIcon == nullptr)
+		return;
+
+	// 位置番号の計算
+	int nSizeArray = (int)m_apIcon.size();
+	int nIdxRow = nSizeArray % NUM_COLUMN;
+	int nIdxColumn = nSizeArray / NUM_COLUMN;
+
+	// 位置番号を反映
+	D3DXVECTOR3 posIcon = POS_INIT_ICON;
+	posIcon += D3DXVECTOR3( -SIZE_INIT_ICON.x * nIdxRow * 2, SIZE_INIT_ICON.y * nIdxColumn * 2, 0.0f );
+	pIcon->SetPosition(posIcon);
+	pIcon->SetVtx();
+
+	// テクスチャ設定
+	int nIdx = Texture::GetIdx(&PATH_ICON[0]);
+	pIcon->SetIdxTexture(nIdx);
+
+	m_apIcon.push_back(pIcon);
+}
+
+//=====================================================
+// 敵の削除
+//=====================================================
+void CUIEnemy::DeleteEnemy(void)
+{
+	if (m_apIcon.empty())
+		return;
+	
+	int nSizeArray = (int)m_apIcon.size();
+
+	CIcon* pIcon = m_apIcon[nSizeArray - 1];
+
+	pIcon->StartFall();	// 落下を開始させる
+
+	m_apIcon.erase(m_apIcon.end() - 1);
+}
+
+//******************************************************************
+// アイコンの処理
+//******************************************************************
+//=====================================================
+// 生成
+//=====================================================
+CIcon *CIcon::Create(void)
+{
+	CIcon *pIcon = new CIcon;
+
+	if (pIcon == nullptr)
+		return nullptr;
+
+	pIcon->Init();
+
+	return pIcon;
+}
+
+//=====================================================
+// 初期化
+//=====================================================
+HRESULT CIcon::Init(void)
+{
+	// 継承クラスの初期化
+	CUI::Init();
+
+	// サイズ設定
+	SetSize(SIZE_INIT_ICON.x, SIZE_INIT_ICON.y);
+
+	return S_OK;
+}
+
+//=====================================================
+// 更新
+//=====================================================
+void CIcon::Update(void)
+{
+	// 継承クラスの更新
+	CUI::Update();
+
+	if (m_state == E_State::STATE_FALL)
+		UpdateFall();	// 落下時の更新
+}
+
+//=====================================================
+// 落下し始める処理
+//=====================================================
+void CIcon::StartFall(void)
+{
+	// 落下状態にする
+	m_state = E_State::STATE_FALL;
+
+	// 上方向に移動量を足す
+	m_move = MOVE_STARTFALL_ICON;
+}
+
+//=====================================================
+// 落下時の更新
+//=====================================================
+void CIcon::UpdateFall(void)
+{
+	m_move.y += GRAVITY_ICON;
+
+	// 位置の加算
+	AddPosition(m_move);
+	SetVtx();
+
+	// 画面外に出たら終了
+	D3DXVECTOR3 pos = GetPosition();
+
+	if (pos.y > 1.0f + SIZE_INIT_ICON.y * 2)
+		Uninit();
 }

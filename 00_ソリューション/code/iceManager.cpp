@@ -80,7 +80,7 @@ HRESULT CIceManager::Init(void)
 	SetGridPos();
 
 	// 仮マップ生成
-	CreateIce(3, 6);
+	CreateIce(3, 6,CIce::E_Type::TYPE_HARD);
 	CreateIce(3, 5);
 	CreateIce(3, 4);
 	CreateIce(3, 3);
@@ -182,14 +182,14 @@ bool CIceManager::JudgeBetweenPeck(int nNumV, int nNumH)
 //=====================================================
 // 氷の生成
 //=====================================================
-CIce *CIceManager::CreateIce(int nGridV, int nGridH)
+CIce *CIceManager::CreateIce(int nGridV, int nGridH, CIce::E_Type type)
 {
 	if (m_aGrid[nGridV][nGridH].pIce != nullptr)
 		return m_aGrid[nGridV][nGridH].pIce;
 
 	CIce *pIce = nullptr;
 
-	pIce = CIce::Create();
+	pIce = CIce::Create(type);
 
 	if (pIce == nullptr)
 		return nullptr;
@@ -229,6 +229,9 @@ void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 	{
 		// 今いる氷を見つけられないようにする
 		m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
+
+		if (!m_aGrid[nNumV][nNumH].pIce->IsCanPeck())
+			return;	// 突っつけないブロックなら後の処理を通らない
 	}
 
 	CIce *pIceStand = m_aGrid[nNumV][nNumH].pIce;

@@ -33,6 +33,12 @@ public:
 		STATE_FLOWS,	// 流れてる状態
 		STATE_MAX
 	};
+	enum E_Type
+	{// 種類
+		TYPE_NORMAL = 0,	// 通常
+		TYPE_HARD,	// 硬い氷
+		TYPE_MAX
+	};
 
 	CIce(int nPriority = 2);	// コンストラクタ
 	~CIce();	// デストラクタ
@@ -44,6 +50,7 @@ public:
 	void Draw(void);
 	void CreateMesh(void);	// メッシュの生成
 	void SetTransform(float fRadius);	// トランスフォーム設定
+	virtual bool IsCanPeck(void) { return true; };	// 突っつけるかの判定を返す
 
 	// 変数取得・設定関数
 	void SetState(E_State state) { m_state = state; }	// 状態
@@ -58,7 +65,7 @@ public:
 	bool IsAliveStandIce(void) { return m_bAliveStandBlock; }
 
 	// 静的メンバ関数
-	static CIce *Create(E_State state = E_State::STATE_FLOWS);	// 生成処理
+	static CIce *Create(E_Type type = E_Type::TYPE_NORMAL, E_State state = E_State::STATE_FLOWS);	// 生成処理
 	static int GetNumAll(void) { return s_nNumAll; }	// 総数取得
 	static std::vector<CIce*> GetInstance(void) { return m_Vector; }
 

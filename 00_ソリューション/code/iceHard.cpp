@@ -1,74 +1,49 @@
 //*****************************************************
 //
-// 敵の処理[enemy.cpp]
-// Author:早川友貴
+// 硬い氷の処理[IceHardHard.cpp]
+// Author:髙山桃也
 //
 //*****************************************************
 
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "seals.h"
-#include "inputManager.h"
-#include "inputkeyboard.h"
-#include "iceManager.h"
-#include "debugproc.h"
+#include "iceHard.h"
 
 //*****************************************************
 // 定数定義
 //*****************************************************
 namespace
 {
-	const std::string PATH_BODY = "data\\MOTION\\motionSeals.txt";	// ボディのパス
+
 }
 
+//*****************************************************
+// 静的メンバ変数宣言
+//*****************************************************
+
 //=====================================================
-// 優先順位を決めるコンストラクタ
+// コンストラクタ
 //=====================================================
-CSeals::CSeals(int nPriority) : CEnemy()
+CIceHard::CIceHard(int nPriority) : CIce(nPriority)
 {
-	m_State = STATE_STOP;
+
 }
 
 //=====================================================
 // デストラクタ
 //=====================================================
-CSeals::~CSeals()
+CIceHard::~CIceHard()
 {
 
-}
-
-//=====================================================
-// 生成処理
-//=====================================================
-CSeals* CSeals::Create(void)
-{
-	CSeals* pSeals = nullptr;
-
-	pSeals = new CSeals;
-
-	if (pSeals != nullptr)
-	{
-		pSeals->Init();
-	}
-
-	return pSeals;
 }
 
 //=====================================================
 // 初期化処理
 //=====================================================
-HRESULT CSeals::Init(void)
+HRESULT CIceHard::Init(void)
 {
-	// 読込
-	Load((char*)&PATH_BODY[0]);
-
-	if (FAILED(CEnemy::Init()))
-	{ 
-		return E_FAIL;
-	}
-
-	InitPose(0);
+	CIce::Init();
 
 	return S_OK;
 }
@@ -76,47 +51,23 @@ HRESULT CSeals::Init(void)
 //=====================================================
 // 終了処理
 //=====================================================
-void CSeals::Uninit(void)
+void CIceHard::Uninit(void)
 {
-	CEnemy::Uninit();
+	CIce::Uninit();
 }
 
 //=====================================================
 // 更新処理
 //=====================================================
-void CSeals::Update(void)
+void CIceHard::Update(void)
 {
-	switch (m_State)
-	{
-	case STATE_STOP:
-
-		 break;
-
-	case STATE_MOVE:
-
-		 break;
-
-	case STATE_ATTACK:
-
-		 break;
-
-	case STATE_DRIFT:
-
-		break;
-
-	default:
-		assert(false);
-		break;
-	}
-
-	CEnemy::Update();
+	CIce::Update();
 }
 
 //=====================================================
 // 描画処理
 //=====================================================
-void CSeals::Draw(void)
+void CIceHard::Draw(void)
 {
-	// 継承クラスの描画
-	CEnemy::Draw();
+	CIce::Draw();
 }

@@ -14,6 +14,7 @@
 #include "fan3D.h"
 #include "meshcylinder.h"
 #include "ocean.h"
+#include "iceHard.h"
 
 //*****************************************************
 // íËêîíËã`
@@ -55,13 +56,24 @@ CIce::~CIce()
 //=====================================================
 // ê∂ê¨èàóù
 //=====================================================
-CIce *CIce::Create(E_State state)
+CIce *CIce::Create(E_Type type,E_State state)
 {
 	CIce *pIce = nullptr;
 
 	if (pIce == nullptr)
 	{
-		pIce = new CIce;
+		switch (type)
+		{
+		case CIce::TYPE_NORMAL:
+			pIce = new CIce;
+			break;
+		case CIce::TYPE_HARD:
+			pIce = new CIceHard;
+			break;
+		default:
+			assert(false);
+			break;
+		}
 
 		if (pIce != nullptr)
 		{
