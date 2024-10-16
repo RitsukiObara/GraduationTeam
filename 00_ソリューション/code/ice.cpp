@@ -155,6 +155,11 @@ void CIce::Update(void)
 		Flows();
 	}
 
+	if (COcean::GetInstance() == nullptr)
+	{
+		return;
+	}
+
 	// ŠC‚Æˆê‚É•X‚ğ“®‚©‚·ˆ—
 	D3DXVECTOR3 pos = GetPosition();
 

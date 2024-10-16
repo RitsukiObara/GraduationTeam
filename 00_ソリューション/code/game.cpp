@@ -96,8 +96,8 @@ HRESULT CGame::Init(void)
 	// スカイボックスの生成
 	CSkybox::Create();
 
-	// メッシュフィールドの追加
-	//COcean::Create();
+	 //海の追加
+	COcean::Create();
 
 	// フォグをかける
 	CRenderer *pRenderer = CRenderer::GetInstance();

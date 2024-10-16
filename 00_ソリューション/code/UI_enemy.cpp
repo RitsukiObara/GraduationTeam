@@ -22,7 +22,7 @@ namespace
 {
 const D3DXVECTOR3 POS_INIT_ICON = { 0.9f,0.08f,0.0f };	// アイコンの初期位置
 const D3DXVECTOR2 SIZE_INIT_ICON = { 0.02f,0.03f };	// 数字の初期サイズ
-const string PATH_ICON = "data\\TEXTURE\\UI\\icon_seal.png";	// アイコンのパス
+const string PATH_ICON = "data\\TEXTURE\\UI\\icon_seals.png";	// アイコンのパス
 
 const int NUM_ROW = 2; // 行の数
 const int NUM_COLUMN = 5; // 列の数
