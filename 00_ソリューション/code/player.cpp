@@ -98,6 +98,7 @@ void CPlayer::Update(void)
 {
 	// 入力処理
 	Input();
+	Move();
 
 	// モーション更新
 	CMotion::Update();
@@ -129,7 +130,6 @@ void CPlayer::Input(void)
 	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
 
 	// 移動していなければ入力受付========================================
-	D3DXVECTOR3 pos = GetPosition();
 	if (m_isMove == false)
 	{
 		// 移動の入力========================================
@@ -171,11 +171,24 @@ void CPlayer::Input(void)
 			SetMotion(MOTION_PECK);
 		}
 	}
+}
+
+//=====================================================
+// 移動
+//=====================================================
+void CPlayer::Move(void)
+{
+	CIceManager* pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return;
+
+	// グリッド取得========================================
+	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
 
 #ifdef _DEBUG
 	if (m_isMove == true)
 	{// デバッグ時瞬間移動
-		posGrid = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
 		SetPosition(posGrid);
 		SetMotion(MOTION_NEUTRAL);
 		m_isMove = false;
@@ -187,14 +200,24 @@ void CPlayer::Input(void)
 		SetPositionDest(posGrid);
 
 		// 移動量設定========================================
+		D3DXVECTOR3 pos = GetPosition();
 		D3DXVECTOR3 move = (posGrid - pos) / MOVE_FRAME;
 		move.y = 10.0f;
 		SetMove(move);
 
 		// ジャンプモーション
 		SetMotion(MOTION_JUMPFLY);
-	}
+}
 #endif
+	if (m_isMove == false)
+	{
+		CIce* pIce = pIceManager->GetGridObject(&m_nGridV, &m_nGridH);
+		if (pIce != nullptr)
+		{
+			D3DXVECTOR3 posObject = pIce->GetPosition();
+			SetPosition(posObject);
+		}
+	}
 }
 
 //=====================================================

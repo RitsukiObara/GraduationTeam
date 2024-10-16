@@ -886,6 +886,35 @@ D3DXVECTOR3 CIceManager::GetGridPosition(int *pNumV, int *pNumH)
 }
 
 //=====================================================
+// グリッドオブジェクトの取得
+//=====================================================
+CIce* CIceManager::GetGridObject(int* pNumV, int* pNumH)
+{
+	if (m_aGrid.empty())
+		return nullptr;
+
+	if (*pNumV > (int)m_aGrid.size() - 1)
+	{// 上から飛び出てた時の補正
+		*pNumV = m_aGrid.size() - 1;
+	}
+	else if (*pNumV < 0)
+	{// 下から飛び出た時の補正
+		*pNumV = 0;
+	}
+
+	if (*pNumH > (int)m_aGrid[*pNumV].size() - 1)
+	{// 右から飛び出てた時の補正
+		*pNumH = m_aGrid[*pNumV].size() - 1;
+	}
+	else if (*pNumH < 0)
+	{// 左から飛び出た時の補正
+		*pNumH = 0;
+	}
+
+	return m_aGrid[*pNumV][*pNumH].pIce;
+}
+
+//=====================================================
 // 描画処理
 //=====================================================
 void CIceManager::Draw(void)

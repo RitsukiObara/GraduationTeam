@@ -109,6 +109,18 @@ void CSeals::Update(void)
 		break;
 	}
 
+	//CIceManager* pIceManager = CIceManager::GetInstance();
+
+	/*if (pIceManager != nullptr)
+	{
+		CIce* pIce = pIceManager->GetGridObject(&m_nGridV, &m_nGridH);
+		if (pIce != nullptr)
+		{
+			D3DXVECTOR3 posObject = pIce->GetPosition();
+			SetPosition(posObject);
+		}
+	}*/
+
 	CEnemy::Update();
 }
 
