@@ -692,21 +692,10 @@ void CIceManager::BreakIce(void)
 			if (!m_aGrid[i][j].pIce->IsBreak())
 				continue;
 
+			m_aGrid[i][j].pIce->ChangeState(new CIceStaeteFlow);
+			m_aGrid[i][j].pIce = nullptr;
+
 			BreakPeck(i, j);
-
-			m_aGrid[i][j].pIce->Uninit();
-		}
-	}
-
-	for (int i = 0; i < m_nNumGridVirtical; i++)
-	{
-		for (int j = 0; j < m_nNumGridHorizontal; j++)
-		{
-			if (m_aGrid[i][j].pIce == nullptr)
-				continue;
-
-			if (m_aGrid[i][j].pIce->IsDeath())
-				m_aGrid[i][j].pIce = nullptr;
 		}
 	}
 }
@@ -791,6 +780,9 @@ bool CIceManager::CheckCommon(vector<CIce*> apIce, vector<CIce*> apIceLast, CIce
 //=====================================================
 void CIceManager::BreakPeck(int nNumV, int nNumH)
 {
+	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
+		return;
+
 	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
 
 	int nNumIce = 0;
@@ -811,7 +803,10 @@ void CIceManager::BreakPeck(int nNumV, int nNumH)
 	}
 
 	if (nNumIce == nNumPeck)
+	{
 		m_aGrid[nNumV][nNumH].pIce->Uninit();
+		m_aGrid[nNumV][nNumH].pIce = nullptr;
+	}
 }
 
 //=====================================================
