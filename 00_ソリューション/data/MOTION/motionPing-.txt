@@ -14,12 +14,12 @@ NUM_MODEL = 6
 #====================================================================
 # モデルファイル名
 #====================================================================
-MODEL_FILENAME = data/MODEL/Ping-/00_Body.x
-MODEL_FILENAME = data/MODEL/Ping-/01_Head.x
-MODEL_FILENAME = data/MODEL/Ping-/02_RArm.x
-MODEL_FILENAME = data/MODEL/Ping-/03_LArm.x
-MODEL_FILENAME = data/MODEL/Ping-/04_RLeg.x
-MODEL_FILENAME = data/MODEL/Ping-/05_LLeg.x
+MODEL_FILENAME = data/MODEL/Player/00_Body.x
+MODEL_FILENAME = data/MODEL/Player/01_Head.x
+MODEL_FILENAME = data/MODEL/Player/02_RArm.x
+MODEL_FILENAME = data/MODEL/Player/03_LArm.x
+MODEL_FILENAME = data/MODEL/Player/04_RLeg.x
+MODEL_FILENAME = data/MODEL/Player/05_LLeg.x
 
 #====================================================================
 # キャラクター情報
@@ -193,7 +193,7 @@ MOTIONSET
     NUM_KEY = 3
 
     KEYSET     #---<< 0 / 3 >>
-        FRAME = 10
+        FRAME = 6
         KEY # -----[0]----
             POS = 0.00 0.00 0.00
             ROT = 0.00 0.00 0.00
@@ -343,36 +343,9 @@ END_MOTIONSET
 #===============================
 MOTIONSET
    LOOP = 0
-    NUM_KEY = 2
+    NUM_KEY = 1
 
-    KEYSET     #---<< 0 / 2 >>
-        FRAME = 10
-        KEY # -----[0]----
-            POS = 0.00 -2.80 0.00
-            ROT = -0.25 0.00 0.00
-        END_KEY
-        KEY # -----[1]----
-            POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 0.00
-        END_KEY
-        KEY # -----[2]----
-            POS = 0.00 0.00 0.00
-            ROT = -0.87 -0.71 0.00
-        END_KEY
-        KEY # -----[3]----
-            POS = 0.00 0.00 0.00
-            ROT = -0.87 0.72 0.00
-        END_KEY
-        KEY # -----[4]----
-            POS = 0.00 0.00 0.00
-            ROT = 0.51 0.00 0.00
-        END_KEY
-        KEY # -----[5]----
-            POS = 0.00 0.00 0.00
-            ROT = 0.64 0.00 0.00
-        END_KEY
-    END_KEYSET
-    KEYSET     #---<< 1 / 2 >>
+    KEYSET     #---<< 0 / 1 >>
         FRAME = 10
         KEY # -----[0]----
             POS = 0.00 -2.80 0.00
@@ -554,4 +527,3 @@ MOTIONSET
     END_KEYSET
 END_MOTIONSET
 END_SCRIPT
-
