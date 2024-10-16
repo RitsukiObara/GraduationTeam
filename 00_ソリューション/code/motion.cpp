@@ -24,6 +24,7 @@
 // マクロ定義
 //*****************************************************
 #define MAX_STRING	(256)	// 文字列の最大数
+#define POSDEST_NEAREQUAL	(0.01f)	// 大体目標位置に着いたとする距離
 
 //=====================================================
 // コンストラクタ
@@ -46,6 +47,7 @@ CMotion::CMotion(int nPriority) : CObject3D(nPriority)
 	m_bFinish = false;
 	m_bShadow = false;
 	m_posOld = { 0.0f,0.0f,0.0f };
+	m_posDest = { 0.0f,0.0f,0.0f };
 	m_posShadow = { 0.0f,0.0f,0.0f };
 	m_move = { 0.0f,0.0f,0.0f };
 	m_col = { 1.0f,1.0f,1.0f,1.0f };
@@ -300,6 +302,9 @@ void CMotion::Update(void)
 			SetKeyOld();
 		}
 	}
+
+	// 目標位置に移動
+	MovePositionDest();
 }
 
 //=====================================================
@@ -925,4 +930,22 @@ D3DXVECTOR3 CMotion::GetForward(void)
 	};
 
 	return vecForward;
+}
+
+//=====================================================
+// 目標位置に移動
+//=====================================================
+void CMotion::MovePositionDest(void)
+{
+	D3DXVECTOR3 pos = GetPosition();
+	pos += m_move;
+
+	D3DXVECTOR3 vecLength = m_posDest - pos;
+	if (D3DXVec3Length(&vecLength) <= POSDEST_NEAREQUAL)
+	{
+		pos = m_posDest;
+		m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	}
+
+	CGameObject::SetPosition(pos);
 }

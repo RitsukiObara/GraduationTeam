@@ -60,7 +60,7 @@ END_PARTICLESET
 
 PARTICLESET		#4 敵とぶつかったときのパーティクル
 	TEXTURE_PATH = data//TEXTURE//EFFECT//effect000.png
- LIFE_PARTICLE = 2
+ 	LIFE_PARTICLE = 2
     NUM_EFFECT = 21
     LIFE_EFFECT = 59
     RADIUS_EFFECT = 20.03
@@ -72,6 +72,23 @@ PARTICLESET		#4 敵とぶつかったときのパーティクル
     IS_ROT = 1
     IS_TURN = 0
     COLOR = 2.01 0.00 0.00 1.00
+    
+END_PARTICLESET
+
+PARTICLESET		#5 硬い氷を叩いた時のパーティクル
+	TEXTURE_PATH = data//TEXTURE//EFFECT//effect000.png
+ 	LIFE_PARTICLE = 2
+    NUM_EFFECT = 6
+    LIFE_EFFECT = 26
+    RADIUS_EFFECT = 6.39
+    SPEED_EFFECT = 9.23
+    GRAVITY = 0.42
+    DECREASE = 0.58
+    RANGEROT = 0.45
+    IS_ADD = 0
+    IS_ROT = 1
+    IS_TURN = 0
+    COLOR = 2.00 0.82 0.01 1.00
     
 END_PARTICLESET
 

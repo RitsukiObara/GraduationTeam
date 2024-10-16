@@ -13,6 +13,7 @@
 #include "gameObject.h"
 #include "fan3D.h"
 #include "meshcylinder.h"
+#include "ocean.h"
 
 //*****************************************************
 // 定数定義
@@ -31,6 +32,7 @@ const D3DXVECTOR3 ROT_UP_INIT = { D3DX_PI * 0.5f,0.0f,0.0f };	// 上側の初期向き
 // 静的メンバ変数宣言
 //*****************************************************
 int CIce::s_nNumAll = 0;
+std::vector<CIce*> CIce::m_Vector = {};	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -39,6 +41,7 @@ CIce::CIce(int nPriority) : CGameObject(nPriority), m_state(E_State::STATE_NONE)
 m_pSide(nullptr),m_pUp(nullptr)
 {
 	s_nNumAll++;
+	m_Vector.push_back(this);
 }
 
 //=====================================================
@@ -114,6 +117,19 @@ void CIce::Uninit(void)
 	Object::DeleteObject((CObject**)&m_pUp);
 	Object::DeleteObject((CObject**)&m_pSide);
 
+	for (auto itr = m_Vector.begin(); itr < m_Vector.end(); itr++)
+	{
+		//削除対象じゃない場合
+		if (*itr != this)
+		{
+			continue;
+		}
+		//Vectorから削除
+		m_Vector.erase(itr);
+
+		return;
+	}
+
 	CGameObject::Uninit();
 }
 
@@ -126,6 +142,15 @@ void CIce::Update(void)
 	{// 流れる状態では移動を続ける
 		Flows();
 	}
+
+	//// 海と一緒に氷を動かす処理
+	//D3DXVECTOR3 pos = GetPosition();
+
+	//D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);y
+
+	//pos.y = COcean::GetInstance()->GetHeight(pos,&move);
+
+	//SetPosition(pos);
 }
 
 //=====================================================
