@@ -14,18 +14,19 @@
 #include "iceManager.h"
 #include "debugproc.h"
 #include "seals.h"
+#include "UI_enemy.h"
 
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-std::vector<CEnemy*> CEnemy::m_Vector = {};	// 自身のポインタ
+std::vector<CEnemy*> CEnemy::s_vector = {};	// 自身のポインタ
 
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
 CEnemy::CEnemy(int nPriority) : m_nGridV(0), m_nGridH(0)
 {
-	m_Vector.push_back(this);
+	s_vector.push_back(this);
 }
 
 //=====================================================
@@ -63,15 +64,12 @@ CEnemy* CEnemy::Create(int nType)
 	if (pEnemy != nullptr)
 	{// 敵生成
 		pEnemy->Init();
+
+		CUIEnemy *pUIEnemy = CUIEnemy::GetInstance();
+
+		if (pUIEnemy != nullptr)
+			pUIEnemy->AddEnemy();
 	}
-
-	return pEnemy;
-
-	if (pEnemy != nullptr)
-	{
-		pEnemy->Init();
-	}
-
 
 	return pEnemy;
 }
@@ -92,7 +90,12 @@ HRESULT CEnemy::Init(void)
 //=====================================================
 void CEnemy::Uninit(void)
 {
-	for (auto itr = m_Vector.begin(); itr < m_Vector.end(); itr++ )
+	CUIEnemy *pUIEnemy = CUIEnemy::GetInstance();
+
+	if (pUIEnemy != nullptr)
+		pUIEnemy->DeleteEnemy();
+
+	for (auto itr = s_vector.begin(); itr < s_vector.end(); itr++ )
 	{
 		//削除対象じゃない場合
 		if (*itr != this)
@@ -100,7 +103,7 @@ void CEnemy::Uninit(void)
 			continue;
 		}
 		//Vectorから削除
-		m_Vector.erase(itr);
+		s_vector.erase(itr);
 
 		break;
 	}
@@ -132,18 +135,6 @@ void CEnemy::Debug(void)
 
 	if (pDebugProc == nullptr || pInputKeyboard == nullptr)
 		return;
-
-	pDebugProc->Print("\n縦[%d]横[%d]", m_nGridV, m_nGridH);
-
-	if (pInputKeyboard->GetTrigger(DIK_RSHIFT))
-	{
-		CIceManager* pIceManager = CIceManager::GetInstance();
-
-		if (pIceManager != nullptr)
-		{
-			pIceManager->CreateIce(m_nGridV, m_nGridH);
-		}
-	}
 }
 
 //=====================================================
