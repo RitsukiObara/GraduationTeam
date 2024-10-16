@@ -29,7 +29,7 @@ public:
 	enum E_State
 	{// 状態
 		STATE_NONE = 0,	// 何でもない状態
-		STATE_STOP,	// 停止状態
+		STATE_NORMAL,	// 通常状態
 		STATE_FLOWS,	// 流れてる状態
 		STATE_MAX
 	};
@@ -87,6 +87,46 @@ private:
 	static int s_nNumAll;	// 総数
 	static std::vector<CIce*> m_Vector;	// 自身のポインタ
 };
+
+class CIceState
+{// 氷の基底ステイト
+public:
+	CIceState();	// コンストラクタ
+	~CIceState();	// デストラクタ
+
+	virtual void Init(CIce *pIce) = 0;	// 初期化
+	virtual void Uninit(CIce *pIce) = 0;	// 終了
+	virtual void Update(CIce *pIce) = 0;	// 更新
+
+private:
+};
+
+class CIceStaeteNormal : public CIceState
+{// 氷の通常ステイト
+public:
+	CIceStaeteNormal();	// コンストラクタ
+	~CIceStaeteNormal();	// デストラクタ
+
+	void Init(CIce *pIce) override;	// 初期化
+	void Uninit(CIce *pIce) override;	// 終了
+	void Update(CIce *pIce) override;	// 更新
+
+private:
+};
+
+class CIceStaetePeck : public CIceState
+{// 氷のつっつかれステイト
+public:
+	CIceStaetePeck();	// コンストラクタ
+	~CIceStaetePeck();	// デストラクタ
+
+	void Init(CIce *pIce) override;	// 初期化
+	void Uninit(CIce *pIce) override;	// 終了
+	void Update(CIce *pIce) override;	// 更新
+
+private:
+};
+
 
 #endif
 

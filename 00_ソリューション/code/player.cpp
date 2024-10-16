@@ -20,7 +20,7 @@
 //*****************************************************
 namespace
 {
-const std::string PATH_BODY = "data\\MOTION\\motionPing-.txt";	// ボディのパス
+const std::string PATH_BODY = "data\\MOTION\\motionPenguin.txt";	// ボディのパス
 const int MOVE_FRAME = 25;	// 移動にかかるフレーム数
 }
 

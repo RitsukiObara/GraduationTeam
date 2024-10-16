@@ -215,7 +215,7 @@ void CIceManager::StopIce(CIce *pIce)
 	if (pIce == nullptr)
 		return;
 
-	pIce->SetState(CIce::E_State::STATE_STOP);
+	//pIce->SetState(CIce::E_State::STATE_STOP);
 
 	// ƒOƒŠƒbƒh‚É‘®«‚ğŠ„‚èU‚é
 }

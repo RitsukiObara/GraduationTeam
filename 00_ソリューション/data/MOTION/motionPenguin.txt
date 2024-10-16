@@ -14,12 +14,12 @@ NUM_MODEL = 6
 #====================================================================
 # モデルファイル名
 #====================================================================
-MODEL_FILENAME = data/MODEL/Player/00_Body.x
-MODEL_FILENAME = data/MODEL/Player/01_Head.x
-MODEL_FILENAME = data/MODEL/Player/02_RArm.x
-MODEL_FILENAME = data/MODEL/Player/03_LArm.x
-MODEL_FILENAME = data/MODEL/Player/04_RLeg.x
-MODEL_FILENAME = data/MODEL/Player/05_LLeg.x
+MODEL_FILENAME = data/MODEL/Penguin/00_Body.x
+MODEL_FILENAME = data/MODEL/Penguin/01_Head.x
+MODEL_FILENAME = data/MODEL/Penguin/02_RArm.x
+MODEL_FILENAME = data/MODEL/Penguin/03_LArm.x
+MODEL_FILENAME = data/MODEL/Penguin/04_RLeg.x
+MODEL_FILENAME = data/MODEL/Penguin/05_LLeg.x
 
 #====================================================================
 # キャラクター情報
