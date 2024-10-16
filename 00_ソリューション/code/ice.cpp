@@ -155,21 +155,28 @@ void CIce::Update(void)
 	if (m_pState != nullptr)
 		m_pState->Update(this);
 
+	if (COcean::GetInstance() == nullptr)
+	{
+		return;
+	}
+
 	// ŠC‚Æˆê‚É•X‚ð“®‚©‚·ˆ—
 	D3DXVECTOR3 pos = GetPosition();
 
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	pos.y = COcean::GetInstance()->GetHeight(pos,&move);
+	pos.y = COcean::GetInstance()->GetHeight(pos,&move) + HEIGHT_ICE;
 
 	if (m_pUp != nullptr)
 	{
-		m_pUp->SetPosition(pos + D3DXVECTOR3(0.0f, HEIGHT_ICE, 0.0f));
+		m_pUp->SetPosition(pos);
 	}
 	if (m_pSide != nullptr)
 	{
-		m_pSide->SetPosition(pos);
+		m_pSide->SetPosition(pos + D3DXVECTOR3(0.0f, -HEIGHT_ICE, 0.0f));
 	}
+
+	SetPosition(pos);
 }
 
 //=====================================================
