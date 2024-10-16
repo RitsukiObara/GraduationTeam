@@ -163,44 +163,45 @@ void CStageResultUI::ManageState(void)
 	int nEnd = 0;
 
 	// ポリゴンを目標位置に向かわせる
-	for (int i = 0; i < RESULT_MAX; i++)
+	//クリアの時
+	if (m_RESULT == RESULT_CREAR)
 	{
-		if (m_apResult[i] != nullptr)
+		if (m_apResult[RESULT_CREAR] != nullptr)
 		{
-			D3DXVECTOR3 pos = m_apResult[i]->GetPosition();
+			D3DXVECTOR3 pos = m_apResult[RESULT_CREAR]->GetPosition();
 			D3DXVECTOR3 posOld = pos;
-			D3DXVECTOR3 vecDiff = m_aPosDest[i] - pos;
-			float fDiffOld = vecDiff.x;
+			////D3DXVECTOR3 vecDiff = m_apResult[RESULT_CREAR] - pos;
+			//float fDiffOld = vecDiff.x;
 
-			vecDiff *= MOVE_FACT;
+			//vecDiff *= MOVE_FACT;
 
-			vecDiff += pos;
+			//vecDiff += pos;
 
-			m_apResult[i]->SetPosition(vecDiff);
+			//m_apResult[RESULT_CREAR]->SetPosition(vecDiff);
 
-			m_apResult[i]->SetVtx();
+			//m_apResult[RESULT_CREAR]->SetVtx();
 
-			float fDiff = m_aPosDest[i].x - vecDiff.x;
+			//float fDiff = m_aPosDest[RESULT_CREAR].x - vecDiff.x;
 
-			if (fDiffOld * fDiffOld >= LINE_ARRIVAL * LINE_ARRIVAL &&
-				fDiff * fDiff < LINE_ARRIVAL * LINE_ARRIVAL &&
-				i < RESULT_MAX - 1)
-			{// 差分がしきい値より下になったら下のものを動かす
-				if (m_state == STATE_IN)
-				{
-					m_aPosDest[i + 1].x = RESULT_WIDTH;
-				}
-				else if (m_state == STATE_OUT)
-				{
-					m_aPosDest[i + 1].x = -RESULT_WIDTH;
-				}
-			}
+			//if (fDiffOld * fDiffOld >= LINE_ARRIVAL * LINE_ARRIVAL &&
+			//	fDiff * fDiff < LINE_ARRIVAL * LINE_ARRIVAL &&
+			//	RESULT_CREAR < RESULT_MAX - 1)
+			//{// 差分がしきい値より下になったら下のものを動かす
+			//	if (m_state == STATE_IN)
+			//	{
+			//		m_aPosDest[RESULT_CREAR + 1].x = RESULT_WIDTH;
+			//	}
+			//	else if (m_state == STATE_OUT)
+			//	{
+			//		m_aPosDest[RESULT_CREAR + 1].x = -RESULT_WIDTH;
+			//	}
+			//}
 
-			if (fDiff * fDiff < LINE_UNINIT * LINE_UNINIT &&
-				m_state == STATE_OUT)
-			{// 終了のライン
-				nEnd++;
-			}
+			//if (fDiff * fDiff < LINE_UNINIT * LINE_UNINIT &&
+			//	m_state == STATE_OUT)
+			//{// 終了のライン
+			//	nEnd++;
+			//}
 		}
 	}
 
