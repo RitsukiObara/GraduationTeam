@@ -26,6 +26,17 @@
 class CMotion : public CObject3D
 {
 public:
+	// モーション列挙
+	enum EMotion
+	{
+		MOTION_NEUTRAL = 0,
+		MOTION_JUMPSTART,
+		MOTION_JUMPFLY,
+		MOTION_LANDING,
+		MOTION_PECK,
+		MOTION_MAX
+	};
+
 	//キーの構造体
 	typedef struct
 	{

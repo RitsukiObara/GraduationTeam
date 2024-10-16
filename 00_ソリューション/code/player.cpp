@@ -157,7 +157,7 @@ void CPlayer::Input(void)
 		if (m_isMove == true && GetMotion() == 0)
 		{
 			// ジャンプモーション
-			SetMotion(1);
+			SetMotion(MOTION_JUMPSTART);
 		}
 
 		// つつきの入力========================================
@@ -166,10 +166,13 @@ void CPlayer::Input(void)
 			pIceManager->PeckIce(m_nGridV, m_nGridH, CIceManager::E_Direction::DIRECTION_LEFT);	// 割る処理
 
 			CParticle::Create(D3DXVECTOR3(posGrid.x, posGrid.y - 20.0f, posGrid.z), CParticle::TYPE_ICEBREAK, D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+			// 氷割りモーション
+			SetMotion(MOTION_PECK);
 		}
 	}
 
-	if (m_isMove == true && GetMotion() == 1 && IsFinish() == true)
+	if (m_isMove == true && GetMotion() == MOTION_JUMPSTART && IsFinish() == true)
 	{// どこか移動した
 		// 目標位置設定========================================
 		SetPositionDest(posGrid);
@@ -180,7 +183,7 @@ void CPlayer::Input(void)
 		SetMove(move);
 
 		// ジャンプモーション
-		SetMotion(2);
+		SetMotion(MOTION_JUMPFLY);
 	}
 }
 
@@ -215,9 +218,14 @@ void CPlayer::MotionFinishCheck(void)
 {
 	if (CMotion::IsFinish() == true)
 	{// 何かしらのモーション終了
-		if (CMotion::GetMotion() == 3)
+		if (CMotion::GetMotion() == MOTION_LANDING)
 		{// 着地終了（通常状態遷移）
-			SetMotion(0);
+			SetMotion(MOTION_NEUTRAL);
+			m_isMove = false;
+		}
+		if (CMotion::GetMotion() == MOTION_PECK)
+		{// 氷割り終了（通常状態遷移）
+			SetMotion(MOTION_NEUTRAL);
 			m_isMove = false;
 		}
 	}

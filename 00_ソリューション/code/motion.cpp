@@ -965,9 +965,9 @@ void CMotion::MovePositionDest(void)
 		m_jumpTime = 0.0f;
 
 		// íÖínÉÇÅ[ÉVÉáÉì
-		if (m_motionType == 2)
+		if (m_motionType == MOTION_JUMPFLY)
 		{
-			SetMotion(3);
+			SetMotion(MOTION_LANDING);
 		}
 	}
 
