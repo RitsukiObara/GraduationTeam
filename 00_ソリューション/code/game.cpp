@@ -42,6 +42,7 @@
 #include "enemy.h"
 #include "seals.h"
 #include "ocean.h"
+#include "stageResultUI.h"
 
 //*****************************************************
 // マクロ定義
@@ -124,6 +125,10 @@ HRESULT CGame::Init(void)
 	// スコア表示の生成
 	m_pScore = CScore::Create();
 	m_pScore->SetPosition(D3DXVECTOR3(0.09f, 0.07f, 0.0f));
+
+	// ステージリザルト表示の生成
+	m_pStageResultUI = CStageResultUI::Create();
+	m_pStageResultUI->SetPosition(D3DXVECTOR3(0.4f, 0.07f, 0.0f));
 
 	// 氷マネージャー
 	CIceManager::Create(NUM_GRID_V, NUM_GRID_H);
