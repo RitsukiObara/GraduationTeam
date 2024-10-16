@@ -11,6 +11,7 @@
 // インクルード
 //*****************************************************
 #include "object.h"
+#include "ice.h"
 
 //*****************************************************
 // 前方宣言
@@ -43,7 +44,7 @@ public:
 	void Uninit(void);	// 終了
 	void Update(void);	// 更新
 	void Draw(void);	// 描画
-	CIce *CreateIce(int nGridV,int nGridH);	// 氷の生成
+	CIce *CreateIce(int nGridV,int nGridH, CIce::E_Type type = CIce::E_Type::TYPE_NORMAL);	// 氷の生成
 	void StopIce(CIce *pIce);	// 氷の停止
 	void PeckIce(int nNumV, int nNumH, E_Direction direction);	// 氷をつつく
 	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// 氷の追加

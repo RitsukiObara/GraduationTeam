@@ -80,7 +80,7 @@ HRESULT CIceManager::Init(void)
 	SetGridPos();
 
 	// âºÉ}ÉbÉvê∂ê¨
-	CreateIce(3, 6);
+	CreateIce(3, 6,CIce::E_Type::TYPE_HARD);
 	CreateIce(3, 5);
 	CreateIce(3, 4);
 	CreateIce(3, 3);
@@ -182,14 +182,14 @@ bool CIceManager::JudgeBetweenPeck(int nNumV, int nNumH)
 //=====================================================
 // ïXÇÃê∂ê¨
 //=====================================================
-CIce *CIceManager::CreateIce(int nGridV, int nGridH)
+CIce *CIceManager::CreateIce(int nGridV, int nGridH, CIce::E_Type type)
 {
 	if (m_aGrid[nGridV][nGridH].pIce != nullptr)
 		return m_aGrid[nGridV][nGridH].pIce;
 
 	CIce *pIce = nullptr;
 
-	pIce = CIce::Create();
+	pIce = CIce::Create(type);
 
 	if (pIce == nullptr)
 		return nullptr;
