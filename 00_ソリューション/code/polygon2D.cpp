@@ -16,13 +16,11 @@
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
-CPolygon2D::CPolygon2D(int nPriority) : CObject(nPriority)
+CPolygon2D::CPolygon2D(int nPriority) : CGameObject(nPriority)
 {
 	// 変数のクリア
 	m_pVtxBuff = nullptr;
-	m_pos = { 0,0,0 };
 	m_move = { 0,0,0 };
-	m_fRot = 0;
 	m_heigth = 0;
 	m_width = 0;
 	m_col = { 1.0f,1.0f,1.0f,1.0f };
@@ -84,29 +82,32 @@ HRESULT CPolygon2D::Init(void)
 		// 長さの取得
 		float fLengthUp = sqrtf(m_width * m_width + m_heigth * m_heigth);
 
+		D3DXVECTOR3 pos = CGameObject::GetPosition();
+		D3DXVECTOR3 rot = CGameObject::GetRotation();
+
 		// 頂点座標の設定
 		pVtx[0].pos = D3DXVECTOR3
 		(
-			m_pos.x + sinf(m_fRot - D3DX_PI + fAngleUp) * fLengthUp,
-			m_pos.y + cosf(m_fRot - D3DX_PI + fAngleUp) * fLengthUp,
+			pos.x + sinf(rot.z - D3DX_PI + fAngleUp) * fLengthUp,
+			pos.y + cosf(rot.z - D3DX_PI + fAngleUp) * fLengthUp,
 			0.0f
 		);
 		pVtx[1].pos = D3DXVECTOR3
 		(
-			m_pos.x + sinf(m_fRot + D3DX_PI - fAngleUp) * fLengthUp,
-			m_pos.y + cosf(m_fRot + D3DX_PI - fAngleUp) * fLengthUp,
+			pos.x + sinf(rot.z + D3DX_PI - fAngleUp) * fLengthUp,
+			pos.y + cosf(rot.z + D3DX_PI - fAngleUp) * fLengthUp,
 			0.0f
 		);
 		pVtx[2].pos = D3DXVECTOR3
 		(
-			m_pos.x + sinf(m_fRot - fAngleUp) * fLengthUp,
-			m_pos.y + cosf(m_fRot - fAngleUp) * fLengthUp,
+			pos.x + sinf(rot.z - fAngleUp) * fLengthUp,
+			pos.y + cosf(rot.z - fAngleUp) * fLengthUp,
 			0.0f
 		);
 		pVtx[3].pos = D3DXVECTOR3
 		(
-			m_pos.x + sinf(m_fRot + fAngleUp) * fLengthUp,
-			m_pos.y + cosf(m_fRot + fAngleUp) * fLengthUp,
+			pos.x + sinf(rot.z + fAngleUp) * fLengthUp,
+			pos.y + cosf(rot.z + fAngleUp) * fLengthUp,
 			0.0f
 		);
 
@@ -134,8 +135,7 @@ void CPolygon2D::Uninit(void)
 		m_pVtxBuff = nullptr;
 	}
 
-	// 自分自身の破棄
-	Release();
+	CGameObject::Uninit();
 }
 
 //=====================================================
@@ -164,29 +164,32 @@ void CPolygon2D::SetVtx(void)
 		// 長さの取得
 		float fLengthUp = sqrtf(m_width * m_width + m_heigth * m_heigth);
 
+		D3DXVECTOR3 pos = CGameObject::GetPosition();
+		D3DXVECTOR3 rot = CGameObject::GetRotation();
+
 		// 頂点座標の設定
 		pVtx[0].pos = D3DXVECTOR3
 		(
-			m_pos.x + sinf(m_fRot - D3DX_PI + fAngleUp) * fLengthUp,
-			m_pos.y + cosf(m_fRot - D3DX_PI + fAngleUp) * fLengthUp,
+			pos.x + sinf(rot.z - D3DX_PI + fAngleUp) * fLengthUp,
+			pos.y + cosf(rot.z - D3DX_PI + fAngleUp) * fLengthUp,
 			0.0f
 		);
 		pVtx[1].pos = D3DXVECTOR3
 		(
-			m_pos.x + sinf(m_fRot + D3DX_PI - fAngleUp) * fLengthUp,
-			m_pos.y + cosf(m_fRot + D3DX_PI - fAngleUp) * fLengthUp,
+			pos.x + sinf(rot.z + D3DX_PI - fAngleUp) * fLengthUp,
+			pos.y + cosf(rot.z + D3DX_PI - fAngleUp) * fLengthUp,
 			0.0f
 		);
 		pVtx[2].pos = D3DXVECTOR3
 		(
-			m_pos.x + sinf(m_fRot - fAngleUp) * fLengthUp,
-			m_pos.y + cosf(m_fRot - fAngleUp) * fLengthUp,
+			pos.x + sinf(rot.z - fAngleUp) * fLengthUp,
+			pos.y + cosf(rot.z - fAngleUp) * fLengthUp,
 			0.0f
 		);
 		pVtx[3].pos = D3DXVECTOR3
 		(
-			m_pos.x + sinf(m_fRot + fAngleUp) * fLengthUp,
-			m_pos.y + cosf(m_fRot + fAngleUp) * fLengthUp,
+			pos.x + sinf(rot.z + fAngleUp) * fLengthUp,
+			pos.y + cosf(rot.z + fAngleUp) * fLengthUp,
 			0.0f
 		);
 
@@ -225,14 +228,6 @@ void CPolygon2D::Draw(void)
 		// 背景の描画
  		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 	}
-}
-
-//=====================================================
-// 設定処理
-//=====================================================
-void CPolygon2D::SetPosition(D3DXVECTOR3 pos)
-{
-	m_pos = pos;
 }
 
 //=====================================================
@@ -382,14 +377,6 @@ void CPolygon2D::DicMove(float fDicrease)
 	m_move.x *= fDicrease;
 	m_move.y *= fDicrease;
 	m_move.z *= fDicrease;
-}
-
-//=====================================================
-// 向き設定処理
-//=====================================================
-void CPolygon2D::SetRotation(float fRot)
-{
-	m_fRot = fRot;
 }
 
 //=====================================================
