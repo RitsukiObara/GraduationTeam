@@ -270,6 +270,9 @@ void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 	// 探索フラグの無効化
 	DisableFind();
 
+	// 壊れないブロックが行う信号解除
+	//DisableFromHardIce(nNumV, nNumH, m_aGrid[nNumBreakV][nNumBreakH].pIce, apIce);
+
 	// プレイヤーから壊さないブロックの流れを出す
 	DisableFromPlayer(nNumV, nNumH, m_aGrid[nNumBreakV][nNumBreakH].pIce, apIce);
 
@@ -479,6 +482,71 @@ bool CIceManager::CheckStandBlock(vector<CIce*> apIce, CIce *pIceStand, int nIdx
 void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 {
 
+}
+
+//=====================================================
+// 硬い氷から信号を出して、破壊信号を解除
+//=====================================================
+void CIceManager::DisableFromHardIce(int nNumV, int nNumH, CIce *pIcePeck, vector<CIce*> apIce)
+{
+	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
+		return;
+
+	if (m_aGrid[nNumV][nNumH].pIce->IsPeck())
+		return;
+
+	// 探索済みフラグを立てる
+	m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
+	m_aGrid[nNumV][nNumH].pIce->EnableBreak(false);
+
+#ifdef _DEBUG
+	CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+#endif
+
+	// 周辺グリッドの計算
+	int aV[DIRECTION_MAX] = {};
+	int aH[DIRECTION_MAX] = {};
+
+	CalcAroundGrids(nNumV, nNumH, aV, aH);
+
+	// 四方向氷がないか探索できない状態なら終了
+	bool bNothing = true;
+	int nNumIce = 0;
+	int nNumPeckIce = 0;
+	bool bAliveStandBlock = false;
+
+	// 氷のポインタの保存
+	for (int i = 0; i < DIRECTION_MAX; i++)
+	{
+		int nV = aV[i];
+		int nH = aH[i];
+
+		if (!universal::LimitValueInt(&nV, m_nNumGridVirtical - 1, 0) &&
+			!universal::LimitValueInt(&nH, m_nNumGridHorizontal - 1, 0))
+		{// 指定した番号がグリッドを越えていない場合のみ保存
+			apIce[i] = m_aGrid[aV[i]][aH[i]].pIce;
+		}
+	}
+
+	for (int i = 0; i < DIRECTION_MAX; i++)
+	{
+		if (apIce[i] == nullptr)
+			continue;
+
+		if (apIce[i] == pIcePeck)
+			continue;
+
+		if (!apIce[i]->IsCanFind())
+			continue;
+
+		if (apIce[i]->IsPeck())
+			continue;
+
+		if (apIce[i]->IsBreak())
+			continue;
+
+		DisableBreak(aV[i], aH[i]);
+	}
 }
 
 //=====================================================
