@@ -35,7 +35,7 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-
+COcean* COcean::m_pOcean = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -58,14 +58,17 @@ COcean::~COcean()
 //=====================================================
 COcean* COcean::Create(void)
 {
-	COcean* pOcean = new COcean;
-
-	if (pOcean != nullptr)
+	if (m_pOcean == nullptr)
 	{
-		pOcean->Init();
+		m_pOcean = new COcean;
+
+		if (m_pOcean != nullptr)
+		{
+			m_pOcean->Init();
+		}
 	}
 
-	return pOcean;
+	return m_pOcean;
 }
 
 //=====================================================
@@ -83,6 +86,8 @@ HRESULT COcean::Init(void)
 //=====================================================
 void COcean::Uninit(void)
 {
+	m_pOcean = nullptr;
+
 	CMeshField::Uninit();
 }
 
@@ -97,7 +102,7 @@ void COcean::Update(void)
 
 	universal::LimitRot(&m_fRot);
 
-	/*CMeshField::Wave(m_fRot);*/
+	CMeshField::Wave(m_fRot);
 }
 
 //=====================================================
