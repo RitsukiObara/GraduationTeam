@@ -16,7 +16,7 @@
 //*****************************************************
 // 前方宣言
 //*****************************************************
-class CPolygon2D;
+class CUI;
 
 //*****************************************************
 // クラス定義
@@ -32,7 +32,6 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	static CPause *GetInstance(void) { return m_pPause; }
 
 private:
 	enum MENU
@@ -57,11 +56,10 @@ private:
 	void Fade(MENU menu);
 
 	MENU m_menu;	// 選択項目
-	CPolygon2D *m_apMenu[MENU_MAX];	// メニュー項目の２Dオブジェクト
-	CPolygon2D *m_pBg;	// 背景２Dオブジェクト
+	CUI *m_apMenu[MENU_MAX];	// メニュー項目の２Dオブジェクト
+	CUI *m_pBg;	// 背景２Dオブジェクト
 	D3DXVECTOR3 m_aPosDest[MENU_MAX];	// 目標の位置
 	STATE m_state;	// 状態
-	static CPause *m_pPause;	// 自身のポインタ
 	bool m_bSound;			
 };
 

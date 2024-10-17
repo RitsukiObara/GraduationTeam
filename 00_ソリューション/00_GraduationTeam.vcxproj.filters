@@ -156,9 +156,6 @@
     <ClCompile Include="code\polygon3D.cpp">
       <Filter>ソース ファイル\mesh</Filter>
     </ClCompile>
-    <ClCompile Include="code\pause.cpp">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClCompile>
     <ClCompile Include="code\particle.cpp">
       <Filter>ソース ファイル\VFX</Filter>
     </ClCompile>
@@ -303,6 +300,9 @@
     <ClCompile Include="code\iceHard.cpp">
       <Filter>ソース ファイル\gameobject</Filter>
     </ClCompile>
+    <ClCompile Include="code\pause.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\game.h">
@@ -409,9 +409,6 @@
     </ClInclude>
     <ClInclude Include="code\polygon3D.h">
       <Filter>ソース ファイル\mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="code\pause.h">
-      <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
     <ClInclude Include="code\particle.h">
       <Filter>ソース ファイル\VFX</Filter>
@@ -559,6 +556,9 @@
     </ClInclude>
     <ClInclude Include="code\iceHard.h">
       <Filter>ソース ファイル\gameobject</Filter>
+    </ClInclude>
+    <ClInclude Include="code\pause.h">
+      <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
