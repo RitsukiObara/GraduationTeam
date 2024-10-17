@@ -34,22 +34,24 @@ public:
 
 	// 静的メンバ関数
 	static CPlayer *Create(void);
-	static CPlayer *GetInstance(void) { return m_pPlayer; }
+	static CPlayer *GetInstance(void) { return s_pPlayer; }
 
 private:
 	// メンバ関数
 	void Input(void);	// 入力
-	void Move(void);	// 移動
+	void MoveAnalog(void);	// アナログ移動
+	void MoveGrid(void);	// グリッド移動
+	void MoveToGrid(void);	// グリッドまでの移動
 	void Debug(void);	// デバッグ処理
 	void MotionFinishCheck(void);	// モーションが終了したか確認
 
 	// メンバ変数
 	int m_nGridV;	// 今いるグリッドの縦番号
 	int m_nGridH;	// 今いるグリッドの横番号
-	bool m_isMove;	// 移動中
+	bool m_bMove;	// 移動中フラグ
 
 	// 静的メンバ変数
-	static CPlayer *m_pPlayer;	// 自身のポインタ
+	static CPlayer *s_pPlayer;	// 自身のポインタ
 };
 
 #endif

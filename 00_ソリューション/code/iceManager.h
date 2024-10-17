@@ -50,6 +50,7 @@ public:
 	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// 氷の追加
 	bool FindIce(int nNumV, int nNumH, int nIdx,CIce *pIceStand,vector<CIce*> apIceLast,bool bBreak);	// アイスの発見
 	vector<CIce*> GetAroundIce(int nNumV, int nNumH);	// 周辺の氷を取得
+	void DeleteIce(CIce *pIce);	// 指定したポインタと同じ氷を削除する
 
 	// 変数取得・設定関数
 	void EnableBreakIce(bool bBreakIce) { m_bBreakIce = bBreakIce; }	// 氷破壊フラグ
