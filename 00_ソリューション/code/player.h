@@ -40,6 +40,8 @@ private:
 	// メンバ関数
 	void Input(void);	// 入力
 	void MoveAnalog(void);	// アナログ移動
+	void InputMoveAnalog(void);	// アナログ移動入力
+	void CollideIce(void);	// 氷との判定
 	void MoveGrid(void);	// グリッド移動
 	void MoveToGrid(void);	// グリッドまでの移動
 	void Debug(void);	// デバッグ処理
