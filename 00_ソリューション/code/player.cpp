@@ -133,6 +133,18 @@ void CPlayer::Input(void)
 //=====================================================
 void CPlayer::MoveAnalog(void)
 {
+	// アナログ移動入力
+	InputMoveAnalog();
+
+	// 氷との判定
+	CollideIce();
+}
+
+//=====================================================
+// アナログ移動入力
+//=====================================================
+void CPlayer::InputMoveAnalog(void)
+{
 	CInputManager *pInputManager = CInputManager::GetInstance();
 
 	if (pInputManager == nullptr)
@@ -189,6 +201,23 @@ void CPlayer::MoveAnalog(void)
 		universal::FactingRot(&rot.y, fRotDest, FACT_ROTATION);
 		SetRotation(rot);
 	}
+}
+
+//=====================================================
+// 氷との判定
+//=====================================================
+void CPlayer::CollideIce(void)
+{
+	CIceManager *pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return;
+
+	D3DXVECTOR3 pos = GetPosition();
+
+	pIceManager->Collide(&pos);
+
+	SetPosition(pos);
 }
 
 //=====================================================
@@ -315,6 +344,7 @@ void CPlayer::Debug(void)
 		return;
 	
 	pDebugProc->Print("\n縦[%d]横[%d]", m_nGridV, m_nGridH);
+	pDebugProc->Print("\n位置[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
 
 	if (pInputKeyboard->GetTrigger(DIK_RSHIFT))
 	{

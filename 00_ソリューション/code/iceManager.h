@@ -51,6 +51,7 @@ public:
 	bool FindIce(int nNumV, int nNumH, int nIdx,CIce *pIceStand,vector<CIce*> apIceLast,bool bBreak);	// アイスの発見
 	vector<CIce*> GetAroundIce(int nNumV, int nNumH);	// 周辺の氷を取得
 	void DeleteIce(CIce *pIce);	// 指定したポインタと同じ氷を削除する
+	void Collide(D3DXVECTOR3 *pPos);	// 外に出さない判定処理
 
 	// 変数取得・設定関数
 	void EnableBreakIce(bool bBreakIce) { m_bBreakIce = bBreakIce; }	// 氷破壊フラグ
@@ -93,6 +94,7 @@ private:
 	bool CheckCorner(int nNumV, int nNumH);	// 角の確認
 	bool CheckCommon(vector<CIce*> apIce, vector<CIce*> apIceLast,CIce* pIceStand, int nNumV, int nNumH,bool bBreakLast);
 	void BreakPeck(int nNumV, int nNumH);	// 突っついた氷を沈める
+	void GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH);	// グリッド番号を位置から取得する処理
 	void Debug(void);	// デバッグ処理
 
 	// メンバ変数

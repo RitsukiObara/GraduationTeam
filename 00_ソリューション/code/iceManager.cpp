@@ -20,7 +20,10 @@
 namespace
 {
 const float RATE_HEX_X = 0.13f;	// 六角形の割合X
-const float RATE_HEX_Z = -0.1f;	// 六角形の割合Z
+const float RATE_HEX_Z = 0.3f;	// 六角形の割合Z
+
+const float WIDTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_X;	// グリッドの幅
+const float DEPTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_Z;	// グリッドの奥行き
 }
 
 //*****************************************************
@@ -107,12 +110,12 @@ void CIceManager::SetGridPos(void)
 		for (int j = 0; j < m_nNumGridHorizontal; j++)
 		{
 			D3DXVECTOR3 pos;
-			pos = { j * (Grid::SIZE - Grid::SIZE * RATE_HEX_X) - Grid::SIZE * m_nNumGridHorizontal * 0.5f,10.0f,i * (Grid::SIZE - Grid::SIZE * RATE_HEX_Z) * 0.67f - Grid::SIZE * m_nNumGridVirtical * 0.5f };
+			pos = { j * WIDTH_GRID - WIDTH_GRID * m_nNumGridHorizontal * 0.5f,10.0f,i * DEPTH_GRID - DEPTH_GRID * m_nNumGridVirtical * 0.5f };
 
 			// 縦で偶数列だったらずらす
 			if (i % 2 == 0)
 			{
-				pos.x += (Grid::SIZE - Grid::SIZE * RATE_HEX_X) * 0.5f;
+				pos.x += WIDTH_GRID * 0.5f;
 			}
 
 			m_aGrid[i][j].pos = pos;
@@ -400,6 +403,28 @@ void CIceManager::DeleteIce(CIce *pIce)
 				m_aGrid[i][j].pIce = nullptr;
 		}
 	}
+}
+
+//=====================================================
+// 外に出さないようにする判定
+//=====================================================
+void CIceManager::Collide(D3DXVECTOR3 *pPos)
+{
+	if (pPos == nullptr)
+		return;
+
+	int nIdxV = 0;
+	int nIdxH = 0;
+
+	// 位置から、今いるグリッドを計算
+	GetIdxGridFromPosition(*pPos, &nIdxV, &nIdxH);
+
+#ifdef _DEBUG
+	CDebugProc::GetInstance()->Print("\n今いるグリッド[%d,%d]", nIdxV, nIdxV);
+#endif
+
+	// 今いるグリッドの氷との判定を行う
+
 }
 
 //=====================================================
@@ -926,6 +951,17 @@ CIce* CIceManager::GetGridObject(int* pNumV, int* pNumH)
 	}
 
 	return m_aGrid[*pNumV][*pNumH].pIce;
+}
+
+//=====================================================
+// 位置からグリッド番号を取得する処理
+//=====================================================
+void CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH)
+{
+	if (pIdxV == nullptr || pIdxH == nullptr)
+		return;
+
+	
 }
 
 //=====================================================
