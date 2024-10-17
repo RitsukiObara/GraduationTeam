@@ -24,6 +24,17 @@ class CPolygon3D;
 class CSeals : public CEnemy
 {
 public:
+
+	// 状態列挙
+	typedef enum
+	{
+		STATE_STOP = 0,	// 停止状態
+		STATE_MOVE,		// 移動状態
+		STATE_ATTACK,	// 攻撃状態
+		STATE_DRIFT,	// 流れる状態
+		STATE_MAX
+	}STATE;
+
 	CSeals(int nPriority = 4);	// コンストラクタ
 	~CSeals();	// デストラクタ
 
@@ -37,7 +48,8 @@ public:
 	static CSeals* Create(void);
 
 private:
-	
+	//アザラシの状態
+	STATE m_State;
 };
 
 #endif

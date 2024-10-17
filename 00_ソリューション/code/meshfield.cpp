@@ -22,7 +22,7 @@
 //*****************************************************
 // マクロ定義
 //*****************************************************
-#define MESHFIELD_TEX_FILE			"data\\TEXTURE\\BG\\field00.jpg"				// テクスチャファイル名
+#define MESHFIELD_TEX_FILE			"data\\TEXTURE\\BG\\map_sea.png"				// テクスチャファイル名
 #define MOVE_SPEED					(1.0f)										// 移動速度
 #define MESH_LENGTH					(800.0f)									// メッシュの一辺の長さ
 #define MESH_U						(254)											// 横のブロック数

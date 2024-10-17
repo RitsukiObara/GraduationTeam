@@ -26,6 +26,17 @@
 class CMotion : public CObject3D
 {
 public:
+	// モーション列挙
+	enum EMotion
+	{
+		MOTION_NEUTRAL = 0,
+		MOTION_JUMPSTART,
+		MOTION_JUMPFLY,
+		MOTION_LANDING,
+		MOTION_PECK,
+		MOTION_MAX
+	};
+
 	//キーの構造体
 	typedef struct
 	{
@@ -139,6 +150,7 @@ private:
 	D3DXVECTOR3 m_posDest;	// 目標位置
 	D3DXVECTOR3 m_posShadow;	// 影の位置
 	D3DXVECTOR3 m_move;	// 移動量
+	float m_jumpTime;	// ジャンプ時間
 	D3DXCOLOR m_col;	// 色
 	bool m_bFinish;	// モーションが終わったかどうか
 	bool m_bShadow;	// 影を描画するかどうか
