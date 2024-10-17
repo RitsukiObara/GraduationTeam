@@ -170,12 +170,16 @@ void CInputManager::Update(void)
 	// 左方向キー
 	m_info.abTrigger[BUTTON_AXIS_LEFT] =
 		(
+			pJoypad->GetLStickTrigger(CInputJoypad::DIRECTION_LEFT, 0) ||
+			pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_LEFT, 0) ||
 			pKeyboard->GetTrigger(DIK_A)
 		);
 
 	// 右方向キー
 	m_info.abTrigger[BUTTON_AXIS_RIGHT] =
 		(
+			pJoypad->GetLStickTrigger(CInputJoypad::DIRECTION_RIGHT, 0) ||
+			pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_RIGHT, 0) ||
 			pKeyboard->GetTrigger(DIK_D)
 		);
 

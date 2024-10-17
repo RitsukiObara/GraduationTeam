@@ -14,6 +14,8 @@
 #include "iceManager.h"
 #include "debugproc.h"
 #include "particle.h"
+#include "camera.h"
+#include "manager.h"
 
 //*****************************************************
 // 定数定義
@@ -22,20 +24,24 @@ namespace
 {
 const std::string PATH_BODY = "data\\MOTION\\motionPenguin.txt";	// ボディのパス
 const int MOVE_FRAME = 25;	// 移動にかかるフレーム数
+
+const float SPEED_MOVE_ANALOG = 1.0f;	// アナログ移動での移動距離
+const float RATE_DECREASE_MOVE = 0.5f;	// 移動減衰の割合
+const float LINE_FACT_ROT = 0.3f;	// 向きを補正するまでの入力しきい値
+const float FACT_ROTATION = 0.3f;	// 回転係数
 }
 
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CPlayer *CPlayer::m_pPlayer = nullptr;	// 自身のポインタ
+CPlayer *CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
 
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
-CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0)
+CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_bMove(false)
 {
-	m_isMove = false;
-	m_pPlayer = this;
+
 }
 
 //=====================================================
@@ -51,17 +57,17 @@ CPlayer::~CPlayer()
 //=====================================================
 CPlayer *CPlayer::Create(void)
 {
-	if (m_pPlayer == nullptr)
+	if (s_pPlayer == nullptr)
 	{
-		m_pPlayer = new CPlayer;
+		s_pPlayer = new CPlayer;
 
-		if (m_pPlayer != nullptr)
+		if (s_pPlayer != nullptr)
 		{
-			m_pPlayer->Init();
+			s_pPlayer->Init();
 		}
 	}
 
-	return m_pPlayer;
+	return s_pPlayer;
 }
 
 //=====================================================
@@ -85,7 +91,7 @@ HRESULT CPlayer::Init(void)
 //=====================================================
 void CPlayer::Uninit(void)
 {
-	m_pPlayer = nullptr;
+	s_pPlayer = nullptr;
 
 	// 継承クラスの終了
 	CMotion::Uninit();
@@ -98,7 +104,6 @@ void CPlayer::Update(void)
 {
 	// 入力処理
 	Input();
-	Move();
 
 	// モーション更新
 	CMotion::Update();
@@ -116,6 +121,81 @@ void CPlayer::Update(void)
 //=====================================================
 void CPlayer::Input(void)
 {
+#if 1
+	MoveAnalog();
+#else
+	MoveGrid();
+#endif
+}
+
+//=====================================================
+// アナログ移動
+//=====================================================
+void CPlayer::MoveAnalog(void)
+{
+	CInputManager *pInputManager = CInputManager::GetInstance();
+
+	if (pInputManager == nullptr)
+	{
+		return;
+	}
+
+	// カメラ取得
+	CCamera *pCamera = CManager::GetCamera();
+
+	if (pCamera == nullptr)
+	{
+		return;
+	}
+
+	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+
+	// 目標方向の設定
+	CInputManager::SAxis axis = pInputManager->GetAxis();
+	D3DXVECTOR3 axisMove = axis.axisMove;
+
+	// 軸を正規化
+	float fLengthAxis = D3DXVec3Length(&axisMove);
+
+	D3DXVECTOR3 vecMove = { 0.0f,0.0f,0.0f };
+	D3DXVECTOR3 rot = GetRotation();
+
+	fLengthAxis *= SPEED_MOVE_ANALOG;
+
+	// 移動速度の設定
+	D3DXVECTOR3 move = GetMove();
+
+	// 向いている方向にベクトルを伸ばす
+	vecMove -= {sinf(rot.y) * fLengthAxis, 0.0f, cosf(rot.y) * fLengthAxis};
+	D3DXVec3Normalize(&vecMove, &vecMove);
+	vecMove *= SPEED_MOVE_ANALOG;
+	move += vecMove;
+
+	SetMove(move);
+
+	// 移動量の反映
+	AddPosition(move);
+
+	// 移動量の減衰
+	move *= RATE_DECREASE_MOVE;
+
+	SetMove(move);
+
+	if (fLengthAxis >= LINE_FACT_ROT)
+	{// 入力がしきい値を越えていたら補正
+		// 目標の向きに補正する
+		float fRotDest = atan2f(-axisMove.x, -axisMove.z);
+
+		universal::FactingRot(&rot.y, fRotDest, FACT_ROTATION);
+		SetRotation(rot);
+	}
+}
+
+//=====================================================
+// グリッド移動
+//=====================================================
+void CPlayer::MoveGrid(void)
+{
 	CInputManager *pInputManager = CInputManager::GetInstance();
 
 	if (pInputManager == nullptr)
@@ -130,31 +210,31 @@ void CPlayer::Input(void)
 	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
 
 	// 移動していなければ入力受付========================================
-	if (m_isMove == false)
+	if (m_bMove == false)
 	{
 		// 移動の入力========================================
 		if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_LEFT))
 		{
 			m_nGridH--;
-			m_isMove = true;
+			m_bMove = true;
 		}
 		else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_RIGHT))
 		{
 			m_nGridH++;
-			m_isMove = true;
+			m_bMove = true;
 		}
 		else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_UP))
 		{
 			m_nGridV++;
-			m_isMove = true;
-		}
+			m_bMove = true;
+}
 		else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_DOWN))
 		{
 			m_nGridV--;
-			m_isMove = true;
+			m_bMove = true;
 		}
 
-		if (m_isMove == true && GetMotion() == 0)
+		if (m_bMove == true && GetMotion() == 0)
 		{
 			// ジャンプモーション
 			SetMotion(MOTION_JUMPSTART);
@@ -171,12 +251,15 @@ void CPlayer::Input(void)
 			SetMotion(MOTION_PECK);
 		}
 	}
+
+	// 移動処理
+	MoveToGrid();
 }
 
 //=====================================================
-// 移動
+// グリッドまでの移動
 //=====================================================
-void CPlayer::Move(void)
+void CPlayer::MoveToGrid(void)
 {
 	CIceManager* pIceManager = CIceManager::GetInstance();
 
@@ -187,11 +270,11 @@ void CPlayer::Move(void)
 	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
 
 #ifdef _DEBUG
-	if (m_isMove == true)
+	if (m_bMove == true)
 	{// デバッグ時瞬間移動
 		SetPosition(posGrid);
 		SetMotion(MOTION_NEUTRAL);
-		m_isMove = false;
+		m_bMove = false;
 	}
 #else
 	if (m_isMove == true && GetMotion() == MOTION_JUMPSTART && IsFinish() == true)
@@ -207,9 +290,9 @@ void CPlayer::Move(void)
 
 		// ジャンプモーション
 		SetMotion(MOTION_JUMPFLY);
-}
+	}
 #endif
-	if (m_isMove == false)
+	if (m_bMove == false)
 	{
 		CIce* pIce = pIceManager->GetGridObject(&m_nGridV, &m_nGridH);
 		if (pIce != nullptr)
@@ -264,7 +347,7 @@ void CPlayer::MotionFinishCheck(void)
 		if (CMotion::GetMotion() == MOTION_LANDING)
 		{// 着地終了（通常状態遷移）
 			SetMotion(MOTION_NEUTRAL);
-			m_isMove = false;
+			m_bMove = false;
 		}
 		if (CMotion::GetMotion() == MOTION_PECK)
 		{// 氷割り終了（通常状態遷移）
