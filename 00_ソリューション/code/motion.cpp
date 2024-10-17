@@ -48,7 +48,10 @@ CMotion::CMotion(int nPriority) : CObject3D(nPriority)
 	m_bFinish = false;
 	m_bShadow = false;
 	m_posOld = { 0.0f,0.0f,0.0f };
+	m_posDest = { 0.0f,0.0f,0.0f };
 	m_posShadow = { 0.0f,0.0f,0.0f };
+	m_move = { 0.0f,0.0f,0.0f };
+	m_jumpTime = 0.0f;
 	m_col = { 1.0f,1.0f,1.0f,1.0f };
 	m_bInde = false;
 }
@@ -64,9 +67,9 @@ CMotion::~CMotion()
 //=====================================================
 // 生成処理
 //=====================================================
-CMotion *CMotion::Create(char *pPath)
+CMotion* CMotion::Create(char* pPath)
 {
-	CMotion *pMotion = nullptr;
+	CMotion* pMotion = nullptr;
 
 	if (pMotion == nullptr)
 	{
@@ -224,7 +227,7 @@ void CMotion::Update(void)
 
 	float fFrameOld = m_fCounterMotion;
 
-	CSlow *pSlow = CSlow::GetInstance();
+	CSlow* pSlow = CSlow::GetInstance();
 
 	if (pSlow != nullptr)
 	{
@@ -301,6 +304,9 @@ void CMotion::Update(void)
 			SetKeyOld();
 		}
 	}
+
+	// 目標位置に移動
+	MovePositionDest();
 }
 
 //=====================================================
@@ -336,7 +342,7 @@ void CMotion::SetMotion(int nMotionType)
 //=====================================================
 void CMotion::SetKeyOld(void)
 {
-	for (int nCntPart = 0;nCntPart < m_nNumParts;nCntPart++)
+	for (int nCntPart = 0; nCntPart < m_nNumParts; nCntPart++)
 	{
 		m_aKeyOld[nCntPart].fPosX = m_apParts[nCntPart]->pParts->GetPosition().x - m_apParts[nCntPart]->pParts->GetPosOrg().x;
 		m_aKeyOld[nCntPart].fPosY = m_apParts[nCntPart]->pParts->GetPosition().y - m_apParts[nCntPart]->pParts->GetPosOrg().y;
@@ -353,7 +359,7 @@ void CMotion::SetKeyOld(void)
 //=====================================================
 void CMotion::InitPose(int nMotion)
 {
-	for (int i = 0; i < m_aMotionInfo[nMotion].nNumKey;i++)
+	for (int i = 0; i < m_aMotionInfo[nMotion].nNumKey; i++)
 	{
 		for (int nCntPart = 0; nCntPart < m_nNumParts; nCntPart++)
 		{
@@ -406,10 +412,10 @@ void CMotion::MultiplyMtx(bool bDrawParts)
 	pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
 
 	D3DXMATRIX mtxRotModel, mtxTransModel;
-	D3DXMATRIX *pMtxParent;
+	D3DXMATRIX* pMtxParent;
 	D3DXMATRIX mtx;
 
-	for (int nCntParts = 0;nCntParts < m_nNumParts;nCntParts++)
+	for (int nCntParts = 0; nCntParts < m_nNumParts; nCntParts++)
 	{
 		// マトリックスの取得
 		mtx = m_apParts[nCntParts]->pParts->GetMatrix();
@@ -426,7 +432,7 @@ void CMotion::MultiplyMtx(bool bDrawParts)
 		D3DXMatrixTranslation(&mtxTransModel,
 			m_apParts[nCntParts]->pParts->GetPosition().x, m_apParts[nCntParts]->pParts->GetPosition().y, m_apParts[nCntParts]->pParts->GetPosition().z);
 		D3DXMatrixMultiply(&mtx, &mtx, &mtxTransModel);
-		
+
 		if (m_apParts[nCntParts]->nIdxParent != -1)
 		{//親パーツがある場合
 			// 親マトリックスの取得
@@ -445,7 +451,7 @@ void CMotion::MultiplyMtx(bool bDrawParts)
 		//ワールドマトリックス設定
 		pDevice->SetTransform(D3DTS_WORLD, &mtx);
 
-		if(bDrawParts)
+		if (bDrawParts)
 			m_apParts[nCntParts]->pParts->JustDraw();
 	}
 }
@@ -462,7 +468,7 @@ void CMotion::Draw(void)
 //=====================================================
 // 読込処理
 //=====================================================
-void CMotion::Load(char *pPath)
+void CMotion::Load(char* pPath)
 {
 	for (int nCntMotion = 0; nCntMotion < MAX_MOTION; nCntMotion++)
 	{// パーティクル情報の破棄
@@ -486,11 +492,11 @@ void CMotion::Load(char *pPath)
 	int nCntModel = 0;
 
 	//ファイルから読み込む
-	FILE *pFile = fopen(pPath, "r");
+	FILE* pFile = fopen(pPath, "r");
 
 	if (pFile != nullptr)
 	{//ファイルが開けた場合
-		while(true)
+		while (true)
 		{
 			//文字読み込み
 			(void)fscanf(pFile, "%s", &cTemp[0]);
@@ -640,7 +646,7 @@ void CMotion::Load(char *pPath)
 
 							ZeroMemory(m_aMotionInfo[m_nNumMotion].pEvent, sizeof(EVENT_INFO) * m_aMotionInfo[m_nNumMotion].nNumEvent);
 
-							for (int i = 0; i < m_aMotionInfo[m_nNumMotion].nNumEvent;i++)
+							for (int i = 0; i < m_aMotionInfo[m_nNumMotion].nNumEvent; i++)
 							{
 								m_aMotionInfo[m_nNumMotion].pEvent->fTimer = FLT_MAX;
 							}
@@ -784,7 +790,7 @@ float CMotion::GetRadiusMax(void)
 	float fRadiusMax = 0.0f;
 	float fTemp;
 
-	for (int nCntParts = 0;nCntParts < m_nNumParts;nCntParts++)
+	for (int nCntParts = 0; nCntParts < m_nNumParts; nCntParts++)
 	{
 		if (m_apParts[nCntParts] != nullptr)
 		{// パーツの半径取得
@@ -807,7 +813,7 @@ D3DXVECTOR3 CMotion::GetMtxPos(int nIdx)
 {
 	D3DXVECTOR3 pos = { 0.0f,0.0f,0.0f };
 
-	if (nIdx < 0 && 
+	if (nIdx < 0 &&
 		nIdx >= m_nNumParts)
 	{// 範囲外制限
 		return pos;
@@ -819,7 +825,7 @@ D3DXVECTOR3 CMotion::GetMtxPos(int nIdx)
 		{
 			D3DXMATRIX mtx = m_apParts[nIdx]->pParts->GetMatrix();
 
-			pos = 
+			pos =
 			{
 				mtx._41,
 				mtx._42,
@@ -840,10 +846,10 @@ void CMotion::SetAfterImage(D3DXCOLOR col, int m_nLife)
 	{
 		if (m_apParts[nCntParts] != nullptr)
 		{// 残像設定
-			D3DXMATRIX *pMtx = &m_apParts[nCntParts]->pParts->GetMatrix();
+			D3DXMATRIX* pMtx = &m_apParts[nCntParts]->pParts->GetMatrix();
 			//CModel::Model *model = m_apParts[nCntParts]->pParts->GetModel();
 
-			CAfterImage::Create(m_apParts[nCntParts]->pParts->GetMatrix(), m_apParts[nCntParts]->pParts->GetIdxModel(),col,m_nLife);
+			CAfterImage::Create(m_apParts[nCntParts]->pParts->GetMatrix(), m_apParts[nCntParts]->pParts->GetIdxModel(), col, m_nLife);
 		}
 	}
 }
@@ -887,7 +893,7 @@ void CMotion::ResetAllCol(void)
 //=====================================================
 // パーツごとにモーションするか設定
 //=====================================================
-void CMotion::EnableMotion(int nIdx,bool bMotion)
+void CMotion::EnableMotion(int nIdx, bool bMotion)
 {
 	if (nIdx >= 0 &&
 		nIdx < MAX_PARTS)
@@ -926,4 +932,44 @@ D3DXVECTOR3 CMotion::GetForward(void)
 	};
 
 	return vecForward;
+}
+
+//=====================================================
+// 目標位置に移動
+//=====================================================
+void CMotion::MovePositionDest(void)
+{
+	// XZ移動
+	D3DXVECTOR3 pos = GetPosition();
+	pos.x += m_move.x;
+	pos.z += m_move.z;
+
+	D3DXVECTOR3 vecLength = D3DXVECTOR3(m_posDest.x, 0.0f, m_posDest.z) - D3DXVECTOR3(pos.x, 0.0f, pos.z);
+	if (D3DXVec3Length(&vecLength) <= POSDEST_NEAREQUAL)
+	{
+		// XZ位置移動完了
+		pos.x = m_posDest.x;
+		pos.z = m_posDest.z;
+		m_move = D3DXVECTOR3(0.0f, m_move.y, 0.0f);
+	}
+
+	m_jumpTime += CManager::GetInstance()->GetDeltaTime();
+	pos.y += m_move.y - 9.8f * DEFAULT_WEIGHT * m_jumpTime;
+	universal::LimitValuefloat(&pos.y, 1000.0f, m_posDest.y);
+
+	if (pos.y <= m_posDest.y)
+	{
+		// Y位置移動完了
+		pos.y = m_posDest.y;
+		m_move.y = 0.0f;
+		m_jumpTime = 0.0f;
+
+		// 着地モーション
+		if (m_motionType == MOTION_JUMPFLY)
+		{
+			SetMotion(MOTION_LANDING);
+		}
+	}
+
+	CGameObject::SetPosition(pos);
 }
