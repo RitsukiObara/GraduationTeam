@@ -385,6 +385,24 @@ vector<CIce*> CIceManager::GetAroundIce(int nNumV, int nNumH)
 }
 
 //=====================================================
+// Žw’è‚µ‚½•X‚Æ“¯‚¶ƒ|ƒCƒ“ƒ^‚ðƒkƒ‹‚É‚·‚é
+//=====================================================
+void CIceManager::DeleteIce(CIce *pIce)
+{
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			if (m_aGrid[i][j].pIce == nullptr)
+				continue;
+
+			if (m_aGrid[i][j].pIce == pIce)
+				m_aGrid[i][j].pIce = nullptr;
+		}
+	}
+}
+
+//=====================================================
 // •X‚Ì’Tõ
 //=====================================================
 bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand, vector<CIce*> apIceLast, bool bBreakLast)
@@ -780,9 +798,6 @@ bool CIceManager::CheckCommon(vector<CIce*> apIce, vector<CIce*> apIceLast, CIce
 //=====================================================
 void CIceManager::BreakPeck(int nNumV, int nNumH)
 {
-	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
-		return;
-
 	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
 
 	int nNumIce = 0;
@@ -798,14 +813,18 @@ void CIceManager::BreakPeck(int nNumV, int nNumH)
 		if (apIce[i]->IsPeck())
 		{
 			nNumPeck++;
+			DeleteIce(apIce[i]);
 			apIce[i]->Uninit();
 		}
 	}
 
 	if (nNumIce == nNumPeck)
 	{
-		m_aGrid[nNumV][nNumH].pIce->Uninit();
-		m_aGrid[nNumV][nNumH].pIce = nullptr;
+		if (m_aGrid[nNumV][nNumH].pIce != nullptr)
+		{
+			m_aGrid[nNumV][nNumH].pIce->Uninit();
+			m_aGrid[nNumV][nNumH].pIce = nullptr;
+		}
 	}
 }
 
