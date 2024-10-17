@@ -34,6 +34,7 @@ public:
 		BUTTON_TRIGGER_LEFT,	// 左方向弾き
 		BUTTON_PECK,	// つつき
 		BUTTON_SCORE,	// スコア
+		BUTTON_RESULT,	// リザルト演出
 		BUTTON_MAX
 	};
 	struct SAxis

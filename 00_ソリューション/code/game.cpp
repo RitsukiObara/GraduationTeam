@@ -174,6 +174,12 @@ void CGame::Update(void)
 		CScene::Update();
 	}
 
+	// ポーズ========================================
+	if (pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE))
+	{
+		CPause::Create();
+	}
+
 	// カメラ更新
 	UpdateCamera();
 
@@ -182,6 +188,9 @@ void CGame::Update(void)
 
 	// ライトの更新
 	UpdateLight();
+
+	// ポーズの更新
+	//UpdatePause();
 
 #ifdef _DEBUG
 	Debug();
@@ -304,6 +313,21 @@ void CGame::UpdateLight(void)
 
 		it->SetLightInfo(infoLight);
 	}
+}
+
+//=====================================================
+// ポーズの更新
+//=====================================================
+void CGame::UpdatePause(void)
+{
+	CPause* pPause = CPause::GetInstance();
+
+	if (pPause == nullptr)
+	{
+		return;
+	}
+
+	pPause->Update();
 }
 
 //=====================================================

@@ -16,6 +16,7 @@
 #include "score.h"
 #include "UI_enemy.h"
 #include "stageResultUI.h"
+#include "pause.h"
 
 //*****************************************************
 // 前方宣言
@@ -71,6 +72,7 @@ private:
 	void Debug(void);
 	void CreateLight(void);	// ライトの生成
 	void UpdateLight(void);	// ライトの更新
+	void UpdatePause(void);	// ポーズの更新
 
 	// メンバ変数
 	int m_nCntState;	// 状態遷移カウンター
