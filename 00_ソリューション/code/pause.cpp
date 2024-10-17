@@ -23,8 +23,8 @@
 //*****************************************************
 // マクロ定義
 //*****************************************************
-#define MENU_WIDTH	(0.18f)	// 項目の幅
-#define MENU_HEIGHT	(0.05f)	// 項目の高さ
+#define MENU_WIDTH	(0.12f)	// 項目の幅
+#define MENU_HEIGHT	(0.12f)	// 項目の高さ
 #define MOVE_FACT	(0.15f)	// 移動速度
 #define LINE_ARRIVAL	(0.05f)	// 到着したとされるしきい値
 #define LINE_UNINIT	(3.0f)	// 終了するまでのしきい値
@@ -108,10 +108,10 @@ HRESULT CPause::Init(void)
 
 	char *pPath[MENU_MAX] = 
 	{// メニュー項目のパス
-		"data\\TEXTURE\\UI\\menu_return.png",
-		"data\\TEXTURE\\UI\\menu_resume.png",
-		"data\\TEXTURE\\UI\\menu_retry.png",
-		"data\\TEXTURE\\UI\\menu_quit.png",
+		"data\\TEXTURE\\UI\\Return.png",
+		"data\\TEXTURE\\UI\\Restart.png",
+		"data\\TEXTURE\\UI\\Back.png",
+		"data\\TEXTURE\\UI\\pause.png",
 	};
 
 	int nIdxTexture;
@@ -124,11 +124,41 @@ HRESULT CPause::Init(void)
 
 			if (m_apMenu[nCntMenu] != nullptr)
 			{
-				// ポリゴンの設定
-				m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-MENU_WIDTH, 0.1f + MENU_HEIGHT * nCntMenu * 4, 0.0f));
-				m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
+				if (nCntMenu == MENU_RESUME)
+				{
+					// ポリゴンの設定
+					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-0.2f, 0.3f + MENU_HEIGHT * nCntMenu, 0.0f));
+					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
 
-				m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
+					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
+				}
+
+				else if (nCntMenu == MENU_RESTART)
+				{
+					// ポリゴンの設定
+					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-0.7f, 0.3f + MENU_HEIGHT * nCntMenu, 0.0f));
+					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
+
+					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
+				}
+
+				else if (nCntMenu == MENU_QUIT)
+				{
+					// ポリゴンの設定
+					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-0.2f, 0.3f + MENU_HEIGHT * nCntMenu, 0.0f));
+					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
+
+					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
+				}
+
+				else if (nCntMenu == MENU_PAUSE)
+				{
+					// ポリゴンの設定
+					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
+					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-0.5f, 0.1f + MENU_HEIGHT, 0.0f));
+
+					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
+				}
 
 				m_apMenu[nCntMenu]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
 
@@ -397,12 +427,6 @@ void CPause::Fade(MENU menu)
 
 	switch (menu)
 	{
-	case CPause::MENU_RETRY_FROM_CHECKPOINT:
-
-		CGame::SetState(CGame::STATE_END);
-		pFade->SetFade(CScene::MODE_GAME);
-
-		break;
 	case CPause::MENU_RESUME:
 
 		m_state = STATE_OUT;

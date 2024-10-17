@@ -42,6 +42,7 @@ private:
 		RESULT_FAIL,	// é∏îs
 		RESULT_MAX
 	};
+
 	enum STATE
 	{
 		STATE_NONE = 0,	// âΩÇ≈Ç‡Ç»Ç¢èÛë‘
