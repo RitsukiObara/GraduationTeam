@@ -23,6 +23,17 @@ class CPolygon3D;
 class CPlayer : public CMotion
 {
 public:
+	// モーション列挙
+	enum EMotion
+	{
+		MOTION_NEUTRAL = 0,
+		MOTION_JUMPSTART,
+		MOTION_JUMPFLY,
+		MOTION_LANDING,
+		MOTION_PECK,
+		MOTION_MAX
+	};
+
 	CPlayer(int nPriority = 4);	// コンストラクタ
 	~CPlayer();	// デストラクタ
 
@@ -44,6 +55,7 @@ private:
 	void CollideIce(void);	// 氷との判定
 	void MoveGrid(void);	// グリッド移動
 	void MoveToGrid(void);	// グリッドまでの移動
+	void LandCheck(void);	// 着地確認
 	void InputPeck(void);	// 突っつきの入力
 	void Debug(void);	// デバッグ処理
 	void MotionFinishCheck(void);	// モーションが終了したか確認
@@ -53,6 +65,7 @@ private:
 	int m_nGridH;	// 今いるグリッドの横番号
 	bool m_bMove;	// 移動中フラグ
 	bool m_bAnalog;	// アナログ操作
+	float m_jumpTime;	// ジャンプ時間
 
 	// 静的メンバ変数
 	static CPlayer* s_pPlayer;	// 自身のポインタ
