@@ -165,6 +165,12 @@ void CIce::Uninit(void)
 		break;
 	}
 
+	if (m_pState != nullptr)
+	{
+		m_pState->Uninit(this);
+		m_pState = nullptr;
+	}
+
 	CGameObject::Uninit();
 }
 
@@ -317,6 +323,10 @@ void CIceStaeteBreak::Init(CIce *pIce)
 		// スケールをランダム設定
 		float fRand = universal::RandRange(MAX_SCALE, MIN_SCALE) * 0.1f;
 		pPeace->SetScale(fRand);
+
+		// 回転
+		float fRotY = universal::RandRange(314, 0) * 0.01f;
+		pPeace->SetRotation(D3DXVECTOR3(0.0f, fRotY, 0.0f));
 
 		// 配列に入れる
 		m_aPeaceIce.push_back(pPeace);

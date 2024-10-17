@@ -86,11 +86,13 @@ void CObjectX::Draw(void)
 {
 	if (!m_bDisp)
 		return;
-
 	if (m_pModel != nullptr)
 	{
 		// デバイスの取得
 		LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
+
+		// 頂点法線の自動正規化を有効にする
+		pDevice->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
 
 		if (m_bShadow)
 		{
@@ -164,6 +166,9 @@ void CObjectX::Draw(void)
 
 		// マテリアルを戻す
 		pDevice->SetMaterial(&matDef);
+
+		// 頂点法線の自動正規化を無効にする
+		pDevice->SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);
 	}
 }
 
