@@ -420,11 +420,40 @@ void CIceManager::Collide(D3DXVECTOR3 *pPos)
 	GetIdxGridFromPosition(*pPos, &nIdxV, &nIdxH);
 
 #ifdef _DEBUG
-	CDebugProc::GetInstance()->Print("\n今いるグリッド[%d,%d]", nIdxV, nIdxV);
+	D3DXVECTOR3 posIce = m_aGrid[nIdxV][nIdxH].pos;
+	CEffect3D::Create(posIce, 100.0f, 5, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+
+	CDebugProc::GetInstance()->Print("\n今いるグリッド[%d,%d]", nIdxV, nIdxH);
 #endif
 
 	// 今いるグリッドの氷との判定を行う
+	LimitInIce(pPos, nIdxV, nIdxH);
+}
 
+//=====================================================
+// 氷内に収める処理
+//=====================================================
+void CIceManager::LimitInIce(D3DXVECTOR3 *pPos, int nNumV, int nNumH)
+{
+	if (pPos == nullptr)
+		return;
+
+	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
+		return;
+
+	D3DXVECTOR3 posIce = m_aGrid[nNumV][nNumH].pIce->GetPosition();
+
+	pPos->y = posIce.y;
+
+	//if (pPos->x >= posIce.x + WIDTH_GRID * 0.5f)
+	//	pPos->x = posIce.x + WIDTH_GRID * 0.5f;	// 右側の補正
+	//else if (pPos->x <= posIce.x - WIDTH_GRID * 0.5f)
+	//	pPos->x = posIce.x - WIDTH_GRID * 0.5f;	// 左側の補正
+
+	//if (pPos->z >= posIce.z + DEPTH_GRID * 0.5f)
+	//	pPos->z = posIce.z + DEPTH_GRID * 0.5f;	// 奥側の補正
+	//else if (pPos->z <= posIce.z - DEPTH_GRID * 0.5f)
+	//	pPos->z = posIce.z - DEPTH_GRID * 0.5f;	// 手前側の補正
 }
 
 //=====================================================
@@ -961,7 +990,37 @@ void CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH
 	if (pIdxV == nullptr || pIdxH == nullptr)
 		return;
 
-	
+	//pos.z -= DEPTH_GRID * 0.5f;
+
+	//*pIdxV = (int)((pos.z + DEPTH_GRID * m_nNumGridVirtical * 0.5f) / DEPTH_GRID);
+	//
+	//if(*pIdxV % 2 == 0)
+	//	pos.x += WIDTH_GRID * 0.5f;
+
+	//*pIdxH = (int)((pos.x + WIDTH_GRID * m_nNumGridVirtical * 0.5f) / WIDTH_GRID);
+
+	pos.y = 10.0f;
+
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			// 距離の計算
+			D3DXVECTOR3 posGrid = m_aGrid[i][j].pos;
+
+			D3DXVECTOR3 vecDiff = posGrid - pos;
+
+			float fDist = D3DXVec3Length(&vecDiff);
+
+			if (fDist < WIDTH_GRID * 0.5f)
+			{// 氷のサイズ分の半径より小さかったら乗ってる判定
+				*pIdxV = i;
+				*pIdxH = j;
+
+				return;
+			}
+		}
+	}
 }
 
 //=====================================================

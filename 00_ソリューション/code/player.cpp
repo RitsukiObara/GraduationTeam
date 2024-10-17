@@ -11,6 +11,7 @@
 #include "player.h"
 #include "inputManager.h"
 #include "inputkeyboard.h"
+#include "inputjoypad.h"
 #include "iceManager.h"
 #include "debugproc.h"
 #include "particle.h"
@@ -39,7 +40,7 @@ CPlayer *CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
-CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_bMove(false)
+CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_bMove(false), m_bAnalog(false)
 {
 
 }
@@ -121,10 +122,18 @@ void CPlayer::Update(void)
 //=====================================================
 void CPlayer::Input(void)
 {
-#if 1
-	MoveAnalog();
-#else
-	MoveGrid();
+	if(m_bAnalog)
+		MoveAnalog();
+	else
+		MoveGrid();
+
+	// 突っつきの入力
+	InputPeck();
+
+#ifdef _DEBUG
+	if (CInputJoypad::GetInstance()->GetTrigger(CInputJoypad::PADBUTTONS_UP, 0) ||
+		CInputKeyboard::GetInstance()->GetTrigger(DIK_2))
+		m_bAnalog = m_bAnalog ? false : true;
 #endif
 }
 
@@ -216,6 +225,7 @@ void CPlayer::CollideIce(void)
 	D3DXVECTOR3 pos = GetPosition();
 
 	pIceManager->Collide(&pos);
+	pIceManager->GetIdxGridFromPosition(pos, &m_nGridV, &m_nGridH);
 
 	SetPosition(pos);
 }
@@ -298,7 +308,7 @@ void CPlayer::MoveToGrid(void)
 	// グリッド取得========================================
 	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
 
-#ifdef _DEBUG
+#ifndef _DEBUG
 	if (m_bMove == true)
 	{// デバッグ時瞬間移動
 		SetPosition(posGrid);
@@ -306,7 +316,7 @@ void CPlayer::MoveToGrid(void)
 		m_bMove = false;
 	}
 #else
-	if (m_isMove == true && GetMotion() == MOTION_JUMPSTART && IsFinish() == true)
+	if (m_bMove == true && GetMotion() == MOTION_JUMPSTART && IsFinish() == true)
 	{// どこか移動した
 		// 目標位置設定========================================
 		SetPositionDest(posGrid);
@@ -333,20 +343,41 @@ void CPlayer::MoveToGrid(void)
 }
 
 //=====================================================
+// 突っつきの入力
+//=====================================================
+void CPlayer::InputPeck(void)
+{
+	CInputManager *pInputManager = CInputManager::GetInstance();
+
+	if (pInputManager == nullptr)
+		return;
+
+	CIceManager *pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return;
+
+	if (pInputManager->GetTrigger(CInputManager::BUTTON_PECK))
+		pIceManager->PeckIce(m_nGridV, m_nGridH, CIceManager::E_Direction::DIRECTION_LEFT);
+}
+
+//=====================================================
 // デバッグ処理
 //=====================================================
 void CPlayer::Debug(void)
 {
 	CDebugProc *pDebugProc = CDebugProc::GetInstance();
 	CInputKeyboard *pInputKeyboard = CInputKeyboard::GetInstance();
+	CInputJoypad *pJoypad = CInputJoypad::GetInstance();
 
-	if (pDebugProc == nullptr || pInputKeyboard == nullptr)
+	if (pDebugProc == nullptr || pInputKeyboard == nullptr || pJoypad == nullptr)
 		return;
 	
 	pDebugProc->Print("\n縦[%d]横[%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\n位置[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
 
-	if (pInputKeyboard->GetTrigger(DIK_RSHIFT))
+	if (pInputKeyboard->GetTrigger(DIK_RSHIFT) || 
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_RB,0))
 	{
 		CIceManager *pIceManager = CIceManager::GetInstance();
 
@@ -356,7 +387,8 @@ void CPlayer::Debug(void)
 		}
 	}
 
-	if (pInputKeyboard->GetTrigger(DIK_RCONTROL))
+	if (pInputKeyboard->GetTrigger(DIK_RCONTROL) ||
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_LB, 0))
 	{
 		CIceManager *pIceManager = CIceManager::GetInstance();
 

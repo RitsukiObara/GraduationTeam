@@ -44,6 +44,7 @@ private:
 	void CollideIce(void);	// 氷との判定
 	void MoveGrid(void);	// グリッド移動
 	void MoveToGrid(void);	// グリッドまでの移動
+	void InputPeck(void);	// 突っつきの入力
 	void Debug(void);	// デバッグ処理
 	void MotionFinishCheck(void);	// モーションが終了したか確認
 
@@ -51,6 +52,7 @@ private:
 	int m_nGridV;	// 今いるグリッドの縦番号
 	int m_nGridH;	// 今いるグリッドの横番号
 	bool m_bMove;	// 移動中フラグ
+	bool m_bAnalog;	// アナログ操作
 
 	// 静的メンバ変数
 	static CPlayer *s_pPlayer;	// 自身のポインタ
