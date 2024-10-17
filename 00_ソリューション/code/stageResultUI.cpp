@@ -34,8 +34,8 @@
 //*****************************************************
 namespace
 {
-	const char* CREAR_LOGO_PATH = "data\\TEXTURE\\UI\\caption03.png";	// クリアロゴのパス
-	const char* FAIL_LOGO_PATH = "data\\TEXTURE\\UI\\caption02.png";	// 失敗ロゴのパス
+	const char* CREAR_LOGO_PATH = "data\\TEXTURE\\UI\\stage_clear.png";	// クリアロゴのパス
+	const char* FAIL_LOGO_PATH = "data\\TEXTURE\\UI\\gameover.png";	// 失敗ロゴのパス
 }
 
 //*****************************************************
@@ -48,9 +48,10 @@ CStageResultUI* CStageResultUI::m_pStageResultUI = nullptr;	// 自身のポインタ
 //====================================================
 CStageResultUI::CStageResultUI():m_apResult(),m_aPosDest()
 {
-	m_RESULT = RESULT_CREAR;
+	m_Result = RESULT_CLEAR;
 	m_state = STATE_NONE;
 	m_bSound = false;
+	nCountMove = 0;
 }
 
 //====================================================
@@ -85,23 +86,24 @@ CStageResultUI* CStageResultUI::Create(void)
 HRESULT CStageResultUI::Init(void)
 {
 	//クリアの時
-	if (m_RESULT == RESULT_CREAR)
+	if (m_Result == RESULT_CLEAR)
 	{
 		// クリアロゴの生成
-		m_apResult[RESULT_CREAR] = CPolygon2D::Create(7);
+		m_apResult[RESULT_CLEAR] = CPolygon2D::Create(7);
 
-		if (m_apResult[RESULT_CREAR] != nullptr)
+		if (m_apResult[RESULT_CLEAR] != nullptr)
 		{
-			m_apResult[RESULT_CREAR]->SetSize(300.0f, 100.0f);
-			m_apResult[RESULT_CREAR]->SetPosition(D3DXVECTOR3(640.0f, 150.0f, 0.0f));
+			m_apResult[RESULT_CLEAR]->SetSize(300.0f, 100.0f);
+			m_apResult[RESULT_CLEAR]->SetPosition(D3DXVECTOR3(640.0f, 200.0f, 0.0f));
 			int nIdx = CTexture::GetInstance()->Regist(CREAR_LOGO_PATH);
-			m_apResult[RESULT_CREAR]->SetIdxTexture(nIdx);
-			m_apResult[RESULT_CREAR]->SetVtx();
+			m_apResult[RESULT_CLEAR]->SetIdxTexture(nIdx);
+			m_apResult[RESULT_CLEAR]->SetVtx();
+			m_apResult[RESULT_CLEAR]->SetAlpha(0.2f);
 		}
 	}
 
 	//失敗の時
-	else if (m_RESULT == RESULT_FAIL)
+	else if (m_Result == RESULT_FAIL)
 	{
 		// 失敗ロゴの生成
 		m_apResult[RESULT_FAIL] = CPolygon2D::Create(7);
@@ -109,10 +111,11 @@ HRESULT CStageResultUI::Init(void)
 		if (m_apResult[RESULT_FAIL] != nullptr)
 		{
 			m_apResult[RESULT_FAIL]->SetSize(330.0f, 100.0f);
-			m_apResult[RESULT_FAIL]->SetPosition(D3DXVECTOR3(640.0f, 150.0f, 0.0f));
+			m_apResult[RESULT_FAIL]->SetPosition(D3DXVECTOR3(640.0f, 200.0f, 0.0f));
 			int nIdx = CTexture::GetInstance()->Regist(FAIL_LOGO_PATH);
 			m_apResult[RESULT_FAIL]->SetIdxTexture(nIdx);
 			m_apResult[RESULT_FAIL]->SetVtx();
+			m_apResult[RESULT_CLEAR]->SetAlpha(0.2f);
 		}
 	}
 
@@ -151,64 +154,136 @@ void CStageResultUI::Uninit(void)
 void CStageResultUI::Update(void)
 {
 	// 状態管理
-	ManageState();
+	ResultState();
 }
 
 //====================================================
 // 状態管理
 //====================================================
-void CStageResultUI::ManageState(void)
+void CStageResultUI::ResultState(void)
 {
-	// 終了フラグ用
-	int nEnd = 0;
-
-	// ポリゴンを目標位置に向かわせる
-	//クリアの時
-	if (m_RESULT == RESULT_CREAR)
+	// クリアの時
+	if (m_Result == RESULT_CLEAR)
 	{
-		if (m_apResult[RESULT_CREAR] != nullptr)
+		if (m_apResult[RESULT_CLEAR] != nullptr)
 		{
-			D3DXVECTOR3 pos = m_apResult[RESULT_CREAR]->GetPosition();
-			D3DXVECTOR3 posOld = pos;
-			////D3DXVECTOR3 vecDiff = m_apResult[RESULT_CREAR] - pos;
-			//float fDiffOld = vecDiff.x;
+			D3DXVECTOR2 size = m_apResult[RESULT_CLEAR]->GetSize();
+			float fAlpha = m_apResult[RESULT_CLEAR]->GetAlpha();
+			nCountMove++;
 
-			//vecDiff *= MOVE_FACT;
+			if (nCountMove > 15 && nCountMove < 25)
+			{
+				fAlpha += 0.08f;
+			}
 
-			//vecDiff += pos;
+			// ポリゴンをカウントごとに動かす
+			if (nCountMove > 0 && nCountMove < 20)
+			{
+				size.x += 1.0f;
+				size.y += 0.6f;
+			}
 
-			//m_apResult[RESULT_CREAR]->SetPosition(vecDiff);
+			else if (nCountMove > 20 && nCountMove < 50)
+			{
+				size.x -= 1.0f;
+				size.y -= 0.6f;
+			}
 
-			//m_apResult[RESULT_CREAR]->SetVtx();
+			else if (nCountMove > 50 && nCountMove < 80)
+			{
+				size.x += 1.0f;
+				size.y += 0.6f;
+			}
 
-			//float fDiff = m_aPosDest[RESULT_CREAR].x - vecDiff.x;
+			else if (nCountMove > 80 && nCountMove < 110)
+			{
+				size.x -= 1.0f;
+				size.y -= 0.6f;
+			}
 
-			//if (fDiffOld * fDiffOld >= LINE_ARRIVAL * LINE_ARRIVAL &&
-			//	fDiff * fDiff < LINE_ARRIVAL * LINE_ARRIVAL &&
-			//	RESULT_CREAR < RESULT_MAX - 1)
-			//{// 差分がしきい値より下になったら下のものを動かす
-			//	if (m_state == STATE_IN)
-			//	{
-			//		m_aPosDest[RESULT_CREAR + 1].x = RESULT_WIDTH;
-			//	}
-			//	else if (m_state == STATE_OUT)
-			//	{
-			//		m_aPosDest[RESULT_CREAR + 1].x = -RESULT_WIDTH;
-			//	}
-			//}
+			else if (nCountMove > 110 && nCountMove < 140)
+			{
+				size.x += 1.0f;
+				size.y += 0.6f;
+			}
 
-			//if (fDiff * fDiff < LINE_UNINIT * LINE_UNINIT &&
-			//	m_state == STATE_OUT)
-			//{// 終了のライン
-			//	nEnd++;
-			//}
+			else if (nCountMove > 140 && nCountMove < 170)
+			{
+				size.x -= 1.0f;
+				size.y -= 0.6f;
+			}
+
+			m_apResult[RESULT_CLEAR]->SetSize(size.x, size.y);
+			m_apResult[RESULT_CLEAR]->SetAlpha(fAlpha);
+			m_apResult[RESULT_CLEAR]->SetVtx();
 		}
 	}
 
-	if (nEnd == RESULT_MAX &&
-		m_state == STATE_OUT)
+	// 失敗の時
+	else if (m_Result == RESULT_FAIL)
 	{
-		Uninit();
+		if (m_apResult[RESULT_FAIL] != nullptr)
+		{
+			D3DXVECTOR3 pos = m_apResult[RESULT_FAIL]->GetPosition();
+			D3DXVECTOR3 rot = m_apResult[RESULT_FAIL]->GetRotation();
+			float fAlpha = m_apResult[RESULT_FAIL]->GetAlpha();
+			nCountMove++;
+
+			if (nCountMove > 15 && nCountMove < 25)
+			{
+				fAlpha += 0.08f;
+			}
+
+			// ポリゴンをカウントごとに動かす
+			if (nCountMove > 0 && nCountMove < 40)
+			{
+				pos.y += 1.0f;
+			}
+
+			else if (nCountMove > 40 && nCountMove < 75)
+			{
+				pos.y -= 1.0f;
+			}
+
+			else if (nCountMove > 75 && nCountMove < 105)
+			{
+				pos.y += 1.0f;
+			}
+
+			else if (nCountMove > 105 && nCountMove < 130)
+			{
+				pos.y -= 1.0f;
+			}
+
+			else if (nCountMove > 130 && nCountMove < 150)
+			{
+				pos.y += 1.0f;
+			}
+
+			else if (nCountMove > 150 && nCountMove < 165)
+			{
+				pos.y -= 1.0f;
+			}
+
+			else if (nCountMove > 165 && nCountMove < 175)
+			{
+				pos.y += 1.0f;
+			}
+
+			else if (nCountMove > 175 && nCountMove < 180)
+			{
+				pos.y -= 1.0f;
+			}
+
+			else if (nCountMove > 185 && nCountMove < 205)
+			{
+				rot.z -= 0.008f;
+			}
+
+			m_apResult[RESULT_FAIL]->SetPosition(pos);
+			m_apResult[RESULT_FAIL]->SetRotation(rot);
+			m_apResult[RESULT_FAIL]->SetVtx();
+		}
 	}
 }
 
@@ -226,7 +301,7 @@ void CStageResultUI::Fade(RESULT RESULT)
 
 	switch (RESULT)
 	{
-	case CStageResultUI::RESULT_CREAR:
+	case CStageResultUI::RESULT_CLEAR:
 
 		CGame::SetState(CGame::STATE_END);
 		pFade->SetFade(CScene::MODE_GAME);
