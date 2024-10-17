@@ -17,6 +17,9 @@
 #include "iceHard.h"
 #include "objectX.h"
 #include "iceManager.h"
+#include "manager.h"
+#include "particle.h"
+#include "model.h"
 
 //*****************************************************
 // 定数定義
@@ -30,7 +33,10 @@ const float HEIGHT_ICE = 50.0f;	// 氷の高さ
 const int NUM_CORNER = 6;	// 角の数
 const D3DXVECTOR3 ROT_UP_INIT = { D3DX_PI * 0.5f,0.0f,0.0f };	// 上側の初期向き
 
-const float TIME_REPAIR_ICE = 1.0f;	// 氷の修復にかかる時間
+const float TIME_REPAIR_ICE = 10.0f;	// 氷の修復にかかる時間
+const int MAX_SCALE = 50; // スケールの最大値
+const int MIN_SCALE = 20; // スケールの最小値
+const string PATH_ICE_DEBRIS = "data\\MODEL\\block\\Drift_ice_small.x";	// 破片氷のモデルパス
 }
 
 //*****************************************************
@@ -287,16 +293,37 @@ void CIceStaeteBreak::Init(CIce *pIce)
 {
 	// 氷のメッシュを削除
 	pIce->DeleteMesh();
-
+	
 	// ここで氷破壊時のエフェクトを発生
+	D3DXVECTOR3 posIce = pIce->GetPosition();
+	CParticle::Create(posIce, CParticle::TYPE::TYPE_ICEBREAK);
 
 	// 氷破片を生成
 	for (int i = 0; i < CIceStaeteBreak::NUM_ICE_BREAK; i++)
 	{
+		CObjectX *pPeace = CObjectX::Create();
 
+		// モデルの割り当て
+		int nIdxModel = CModel::Load((char*)&PATH_ICE_DEBRIS[0]);
+		pPeace->BindModel(nIdxModel);
+
+		// 位置をランダム設定
+		D3DXVECTOR3 posPeace = posIce;
+		posIce.x += (float)universal::RandRange((int)(Grid::SIZE * 0.25f), -(int)(Grid::SIZE * 0.25f));
+		posIce.z += (float)universal::RandRange((int)(Grid::SIZE * 0.25f), -(int)(Grid::SIZE * 0.25f));
+
+		pPeace->SetPosition(posIce);
+
+		// スケールをランダム設定
+		float fRand = universal::RandRange(MAX_SCALE, MIN_SCALE) * 0.1f;
+		pPeace->SetScale(fRand);
+
+		// 配列に入れる
+		m_aPeaceIce.push_back(pPeace);
 	}
 
-	//pIce->
+	// カウンターを初期化
+	m_fTimerRepair = TIME_REPAIR_ICE;
 }
 
 //=====================================================
@@ -308,8 +335,6 @@ void CIceStaeteBreak::Uninit(CIce *pIce)
 		it->Uninit();
 
 	m_aPeaceIce.clear();
-
-	pIce->CreateMesh();
 }
 
 //=====================================================
@@ -317,7 +342,16 @@ void CIceStaeteBreak::Uninit(CIce *pIce)
 //=====================================================
 void CIceStaeteBreak::Update(CIce *pIce)
 {
+	// タイマーを減らす
+	m_fTimerRepair -= CManager::GetDeltaTime();
 
+	if (m_fTimerRepair <= 0.0f)
+	{// 一定時間経過で、氷を修復する
+		pIce->CreateMesh();
+
+		pIce->ChangeState(new CIceStaeteNormal);
+		pIce->EnablePeck(false);
+	}
 }
 
 //*******************************************************************************
