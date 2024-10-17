@@ -19,6 +19,7 @@
 #include "game.h"
 #include "sound.h"
 #include "UI.h"
+#include "inputManager.h"
 
 //*****************************************************
 // マクロ定義
@@ -115,7 +116,7 @@ HRESULT CStageResultUI::Init(void)
 			int nIdx = CTexture::GetInstance()->Regist(FAIL_LOGO_PATH);
 			m_apResult[RESULT_FAIL]->SetIdxTexture(nIdx);
 			m_apResult[RESULT_FAIL]->SetVtx();
-			m_apResult[RESULT_CLEAR]->SetAlpha(0.2f);
+			m_apResult[RESULT_FAIL]->SetAlpha(0.2f);
 		}
 	}
 
@@ -162,6 +163,8 @@ void CStageResultUI::Update(void)
 //====================================================
 void CStageResultUI::ResultState(void)
 {
+	CInputManager* pInputManager = CInputManager::GetInstance();
+
 	// クリアの時
 	if (m_Result == RESULT_CLEAR)
 	{
@@ -211,6 +214,16 @@ void CStageResultUI::ResultState(void)
 			{
 				size.x -= 1.0f;
 				size.y -= 0.6f;
+			}
+
+			else if (nCountMove > 170)
+			{
+				// カウントと透明度をリセット========================================
+				if (pInputManager->GetTrigger(CInputManager::BUTTON_RESULT))
+				{
+					nCountMove = 0;
+					fAlpha = 0.2f;
+				}
 			}
 
 			m_apResult[RESULT_CLEAR]->SetSize(size.x, size.y);
@@ -280,8 +293,20 @@ void CStageResultUI::ResultState(void)
 				rot.z -= 0.008f;
 			}
 
+			else if (nCountMove > 205)
+			{
+				// カウントと透明度をリセット========================================
+				if (pInputManager->GetTrigger(CInputManager::BUTTON_RESULT))
+				{
+					nCountMove = 0;
+					fAlpha = 0.2f;
+					rot.z = 0.0f;
+				}
+			}
+
 			m_apResult[RESULT_FAIL]->SetPosition(pos);
 			m_apResult[RESULT_FAIL]->SetRotation(rot);
+			m_apResult[RESULT_FAIL]->SetAlpha(fAlpha);
 			m_apResult[RESULT_FAIL]->SetVtx();
 		}
 	}

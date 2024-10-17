@@ -61,6 +61,11 @@ CPause::~CPause()
 //====================================================
 CPause *CPause::Create(void)
 {
+	if (m_pPause != nullptr)
+	{
+		m_pPause = nullptr;
+	}
+
 	if (m_pPause == nullptr)
 	{
 		m_pPause = new CPause;
@@ -148,7 +153,7 @@ HRESULT CPause::Init(void)
 
 	m_aPosDest[0].x = MENU_WIDTH;
 
-	EnableNotStop(true);
+	//EnableNotStop(true);
 
 	return S_OK;
 }
