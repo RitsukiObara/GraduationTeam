@@ -25,7 +25,6 @@
 //*****************************************************
 #define MAX_STRING	(256)	// 文字列の最大数
 #define POSDEST_NEAREQUAL	(0.01f)	// 大体目標位置に着いたとする距離
-#define DEFAULT_WEIGHT	(5.0f)	// 仮の重さ
 
 //=====================================================
 // コンストラクタ
@@ -51,7 +50,6 @@ CMotion::CMotion(int nPriority) : CObject3D(nPriority)
 	m_posDest = { 0.0f,0.0f,0.0f };
 	m_posShadow = { 0.0f,0.0f,0.0f };
 	m_move = { 0.0f,0.0f,0.0f };
-	m_jumpTime = 0.0f;
 	m_col = { 1.0f,1.0f,1.0f,1.0f };
 	m_bInde = false;
 }
@@ -951,24 +949,6 @@ void CMotion::MovePositionDest(void)
 		pos.x = m_posDest.x;
 		pos.z = m_posDest.z;
 		m_move = D3DXVECTOR3(0.0f, m_move.y, 0.0f);
-	}
-
-	m_jumpTime += CManager::GetInstance()->GetDeltaTime();
-	pos.y += m_move.y - 9.8f * DEFAULT_WEIGHT * m_jumpTime;
-	universal::LimitValuefloat(&pos.y, 1000.0f, m_posDest.y);
-
-	if (pos.y <= m_posDest.y)
-	{
-		// Y位置移動完了
-		pos.y = m_posDest.y;
-		m_move.y = 0.0f;
-		m_jumpTime = 0.0f;
-
-		// 着地モーション
-		if (m_motionType == MOTION_JUMPFLY)
-		{
-			SetMotion(MOTION_LANDING);
-		}
 	}
 
 	CGameObject::SetPosition(pos);

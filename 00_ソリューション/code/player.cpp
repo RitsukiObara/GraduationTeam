@@ -30,6 +30,7 @@ namespace
 	const float RATE_DECREASE_MOVE = 0.5f;	// 移動減衰の割合
 	const float LINE_FACT_ROT = 0.3f;	// 向きを補正するまでの入力しきい値
 	const float FACT_ROTATION = 0.3f;	// 回転係数
+	const float DEFAULT_WEIGHT = 5.0f;	// 仮の重さ
 }
 
 //*****************************************************
@@ -42,7 +43,7 @@ CPlayer* CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
 //=====================================================
 CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_bMove(false), m_bAnalog(false)
 {
-
+	m_jumpTime = 0.0f;
 }
 
 //=====================================================
@@ -108,6 +109,9 @@ void CPlayer::Update(void)
 
 	// モーション更新
 	CMotion::Update();
+
+	// 着地確認
+	LandCheck();
 
 	// モーション完了後の処理
 	MotionFinishCheck();
@@ -340,6 +344,48 @@ void CPlayer::MoveToGrid(void)
 			SetPosition(posObject);
 		}
 	}
+}
+
+//=====================================================
+// 着地確認
+//=====================================================
+void CPlayer::LandCheck(void)
+{
+	D3DXVECTOR3 pos = GetPosition();
+	D3DXVECTOR3 posDest = GetPositionDest();
+	D3DXVECTOR3 move = GetMove();
+
+	CIceManager* pIceManager = CIceManager::GetInstance();
+	if (pIceManager == nullptr)
+		return;
+
+	CIce* pIce = pIceManager->GetGridObject(&m_nGridV, &m_nGridH);
+	if (pIce != nullptr)
+	{
+		D3DXVECTOR3 posObject = pIce->GetPosition();
+		posDest = posObject;
+	}
+
+	m_jumpTime += CManager::GetInstance()->GetDeltaTime();
+	pos.y += move.y - 9.8f * DEFAULT_WEIGHT * m_jumpTime;
+	universal::LimitValuefloat(&pos.y, 1000.0f, posDest.y);
+
+	if (pos.y <= posDest.y)
+	{
+		// Y位置移動完了
+		pos.y = posDest.y;
+		move.y = 0.0f;
+		m_jumpTime = 0.0f;
+
+		// 着地モーション
+		if (GetMotion() == MOTION_JUMPFLY)
+		{
+			SetMotion(MOTION_LANDING);
+		}
+	}
+
+	CGameObject::SetPosition(pos);
+	CMotion::SetMove(move);
 }
 
 //=====================================================
