@@ -74,6 +74,7 @@ CGame::CGame()
 	m_nCntState = 0;
 	m_bStop = false;
 	m_posMid = { 0.0f,0.0f,0.0f };
+	m_pPause = nullptr;
 }
 
 //=====================================================
@@ -177,7 +178,8 @@ void CGame::Update(void)
 	// ポーズ========================================
 	if (pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE))
 	{
-		CPause::Create();
+		if(m_pPause == nullptr)
+			m_pPause = CPause::Create();
 	}
 
 	// カメラ更新
@@ -190,7 +192,7 @@ void CGame::Update(void)
 	UpdateLight();
 
 	// ポーズの更新
-	//UpdatePause();
+	UpdatePause();
 
 #ifdef _DEBUG
 	Debug();
@@ -320,14 +322,12 @@ void CGame::UpdateLight(void)
 //=====================================================
 void CGame::UpdatePause(void)
 {
-	CPause* pPause = CPause::GetInstance();
-
-	if (pPause == nullptr)
+	if (m_pPause == nullptr)
 	{
 		return;
 	}
 
-	pPause->Update();
+	m_pPause->Update();
 }
 
 //=====================================================

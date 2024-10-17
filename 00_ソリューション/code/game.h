@@ -23,6 +23,7 @@
 //*****************************************************
 class CGame;
 class CLight;
+class CPause;
 
 //*****************************************************
 // クラスの定義
@@ -54,6 +55,7 @@ public:
 	static STATE GetState(void) { return m_state; }
 	void EnableStop(bool bStop) { m_bStop = bStop; }
 	bool GetStop(void) { return m_bStop; }
+	void ReleasePause(void) { m_pPause = nullptr; };	// ポーズの解放
 
 	// 変数取得・設定関数
 	vector<CLight*> GetLight(void) { return m_aLight; };	// ライトの配列
@@ -83,6 +85,7 @@ private:
 	D3DXCOLOR m_colLight;	// ライト色
 	D3DXVECTOR3 m_posMid;	// プレイヤーと敵の中心座標
 	CStageResultUI* m_pStageResultUI;	// ステージクリアUI
+	CPause *m_pPause;	// ポーズのポインタ
 
 	// 静的メンバ変数
 	static STATE m_state;	// 状態

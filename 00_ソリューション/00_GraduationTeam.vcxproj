@@ -218,6 +218,7 @@
     <ClCompile Include="code\object.cpp" />
     <ClCompile Include="code\object3D.cpp" />
     <ClCompile Include="code\ocean.cpp" />
+    <ClCompile Include="code\pause.cpp" />
     <ClCompile Include="code\player.cpp" />
     <ClCompile Include="code\polygon2D.cpp" />
     <ClCompile Include="code\polygon3D.cpp" />
@@ -225,7 +226,6 @@
     <ClCompile Include="code\orbit.cpp" />
     <ClCompile Include="code\particle.cpp" />
     <ClCompile Include="code\parts.cpp" />
-    <ClCompile Include="code\pause.cpp" />
     <ClCompile Include="code\precompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -308,6 +308,7 @@
     <ClInclude Include="code\object.h" />
     <ClInclude Include="code\object3D.h" />
     <ClInclude Include="code\ocean.h" />
+    <ClInclude Include="code\pause.h" />
     <ClInclude Include="code\player.h" />
     <ClInclude Include="code\polygon2D.h" />
     <ClInclude Include="code\polygon3D.h" />
@@ -315,7 +316,6 @@
     <ClInclude Include="code\orbit.h" />
     <ClInclude Include="code\particle.h" />
     <ClInclude Include="code\parts.h" />
-    <ClInclude Include="code\pause.h" />
     <ClInclude Include="code\precompile.h" />
     <ClInclude Include="code\random.h" />
     <ClInclude Include="code\ranking.h" />
