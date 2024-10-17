@@ -15,6 +15,8 @@
 #include "meshcylinder.h"
 #include "ocean.h"
 #include "iceHard.h"
+#include "objectX.h"
+#include "iceManager.h"
 
 //*****************************************************
 // 定数定義
@@ -27,6 +29,8 @@ const float SIZE_INIT = 100.0f;	// 初期サイズ
 const float HEIGHT_ICE = 50.0f;	// 氷の高さ
 const int NUM_CORNER = 6;	// 角の数
 const D3DXVECTOR3 ROT_UP_INIT = { D3DX_PI * 0.5f,0.0f,0.0f };	// 上側の初期向き
+
+const float TIME_REPAIR_ICE = 1.0f;	// 氷の修復にかかる時間
 }
 
 //*****************************************************
@@ -121,6 +125,17 @@ void CIce::CreateMesh(void)
 
 	if (m_pSide == nullptr)
 		m_pSide = CMeshCylinder::Create(NUM_CORNER);
+
+	SetTransform(Grid::SIZE);
+}
+
+//=====================================================
+// メッシュの破棄
+//=====================================================
+void CIce::DeleteMesh(void)
+{
+	Object::DeleteObject((CObject**)&m_pUp);
+	Object::DeleteObject((CObject**)&m_pSide);
 }
 
 //=====================================================
@@ -128,8 +143,8 @@ void CIce::CreateMesh(void)
 //=====================================================
 void CIce::Uninit(void)
 {
-	Object::DeleteObject((CObject**)&m_pUp);
-	Object::DeleteObject((CObject**)&m_pSide);
+	// メッシュの削除
+	DeleteMesh();
 
 	for (auto itr = m_Vector.begin(); itr < m_Vector.end(); itr++)
 	{
@@ -270,7 +285,18 @@ void CIceStaeteNormal::Update(CIce *pIce)
 //=====================================================
 void CIceStaeteBreak::Init(CIce *pIce)
 {
+	// 氷のメッシュを削除
+	pIce->DeleteMesh();
 
+	// ここで氷破壊時のエフェクトを発生
+
+	// 氷破片を生成
+	for (int i = 0; i < CIceStaeteBreak::NUM_ICE_BREAK; i++)
+	{
+
+	}
+
+	//pIce->
 }
 
 //=====================================================
@@ -278,7 +304,12 @@ void CIceStaeteBreak::Init(CIce *pIce)
 //=====================================================
 void CIceStaeteBreak::Uninit(CIce *pIce)
 {
+	for (auto it : m_aPeaceIce)
+		it->Uninit();
 
+	m_aPeaceIce.clear();
+
+	pIce->CreateMesh();
 }
 
 //=====================================================

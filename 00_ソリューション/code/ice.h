@@ -19,6 +19,7 @@
 class CMeshCylinder;
 class CFan3D;
 class CIceState;
+class CObjectX;
 
 //*****************************************************
 // クラスの定義
@@ -50,6 +51,7 @@ public:
 	void Update(void);
 	void Draw(void);
 	void CreateMesh(void);	// メッシュの生成
+	void DeleteMesh(void);	// メッシュの破棄
 	void SetTransform(float fRadius);	// トランスフォーム設定
 	virtual bool IsCanPeck(void) { return true; };	// 突っつけるかの判定を返す
 	void ChangeState(CIceState *pState);
@@ -120,7 +122,7 @@ private:
 class CIceStaeteBreak : public CIceState
 {// 氷の崩壊ステイト
 public:
-	CIceStaeteBreak() {};	// コンストラクタ
+	CIceStaeteBreak() : m_fTimerRepair(0.0f) {};	// コンストラクタ
 	~CIceStaeteBreak() {};	// デストラクタ
 
 	void Init(CIce *pIce) override;	// 初期化
@@ -128,6 +130,12 @@ public:
 	void Update(CIce *pIce) override;	// 更新
 
 private:
+	// 定数定義
+	static const int NUM_ICE_BREAK = 5;	// 壊れた氷の数
+
+	// メンバ変数
+	vector<CObjectX*> m_aPeaceIce;	// 氷の破片のポイント
+	float m_fTimerRepair;	// 修復タイマー
 };
 
 class CIceStaeteFlow : public CIceState

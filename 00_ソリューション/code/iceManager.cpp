@@ -268,6 +268,7 @@ void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 	if (m_aGrid[nNumBreakV][nNumBreakH].pIce)
 	{
 		m_aGrid[nNumBreakV][nNumBreakH].pIce->EnablePeck(true);
+		m_aGrid[nNumBreakV][nNumBreakH].pIce->ChangeState(new CIceStaeteBreak);
 	}
 
 	// •X’Tõ‚ÌÄ‹AŠÖ”
