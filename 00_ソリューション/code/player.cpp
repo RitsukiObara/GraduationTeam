@@ -11,6 +11,7 @@
 #include "player.h"
 #include "inputManager.h"
 #include "inputkeyboard.h"
+#include "inputjoypad.h"
 #include "iceManager.h"
 #include "debugproc.h"
 #include "particle.h"
@@ -18,39 +19,29 @@
 #include "manager.h"
 
 //*****************************************************
-// マクロ定義
-//*****************************************************
-#define POSDEST_NEAREQUAL	(0.01f)	// 大体目標位置に着いたとする距離
-#define DEFAULT_WEIGHT	(5.0f)	// 仮の重さ
-
-//*****************************************************
 // 定数定義
 //*****************************************************
 namespace
 {
-const std::string PATH_BODY = "data\\MOTION\\motionPenguin.txt";	// ボディのパス
-const int MOVE_FRAME = 25;	// 移動にかかるフレーム数
+	const std::string PATH_BODY = "data\\MOTION\\motionPenguin.txt";	// ボディのパス
+	const int MOVE_FRAME = 25;	// 移動にかかるフレーム数
 
-const float SPEED_MOVE_ANALOG = 1.0f;	// アナログ移動での移動距離
-const float RATE_DECREASE_MOVE = 0.5f;	// 移動減衰の割合
-const float LINE_FACT_ROT = 0.3f;	// 向きを補正するまでの入力しきい値
-const float FACT_ROTATION = 0.3f;	// 回転係数
+	const float SPEED_MOVE_ANALOG = 1.0f;	// アナログ移動での移動距離
+	const float RATE_DECREASE_MOVE = 0.5f;	// 移動減衰の割合
+	const float LINE_FACT_ROT = 0.3f;	// 向きを補正するまでの入力しきい値
+	const float FACT_ROTATION = 0.3f;	// 回転係数
 }
 
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CPlayer *CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
+CPlayer* CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
 
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
-CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_bMove(false)
+CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_bMove(false), m_bAnalog(false)
 {
-	m_move = { 0.0f,0.0f,0.0f };
-	m_posDest = { 0.0f,0.0f,0.0f };
-	m_jumpTime = 0.0f;
-	m_motionType = 0;
 
 }
 
@@ -65,7 +56,7 @@ CPlayer::~CPlayer()
 //=====================================================
 // 生成処理
 //=====================================================
-CPlayer *CPlayer::Create(void)
+CPlayer* CPlayer::Create(void)
 {
 	if (s_pPlayer == nullptr)
 	{
@@ -118,9 +109,6 @@ void CPlayer::Update(void)
 	// モーション更新
 	CMotion::Update();
 
-	// 目標位置に移動
-	MovePositionDest();
-
 	// モーション完了後の処理
 	MotionFinishCheck();
 
@@ -134,10 +122,18 @@ void CPlayer::Update(void)
 //=====================================================
 void CPlayer::Input(void)
 {
-#if 1
-	MoveAnalog();
-#else
-	MoveGrid();
+	if (m_bAnalog)
+		MoveAnalog();
+	else
+		MoveGrid();
+
+	// 突っつきの入力
+	InputPeck();
+
+#ifdef _DEBUG
+	if (CInputJoypad::GetInstance()->GetTrigger(CInputJoypad::PADBUTTONS_UP, 0) ||
+		CInputKeyboard::GetInstance()->GetTrigger(DIK_2))
+		m_bAnalog = m_bAnalog ? false : true;
 #endif
 }
 
@@ -158,7 +154,7 @@ void CPlayer::MoveAnalog(void)
 //=====================================================
 void CPlayer::InputMoveAnalog(void)
 {
-	CInputManager *pInputManager = CInputManager::GetInstance();
+	CInputManager* pInputManager = CInputManager::GetInstance();
 
 	if (pInputManager == nullptr)
 	{
@@ -166,14 +162,14 @@ void CPlayer::InputMoveAnalog(void)
 	}
 
 	// カメラ取得
-	CCamera *pCamera = CManager::GetCamera();
+	CCamera* pCamera = CManager::GetCamera();
 
 	if (pCamera == nullptr)
 	{
 		return;
 	}
 
-	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+	CCamera::Camera* pInfoCamera = pCamera->GetCamera();
 
 	// 目標方向の設定
 	CInputManager::SAxis axis = pInputManager->GetAxis();
@@ -191,7 +187,7 @@ void CPlayer::InputMoveAnalog(void)
 	D3DXVECTOR3 move = GetMove();
 
 	// 向いている方向にベクトルを伸ばす
-	vecMove -= {sinf(rot.y) * fLengthAxis, 0.0f, cosf(rot.y) * fLengthAxis};
+	vecMove -= {sinf(rot.y)* fLengthAxis, 0.0f, cosf(rot.y)* fLengthAxis};
 	D3DXVec3Normalize(&vecMove, &vecMove);
 	vecMove *= SPEED_MOVE_ANALOG;
 	move += vecMove;
@@ -221,7 +217,7 @@ void CPlayer::InputMoveAnalog(void)
 //=====================================================
 void CPlayer::CollideIce(void)
 {
-	CIceManager *pIceManager = CIceManager::GetInstance();
+	CIceManager* pIceManager = CIceManager::GetInstance();
 
 	if (pIceManager == nullptr)
 		return;
@@ -229,6 +225,7 @@ void CPlayer::CollideIce(void)
 	D3DXVECTOR3 pos = GetPosition();
 
 	pIceManager->Collide(&pos);
+	pIceManager->GetIdxGridFromPosition(pos, &m_nGridV, &m_nGridH);
 
 	SetPosition(pos);
 }
@@ -238,12 +235,12 @@ void CPlayer::CollideIce(void)
 //=====================================================
 void CPlayer::MoveGrid(void)
 {
-	CInputManager *pInputManager = CInputManager::GetInstance();
+	CInputManager* pInputManager = CInputManager::GetInstance();
 
 	if (pInputManager == nullptr)
 		return;
 
-	CIceManager *pIceManager = CIceManager::GetInstance();
+	CIceManager* pIceManager = CIceManager::GetInstance();
 
 	if (pIceManager == nullptr)
 		return;
@@ -269,7 +266,7 @@ void CPlayer::MoveGrid(void)
 		{
 			m_nGridV++;
 			m_bMove = true;
-}
+		}
 		else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_DOWN))
 		{
 			m_nGridV--;
@@ -311,7 +308,7 @@ void CPlayer::MoveToGrid(void)
 	// グリッド取得========================================
 	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
 
-#if 0
+#ifndef _DEBUG
 	if (m_bMove == true)
 	{// デバッグ時瞬間移動
 		SetPosition(posGrid);
@@ -346,22 +343,43 @@ void CPlayer::MoveToGrid(void)
 }
 
 //=====================================================
+// 突っつきの入力
+//=====================================================
+void CPlayer::InputPeck(void)
+{
+	CInputManager* pInputManager = CInputManager::GetInstance();
+
+	if (pInputManager == nullptr)
+		return;
+
+	CIceManager* pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return;
+
+	if (pInputManager->GetTrigger(CInputManager::BUTTON_PECK))
+		pIceManager->PeckIce(m_nGridV, m_nGridH, CIceManager::E_Direction::DIRECTION_LEFT);
+}
+
+//=====================================================
 // デバッグ処理
 //=====================================================
 void CPlayer::Debug(void)
 {
-	CDebugProc *pDebugProc = CDebugProc::GetInstance();
-	CInputKeyboard *pInputKeyboard = CInputKeyboard::GetInstance();
+	CDebugProc* pDebugProc = CDebugProc::GetInstance();
+	CInputKeyboard* pInputKeyboard = CInputKeyboard::GetInstance();
+	CInputJoypad* pJoypad = CInputJoypad::GetInstance();
 
-	if (pDebugProc == nullptr || pInputKeyboard == nullptr)
+	if (pDebugProc == nullptr || pInputKeyboard == nullptr || pJoypad == nullptr)
 		return;
-	
+
 	pDebugProc->Print("\n縦[%d]横[%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\n位置[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
 
-	if (pInputKeyboard->GetTrigger(DIK_RSHIFT))
+	if (pInputKeyboard->GetTrigger(DIK_RSHIFT) ||
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_RB, 0))
 	{
-		CIceManager *pIceManager = CIceManager::GetInstance();
+		CIceManager* pIceManager = CIceManager::GetInstance();
 
 		if (pIceManager != nullptr)
 		{
@@ -369,13 +387,14 @@ void CPlayer::Debug(void)
 		}
 	}
 
-	if (pInputKeyboard->GetTrigger(DIK_RCONTROL))
+	if (pInputKeyboard->GetTrigger(DIK_RCONTROL) ||
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_LB, 0))
 	{
-		CIceManager *pIceManager = CIceManager::GetInstance();
+		CIceManager* pIceManager = CIceManager::GetInstance();
 
 		if (pIceManager != nullptr)
 		{
-			pIceManager->CreateIce(m_nGridV, m_nGridH,CIce::E_Type::TYPE_HARD);
+			pIceManager->CreateIce(m_nGridV, m_nGridH, CIce::E_Type::TYPE_HARD);
 		}
 	}
 }
@@ -397,46 +416,6 @@ void CPlayer::MotionFinishCheck(void)
 			SetMotion(MOTION_NEUTRAL);
 		}
 	}
-}
-
-//=====================================================
-// 目標位置に移動
-//=====================================================
-void CPlayer::MovePositionDest(void)
-{
-	// XZ移動
-	D3DXVECTOR3 pos = GetPosition();
-	pos.x += m_move.x;
-	pos.z += m_move.z;
-
-	D3DXVECTOR3 vecLength = D3DXVECTOR3(m_posDest.x, 0.0f, m_posDest.z) - D3DXVECTOR3(pos.x, 0.0f, pos.z);
-	if (D3DXVec3Length(&vecLength) <= POSDEST_NEAREQUAL)
-	{
-		// XZ位置移動完了
-		pos.x = m_posDest.x;
-		pos.z = m_posDest.z;
-		m_move = D3DXVECTOR3(0.0f, m_move.y, 0.0f);
-	}
-
-	m_jumpTime += CManager::GetInstance()->GetDeltaTime();
-	pos.y += m_move.y - 9.8f * DEFAULT_WEIGHT * m_jumpTime;
-	universal::LimitValuefloat(&pos.y, 1000.0f, m_posDest.y);
-
-	if (pos.y <= m_posDest.y)
-	{
-		// Y位置移動完了
-		pos.y = m_posDest.y;
-		m_move.y = 0.0f;
-		m_jumpTime = 0.0f;
-
-		// 着地モーション
-		if (m_motionType == MOTION_JUMPFLY)
-		{
-			SetMotion(MOTION_LANDING);
-		}
-	}
-
-	CGameObject::SetPosition(pos);
 }
 
 //=====================================================

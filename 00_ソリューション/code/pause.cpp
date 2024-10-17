@@ -34,7 +34,6 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CPause *CPause::m_pPause = nullptr;	// 自身のポインタ
 
 //====================================================
 // コンストラクタ
@@ -61,22 +60,16 @@ CPause::~CPause()
 //====================================================
 CPause *CPause::Create(void)
 {
-	if (m_pPause != nullptr)
+	CPause *pPause = nullptr;
+
+	pPause = new CPause;
+
+	if (pPause != nullptr)
 	{
-		m_pPause = nullptr;
+		pPause->Init();
 	}
 
-	if (m_pPause == nullptr)
-	{
-		m_pPause = new CPause;
-
-		if (m_pPause != nullptr)
-		{
-			m_pPause->Init();
-		}
-	}
-
-	return m_pPause;
+	return pPause;
 }
 
 //====================================================
@@ -153,7 +146,7 @@ HRESULT CPause::Init(void)
 
 	m_aPosDest[0].x = MENU_WIDTH;
 
-	//EnableNotStop(true);
+	EnableNotStop(true);
 
 	return S_OK;
 }
@@ -187,7 +180,8 @@ void CPause::Uninit(void)
 		}
 	}
 
-	m_pPause = nullptr;
+	if (pGame != nullptr)
+		pGame->ReleasePause();
 
 	Release();
 }
@@ -334,8 +328,9 @@ void CPause::Input(void)
 		return;
 	}
 
-	if (pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE) || 
-		pInputManager->GetTrigger(CInputManager::BUTTON_BACK))
+	if ((pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE) || 
+		pInputManager->GetTrigger(CInputManager::BUTTON_BACK)) && 
+		m_state == STATE::STATE_NONE)
 	{// ポーズ解除、以降の操作を受け付けない
 		m_state = STATE_OUT;
 		m_aPosDest[0].x = -MENU_WIDTH;
