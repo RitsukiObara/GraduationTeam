@@ -31,6 +31,7 @@ namespace
 	const float LINE_FACT_ROT = 0.3f;	// 向きを補正するまでの入力しきい値
 	const float FACT_ROTATION = 0.3f;	// 回転係数
 	const float DEFAULT_WEIGHT = 5.0f;	// 仮の重さ
+	const float POSDEST_NEAREQUAL = 0.01f;	// 大体目標位置に着いたとする距離
 }
 
 //*****************************************************
@@ -44,6 +45,8 @@ CPlayer* CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
 CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_bMove(false), m_bAnalog(false)
 {
 	m_jumpTime = 0.0f;
+	m_posDest = { 0.0f,0.0f,0.0f };
+	m_move = { 0.0f,0.0f,0.0f };
 }
 
 //=====================================================
@@ -109,6 +112,9 @@ void CPlayer::Update(void)
 
 	// モーション更新
 	CMotion::Update();
+
+	// 横軸移動
+	MovePositionXZ();
 
 	// 着地確認
 	LandCheck();
@@ -347,13 +353,34 @@ void CPlayer::MoveToGrid(void)
 }
 
 //=====================================================
+// 目標位置に移動
+//=====================================================
+void CPlayer::MovePositionXZ(void)
+{
+	// XZ移動
+	D3DXVECTOR3 pos = GetPosition();
+	pos.x += m_move.x;
+	pos.z += m_move.z;
+
+	D3DXVECTOR3 vecLength = D3DXVECTOR3(m_posDest.x, 0.0f, m_posDest.z) - D3DXVECTOR3(pos.x, 0.0f, pos.z);
+	if (D3DXVec3Length(&vecLength) <= POSDEST_NEAREQUAL)
+	{
+		// XZ位置移動完了
+		pos.x = m_posDest.x;
+		pos.z = m_posDest.z;
+		m_move = D3DXVECTOR3(0.0f, m_move.y, 0.0f);
+	}
+
+	CGameObject::SetPosition(pos);
+}
+
+//=====================================================
 // 着地確認
 //=====================================================
 void CPlayer::LandCheck(void)
 {
 	D3DXVECTOR3 pos = GetPosition();
 	D3DXVECTOR3 posDest = GetPositionDest();
-	D3DXVECTOR3 move = GetMove();
 
 	CIceManager* pIceManager = CIceManager::GetInstance();
 	if (pIceManager == nullptr)
@@ -367,14 +394,14 @@ void CPlayer::LandCheck(void)
 	}
 
 	m_jumpTime += CManager::GetInstance()->GetDeltaTime();
-	pos.y += move.y - 9.8f * DEFAULT_WEIGHT * m_jumpTime;
+	pos.y += m_move.y - 9.8f * DEFAULT_WEIGHT * m_jumpTime;
 	universal::LimitValuefloat(&pos.y, 1000.0f, posDest.y);
 
 	if (pos.y <= posDest.y)
 	{
 		// Y位置移動完了
 		pos.y = posDest.y;
-		move.y = 0.0f;
+		m_move.y = 0.0f;
 		m_jumpTime = 0.0f;
 
 		// 着地モーション
@@ -384,8 +411,7 @@ void CPlayer::LandCheck(void)
 		}
 	}
 
-	CGameObject::SetPosition(pos);
-	CMotion::SetMove(move);
+	SetPosition(pos);
 }
 
 //=====================================================

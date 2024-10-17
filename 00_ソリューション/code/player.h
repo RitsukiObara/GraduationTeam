@@ -47,6 +47,12 @@ public:
 	static CPlayer* Create(void);
 	static CPlayer* GetInstance(void) { return s_pPlayer; }
 
+	// 取得・設定
+	void SetPositionDest(D3DXVECTOR3 pos) { m_posDest = pos; }
+	D3DXVECTOR3 GetPositionDest(void) { return m_posDest; }
+	void SetMove(D3DXVECTOR3 move) { m_move = move; }
+	D3DXVECTOR3 GetMove(void) { return m_move; }	// 取得処理
+
 private:
 	// メンバ関数
 	void Input(void);	// 入力
@@ -55,6 +61,7 @@ private:
 	void CollideIce(void);	// 氷との判定
 	void MoveGrid(void);	// グリッド移動
 	void MoveToGrid(void);	// グリッドまでの移動
+	void MovePositionXZ(void);
 	void LandCheck(void);	// 着地確認
 	void InputPeck(void);	// 突っつきの入力
 	void Debug(void);	// デバッグ処理
@@ -65,6 +72,8 @@ private:
 	int m_nGridH;	// 今いるグリッドの横番号
 	bool m_bMove;	// 移動中フラグ
 	bool m_bAnalog;	// アナログ操作
+	D3DXVECTOR3 m_posDest;	// 目標位置
+	D3DXVECTOR3 m_move;	// 移動量
 	float m_jumpTime;	// ジャンプ時間
 
 	// 静的メンバ変数
