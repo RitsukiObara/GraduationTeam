@@ -36,11 +36,15 @@ public:
 	void SetMatrix(D3DXMATRIX mtx) { m_mtxWorld = mtx; }
 	D3DXMATRIX GetMatrixParent(void) { return m_mtxParent; }	// 親マトリックス
 	void SetMatrixParent(D3DXMATRIX mtx) { m_mtxParent = mtx; }
+	D3DXVECTOR3 GetScale(void) { return m_scale; }	// スケール
+	void SetScale(D3DXVECTOR3 scale) { m_scale = scale; }
+	void SetScale(float fScale) { m_scale = { fScale, fScale, fScale }; }
 
 private:
 	// メンバ変数
 	D3DXMATRIX m_mtxWorld;	// ワールドマトリックス
 	D3DXMATRIX m_mtxParent;	// 親マトリックス
+	D3DXVECTOR3 m_scale;	// スケール
 };
 
 #endif

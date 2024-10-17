@@ -126,7 +126,7 @@ void CDebris::Update(void)
 //=====================================================
 void CDebris::Shrink(void)
 {
-	float fScale = GetScale();
+	float fScale = GetScale().x;
 
 	// èkÇﬁ
 	fScale -= SPEED_SHRINK;

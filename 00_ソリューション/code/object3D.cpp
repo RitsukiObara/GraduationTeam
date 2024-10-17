@@ -14,7 +14,7 @@
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
-CObject3D::CObject3D(int nPriority) : CGameObject(nPriority), m_mtxWorld(), m_mtxParent()
+CObject3D::CObject3D(int nPriority) : CGameObject(nPriority), m_mtxWorld(), m_mtxParent(), m_scale()
 {
 
 }
@@ -34,6 +34,9 @@ HRESULT CObject3D::Init(void)
 {
 	// 親マトリックスの初期化
 	ResetMtxParent();
+
+	// スケール初期化
+	m_scale = { 1.0f,1.0f,1.0f };
 
 	return S_OK;
 }
@@ -60,10 +63,15 @@ void CObject3D::Update(void)
 void CObject3D::Draw(void)
 {
 	LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
-	D3DXMATRIX mtxRot, mtxTrans;
+	D3DXMATRIX mtxRot, mtxTrans, mtxScale;
 
 	// ワールドマトリックス初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
+
+	// スケールを反映
+	D3DXVECTOR3 scale = GetScale();  // スケールを取得する関数
+	D3DXMatrixScaling(&mtxScale, scale.x, scale.y, scale.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScale);
 
 	// 向きを反映
 	D3DXVECTOR3 rot = GetRotation();
