@@ -30,7 +30,6 @@ CObjectX::CObjectX(int nPriority) : CObject3D(nPriority)
 	m_col = { 0.0f,0.0f,0.0f,0.0f };
 	m_nIdxModel = -1;
 	m_fRadius = 0.0f;
-	m_fScale = 0.0f;
 	m_bChangeCol = false;
 	m_bShadow = false;
 	m_pModel = nullptr;
@@ -50,8 +49,6 @@ CObjectX::~CObjectX()
 //====================================================
 HRESULT CObjectX::Init(void)
 {
-	m_fScale = 1.0f;
-
 	if (m_pModel == nullptr)
 	{
 		int nIdx = CModel::Load((char*)INITIAL_MODEL);

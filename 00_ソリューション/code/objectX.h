@@ -52,8 +52,6 @@ public:
 	void SetEmissiveCol(D3DXCOLOR col) { m_col = col; m_bChangeCol = true; }
 	D3DXCOLOR GetEmissiveCol(void) { return m_col; }
 	void ResetColor(void) { m_bChangeCol = false; }
-	float GetScale(void) { return m_fScale; }
-	void SetScale(float fScale) { m_fScale = fScale; }
 	void EnableShadow(bool bEnable) { m_bShadow = bEnable; }
 	bool IsDisp(void) { return m_bDisp; }
 	void EnableDisp(bool bDisp) { m_bDisp = bDisp; }
@@ -65,7 +63,6 @@ private:
 	CModel::Model *m_pModel;
 	int m_nIdxModel;	// モデルの番号
 	float m_fRadius;	// モデルの半径
-	float m_fScale;	// スケール
 	D3DXVECTOR3 m_vtxMax;	// 最大頂点
 	D3DXVECTOR3 m_vtxMin;	// 最小頂点
 	bool m_bChangeCol;
