@@ -48,10 +48,7 @@ CMotion::CMotion(int nPriority) : CObject3D(nPriority)
 	m_bFinish = false;
 	m_bShadow = false;
 	m_posOld = { 0.0f,0.0f,0.0f };
-	m_posDest = { 0.0f,0.0f,0.0f };
 	m_posShadow = { 0.0f,0.0f,0.0f };
-	m_move = { 0.0f,0.0f,0.0f };
-	m_jumpTime = 0.0f;
 	m_col = { 1.0f,1.0f,1.0f,1.0f };
 	m_bInde = false;
 }
@@ -304,9 +301,6 @@ void CMotion::Update(void)
 			SetKeyOld();
 		}
 	}
-
-	// 目標位置に移動
-	MovePositionDest();
 }
 
 //=====================================================
@@ -932,44 +926,4 @@ D3DXVECTOR3 CMotion::GetForward(void)
 	};
 
 	return vecForward;
-}
-
-//=====================================================
-// 目標位置に移動
-//=====================================================
-void CMotion::MovePositionDest(void)
-{
-	// XZ移動
-	D3DXVECTOR3 pos = GetPosition();
-	pos.x += m_move.x;
-	pos.z += m_move.z;
-
-	D3DXVECTOR3 vecLength = D3DXVECTOR3(m_posDest.x, 0.0f, m_posDest.z) - D3DXVECTOR3(pos.x, 0.0f, pos.z);
-	if (D3DXVec3Length(&vecLength) <= POSDEST_NEAREQUAL)
-	{
-		// XZ位置移動完了
-		pos.x = m_posDest.x;
-		pos.z = m_posDest.z;
-		m_move = D3DXVECTOR3(0.0f, m_move.y, 0.0f);
-	}
-
-	m_jumpTime += CManager::GetInstance()->GetDeltaTime();
-	pos.y += m_move.y - 9.8f * DEFAULT_WEIGHT * m_jumpTime;
-	universal::LimitValuefloat(&pos.y, 1000.0f, m_posDest.y);
-
-	if (pos.y <= m_posDest.y)
-	{
-		// Y位置移動完了
-		pos.y = m_posDest.y;
-		m_move.y = 0.0f;
-		m_jumpTime = 0.0f;
-
-		// 着地モーション
-		if (m_motionType == MOTION_JUMPFLY)
-		{
-			SetMotion(MOTION_LANDING);
-		}
-	}
-
-	CGameObject::SetPosition(pos);
 }

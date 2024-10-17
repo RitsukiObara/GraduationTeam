@@ -18,6 +18,12 @@
 #include "manager.h"
 
 //*****************************************************
+// マクロ定義
+//*****************************************************
+#define POSDEST_NEAREQUAL	(0.01f)	// 大体目標位置に着いたとする距離
+#define DEFAULT_WEIGHT	(5.0f)	// 仮の重さ
+
+//*****************************************************
 // 定数定義
 //*****************************************************
 namespace
@@ -41,6 +47,10 @@ CPlayer *CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
 //=====================================================
 CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_bMove(false)
 {
+	m_move = { 0.0f,0.0f,0.0f };
+	m_posDest = { 0.0f,0.0f,0.0f };
+	m_jumpTime = 0.0f;
+	m_motionType = 0;
 
 }
 
@@ -107,6 +117,9 @@ void CPlayer::Update(void)
 
 	// モーション更新
 	CMotion::Update();
+
+	// 目標位置に移動
+	MovePositionDest();
 
 	// モーション完了後の処理
 	MotionFinishCheck();
@@ -298,7 +311,7 @@ void CPlayer::MoveToGrid(void)
 	// グリッド取得========================================
 	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
 
-#ifdef _DEBUG
+#if 0
 	if (m_bMove == true)
 	{// デバッグ時瞬間移動
 		SetPosition(posGrid);
@@ -306,7 +319,7 @@ void CPlayer::MoveToGrid(void)
 		m_bMove = false;
 	}
 #else
-	if (m_isMove == true && GetMotion() == MOTION_JUMPSTART && IsFinish() == true)
+	if (m_bMove == true && GetMotion() == MOTION_JUMPSTART && IsFinish() == true)
 	{// どこか移動した
 		// 目標位置設定========================================
 		SetPositionDest(posGrid);
@@ -384,6 +397,46 @@ void CPlayer::MotionFinishCheck(void)
 			SetMotion(MOTION_NEUTRAL);
 		}
 	}
+}
+
+//=====================================================
+// 目標位置に移動
+//=====================================================
+void CPlayer::MovePositionDest(void)
+{
+	// XZ移動
+	D3DXVECTOR3 pos = GetPosition();
+	pos.x += m_move.x;
+	pos.z += m_move.z;
+
+	D3DXVECTOR3 vecLength = D3DXVECTOR3(m_posDest.x, 0.0f, m_posDest.z) - D3DXVECTOR3(pos.x, 0.0f, pos.z);
+	if (D3DXVec3Length(&vecLength) <= POSDEST_NEAREQUAL)
+	{
+		// XZ位置移動完了
+		pos.x = m_posDest.x;
+		pos.z = m_posDest.z;
+		m_move = D3DXVECTOR3(0.0f, m_move.y, 0.0f);
+	}
+
+	m_jumpTime += CManager::GetInstance()->GetDeltaTime();
+	pos.y += m_move.y - 9.8f * DEFAULT_WEIGHT * m_jumpTime;
+	universal::LimitValuefloat(&pos.y, 1000.0f, m_posDest.y);
+
+	if (pos.y <= m_posDest.y)
+	{
+		// Y位置移動完了
+		pos.y = m_posDest.y;
+		m_move.y = 0.0f;
+		m_jumpTime = 0.0f;
+
+		// 着地モーション
+		if (m_motionType == MOTION_JUMPFLY)
+		{
+			SetMotion(MOTION_LANDING);
+		}
+	}
+
+	CGameObject::SetPosition(pos);
 }
 
 //=====================================================

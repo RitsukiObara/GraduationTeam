@@ -26,17 +26,6 @@
 class CMotion : public CObject3D
 {
 public:
-	// モーション列挙
-	enum EMotion
-	{
-		MOTION_NEUTRAL = 0,
-		MOTION_JUMPSTART,
-		MOTION_JUMPFLY,
-		MOTION_LANDING,
-		MOTION_PECK,
-		MOTION_MAX
-	};
-
 	//キーの構造体
 	typedef struct
 	{
@@ -95,15 +84,10 @@ public:
 	void Draw(void);
 	void Load(char *pPath);
 	void MultiplyMtx(bool bDrawParts = true);	// マトリックスをかけ合わせる
-	virtual void SetPosition(D3DXVECTOR3 pos) override { CGameObject::SetPosition(pos); m_posDest = pos; }
-	void SetPositionDest(D3DXVECTOR3 pos) { m_posDest = pos; }
 	void SetPosShadow(D3DXVECTOR3 pos) { m_posShadow = pos; }	// 設定処理
 	void SetPositionOld(D3DXVECTOR3 pos) { m_posOld = pos; }	// 設定処理
-	D3DXVECTOR3 GetPositionDest(void) { return m_posDest; }
 	D3DXVECTOR3 GetPositionOld(void) { return m_posOld; }
 	D3DXVECTOR3 GetMtxPos(int nIdx);
-	void SetMove(D3DXVECTOR3 move) { m_move = move; }
-	D3DXVECTOR3 GetMove(void) { return m_move; }	// 取得処理
 	void SetMotion(int nMotionType);
 	int GetMotion(void) { return m_motionType; }
 	void SetKeyOld(void);
@@ -131,7 +115,6 @@ public:
 	int GetNumParts(void) { return m_nNumParts; }
 
 private:
-	void MovePositionDest(void);
 
 	Parts *m_apParts[MAX_PARTS];	// パーツの構造体
 	MOTION_INFO m_aMotionInfo[MAX_MOTION];	//モーション情報の構造体
@@ -147,10 +130,7 @@ private:
 	float m_fCounterMotion;	//モーションカウンター
 	int m_nNumParts;	// パーツの数
 	D3DXVECTOR3 m_posOld;	// 前回の位置
-	D3DXVECTOR3 m_posDest;	// 目標位置
 	D3DXVECTOR3 m_posShadow;	// 影の位置
-	D3DXVECTOR3 m_move;	// 移動量
-	float m_jumpTime;	// ジャンプ時間
 	D3DXCOLOR m_col;	// 色
 	bool m_bFinish;	// モーションが終わったかどうか
 	bool m_bShadow;	// 影を描画するかどうか
