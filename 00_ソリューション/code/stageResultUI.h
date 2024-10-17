@@ -34,9 +34,11 @@ public:
 	static CStageResultUI* GetInstance(void) { return m_pStageResultUI; }
 
 private:
+
+	// リザルトの種類
 	enum RESULT
-	{// リザルトの種類
-		RESULT_CREAR = 0,	// クリア
+	{
+		RESULT_CLEAR = 0,	// クリア
 		RESULT_FAIL,	// 失敗
 		RESULT_MAX
 	};
@@ -48,15 +50,16 @@ private:
 		STATE_MAX
 	};
 
-	void ManageState(void);
+	void ResultState(void); // リザルトUIの状態
 	void Fade(RESULT RESULT);
 
-	RESULT m_RESULT;	// 選択項目
+	RESULT m_Result;	// 選択項目
 	CPolygon2D* m_apResult[RESULT_MAX];	// ステージリザルトの2Dオブジェクト
 	D3DXVECTOR3 m_aPosDest[RESULT_MAX];	// 目標の位置
 	STATE m_state;	// 状態
 	static CStageResultUI* m_pStageResultUI;	// 自身のポインタ
 	bool m_bSound;
+	int nCountMove;
 };
 
 #endif
