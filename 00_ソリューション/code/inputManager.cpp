@@ -224,6 +224,12 @@ void CInputManager::Update(void)
 		pKeyboard->GetPress(DIK_L)
 	);
 
+	// リザルト演出
+	m_info.abTrigger[BUTTON_RESULT] =
+	(
+		pKeyboard->GetTrigger(DIK_R)
+	);
+
 	// 方向のリセット
 	ZeroMemory(&m_axis, sizeof(SAxis));
 
