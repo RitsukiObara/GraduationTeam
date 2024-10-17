@@ -23,19 +23,19 @@
 //*****************************************************
 namespace
 {
-const std::string PATH_BODY = "data\\MOTION\\motionPenguin.txt";	// ボディのパス
-const int MOVE_FRAME = 25;	// 移動にかかるフレーム数
+	const std::string PATH_BODY = "data\\MOTION\\motionPenguin.txt";	// ボディのパス
+	const int MOVE_FRAME = 25;	// 移動にかかるフレーム数
 
-const float SPEED_MOVE_ANALOG = 1.0f;	// アナログ移動での移動距離
-const float RATE_DECREASE_MOVE = 0.5f;	// 移動減衰の割合
-const float LINE_FACT_ROT = 0.3f;	// 向きを補正するまでの入力しきい値
-const float FACT_ROTATION = 0.3f;	// 回転係数
+	const float SPEED_MOVE_ANALOG = 1.0f;	// アナログ移動での移動距離
+	const float RATE_DECREASE_MOVE = 0.5f;	// 移動減衰の割合
+	const float LINE_FACT_ROT = 0.3f;	// 向きを補正するまでの入力しきい値
+	const float FACT_ROTATION = 0.3f;	// 回転係数
 }
 
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CPlayer *CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
+CPlayer* CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
 
 //=====================================================
 // 優先順位を決めるコンストラクタ
@@ -56,7 +56,7 @@ CPlayer::~CPlayer()
 //=====================================================
 // 生成処理
 //=====================================================
-CPlayer *CPlayer::Create(void)
+CPlayer* CPlayer::Create(void)
 {
 	if (s_pPlayer == nullptr)
 	{
@@ -122,7 +122,7 @@ void CPlayer::Update(void)
 //=====================================================
 void CPlayer::Input(void)
 {
-	if(m_bAnalog)
+	if (m_bAnalog)
 		MoveAnalog();
 	else
 		MoveGrid();
@@ -154,7 +154,7 @@ void CPlayer::MoveAnalog(void)
 //=====================================================
 void CPlayer::InputMoveAnalog(void)
 {
-	CInputManager *pInputManager = CInputManager::GetInstance();
+	CInputManager* pInputManager = CInputManager::GetInstance();
 
 	if (pInputManager == nullptr)
 	{
@@ -162,14 +162,14 @@ void CPlayer::InputMoveAnalog(void)
 	}
 
 	// カメラ取得
-	CCamera *pCamera = CManager::GetCamera();
+	CCamera* pCamera = CManager::GetCamera();
 
 	if (pCamera == nullptr)
 	{
 		return;
 	}
 
-	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+	CCamera::Camera* pInfoCamera = pCamera->GetCamera();
 
 	// 目標方向の設定
 	CInputManager::SAxis axis = pInputManager->GetAxis();
@@ -187,7 +187,7 @@ void CPlayer::InputMoveAnalog(void)
 	D3DXVECTOR3 move = GetMove();
 
 	// 向いている方向にベクトルを伸ばす
-	vecMove -= {sinf(rot.y) * fLengthAxis, 0.0f, cosf(rot.y) * fLengthAxis};
+	vecMove -= {sinf(rot.y)* fLengthAxis, 0.0f, cosf(rot.y)* fLengthAxis};
 	D3DXVec3Normalize(&vecMove, &vecMove);
 	vecMove *= SPEED_MOVE_ANALOG;
 	move += vecMove;
@@ -217,7 +217,7 @@ void CPlayer::InputMoveAnalog(void)
 //=====================================================
 void CPlayer::CollideIce(void)
 {
-	CIceManager *pIceManager = CIceManager::GetInstance();
+	CIceManager* pIceManager = CIceManager::GetInstance();
 
 	if (pIceManager == nullptr)
 		return;
@@ -235,12 +235,12 @@ void CPlayer::CollideIce(void)
 //=====================================================
 void CPlayer::MoveGrid(void)
 {
-	CInputManager *pInputManager = CInputManager::GetInstance();
+	CInputManager* pInputManager = CInputManager::GetInstance();
 
 	if (pInputManager == nullptr)
 		return;
 
-	CIceManager *pIceManager = CIceManager::GetInstance();
+	CIceManager* pIceManager = CIceManager::GetInstance();
 
 	if (pIceManager == nullptr)
 		return;
@@ -266,7 +266,7 @@ void CPlayer::MoveGrid(void)
 		{
 			m_nGridV++;
 			m_bMove = true;
-}
+		}
 		else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_DOWN))
 		{
 			m_nGridV--;
@@ -347,12 +347,12 @@ void CPlayer::MoveToGrid(void)
 //=====================================================
 void CPlayer::InputPeck(void)
 {
-	CInputManager *pInputManager = CInputManager::GetInstance();
+	CInputManager* pInputManager = CInputManager::GetInstance();
 
 	if (pInputManager == nullptr)
 		return;
 
-	CIceManager *pIceManager = CIceManager::GetInstance();
+	CIceManager* pIceManager = CIceManager::GetInstance();
 
 	if (pIceManager == nullptr)
 		return;
@@ -366,20 +366,20 @@ void CPlayer::InputPeck(void)
 //=====================================================
 void CPlayer::Debug(void)
 {
-	CDebugProc *pDebugProc = CDebugProc::GetInstance();
-	CInputKeyboard *pInputKeyboard = CInputKeyboard::GetInstance();
-	CInputJoypad *pJoypad = CInputJoypad::GetInstance();
+	CDebugProc* pDebugProc = CDebugProc::GetInstance();
+	CInputKeyboard* pInputKeyboard = CInputKeyboard::GetInstance();
+	CInputJoypad* pJoypad = CInputJoypad::GetInstance();
 
 	if (pDebugProc == nullptr || pInputKeyboard == nullptr || pJoypad == nullptr)
 		return;
-	
+
 	pDebugProc->Print("\n縦[%d]横[%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\n位置[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
 
-	if (pInputKeyboard->GetTrigger(DIK_RSHIFT) || 
-		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_RB,0))
+	if (pInputKeyboard->GetTrigger(DIK_RSHIFT) ||
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_RB, 0))
 	{
-		CIceManager *pIceManager = CIceManager::GetInstance();
+		CIceManager* pIceManager = CIceManager::GetInstance();
 
 		if (pIceManager != nullptr)
 		{
@@ -390,11 +390,11 @@ void CPlayer::Debug(void)
 	if (pInputKeyboard->GetTrigger(DIK_RCONTROL) ||
 		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_LB, 0))
 	{
-		CIceManager *pIceManager = CIceManager::GetInstance();
+		CIceManager* pIceManager = CIceManager::GetInstance();
 
 		if (pIceManager != nullptr)
 		{
-			pIceManager->CreateIce(m_nGridV, m_nGridH,CIce::E_Type::TYPE_HARD);
+			pIceManager->CreateIce(m_nGridV, m_nGridH, CIce::E_Type::TYPE_HARD);
 		}
 	}
 }

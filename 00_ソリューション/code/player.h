@@ -33,8 +33,8 @@ public:
 	void Draw(void);
 
 	// 静的メンバ関数
-	static CPlayer *Create(void);
-	static CPlayer *GetInstance(void) { return s_pPlayer; }
+	static CPlayer* Create(void);
+	static CPlayer* GetInstance(void) { return s_pPlayer; }
 
 private:
 	// メンバ関数
@@ -55,7 +55,7 @@ private:
 	bool m_bAnalog;	// アナログ操作
 
 	// 静的メンバ変数
-	static CPlayer *s_pPlayer;	// 自身のポインタ
+	static CPlayer* s_pPlayer;	// 自身のポインタ
 };
 
 #endif

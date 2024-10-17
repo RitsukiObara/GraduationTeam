@@ -65,7 +65,7 @@ public:
 		D3DXVECTOR3 offset;	// オフセット位置
 		int nIdxParent;	// 親となるパーツの番号
 	}EVENT_INFO;
-	
+
 	//モーション情報の構造体
 	typedef struct
 	{
@@ -74,7 +74,7 @@ public:
 		KEY_INFO aKeyInfo[MAX_PARTS];	//キー情報
 		int nNumEvent;	// パーティクルの数
 		int nNumCollision;	// 当たり判定の数
-		EVENT_INFO *pEvent;	// イベント情報のポインタ
+		EVENT_INFO* pEvent;	// イベント情報のポインタ
 	}MOTION_INFO;
 
 	// パーツの構造体
@@ -82,9 +82,9 @@ public:
 	{
 		int nIdx;
 		int nIdxParent;
-		CParts *pParts;
+		CParts* pParts;
 	}Parts;
-	
+
 	CMotion(int nPriority = 5);	// コンストラクタ
 	~CMotion();	// デストラクタ
 
@@ -93,7 +93,7 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	void Load(char *pPath);
+	void Load(char* pPath);
 	void MultiplyMtx(bool bDrawParts = true);	// マトリックスをかけ合わせる
 	virtual void SetPosition(D3DXVECTOR3 pos) override { CGameObject::SetPosition(pos); m_posDest = pos; }
 	void SetPositionDest(D3DXVECTOR3 pos) { m_posDest = pos; }
@@ -107,8 +107,8 @@ public:
 	void SetMotion(int nMotionType);
 	int GetMotion(void) { return m_motionType; }
 	void SetKeyOld(void);
-	static CMotion *Create(char *pPath);
-	Parts *GetParts(int nIdx) { return m_apParts[nIdx]; }
+	static CMotion* Create(char* pPath);
+	Parts* GetParts(int nIdx) { return m_apParts[nIdx]; }
 	bool IsFinish(void) { return m_bFinish; }
 	void CalcMatrix(void);
 	float GetRadiusMax(void);
@@ -122,9 +122,9 @@ public:
 	void EnableShadow(bool bShadow) { m_bShadow = bShadow; }
 	void EnableIndependent(bool bInde) { m_bInde = bInde; }
 	bool IsIndependent(void) { return m_bInde; }
-	EVENT_INFO *GetInfoEvent(int nMotion) { return m_aMotionInfo[nMotion].pEvent; }
+	EVENT_INFO* GetInfoEvent(int nMotion) { return m_aMotionInfo[nMotion].pEvent; }
 	int GetNumEventInfo(int nMotion) { return m_aMotionInfo[nMotion].nNumEvent; }
-	virtual void Event(EVENT_INFO *pEventInfo) {};
+	virtual void Event(EVENT_INFO* pEventInfo) {};
 	void EnableMotion(int nIdx, bool bMotion);
 	void ResetEnableMotion(void);
 	D3DXVECTOR3 GetForward(void);
@@ -133,7 +133,7 @@ public:
 private:
 	void MovePositionDest(void);
 
-	Parts *m_apParts[MAX_PARTS];	// パーツの構造体
+	Parts* m_apParts[MAX_PARTS];	// パーツの構造体
 	MOTION_INFO m_aMotionInfo[MAX_MOTION];	//モーション情報の構造体
 	KEY m_aKeyOld[MAX_PARTS];	// 前回のキー情報の構造体
 	bool m_abMotion[MAX_PARTS];	// パーツごとにモーションさせるかどうか
