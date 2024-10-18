@@ -142,17 +142,26 @@ private:
 	float m_fTimerRepair;	// 修復タイマー
 };
 
-class CIceStaeteFlow : public CIceState
+class CIceStateFlow : public CIceState
 {// 氷の流れステイト
 public:
-	CIceStaeteFlow() {};	// コンストラクタ
-	~CIceStaeteFlow() {};	// デストラクタ
+	CIceStateFlow() {};	// コンストラクタ
+	~CIceStateFlow() {};	// デストラクタ
 
 	void Init(CIce *pIce) override;	// 初期化
 	void Uninit(CIce *pIce) override;	// 終了
 	void Update(CIce *pIce) override;	// 更新
 
 private:
+	// 関数ポインタ型の定義
+	typedef void (CIceStateFlow::*DirectionFunc)(void);
+
+	// メンバ関数
+	void CollideIce(void);	// 氷との判定
+	void CheckUp(void);	// 上方向の確認
+	void CheckRight(void);	// 右側の確認
+	void CheckDown(void);	// 下方向の確認
+	void CheckLeft(void);	// 左側の確認
 };
 
 class CIceStaeteSink : public CIceState

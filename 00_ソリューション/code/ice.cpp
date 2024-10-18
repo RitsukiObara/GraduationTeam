@@ -406,7 +406,7 @@ void CIceStaeteBreak::Update(CIce *pIce)
 //=====================================================
 // 初期化処理
 //=====================================================
-void CIceStaeteFlow::Init(CIce *pIce)
+void CIceStateFlow::Init(CIce *pIce)
 {
 
 }
@@ -414,7 +414,7 @@ void CIceStaeteFlow::Init(CIce *pIce)
 //=====================================================
 // 終了処理
 //=====================================================
-void CIceStaeteFlow::Uninit(CIce *pIce)
+void CIceStateFlow::Uninit(CIce *pIce)
 {
 
 }
@@ -422,7 +422,7 @@ void CIceStaeteFlow::Uninit(CIce *pIce)
 //=====================================================
 // 更新処理
 //=====================================================
-void CIceStaeteFlow::Update(CIce *pIce)
+void CIceStateFlow::Update(CIce *pIce)
 {
 	CIceManager *pIceManager = CIceManager::GetInstance();
 
@@ -430,13 +430,74 @@ void CIceStaeteFlow::Update(CIce *pIce)
 		return;
 
 	// 海流のベクトル取得
-	CIceManager::E_Direction dir = pIceManager->GetDirStream();
+	CIceManager::E_Stream dir = pIceManager->GetDirStream();
 	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[dir];
 
 	// 流れる速度に正規化して位置を加算
 	D3DXVec3Normalize(&vecStream, &vecStream);
 	vecStream *= SPEED_FLOWS;
 	pIce->AddPosition(vecStream);
+
+	// 氷との判定
+	CollideIce();
+}
+
+//=====================================================
+// 氷との判定
+//=====================================================
+void CIceStateFlow::CollideIce(void)
+{
+	// 今いるグリッドの取得
+
+	// 海流の方向に合わせた判定関数の呼び出し
+	DirectionFunc directionFuncs[CIceManager::E_Stream::STREAM_MAX] = 
+	{ 
+		&CIceStateFlow::CheckUp, 
+		&CIceStateFlow::CheckDown, 
+		&CIceStateFlow::CheckRight, 
+		&CIceStateFlow::CheckLeft 
+	};
+
+	CIceManager *pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return;
+
+	CIceManager::E_Stream stream = pIceManager->GetDirStream();
+
+	(this->*directionFuncs[stream])();
+}
+
+//=====================================================
+// 上方向の確認
+//=====================================================
+void CIceStateFlow::CheckUp(void)
+{
+
+}
+
+//=====================================================
+// 右方向の確認
+//=====================================================
+void CIceStateFlow::CheckRight(void)
+{
+
+}
+
+//=====================================================
+// 下方向の確認
+//=====================================================
+void CIceStateFlow::CheckDown(void)
+{
+
+}
+
+//=====================================================
+// 左方向の確認
+//=====================================================
+void CIceStateFlow::CheckLeft(void)
+{
+
 }
 
 //*******************************************************************************
