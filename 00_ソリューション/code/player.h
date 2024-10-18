@@ -24,7 +24,7 @@ class CPlayer : public CMotion
 {
 public:
 	// モーション列挙
-	enum EMotion
+	enum MOTION
 	{
 		MOTION_NEUTRAL = 0,
 		MOTION_JUMPSTART,
@@ -32,6 +32,14 @@ public:
 		MOTION_LANDING,
 		MOTION_PECK,
 		MOTION_MAX
+	};
+
+	// プレイヤー状態
+	enum STATE
+	{
+		STATE_NORMAL = 0,	// 通常
+		STATE_DEATH,		// 死
+		STATE_INVINCIBLE,	// デバッグ向け無敵
 	};
 
 	CPlayer(int nPriority = 4);	// コンストラクタ
@@ -70,11 +78,14 @@ private:
 	// メンバ変数
 	int m_nGridV;	// 今いるグリッドの縦番号
 	int m_nGridH;	// 今いるグリッドの横番号
+	int m_nNextGridV;	// 飛び移る先のグリッドの縦番号
+	int m_nNextGridH;	// 飛び移る先のグリッドの横番号
 	bool m_bMove;	// 移動中フラグ
 	bool m_bAnalog;	// アナログ操作
 	D3DXVECTOR3 m_posDest;	// 目標位置
 	D3DXVECTOR3 m_move;	// 移動量
 	float m_jumpTime;	// ジャンプ時間
+	STATE m_state;		// プレイヤー状態
 
 	// 静的メンバ変数
 	static CPlayer* s_pPlayer;	// 自身のポインタ
