@@ -27,13 +27,9 @@
 #define MENU_HEIGHT	(0.2f)	// 項目の高さ
 #define MOVE_FACT	(0.08f)	// 移動速度
 #define LINE_ARRIVAL	(0.05f)	// 到着したとされるしきい値
-#define LINE_UNINIT	(0.00001f)	// 終了するまでのしきい値
+#define LINE_UNINIT	(0.2f)	// 終了するまでのしきい値
 #define SPEED_FADE	(0.03f)	// 背景のフェード速度
 #define ALPHA_BG	(0.5f)	// 背景の不透明度
-
-//*****************************************************
-// 静的メンバ変数宣言
-//*****************************************************
 
 //====================================================
 // コンストラクタ
@@ -132,7 +128,7 @@ HRESULT CPause::Init(void)
 					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
 					m_apMenu[nCntMenu]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
 					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
-					m_aPosDest[nCntMenu].x = MENU_WIDTH;
+					m_aPosDest[nCntMenu].x = 0.25f;
 				}
 
 				else if (nCntMenu == MENU_RESTART)
@@ -142,7 +138,7 @@ HRESULT CPause::Init(void)
 					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
 					m_apMenu[nCntMenu]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
 					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
-					m_aPosDest[nCntMenu].x = MENU_WIDTH;
+					m_aPosDest[nCntMenu].x = 0.75f;
 				}
 
 				else if (nCntMenu == MENU_QUIT)
@@ -152,7 +148,7 @@ HRESULT CPause::Init(void)
 					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
 					m_apMenu[nCntMenu]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
 					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
-					m_aPosDest[nCntMenu].x = MENU_WIDTH;
+					m_aPosDest[nCntMenu].x = 0.25f;
 				}
 
 				else if (nCntMenu == MENU_PAUSE)
@@ -162,26 +158,6 @@ HRESULT CPause::Init(void)
 					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH + 0.1f, MENU_HEIGHT - 0.05f);
 					m_apMenu[nCntMenu]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
-					m_aPosDest[nCntMenu].x = MENU_WIDTH;
-				}
-
-				if (nCntMenu == MENU_RESUME)
-				{
-					m_aPosDest[nCntMenu].x = 0.25f;
-				}
-
-				else if (nCntMenu == MENU_RESTART)
-				{
-					m_aPosDest[nCntMenu].x = 0.75f;
-				}
-
-				else if (nCntMenu == MENU_QUIT)
-				{
-					m_aPosDest[nCntMenu].x = 0.25f;
-				}
-
-				else if (nCntMenu == MENU_PAUSE)
-				{
 					m_aPosDest[nCntMenu].x = 0.5f;
 				}
 
