@@ -11,8 +11,10 @@
 #include "iceManager.h"
 #include "effect3D.h"
 #include "ice.h"
-#include "debugproc.h"
 #include "particle.h"
+
+#include "inputkeyboard.h"
+#include "debugproc.h"
 
 //*****************************************************
 // 定数定義
@@ -34,7 +36,7 @@ CIceManager *CIceManager::s_pIceManager = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CIceManager::CIceManager(int nPriority) : CObject(nPriority)
+CIceManager::CIceManager(int nPriority) : CObject(nPriority), m_nNumGridVirtical(0), m_nNumGridHorizontal(0), m_dirStream(E_Direction::DIRECTION_RIGHTUP)
 {
 
 }
@@ -96,6 +98,9 @@ HRESULT CIceManager::Init(void)
 	CreateIce(5, 4);
 	CreateIce(4, 6);
 	CreateIce(6, 6);
+
+	// 海流を初期化
+	m_dirStream = E_Direction::DIRECTION_LEFT;
 
 	return S_OK;
 }
@@ -869,7 +874,7 @@ void CIceManager::BreakPeck(int nNumV, int nNumH)
 		{
 			nNumPeck++;
 			DeleteIce(apIce[i]);
-			apIce[i]->Uninit();
+			apIce[i]->EnableSink(true);
 		}
 	}
 
@@ -923,6 +928,18 @@ void CIceManager::Debug(void)
 		return;
 
 	pDebugProc->Print("\n氷の総数[%d]", CIce::GetNumAll());
+
+	CInputKeyboard *pKeyboard = CInputKeyboard::GetInstance();
+
+	if (pKeyboard == nullptr)
+		return;
+
+	// 海流の向きを変更
+	if (pKeyboard->GetTrigger(DIK_LEFT))
+		m_dirStream = (E_Direction)((m_dirStream + 1) % E_Direction::DIRECTION_MAX);
+
+	if (pKeyboard->GetTrigger(DIK_RIGHT))
+		m_dirStream = (E_Direction)((m_dirStream + E_Direction::DIRECTION_MAX - 1) % E_Direction::DIRECTION_MAX);
 }
 
 //=====================================================

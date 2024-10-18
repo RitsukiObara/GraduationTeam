@@ -33,6 +33,9 @@ namespace
 	const float DEFAULT_WEIGHT = 5.0f;	// 仮の重さ
 	const float POSDEST_NEAREQUAL = 0.01f;	// 大体目標位置に着いたとする距離
 }
+#ifdef _DEBUG
+//#define DEBUG_WARP	// デバッグ時瞬間移動したい場合定義
+#endif
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -44,9 +47,12 @@ CPlayer* CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
 //=====================================================
 CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_bMove(false), m_bAnalog(false)
 {
+	m_nNextGridV = m_nGridV;
+	m_nNextGridH = m_nGridH;
 	m_jumpTime = 0.0f;
 	m_posDest = { 0.0f,0.0f,0.0f };
 	m_move = { 0.0f,0.0f,0.0f };
+	m_state = STATE_NORMAL;
 }
 
 //=====================================================
@@ -87,6 +93,14 @@ HRESULT CPlayer::Init(void)
 	CMotion::Init();
 
 	InitPose(0);
+
+	// 状態設定
+#ifdef _DEBUG
+	m_state = STATE_INVINCIBLE;
+#else
+	m_state = STATE_NORMAL;
+#endif // _DEBUG
+
 
 	return S_OK;
 }
@@ -132,13 +146,16 @@ void CPlayer::Update(void)
 //=====================================================
 void CPlayer::Input(void)
 {
-	if (m_bAnalog)
-		MoveAnalog();
-	else
-		MoveGrid();
+	if (m_state == STATE_NORMAL || m_state == STATE_INVINCIBLE)
+	{
+		if (m_bAnalog)
+			MoveAnalog();
+		else
+			MoveGrid();
 
-	// 突っつきの入力
-	InputPeck();
+		// 突っつきの入力
+		InputPeck();
+	}
 
 #ifdef _DEBUG
 	if (CInputJoypad::GetInstance()->GetTrigger(CInputJoypad::PADBUTTONS_UP, 0) ||
@@ -264,22 +281,22 @@ void CPlayer::MoveGrid(void)
 		// 移動の入力========================================
 		if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_LEFT))
 		{
-			m_nGridH--;
+			m_nNextGridH--;
 			m_bMove = true;
 		}
 		else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_RIGHT))
 		{
-			m_nGridH++;
+			m_nNextGridH++;
 			m_bMove = true;
 		}
 		else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_UP))
 		{
-			m_nGridV++;
+			m_nNextGridV++;
 			m_bMove = true;
 		}
 		else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_DOWN))
 		{
-			m_nGridV--;
+			m_nNextGridV--;
 			m_bMove = true;
 		}
 
@@ -315,25 +332,26 @@ void CPlayer::MoveToGrid(void)
 	if (pIceManager == nullptr)
 		return;
 
-	// グリッド取得========================================
-	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
-
-#ifndef _DEBUG
+#ifdef DEBUG_WARP
 	if (m_bMove == true)
 	{// デバッグ時瞬間移動
-		SetPosition(posGrid);
+		D3DXVECTOR3 pos = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
+		SetPosition(pos);
 		SetMotion(MOTION_NEUTRAL);
 		m_bMove = false;
 	}
 #else
 	if (m_bMove == true && GetMotion() == MOTION_JUMPSTART && IsFinish() == true)
-	{// どこか移動した
-		// 目標位置設定========================================
-		SetPositionDest(posGrid);
+	{// ジャンプモーション終了
+		m_nGridV = m_nNextGridV;
+		m_nGridH = m_nNextGridH;
+
+		// 新しいグリッドで位置取得・目標位置設定================
+		m_posDest = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
 
 		// 移動量設定========================================
 		D3DXVECTOR3 pos = GetPosition();
-		D3DXVECTOR3 move = (posGrid - pos) / MOVE_FRAME;
+		D3DXVECTOR3 move = (m_posDest - pos) / MOVE_FRAME;
 		move.y = 10.0f;
 		SetMove(move);
 
@@ -380,7 +398,7 @@ void CPlayer::MovePositionXZ(void)
 void CPlayer::LandCheck(void)
 {
 	D3DXVECTOR3 pos = GetPosition();
-	D3DXVECTOR3 posDest = GetPositionDest();
+	D3DXVECTOR3 posDest = m_posDest;
 
 	CIceManager* pIceManager = CIceManager::GetInstance();
 	if (pIceManager == nullptr)
@@ -388,7 +406,7 @@ void CPlayer::LandCheck(void)
 
 	CIce* pIce = pIceManager->GetGridObject(&m_nGridV, &m_nGridH);
 	if (pIce != nullptr)
-	{
+	{// 着地地点あり
 		D3DXVECTOR3 posObject = pIce->GetPosition();
 		posDest = posObject;
 	}
@@ -404,10 +422,17 @@ void CPlayer::LandCheck(void)
 		m_move.y = 0.0f;
 		m_jumpTime = 0.0f;
 
-		// 着地モーション
-		if (GetMotion() == MOTION_JUMPFLY)
-		{
-			SetMotion(MOTION_LANDING);
+		// 移動完了後氷に乗っているか判定
+		if (pIce != nullptr || m_state == STATE_INVINCIBLE)
+		{// 乗っている（普通に着地モーション）
+			if (GetMotion() == MOTION_JUMPFLY)
+			{
+				SetMotion(MOTION_LANDING);
+			}
+		}
+		else
+		{// 乗っていないかつ無敵ではない
+			m_state = STATE_DEATH;
 		}
 	}
 
@@ -468,6 +493,19 @@ void CPlayer::Debug(void)
 		{
 			pIceManager->CreateIce(m_nGridV, m_nGridH, CIce::E_Type::TYPE_HARD);
 		}
+	}
+
+	if (pInputKeyboard->GetTrigger(DIK_F8))
+	{// 無敵切り替え
+		m_state = (m_state == STATE_INVINCIBLE) ? STATE_NORMAL : STATE_INVINCIBLE;
+	}
+	if (m_state == STATE_INVINCIBLE)
+	{
+		pDebugProc->Print("\n<<無敵中(*‘ω‘ *)（F8で通常）>>");
+	}
+	else
+	{
+		pDebugProc->Print("\n<<通常(-_-)zzz（F8で無敵）>>");
 	}
 }
 

@@ -24,7 +24,7 @@
 // マクロ定義
 //*****************************************************
 #define MENU_WIDTH	(0.12f)	// 項目の幅
-#define MENU_HEIGHT	(0.12f)	// 項目の高さ
+#define MENU_HEIGHT	(0.2f)	// 項目の高さ
 #define MOVE_FACT	(0.15f)	// 移動速度
 #define LINE_ARRIVAL	(0.05f)	// 到着したとされるしきい値
 #define LINE_UNINIT	(3.0f)	// 終了するまでのしきい値
@@ -42,9 +42,10 @@ CPause::CPause()
 {
 	m_menu = MENU_RESUME;
 	m_state = STATE_NONE;
-	ZeroMemory(&m_apMenu[0], sizeof(m_apMenu));
-	ZeroMemory(&m_aPosDest[0], sizeof(D3DXVECTOR3) * MENU_MAX);
+	ZeroMemory(&m_apMenu[MENU_RESUME], sizeof(m_apMenu));
+	ZeroMemory(&m_aPosDest[MENU_RESUME], sizeof(D3DXVECTOR3) * MENU_MAX);
 	m_bSound = false;
+	nCountMove = 0;
 }
 
 //====================================================
@@ -125,39 +126,39 @@ HRESULT CPause::Init(void)
 			if (m_apMenu[nCntMenu] != nullptr)
 			{
 				if (nCntMenu == MENU_RESUME)
-				{
+				{//	ゲームに戻る
 					// ポリゴンの設定
-					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-0.2f, 0.3f + MENU_HEIGHT * nCntMenu, 0.0f));
-					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
-
+					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-0.25f, 0.4f + MENU_HEIGHT * nCntMenu, 0.0f));
 					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
+					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
+					m_aPosDest[nCntMenu].x = MENU_WIDTH;
 				}
 
 				else if (nCntMenu == MENU_RESTART)
-				{
+				{//	ゲームのリスタート
 					// ポリゴンの設定
-					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-0.7f, 0.3f + MENU_HEIGHT * nCntMenu, 0.0f));
-					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
-
+					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-0.75f, 0.4f + MENU_HEIGHT * nCntMenu, 0.0f));
 					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
+					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
+					m_aPosDest[nCntMenu].x = MENU_WIDTH;
 				}
 
 				else if (nCntMenu == MENU_QUIT)
-				{
+				{//	タイトルに戻る
 					// ポリゴンの設定
-					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-0.2f, 0.3f + MENU_HEIGHT * nCntMenu, 0.0f));
-					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
-
+					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-0.25f, 0.4f + MENU_HEIGHT * nCntMenu, 0.0f));
 					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
+					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
+					m_aPosDest[nCntMenu].x = MENU_WIDTH;
 				}
 
 				else if (nCntMenu == MENU_PAUSE)
-				{
+				{//	ポーズ
 					// ポリゴンの設定
+					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-0.5f, 0.12f, 0.0f));
+					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH + 0.1f, MENU_HEIGHT - 0.05f);
 					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
-					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-0.5f, 0.1f + MENU_HEIGHT, 0.0f));
-
-					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
+					m_aPosDest[nCntMenu].x = MENU_WIDTH;
 				}
 
 				m_apMenu[nCntMenu]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
@@ -173,8 +174,6 @@ HRESULT CPause::Init(void)
 	}
 
 	m_state = STATE_IN;
-
-	m_aPosDest[0].x = MENU_WIDTH;
 
 	EnableNotStop(true);
 
@@ -242,36 +241,53 @@ void CPause::ManageState(void)
 	int nEnd = 0;
 
 	// ポリゴンを目標位置に向かわせる
-	for (int i = 0;i < MENU_MAX;i++)
+	for (int nCntMenu = 0; nCntMenu < MENU_MAX; nCntMenu++)
 	{
-		if (m_apMenu[i] != nullptr)
+		if (m_apMenu[nCntMenu] != nullptr)
 		{
-			D3DXVECTOR3 pos = m_apMenu[i]->GetPosition();
+			D3DXVECTOR3 pos = m_apMenu[nCntMenu]->GetPosition();
 			D3DXVECTOR3 posOld = pos;
-			D3DXVECTOR3 vecDiff = m_aPosDest[i] - pos;
+			D3DXVECTOR3 vecDiff = m_aPosDest[nCntMenu] - pos;
 			float fDiffOld = vecDiff.x;
 
 			vecDiff *= MOVE_FACT;
-
 			vecDiff += pos;
 
-			m_apMenu[i]->SetPosition(vecDiff);
+			m_apMenu[nCntMenu]->SetPosition(vecDiff);
+			m_apMenu[nCntMenu]->SetVtx();
 
-			m_apMenu[i]->SetVtx();
-
-			float fDiff = m_aPosDest[i].x - vecDiff.x;
+			float fDiff = m_aPosDest[nCntMenu].x - vecDiff.x;
 
 			if (fDiffOld * fDiffOld >= LINE_ARRIVAL * LINE_ARRIVAL &&
 				fDiff * fDiff < LINE_ARRIVAL * LINE_ARRIVAL &&
-				i < MENU_MAX - 1)
+				nCntMenu < MENU_MAX)
 			{// 差分がしきい値より下になったら下のものを動かす
 				if (m_state == STATE_IN)
 				{
-					m_aPosDest[i + 1].x = MENU_WIDTH;
+					if (nCntMenu == MENU_RESUME)
+					{
+						m_aPosDest[nCntMenu].x = 0.25f;
+					}
+
+					else if (nCntMenu == MENU_RESTART)
+					{
+						m_aPosDest[nCntMenu].x = 0.75f;
+					}
+
+					else if (nCntMenu == MENU_QUIT)
+					{
+						m_aPosDest[nCntMenu].x = 0.25f;
+					}
+
+					else if (nCntMenu == MENU_PAUSE)
+					{
+						m_aPosDest[nCntMenu].x = 0.5f;
+					}
 				}
+
 				else if (m_state == STATE_OUT)
 				{
-					m_aPosDest[i + 1].x = -MENU_WIDTH;
+					m_aPosDest[nCntMenu].x = -0.5f;
 				}
 			}
 
@@ -280,6 +296,7 @@ void CPause::ManageState(void)
 			{// 終了のライン
 				nEnd++;
 			}
+
 		}
 	}
 
@@ -363,7 +380,6 @@ void CPause::Input(void)
 		m_state == STATE::STATE_NONE)
 	{// ポーズ解除、以降の操作を受け付けない
 		m_state = STATE_OUT;
-		m_aPosDest[0].x = -MENU_WIDTH;
 
 		return;
 	}
@@ -376,7 +392,8 @@ void CPause::Input(void)
 	// 項目切り替え
 	if (pInputManager->GetTrigger(CInputManager::BUTTON_AXIS_DOWN))
 	{
-		m_menu = (MENU)((m_menu + 1) % MENU_MAX);
+		nCountMove = 0;
+		m_menu = (MENU)((m_menu + 1) % 3);
 
 		if (pSound != nullptr && m_bSound == false)
 		{
@@ -388,7 +405,8 @@ void CPause::Input(void)
 
 	if (pInputManager->GetTrigger(CInputManager::BUTTON_AXIS_UP))
 	{
-		m_menu = (MENU)((m_menu + MENU_MAX - 1) % MENU_MAX);
+		nCountMove = 0;
+		m_menu = (MENU)((m_menu + 3 - 1) % 3);
 		
 		if (pSound != nullptr && m_bSound == false)
 		{
@@ -409,8 +427,113 @@ void CPause::Input(void)
 		{
 			pSound->Play(pSound->LABEL_SE_PAUSE_ENTER00);
 		}
+
 		Fade(m_menu);
 	}
+
+	//	選択した時にUIが動く処理
+	D3DXVECTOR3 pos = m_apMenu[m_menu]->GetPosition();
+	nCountMove++;
+	
+	//	ゲームに戻る
+	if (m_menu == MENU_RESUME)
+	{
+		//	ほかの項目を初期値に戻す
+		if (m_aPosDest[MENU_RESTART].x < 0.75f)
+		{
+			m_aPosDest[MENU_RESTART].x += 0.001f;
+		}
+
+		else if (m_aPosDest[MENU_RESTART].x > 0.75f)
+		{
+			m_aPosDest[MENU_RESTART].x -= 0.001f;
+		}
+
+		if (m_aPosDest[MENU_QUIT].x < 0.25f)
+		{
+			m_aPosDest[MENU_QUIT].x += 0.001f;
+		}
+
+		else if (m_aPosDest[MENU_QUIT].x > 0.25f)
+		{
+			m_aPosDest[MENU_QUIT].x -= 0.001f;
+		}
+	}
+
+	// リスタート
+	else if (m_menu == MENU_RESTART)
+	{
+		//	ほかの項目を初期値に戻す
+		if (m_aPosDest[MENU_RESUME].x < 0.25f)
+		{
+			m_aPosDest[MENU_RESUME].x += 0.001f;
+		}
+
+		else if (m_aPosDest[MENU_RESUME].x > 0.25f)
+		{
+			m_aPosDest[MENU_RESUME].x -= 0.001f;
+		}
+
+		if (m_aPosDest[MENU_QUIT].x < 0.25f)
+		{
+			m_aPosDest[MENU_QUIT].x += 0.001f;
+		}
+
+		else if (m_aPosDest[MENU_QUIT].x > 0.25f)
+		{
+			m_aPosDest[MENU_QUIT].x -= 0.001f;
+		}
+	}
+
+	// タイトルに戻る
+	else if (m_menu == MENU_QUIT)
+	{
+		//	ほかの項目を初期値に戻す
+		if (m_aPosDest[MENU_RESUME].x < 0.25f)
+		{
+			m_aPosDest[MENU_RESUME].x += 0.001f;
+		}
+
+		else if (m_aPosDest[MENU_RESUME].x > 0.25f)
+		{
+			m_aPosDest[MENU_RESUME].x -= 0.001f;
+		}
+
+		if (m_aPosDest[MENU_RESTART].x < 0.75f)
+		{
+			m_aPosDest[MENU_RESTART].x += 0.001f;
+		}
+
+		else if (m_aPosDest[MENU_RESTART].x > 0.75f)
+		{
+			m_aPosDest[MENU_RESTART].x -= 0.001f;
+		}
+	}
+
+	// ポリゴンをカウントごとに動かす
+	if (nCountMove > 0 && nCountMove < 100)
+	{
+		m_aPosDest[m_menu].x += 0.001f;
+	}
+
+	else if (nCountMove > 100 && nCountMove < 300)
+	{
+		m_aPosDest[m_menu].x -= 0.001f;
+	}
+
+	else if (nCountMove > 300 && nCountMove < 500)
+	{
+		m_aPosDest[m_menu].x += 0.001f;
+	}
+
+	else if (nCountMove > 500)
+	{
+		nCountMove = 100;
+	}
+
+	m_apMenu[m_menu]->SetPosition(pos);
+	//m_apMenu[m_menu]->SetVtx();
+
 }
 
 //====================================================
@@ -430,7 +553,7 @@ void CPause::Fade(MENU menu)
 	case CPause::MENU_RESUME:
 
 		m_state = STATE_OUT;
-		m_aPosDest[0].x = -MENU_WIDTH;
+		//m_aPosDest[0].x = -MENU_WIDTH;
 
 		break;
 	case CPause::MENU_RESTART:
