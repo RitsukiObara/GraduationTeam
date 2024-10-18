@@ -67,6 +67,8 @@ public:
 	bool IsPeck(void) { return m_bPeck; }
 	void EnableAliveStandIce(bool bPeck) { m_bAliveStandBlock = bPeck; }	// 立っている氷に辿り着いたフラグ
 	bool IsAliveStandIce(void) { return m_bAliveStandBlock; }
+	void EnableSink(bool bSink) { m_bSink = bSink; }	// 沈むフラグ
+	bool IsSink(void) { return m_bSink; }
 	CFan3D *GetFan3D(void) { return m_pUp; }	// 上側の扇ポリゴン取得
 
 	// 静的メンバ関数
@@ -77,6 +79,7 @@ public:
 private:
 	// メンバ関数
 	void Flows(void);	// 流れる処理
+	void FollowWave(void);	// 波に追従する処理
 
 	// メンバ変数
 	E_State m_state;	// 状態
@@ -84,6 +87,7 @@ private:
 	bool m_bBreak;	// 壊れるフラグ
 	bool m_bPeck;	// 突っつかれたフラグ
 	bool m_bAliveStandBlock;	// 立っているブロックに到達したフラグ
+	bool m_bSink;	// 沈むフラグ
 	CFan3D *m_pUp;	// 上側に貼る扇ポリゴン
 	CMeshCylinder *m_pSide;	// サイドのシリンダー
 	CIceState *m_pState;	// ステイトのポインタ
@@ -132,7 +136,7 @@ public:
 private:
 	// 定数定義
 	static const int NUM_ICE_BREAK = 5;	// 壊れた氷の数
-
+	
 	// メンバ変数
 	vector<CObjectX*> m_aPeaceIce;	// 氷の破片のポイント
 	float m_fTimerRepair;	// 修復タイマー

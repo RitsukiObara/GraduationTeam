@@ -55,8 +55,6 @@ public:
 	void GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH);	// グリッド番号を位置から取得する処理
 
 	// 変数取得・設定関数
-	void EnableBreakIce(bool bBreakIce) { m_bBreakIce = bBreakIce; }	// 氷破壊フラグ
-	bool IsBreakIce(void) { return m_bBreakIce; }
 	D3DXVECTOR3 GetGridPosition(int *pNumV, int *pNumH);
 	CIce* GetGridObject(int* pNumV, int* pNumH);
 
@@ -102,7 +100,7 @@ private:
 	int m_nNumGridVirtical;	// 縦グリッドの数
 	int m_nNumGridHorizontal;	// 横グリッドの数
 	vector<vector<S_Grid>> m_aGrid;	// グリッドの配列
-	bool m_bBreakIce;	// 氷を壊すかのフラグ
+	E_Direction m_dirStream;	// 海流の方向
 
 	// 静的メンバ変数
 	static CIceManager *s_pIceManager;	// 自身のポインタ

@@ -34,7 +34,7 @@ CIceManager *CIceManager::s_pIceManager = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CIceManager::CIceManager(int nPriority) : CObject(nPriority)
+CIceManager::CIceManager(int nPriority) : CObject(nPriority), m_nNumGridVirtical(0), m_nNumGridHorizontal(0) ,m_dirStream(E_Direction::DIRECTION_RIGHTUP)
 {
 
 }
@@ -869,7 +869,7 @@ void CIceManager::BreakPeck(int nNumV, int nNumH)
 		{
 			nNumPeck++;
 			DeleteIce(apIce[i]);
-			apIce[i]->Uninit();
+			apIce[i]->EnableSink(true);
 		}
 	}
 

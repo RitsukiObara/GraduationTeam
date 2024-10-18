@@ -37,6 +37,8 @@ const float TIME_REPAIR_ICE = 10.0f;	// 氷の修復にかかる時間
 const int MAX_SCALE = 50; // スケールの最大値
 const int MIN_SCALE = 20; // スケールの最小値
 const string PATH_ICE_DEBRIS = "data\\MODEL\\block\\Drift_ice_small.x";	// 破片氷のモデルパス
+const float SPEED_SINK = 5.0f;	// 沈む速度
+const float HEIGHT_DELETE = -100.0f;	// 削除するまでの高さ
 }
 
 //*****************************************************
@@ -49,7 +51,7 @@ std::vector<CIce*> CIce::m_Vector = {};	// 自身のポインタ
 // コンストラクタ
 //=====================================================
 CIce::CIce(int nPriority) : CGameObject(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false), m_bPeck(false), m_bAliveStandBlock(false),
-m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr)
+m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false)
 {
 	s_nNumAll++;
 	m_Vector.push_back(this);
@@ -181,8 +183,27 @@ void CIce::Update(void)
 {
 	if (m_pState != nullptr)
 		m_pState->Update(this);
+	
+	if (!IsSink())	// 沈むフラグがたっていないときのみ行う
+		FollowWave();	// 波に追従する処理
+}
 
-	if (COcean::GetInstance() == nullptr)
+//=====================================================
+// 流れる処理
+//=====================================================
+void CIce::Flows(void)
+{
+	AddPosition(D3DXVECTOR3(SPEED_FLOWS, 0.0f, 0.0f));
+}
+
+//=====================================================
+// 波に追従する処理
+//=====================================================
+void CIce::FollowWave(void)
+{
+	COcean *pOcean = COcean::GetInstance();
+
+	if (pOcean == nullptr)
 	{
 		return;
 	}
@@ -192,7 +213,7 @@ void CIce::Update(void)
 
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	pos.y = COcean::GetInstance()->GetHeight(pos,&move) + HEIGHT_ICE;
+	pos.y = pOcean->GetHeight(pos, &move) + HEIGHT_ICE;
 
 	if (m_pUp != nullptr)
 	{
@@ -204,14 +225,6 @@ void CIce::Update(void)
 	}
 
 	SetPosition(pos);
-}
-
-//=====================================================
-// 流れる処理
-//=====================================================
-void CIce::Flows(void)
-{
-	AddPosition(D3DXVECTOR3(SPEED_FLOWS, 0.0f, 0.0f));
 }
 
 //=====================================================
@@ -361,6 +374,29 @@ void CIceStaeteBreak::Update(CIce *pIce)
 
 		pIce->ChangeState(new CIceStaeteNormal);
 		pIce->EnablePeck(false);
+	}
+
+	// 氷の追従
+	for (auto it : m_aPeaceIce)
+	{
+		D3DXVECTOR3 pos = { it->GetPosition().x, pIce->GetPosition().y, it->GetPosition().z };
+
+		it->SetPosition(pos);
+	}
+
+	// 沈む状態の時、本体の位置を下げる
+	if (pIce->IsSink())
+	{
+		D3DXVECTOR3 posIce = pIce->GetPosition();
+		posIce.y -= SPEED_SINK;
+		pIce->SetPosition(posIce);
+
+		if (posIce.y < HEIGHT_DELETE)
+		{// 一定まで沈んだら削除する
+			pIce->Uninit();
+
+			return;
+		}
 	}
 }
 
