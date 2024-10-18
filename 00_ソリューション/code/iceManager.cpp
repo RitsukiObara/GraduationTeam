@@ -22,7 +22,7 @@
 namespace
 {
 const float RATE_HEX_X = 0.13f;	// 六角形の割合X
-const float RATE_HEX_Z = 0.3f;	// 六角形の割合Z
+const float RATE_HEX_Z = 0.13f;	// 六角形の割合Z
 
 const float WIDTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_X;	// グリッドの幅
 const float DEPTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_Z;	// グリッドの奥行き
@@ -36,7 +36,7 @@ CIceManager *CIceManager::s_pIceManager = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CIceManager::CIceManager(int nPriority) : CObject(nPriority), m_nNumGridVirtical(0), m_nNumGridHorizontal(0), m_dirStream(E_Direction::DIRECTION_RIGHTUP)
+CIceManager::CIceManager(int nPriority) : CObject(nPriority), m_nNumGridVirtical(0), m_nNumGridHorizontal(0), m_dirStream(E_Stream::STREAM_UP)
 {
 
 }
@@ -100,7 +100,7 @@ HRESULT CIceManager::Init(void)
 	CreateIce(6, 6);
 
 	// 海流を初期化
-	m_dirStream = E_Direction::DIRECTION_LEFT;
+	m_dirStream = E_Stream::STREAM_LEFT;
 
 	return S_OK;
 }
@@ -770,7 +770,7 @@ void CIceManager::BreakIce(void)
 			if (!m_aGrid[i][j].pIce->IsBreak())
 				continue;
 
-			m_aGrid[i][j].pIce->ChangeState(new CIceStaeteFlow);
+			m_aGrid[i][j].pIce->ChangeState(new CIceStateFlow);
 			m_aGrid[i][j].pIce = nullptr;
 
 			BreakPeck(i, j);
@@ -936,10 +936,10 @@ void CIceManager::Debug(void)
 
 	// 海流の向きを変更
 	if (pKeyboard->GetTrigger(DIK_LEFT))
-		m_dirStream = (E_Direction)((m_dirStream + 1) % E_Direction::DIRECTION_MAX);
+		m_dirStream = (E_Stream)((m_dirStream + 1) % E_Stream::STREAM_MAX);
 
 	if (pKeyboard->GetTrigger(DIK_RIGHT))
-		m_dirStream = (E_Direction)((m_dirStream + E_Direction::DIRECTION_MAX - 1) % E_Direction::DIRECTION_MAX);
+		m_dirStream = (E_Stream)((m_dirStream + E_Stream::STREAM_MAX - 1) % E_Stream::STREAM_MAX);
 }
 
 //=====================================================
