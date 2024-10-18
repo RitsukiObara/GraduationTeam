@@ -130,6 +130,7 @@ HRESULT CPause::Init(void)
 					// ポリゴンの設定
 					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-0.25f, 0.4f + MENU_HEIGHT * nCntMenu, 0.0f));
 					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
+					m_apMenu[nCntMenu]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
 					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
 					m_aPosDest[nCntMenu].x = MENU_WIDTH;
 				}
@@ -137,8 +138,9 @@ HRESULT CPause::Init(void)
 				else if (nCntMenu == MENU_RESTART)
 				{//	ゲームのリスタート
 					// ポリゴンの設定
-					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-0.75f, 0.4f + MENU_HEIGHT * nCntMenu, 0.0f));
+					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(2.5f, 0.4f + MENU_HEIGHT * nCntMenu, 0.0f));
 					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
+					m_apMenu[nCntMenu]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
 					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
 					m_aPosDest[nCntMenu].x = MENU_WIDTH;
 				}
@@ -148,6 +150,7 @@ HRESULT CPause::Init(void)
 					// ポリゴンの設定
 					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-0.25f, 0.4f + MENU_HEIGHT * nCntMenu, 0.0f));
 					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
+					m_apMenu[nCntMenu]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
 					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
 					m_aPosDest[nCntMenu].x = MENU_WIDTH;
 				}
@@ -155,13 +158,12 @@ HRESULT CPause::Init(void)
 				else if (nCntMenu == MENU_PAUSE)
 				{//	ポーズ
 					// ポリゴンの設定
-					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-0.5f, 0.12f, 0.0f));
+					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(2.5f, 0.12f, 0.0f));
 					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH + 0.1f, MENU_HEIGHT - 0.05f);
+					m_apMenu[nCntMenu]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
 					m_aPosDest[nCntMenu].x = MENU_WIDTH;
 				}
-
-				m_apMenu[nCntMenu]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
 
 				// テクスチャの設定
 				nIdxTexture = CTexture::GetInstance()->Regist(pPath[nCntMenu]);
@@ -553,7 +555,6 @@ void CPause::Fade(MENU menu)
 	case CPause::MENU_RESUME:
 
 		m_state = STATE_OUT;
-		//m_aPosDest[0].x = -MENU_WIDTH;
 
 		break;
 	case CPause::MENU_RESTART:
