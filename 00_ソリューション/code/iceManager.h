@@ -53,6 +53,8 @@ public:
 	void DeleteIce(CIce *pIce);	// 指定したポインタと同じ氷を削除する
 	void Collide(D3DXVECTOR3 *pPos);	// 外に出さない判定処理
 	void GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH);	// グリッド番号を位置から取得する処理
+	void SetDirStream(E_Direction direction) { m_dirStream = direction; }	// 海流の方向
+	E_Direction GetDirStream(void) { return m_dirStream; }
 
 	// 変数取得・設定関数
 	D3DXVECTOR3 GetGridPosition(int *pNumV, int *pNumH);
@@ -109,6 +111,19 @@ private:
 namespace Grid
 {
 const float SIZE = 200.0f;	// グリッドのサイズ
+}
+
+namespace stream
+{
+const D3DXVECTOR3 VECTOR_STREAM[CIceManager::E_Direction::DIRECTION_MAX] =
+{
+	{ 1.0f, 0.0f, 1.0f },   // 右上
+	{ 1.0f, 0.0f, 0.0f },   // 右
+	{ 1.0f, 0.0f, -1.0f },  // 右下
+	{ -1.0f, 0.0f, -1.0f }, // 左下
+	{ -1.0f, 0.0f, 0.0f },  // 左
+	{ -1.0f, 0.0f, 1.0f }   // 左上
+};
 }
 
 #endif

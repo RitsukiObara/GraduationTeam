@@ -424,7 +424,19 @@ void CIceStaeteFlow::Uninit(CIce *pIce)
 //=====================================================
 void CIceStaeteFlow::Update(CIce *pIce)
 {
-	pIce->AddPosition(D3DXVECTOR3(-SPEED_FLOWS, 0.0f, 0.0f));
+	CIceManager *pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return;
+
+	// ŠC—¬‚ÌƒxƒNƒgƒ‹Žæ“¾
+	CIceManager::E_Direction dir = pIceManager->GetDirStream();
+	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[dir];
+
+	// —¬‚ê‚é‘¬“x‚É³‹K‰»‚µ‚ÄˆÊ’u‚ð‰ÁŽZ
+	D3DXVec3Normalize(&vecStream, &vecStream);
+	vecStream *= SPEED_FLOWS;
+	pIce->AddPosition(vecStream);
 }
 
 //*******************************************************************************
