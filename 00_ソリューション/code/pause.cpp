@@ -25,9 +25,9 @@
 //*****************************************************
 #define MENU_WIDTH	(0.12f)	// 項目の幅
 #define MENU_HEIGHT	(0.2f)	// 項目の高さ
-#define MOVE_FACT	(0.15f)	// 移動速度
+#define MOVE_FACT	(0.08f)	// 移動速度
 #define LINE_ARRIVAL	(0.05f)	// 到着したとされるしきい値
-#define LINE_UNINIT	(3.0f)	// 終了するまでのしきい値
+#define LINE_UNINIT	(0.00001f)	// 終了するまでのしきい値
 #define SPEED_FADE	(0.03f)	// 背景のフェード速度
 #define ALPHA_BG	(0.5f)	// 背景の不透明度
 
@@ -109,9 +109,9 @@ HRESULT CPause::Init(void)
 
 	char *pPath[MENU_MAX] = 
 	{// メニュー項目のパス
-		"data\\TEXTURE\\UI\\Return.png",
+		"data\\TEXTURE\\UI\\Resume.png",
 		"data\\TEXTURE\\UI\\Restart.png",
-		"data\\TEXTURE\\UI\\Back.png",
+		"data\\TEXTURE\\UI\\Quit.png",
 		"data\\TEXTURE\\UI\\pause.png",
 	};
 
@@ -128,7 +128,7 @@ HRESULT CPause::Init(void)
 				if (nCntMenu == MENU_RESUME)
 				{//	ゲームに戻る
 					// ポリゴンの設定
-					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-0.25f, 0.4f + MENU_HEIGHT * nCntMenu, 0.0f));
+					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-2.5f, 0.4f + MENU_HEIGHT * nCntMenu, 0.0f));
 					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
 					m_apMenu[nCntMenu]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
 					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
@@ -148,7 +148,7 @@ HRESULT CPause::Init(void)
 				else if (nCntMenu == MENU_QUIT)
 				{//	タイトルに戻る
 					// ポリゴンの設定
-					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-0.25f, 0.4f + MENU_HEIGHT * nCntMenu, 0.0f));
+					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-2.5f, 0.4f + MENU_HEIGHT * nCntMenu, 0.0f));
 					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
 					m_apMenu[nCntMenu]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
 					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
@@ -165,11 +165,30 @@ HRESULT CPause::Init(void)
 					m_aPosDest[nCntMenu].x = MENU_WIDTH;
 				}
 
+				if (nCntMenu == MENU_RESUME)
+				{
+					m_aPosDest[nCntMenu].x = 0.25f;
+				}
+
+				else if (nCntMenu == MENU_RESTART)
+				{
+					m_aPosDest[nCntMenu].x = 0.75f;
+				}
+
+				else if (nCntMenu == MENU_QUIT)
+				{
+					m_aPosDest[nCntMenu].x = 0.25f;
+				}
+
+				else if (nCntMenu == MENU_PAUSE)
+				{
+					m_aPosDest[nCntMenu].x = 0.5f;
+				}
+
 				// テクスチャの設定
 				nIdxTexture = CTexture::GetInstance()->Regist(pPath[nCntMenu]);
 
 				m_apMenu[nCntMenu]->SetIdxTexture(nIdxTexture);
-
 				m_apMenu[nCntMenu]->SetVtx();
 			}
 		}
@@ -260,39 +279,6 @@ void CPause::ManageState(void)
 
 			float fDiff = m_aPosDest[nCntMenu].x - vecDiff.x;
 
-			if (fDiffOld * fDiffOld >= LINE_ARRIVAL * LINE_ARRIVAL &&
-				fDiff * fDiff < LINE_ARRIVAL * LINE_ARRIVAL &&
-				nCntMenu < MENU_MAX)
-			{// 差分がしきい値より下になったら下のものを動かす
-				if (m_state == STATE_IN)
-				{
-					if (nCntMenu == MENU_RESUME)
-					{
-						m_aPosDest[nCntMenu].x = 0.25f;
-					}
-
-					else if (nCntMenu == MENU_RESTART)
-					{
-						m_aPosDest[nCntMenu].x = 0.75f;
-					}
-
-					else if (nCntMenu == MENU_QUIT)
-					{
-						m_aPosDest[nCntMenu].x = 0.25f;
-					}
-
-					else if (nCntMenu == MENU_PAUSE)
-					{
-						m_aPosDest[nCntMenu].x = 0.5f;
-					}
-				}
-
-				else if (m_state == STATE_OUT)
-				{
-					m_aPosDest[nCntMenu].x = -0.5f;
-				}
-			}
-
 			if (fDiff * fDiff < LINE_UNINIT * LINE_UNINIT &&
 				m_state == STATE_OUT)
 			{// 終了のライン
@@ -357,7 +343,6 @@ void CPause::Input(void)
 	CInputJoypad *pJoypad = CInputJoypad::GetInstance();
 	CInputManager *pInputManager = CInputManager::GetInstance();
 	CSound* pSound = CSound::GetInstance();
-
 	CFade *pFade = CFade::GetInstance();
 
 	if (pFade == nullptr)
@@ -382,6 +367,9 @@ void CPause::Input(void)
 		m_state == STATE::STATE_NONE)
 	{// ポーズ解除、以降の操作を受け付けない
 		m_state = STATE_OUT;
+
+		//	画面外目標を設定
+		OffPosition();
 
 		return;
 	}
@@ -434,9 +422,87 @@ void CPause::Input(void)
 	}
 
 	//	選択した時にUIが動く処理
+	SelectMove();
+}
+
+//====================================================
+// フェードする処理
+//====================================================
+void CPause::Fade(MENU menu)
+{
+	CFade *pFade = CFade::GetInstance();
+
+	if (pFade == nullptr)
+	{
+		return;
+	}
+
+	switch (menu)
+	{
+	case CPause::MENU_RESUME:
+
+		//	画面外目標を設定
+		OffPosition();
+
+		m_state = STATE_OUT;
+
+		break;
+	case CPause::MENU_RESTART:
+
+		CGame::SetState(CGame::STATE_END);
+		pFade->SetFade(CScene::MODE_GAME);
+
+		break;
+	case CPause::MENU_QUIT:
+	{
+		pFade->SetFade(CScene::MODE_TITLE);
+	}
+		break;
+	default:
+		break;
+	}
+}
+
+//====================================================
+// 画面外目標設定処理
+//====================================================
+void CPause::OffPosition(void)
+{
+	for (int nCntMenu = 0; nCntMenu < MENU_MAX; nCntMenu++)
+	{//	画面外の目標を設定	
+		if (m_apMenu[nCntMenu] != nullptr)
+		{
+			if (nCntMenu == MENU_RESUME)
+			{
+				m_aPosDest[nCntMenu].x = -0.25f;
+			}
+
+			else if (nCntMenu == MENU_RESTART)
+			{
+				m_aPosDest[nCntMenu].x = 1.75f;
+			}
+
+			else if (nCntMenu == MENU_QUIT)
+			{
+				m_aPosDest[nCntMenu].x = -0.25f;
+			}
+
+			else if (nCntMenu == MENU_PAUSE)
+			{
+				m_aPosDest[nCntMenu].x = 1.5f;
+			}
+		}
+	}
+}
+
+//====================================================
+//	選択した時にUIが動く処理
+//====================================================
+void CPause::SelectMove(void)
+{
 	D3DXVECTOR3 pos = m_apMenu[m_menu]->GetPosition();
 	nCountMove++;
-	
+
 	//	ゲームに戻る
 	if (m_menu == MENU_RESUME)
 	{
@@ -534,43 +600,7 @@ void CPause::Input(void)
 	}
 
 	m_apMenu[m_menu]->SetPosition(pos);
-	//m_apMenu[m_menu]->SetVtx();
-
-}
-
-//====================================================
-// フェードする処理
-//====================================================
-void CPause::Fade(MENU menu)
-{
-	CFade *pFade = CFade::GetInstance();
-
-	if (pFade == nullptr)
-	{
-		return;
-	}
-
-	switch (menu)
-	{
-	case CPause::MENU_RESUME:
-
-		m_state = STATE_OUT;
-
-		break;
-	case CPause::MENU_RESTART:
-
-		CGame::SetState(CGame::STATE_END);
-		pFade->SetFade(CScene::MODE_GAME);
-
-		break;
-	case CPause::MENU_QUIT:
-	{
-		pFade->SetFade(CScene::MODE_TITLE);
-	}
-		break;
-	default:
-		break;
-	}
+	m_apMenu[m_menu]->SetVtx();
 }
 
 //====================================================

@@ -54,6 +54,8 @@ private:
 	void ManageBg(void);
 	void Input(void);
 	void Fade(MENU menu);
+	void OffPosition(void);
+	void SelectMove(void);
 
 	MENU m_menu;	// 選択項目
 	CUI *m_apMenu[MENU_MAX];	// メニュー項目の２Dオブジェクト
