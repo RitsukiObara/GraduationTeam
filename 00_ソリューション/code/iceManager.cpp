@@ -558,7 +558,7 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 {
 	int nIdxV = 0;
 	int nIdxH = 0;
-	D3DXVECTOR3 posIce = GetPosition();
+	D3DXVECTOR3 posIce = pIce->GetPosition();
 
 	GetIdxGridFromPosition(posIce, &nIdxV, &nIdxH);
 
