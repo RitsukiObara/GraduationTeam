@@ -490,7 +490,7 @@ bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand, vecto
 	int aV[DIRECTION_MAX] = {};
 	int aH[DIRECTION_MAX] = {};
 	
-	CalcAroundGrids(nNumV, nNumH, aV, aH);
+	Grid::CalcAroundGrids(nNumV, nNumH, aV, aH);
 
 	// 四方向氷がないか探索できない状態なら終了
 	bool bNothing = true;
@@ -523,37 +523,6 @@ bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand, vecto
 	}
 
 	return false;
-}
-
-//=====================================================
-// 周辺グリッドの計算
-//=====================================================
-void CIceManager::CalcAroundGrids(int nNumV, int nNumH, int* aV, int* aH)
-{
-	// 右上・右下
-	aV[DIRECTION_RIGHTUP] = nNumV + 1;
-	aV[DIRECTION_RIGHTDOWN] = nNumV - 1;
-
-	if (nNumV % 2 == 0) {  // 偶数の時
-		aH[DIRECTION_RIGHTUP] = nNumH + 1;
-		aH[DIRECTION_RIGHTDOWN] = nNumH + 1;
-		aH[DIRECTION_LEFTUP] = nNumH;
-		aH[DIRECTION_LEFTDOWN] = nNumH;
-	}
-	else {  // 奇数の時
-		aH[DIRECTION_RIGHTUP] = nNumH;
-		aH[DIRECTION_RIGHTDOWN] = nNumH;
-		aH[DIRECTION_LEFTUP] = nNumH - 1;
-		aH[DIRECTION_LEFTDOWN] = nNumH - 1;
-	}
-
-	// 左側・左右
-	aV[DIRECTION_LEFTUP] = nNumV + 1;
-	aV[DIRECTION_LEFTDOWN] = nNumV - 1;
-	aV[DIRECTION_RIGHT] = nNumV;
-	aV[DIRECTION_LEFT] = nNumV;
-	aH[DIRECTION_RIGHT] = nNumH + 1;
-	aH[DIRECTION_LEFT] = nNumH - 1;
 }
 
 //=====================================================
@@ -606,7 +575,7 @@ void CIceManager::DisableFromHardIce(int nNumV, int nNumH, vector<CIce*> apIce)
 	int aV[DIRECTION_MAX] = {};
 	int aH[DIRECTION_MAX] = {};
 
-	CalcAroundGrids(nNumV, nNumH, aV, aH);
+	Grid::CalcAroundGrids(nNumV, nNumH, aV, aH);
 
 	// 氷のポインタの保存
 	for (int i = 0; i < DIRECTION_MAX; i++)
@@ -659,7 +628,7 @@ void CIceManager::DisableFromPlayer(int nNumV, int nNumH, CIce *pIcePeck, vector
 	int aV[DIRECTION_MAX] = {};
 	int aH[DIRECTION_MAX] = {};
 
-	CalcAroundGrids(nNumV, nNumH, aV, aH);
+	Grid::CalcAroundGrids(nNumV, nNumH, aV, aH);
 
 	// 四方向氷がないか探索できない状態なら終了
 	bool bNothing = true;
@@ -719,7 +688,7 @@ void CIceManager::DisableBreak(int nNumV, int nNumH)
 	int aV[DIRECTION_MAX] = {};
 	int aH[DIRECTION_MAX] = {};
 
-	CalcAroundGrids(nNumV, nNumH, aV, aH);
+	Grid::CalcAroundGrids(nNumV, nNumH, aV, aH);
 
 	// 四方向氷がないか探索できない状態なら終了
 	bool bNothing = true;

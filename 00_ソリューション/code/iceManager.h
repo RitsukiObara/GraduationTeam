@@ -98,7 +98,6 @@ private:
 	void DisableFromPlayer(int nNumV, int nNumH, CIce *pIcePeck,vector<CIce*> apIce);	// プレイヤーから信号を出して、破壊信号を解除
 	void DisableBreak(int nNumV, int nNumH);	// 氷の破壊を解除
 	void BreakIce(void);	// 氷の破壊
-	void CalcAroundGrids(int nNumV, int nNumH, int* aV, int* aH);	// 周辺グリッドの計算
 	bool CheckStandBlock(vector<CIce*> apIce, CIce *pIce,int nIdx);
 	bool CheckCorner(int nNumV, int nNumH);	// 角の確認
 	bool CheckCommon(vector<CIce*> apIce, vector<CIce*> apIceLast,CIce* pIceStand, int nNumV, int nNumH,bool bBreakLast);
@@ -119,6 +118,33 @@ private:
 namespace Grid
 {
 const float SIZE = 200.0f;	// グリッドのサイズ
+inline void CalcAroundGrids(int nNumV, int nNumH, int* aV, int* aH)
+{
+	// 右上・右下
+	aV[CIceManager::DIRECTION_RIGHTUP] = nNumV + 1;
+	aV[CIceManager::DIRECTION_RIGHTDOWN] = nNumV - 1;
+
+	if (nNumV % 2 == 0) {  // 偶数の時
+		aH[CIceManager::DIRECTION_RIGHTUP] = nNumH + 1;
+		aH[CIceManager::DIRECTION_RIGHTDOWN] = nNumH + 1;
+		aH[CIceManager::DIRECTION_LEFTUP] = nNumH;
+		aH[CIceManager::DIRECTION_LEFTDOWN] = nNumH;
+	}
+	else {  // 奇数の時
+		aH[CIceManager::DIRECTION_RIGHTUP] = nNumH;
+		aH[CIceManager::DIRECTION_RIGHTDOWN] = nNumH;
+		aH[CIceManager::DIRECTION_LEFTUP] = nNumH - 1;
+		aH[CIceManager::DIRECTION_LEFTDOWN] = nNumH - 1;
+	}
+
+	// 左側・左右
+	aV[CIceManager::DIRECTION_LEFTUP] = nNumV + 1;
+	aV[CIceManager::DIRECTION_LEFTDOWN] = nNumV - 1;
+	aV[CIceManager::DIRECTION_RIGHT] = nNumV;
+	aV[CIceManager::DIRECTION_LEFT] = nNumV;
+	aH[CIceManager::DIRECTION_RIGHT] = nNumH + 1;
+	aH[CIceManager::DIRECTION_LEFT] = nNumH - 1;
+}
 }
 
 namespace stream
@@ -127,8 +153,8 @@ const D3DXVECTOR3 VECTOR_STREAM[CIceManager::E_Stream::STREAM_MAX] =
 {
 	{ 0.0f, 0.0f, 1.0f },   // 上
 	{ 1.0f, 0.0f, 0.0f },   // 右
-	{ -1.0f, 0.0f, 0.0f },  // 左
 	{ 0.0f, 0.0f, -1.0f }, // 下
+	{ -1.0f, 0.0f, 0.0f },  // 左
 };
 }
 

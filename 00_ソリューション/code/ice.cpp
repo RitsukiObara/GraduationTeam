@@ -439,39 +439,44 @@ void CIceStateFlow::Update(CIce *pIce)
 	pIce->AddPosition(vecStream);
 
 	// 氷との判定
-	CollideIce();
+	CollideIce(pIce);
 }
 
 //=====================================================
 // 氷との判定
 //=====================================================
-void CIceStateFlow::CollideIce(void)
+void CIceStateFlow::CollideIce(CIce *pIce)
 {
 	// 今いるグリッドの取得
-
-	// 海流の方向に合わせた判定関数の呼び出し
-	DirectionFunc directionFuncs[CIceManager::E_Stream::STREAM_MAX] = 
-	{ 
-		&CIceStateFlow::CheckUp, 
-		&CIceStateFlow::CheckDown, 
-		&CIceStateFlow::CheckRight, 
-		&CIceStateFlow::CheckLeft 
-	};
+	int nIdxV = 0;
+	int nIdxH = 0;
 
 	CIceManager *pIceManager = CIceManager::GetInstance();
 
 	if (pIceManager == nullptr)
 		return;
 
+	D3DXVECTOR3 posIce = pIce->GetPosition();
+	pIceManager->GetIdxGridFromPosition(posIce, &nIdxV, &nIdxH);
+
+	// 海流の方向に合わせた判定関数の呼び出し
+	DirectionFunc directionFuncs[CIceManager::E_Stream::STREAM_MAX] = 
+	{ 
+		&CIceStateFlow::CheckUp,
+		&CIceStateFlow::CheckDown,
+		&CIceStateFlow::CheckRight,
+		&CIceStateFlow::CheckLeft
+	};
+
 	CIceManager::E_Stream stream = pIceManager->GetDirStream();
 
-	(this->*directionFuncs[stream])();
+	(this->*directionFuncs[stream])(pIce, nIdxV, nIdxH);
 }
 
 //=====================================================
 // 上方向の確認
 //=====================================================
-void CIceStateFlow::CheckUp(void)
+void CIceStateFlow::CheckUp(CIce *pIce, int nIdxV, int nIdxH)
 {
 
 }
@@ -479,7 +484,7 @@ void CIceStateFlow::CheckUp(void)
 //=====================================================
 // 右方向の確認
 //=====================================================
-void CIceStateFlow::CheckRight(void)
+void CIceStateFlow::CheckRight(CIce *pIce, int nIdxV, int nIdxH)
 {
 
 }
@@ -487,7 +492,7 @@ void CIceStateFlow::CheckRight(void)
 //=====================================================
 // 下方向の確認
 //=====================================================
-void CIceStateFlow::CheckDown(void)
+void CIceStateFlow::CheckDown(CIce *pIce, int nIdxV, int nIdxH)
 {
 
 }
@@ -495,9 +500,25 @@ void CIceStateFlow::CheckDown(void)
 //=====================================================
 // 左方向の確認
 //=====================================================
-void CIceStateFlow::CheckLeft(void)
+void CIceStateFlow::CheckLeft(CIce *pIce, int nIdxV, int nIdxH)
 {
+	CIceManager *pIceManager = CIceManager::GetInstance();
 
+	if (pIceManager == nullptr)
+		return;
+
+	// 周辺の氷の取得
+	vector<CIce*> apIce = pIceManager->GetAroundIce(nIdxV, nIdxH);
+
+	// 左側のグリッドどれかに氷があれば漂着
+	if (apIce[CIceManager::DIRECTION_LEFTUP] != nullptr ||
+		apIce[CIceManager::DIRECTION_LEFT] != nullptr ||
+		apIce[CIceManager::DIRECTION_LEFTDOWN] != nullptr)
+	{
+		pIce->ChangeState(new CIceStaeteNormal);
+
+		return;
+	}
 }
 
 //*******************************************************************************

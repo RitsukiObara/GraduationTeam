@@ -154,14 +154,14 @@ public:
 
 private:
 	// 関数ポインタ型の定義
-	typedef void (CIceStateFlow::*DirectionFunc)(void);
+	typedef void (CIceStateFlow::*DirectionFunc)(CIce *pIce,int nIdxV,int nIdxH);
 
 	// メンバ関数
-	void CollideIce(void);	// 氷との判定
-	void CheckUp(void);	// 上方向の確認
-	void CheckRight(void);	// 右側の確認
-	void CheckDown(void);	// 下方向の確認
-	void CheckLeft(void);	// 左側の確認
+	void CollideIce(CIce *pIce);	// 氷との判定
+	void CheckUp(CIce *pIce, int nIdxV, int nIdxH);	// 上方向の確認
+	void CheckRight(CIce *pIce, int nIdxV, int nIdxH);	// 右側の確認
+	void CheckDown(CIce *pIce, int nIdxV, int nIdxH);	// 下方向の確認
+	void CheckLeft(CIce *pIce, int nIdxV, int nIdxH);	// 左側の確認
 };
 
 class CIceStaeteSink : public CIceState
