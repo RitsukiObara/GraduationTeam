@@ -32,6 +32,9 @@ public:
 	void Update(void);	// 更新
 	void Draw(void);	// 描画
 
+	// 変数設定・取得処理
+	void AddIceToArray(CIce *pIce);
+
 	// 静的メンバ関数
 	static CFlowIce *Create(void);	// 生成処理
 
