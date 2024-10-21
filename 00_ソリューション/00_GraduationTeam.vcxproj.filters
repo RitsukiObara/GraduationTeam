@@ -306,8 +306,8 @@
     <ClCompile Include="code\ripples.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
-    <ClCompile Include="code\flowIce.cpp">
-      <Filter>ソース ファイル\gameobject</Filter>
+    <ClCompile Include="code\ocean_flow_UI.cpp">
+      <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -569,8 +569,8 @@
     <ClInclude Include="code\ripples.h">
       <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
-    <ClInclude Include="code\flowIce.h">
-      <Filter>ソース ファイル\gameobject</Filter>
+    <ClInclude Include="code\ocean_flow_UI.h">
+      <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
