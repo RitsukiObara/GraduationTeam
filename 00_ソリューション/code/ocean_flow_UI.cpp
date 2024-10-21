@@ -20,6 +20,7 @@
 #include "sound.h"
 #include "UI.h"
 #include "inputManager.h"
+#include "iceManager.h"
 
 //*****************************************************
 // マクロ定義
@@ -35,8 +36,7 @@
 //*****************************************************
 namespace
 {
-	const char* CREAR_LOGO_PATH = "data\\TEXTURE\\UI\\stage_clear.png";	// クリアロゴのパス
-	const char* FAIL_LOGO_PATH = "data\\TEXTURE\\UI\\gameover.png";	// 失敗ロゴのパス
+	//const char* CREAR_LOGO_PATH = "data\\TEXTURE\\UI\\stage_clear.png";	// クリアロゴのパス
 }
 
 //*****************************************************
@@ -50,8 +50,6 @@ COceanFlowUI* COceanFlowUI::m_pOceanFlowUI = nullptr;	// 自身のポインタ
 COceanFlowUI::COceanFlowUI()
 {
 	m_state = STATE_NONE;
-	m_bSound = false;
-	nCountMove = 0;
 }
 
 //====================================================
@@ -85,17 +83,19 @@ COceanFlowUI* COceanFlowUI::Create(void)
 //====================================================
 HRESULT COceanFlowUI::Init(void)
 {
+	m_pArrow = CObjectX::Create(D3DXVECTOR3(800.0f, 200.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
 	//	矢印モデルの初期化
-	if (m_apArrow != nullptr)
+	if (m_pArrow != nullptr)
 	{
-		m_apArrow->SetPosition(D3DXVECTOR3(640.0f, 200.0f, 0.0f));
-		m_apArrow->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-		m_apArrow->BindModel(CModel::Load("data\\MODEL\\other\\Arrow001.x"));
+		m_pArrow->Init();
+
+		m_pArrow->BindModel(CModel::Load("data\\MODEL\\other\\Arrow001.x"));
 	}
 
-	m_state = STATE_IN;
+	CIceManager::GetInstance()->GetDirStream();
 
-	EnableNotStop(true);
+	m_state = STATE_IN;
 
 	return S_OK;
 }
@@ -106,11 +106,11 @@ HRESULT COceanFlowUI::Init(void)
 void COceanFlowUI::Uninit(void)
 {
 	// メニュー項目の破棄
-	if (m_apArrow != nullptr)
+	if (m_pArrow != nullptr)
 	{
-		Uninit();
+		m_pArrow->Uninit();
 
-		m_apArrow = nullptr;
+		m_pArrow = nullptr;
 	}
 
 	m_pOceanFlowUI = nullptr;
@@ -123,14 +123,39 @@ void COceanFlowUI::Uninit(void)
 //====================================================
 void COceanFlowUI::Update(void)
 {
+	OceanFlowKeep = CIceManager::GetInstance()->GetDirStream();
+	D3DXVECTOR3 Rot = m_pArrow->GetRotation();
+
+	if (OceanFlowKeep == CIceManager::STREAM_UP)
+	{
+		universal::FactingRot(&Rot.y, D3DX_PI * 0.5f, 0.02f);
+	}
+
+	if (OceanFlowKeep == CIceManager::STREAM_RIGHT)
+	{
+		universal::FactingRot(&Rot.y, D3DX_PI, 0.02f);
+	}
+
+	if (OceanFlowKeep == CIceManager::STREAM_DOWN)
+	{
+		universal::FactingRot(&Rot.y, -D3DX_PI * 0.5f, 0.02f);
+	}
+
+	if (OceanFlowKeep == CIceManager::STREAM_LEFT)
+	{
+		universal::FactingRot(&Rot.y, 0.0f, 0.02f);
+	}
+
+	m_pArrow->SetRotation(Rot);
+
 	// 状態管理
-	ResultState();
+	OceanState();
 }
 
 //====================================================
 // 状態管理
 //====================================================
-void COceanFlowUI::ResultState(void)
+void COceanFlowUI::OceanState(void)
 {
 
 }

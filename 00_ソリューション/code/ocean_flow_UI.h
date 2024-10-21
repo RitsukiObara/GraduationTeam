@@ -43,13 +43,12 @@ private:
 		STATE_MAX
 	};
 
-	void ResultState(void); // リザルトUIの状態
+	void OceanState(void); // リザルトUIの状態
 
-	CObjectX* m_apArrow;	// 矢印のモデル
+	CObjectX* m_pArrow;	// 矢印のモデル
 	STATE m_state;	// 状態
+	int OceanFlowKeep;	//	海流の保存
 	static COceanFlowUI* m_pOceanFlowUI;	// 自身のポインタ
-	bool m_bSound;
-	int nCountMove;
 };
 
 #endif
