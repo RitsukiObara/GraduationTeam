@@ -1011,6 +1011,38 @@ void CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH
 }
 
 //=====================================================
+// グリッドに氷を設定
+//=====================================================
+void CIceManager::SetIceInGrid(int nNumV, int nNumH, CIce *pIce)
+{
+	if (m_aGrid.empty())
+		return;
+
+	if (nNumV > (int)m_aGrid.size() - 1)
+	{// 上から飛び出てた時の制限
+		return;
+	}
+	else if (nNumV < 0)
+	{// 下から飛び出た時の制限
+		return;
+	}
+
+	if (nNumH > (int)m_aGrid[nNumH].size() - 1)
+	{// 右から飛び出てた時の制限
+		return;
+	}
+	else if (nNumH < 0)
+	{// 左から飛び出た時の制限
+		return;
+	}
+
+	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
+	{
+		m_aGrid[nNumV][nNumH].pIce = pIce;
+	}
+}
+
+//=====================================================
 // 描画処理
 //=====================================================
 void CIceManager::Draw(void)
