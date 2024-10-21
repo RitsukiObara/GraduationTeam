@@ -44,6 +44,7 @@
 #include "ocean.h"
 #include "stageResultUI.h"
 #include "UI_enemy.h"
+#include "ocean_flow_UI.h"
 #include "flowIce.h"
 
 //*****************************************************
@@ -135,6 +136,10 @@ HRESULT CGame::Init(void)
 
 	// 氷マネージャー
 	CIceManager::Create(NUM_GRID_V, NUM_GRID_H);
+
+	// 矢印モデルの生成
+	m_pOceanFlowUI = COceanFlowUI::Create();
+	m_pOceanFlowUI->SetPosition(D3DXVECTOR3(0.09f, 0.07f, 0.0f));
 
 	// 敵数表示UI生成
 	CUIEnemy::Create();
