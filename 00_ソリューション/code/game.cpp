@@ -44,6 +44,7 @@
 #include "ocean.h"
 #include "stageResultUI.h"
 #include "UI_enemy.h"
+#include "flowIce.h"
 
 //*****************************************************
 // マクロ定義
@@ -143,6 +144,9 @@ HRESULT CGame::Init(void)
 
 	// プレイヤー生成
 	CPlayer::Create();
+
+	// 流氷生成
+	CFlowIce::Create();
 
 	return S_OK;
 }

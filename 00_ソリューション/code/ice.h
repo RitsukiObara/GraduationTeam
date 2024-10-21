@@ -69,6 +69,8 @@ public:
 	bool IsAliveStandIce(void) { return m_bAliveStandBlock; }
 	void EnableSink(bool bSink) { m_bSink = bSink; }	// 沈むフラグ
 	bool IsSink(void) { return m_bSink; }
+	void EnableStop(bool bStop) { m_bStop = bStop; }	// 止まるフラグ
+	bool IsStop(void) { return m_bStop; }
 	CFan3D *GetFan3D(void) { return m_pUp; }	// 上側の扇ポリゴン取得
 
 	// 静的メンバ関数
@@ -88,6 +90,7 @@ private:
 	bool m_bPeck;	// 突っつかれたフラグ
 	bool m_bAliveStandBlock;	// 立っているブロックに到達したフラグ
 	bool m_bSink;	// 沈むフラグ
+	bool m_bStop;	// 停止しているかどうか
 	CFan3D *m_pUp;	// 上側に貼る扇ポリゴン
 	CMeshCylinder *m_pSide;	// サイドのシリンダー
 	CIceState *m_pState;	// ステイトのポインタ

@@ -15,6 +15,7 @@
 //*****************************************************
 // 前方宣言
 //*****************************************************
+class CIce;
 
 //*****************************************************
 // クラスの定義
@@ -30,8 +31,18 @@ public:
 	void Uninit(void);	// 終了
 	void Update(void);	// 更新
 	void Draw(void);	// 描画
-private:
 
+	// 静的メンバ関数
+	static CFlowIce *Create(void);	// 生成処理
+
+private:
+	// メンバ関数
+	void CreateIce(void);	// 氷の生成
+	void CheckSomeIceStop(void);	// どれかの氷が止まっていないかのチェック
+	void StopAllIce(void);	// 全ての氷を止める
+
+	// メンバ変数
+	vector<CIce*> m_apIce;	// 氷の配列
 };
 
 #endif

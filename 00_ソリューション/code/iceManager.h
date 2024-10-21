@@ -68,6 +68,8 @@ public:
 	// 変数取得・設定関数
 	D3DXVECTOR3 GetGridPosition(int *pNumV, int *pNumH);
 	CIce* GetGridObject(int* pNumV, int* pNumH);
+	int GetNumGridV(void) { return m_nNumGridVirtical; }	// 縦のグリッド数
+	int GetNumGridH(void) { return m_nNumGridHorizontal; }	// 横のグリッド数
 
 	// 静的メンバ関数
 	static CIceManager *Create(int nNumV, int nNumH);
