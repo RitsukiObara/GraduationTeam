@@ -833,7 +833,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Documents\\モデル\\全部\\おばら\\階層構\造モデル\\ペンギン\\data\\TEXTURE\\Ping-_UV.jpg";
+    "data\\TEXTURE\\player\\Ping-_UV.jpg";
    }
   }
  }

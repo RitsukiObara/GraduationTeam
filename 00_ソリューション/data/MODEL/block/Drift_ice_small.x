@@ -330,7 +330,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Documents\\モデル\\全部\\おばら\\ステージモデル\\流氷\\data\\TEXTURE\\small_ice.png";
+    "data\\TEXTURE\\MATERIAL\\small_ice.png";
    }
   }
  }

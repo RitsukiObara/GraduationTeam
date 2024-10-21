@@ -26,6 +26,9 @@ const float RATE_HEX_Z = 0.13f;	// 六角形の割合Z
 
 const float WIDTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_X;	// グリッドの幅
 const float DEPTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_Z;	// グリッドの奥行き
+const float OceanFlow_Min = 1.00f;
+const float OceanFlow_Max = 10.00f;
+
 }
 
 //*****************************************************
@@ -101,6 +104,7 @@ HRESULT CIceManager::Init(void)
 
 	// 海流を初期化
 	m_dirStream = E_Stream::STREAM_LEFT;
+	m_fOceanLevel = OceanFlow_Min;
 
 	return S_OK;
 }
