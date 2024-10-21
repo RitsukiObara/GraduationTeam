@@ -494,28 +494,31 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 		return;
 
 	D3DXVECTOR3 posIce = pIce->GetPosition();
-	pIceManager->GetIdxGridFromPosition(posIce, &nIdxV, &nIdxH);
+	bool bOk = pIceManager->GetIdxGridFromPosition(posIce, &nIdxV, &nIdxH);
+
+	if (bOk)
+	{
+		// ”Ô†‚ð•Û‘¶
+		m_nIdxDriftV = nIdxV;
+		m_nIdxDriftH = nIdxH;
+	}
 
 	// ŠC—¬‚Ì•ûŒü‚É‡‚í‚¹‚½”»’èŠÖ”‚ÌŒÄ‚Ño‚µ
 	DirectionFunc directionFuncs[CIceManager::E_Stream::STREAM_MAX] = 
 	{
 		&CIceStateFlow::CheckUp,
-		&CIceStateFlow::CheckDown,
 		&CIceStateFlow::CheckRight,
+		&CIceStateFlow::CheckDown,
 		&CIceStateFlow::CheckLeft
 	};
 
 	CIceManager::E_Stream stream = pIceManager->GetDirStream();
 	
 	// •Y’…‚·‚é•X‚ª‚ ‚Á‚½‚çAƒtƒ‰ƒO‚ð—§‚Ä‚Ä•Y’…ƒOƒŠƒbƒh”Ô†‚ð•Û‘¶
-	m_bDrift = (this->*directionFuncs[stream])(pIce, nIdxV, nIdxH);
+	m_bDrift = (this->*directionFuncs[stream])(pIce, m_nIdxDriftV, m_nIdxDriftH);
 
 	if (m_bDrift)
 	{
-		// ”Ô†‚ð•Û‘¶
-		m_nIdxDriftV = nIdxV;
-		m_nIdxDriftH = nIdxH;
-
 		// ƒOƒŠƒbƒh‚É•Xî•ñ‚ð•Û‘¶
 		pIceManager->SetIceInGrid(nIdxV, nIdxH, pIce);
 	}
