@@ -1,6 +1,6 @@
 //*****************************************************
 //
-// スカイボックスの処理[IceManager.cpp]
+// 氷マネージャー[IceManager.cpp]
 // Author:髙山桃也
 //
 //*****************************************************
@@ -12,6 +12,7 @@
 #include "effect3D.h"
 #include "ice.h"
 #include "particle.h"
+#include "flowIce.h"
 
 #include "inputkeyboard.h"
 #include "debugproc.h"
@@ -306,6 +307,12 @@ void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 	// プレイヤーから壊さないブロックの流れを出す
 	DisableFromPlayer(nNumV, nNumH, m_aGrid[nNumBreakV][nNumBreakH].pIce, apIce);
 
+	// 探索フラグの無効化
+	DisableFind();
+
+	// 壊れるブロックをまとまりにする
+	SummarizeIce(nNumBreakV, nNumBreakH);
+
 	// 氷が壊れるフラグが立っていたら氷を壊す
 	BreakIce();
 }
@@ -551,7 +558,7 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 {
 	int nIdxV = 0;
 	int nIdxH = 0;
-	D3DXVECTOR3 posIce = GetPosition();
+	D3DXVECTOR3 posIce = pIce->GetPosition();
 
 	GetIdxGridFromPosition(posIce, &nIdxV, &nIdxH);
 
@@ -727,6 +734,90 @@ void CIceManager::DisableBreak(int nNumV, int nNumH)
 			continue;
 
 		DisableBreak(aV[i], aH[i]);
+	}
+}
+
+//=====================================================
+// 氷をまとめる
+//=====================================================
+void CIceManager::SummarizeIce(int nNumV, int nNumH)
+{
+	// 周辺グリッドの計算
+	vector<CIce*> apIce(DIRECTION_MAX);
+	int aV[DIRECTION_MAX] = {};
+	int aH[DIRECTION_MAX] = {};
+
+	Grid::CalcAroundGrids(nNumV, nNumH, aV, aH);
+
+	// 氷のポインタの保存
+	for (int i = 0; i < DIRECTION_MAX; i++)
+	{
+		int nV = aV[i];
+		int nH = aH[i];
+
+		if (!universal::LimitValueInt(&nV, m_nNumGridVirtical - 1, 0) &&
+			!universal::LimitValueInt(&nH, m_nNumGridHorizontal - 1, 0))
+		{// 指定した番号がグリッドを越えていない場合のみ保存
+			apIce[i] = m_aGrid[aV[i]][aH[i]].pIce;
+		}
+	}
+
+	for (int i = 0; i < DIRECTION_MAX; i++)
+	{
+		if (apIce[i] == nullptr)
+			continue;
+
+		// 流氷システムの生成
+		CFlowIce *pFlowIce = CFlowIce::Create();
+
+		// 再帰関数で連鎖して氷を流氷システムに保存
+		SaveFlowIce(aV[i], aH[i], pFlowIce);
+	}
+}
+
+//=====================================================
+// 氷を流氷に保存するシステム
+//=====================================================
+void CIceManager::SaveFlowIce(int nNumV, int nNumH, CFlowIce *pFlowIce)
+{
+	// 周辺グリッドの計算
+	vector<CIce*> apIce(DIRECTION_MAX);
+	int aV[DIRECTION_MAX] = {};
+	int aH[DIRECTION_MAX] = {};
+
+	// 周辺のグリッド番号の計算
+	Grid::CalcAroundGrids(nNumV, nNumH, aV, aH);
+
+	// 探索済みのフラグを立てる
+	m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
+
+	for (int i = 0; i < DIRECTION_MAX; i++)
+	{
+		int nV = aV[i];
+		int nH = aH[i];
+
+		if (!universal::LimitValueInt(&nV, m_nNumGridVirtical - 1, 0) &&
+			!universal::LimitValueInt(&nH, m_nNumGridHorizontal - 1, 0))
+		{// 指定した番号がグリッドを越えていない場合のみ保存
+			apIce[i] = m_aGrid[aV[i]][aH[i]].pIce;
+		}
+	}
+
+	for (int i = 0; i < DIRECTION_MAX; i++)
+	{
+		if (apIce[i] == nullptr)
+			continue;
+		
+		if (!apIce[i]->IsBreak())
+			continue;
+
+		if (!apIce[i]->IsCanFind())
+			continue;
+
+		pFlowIce->AddIceToArray(apIce[i]);
+
+		// 再帰関数で連鎖して氷を流氷システムに保存
+		SaveFlowIce(aV[i], aH[i], pFlowIce);
 	}
 }
 
