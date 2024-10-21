@@ -124,35 +124,38 @@ void COceanFlowUI::Uninit(void)
 void COceanFlowUI::Update(void)
 {
 	OceanFlowKeep = CIceManager::GetInstance()->GetDirStream();
+	D3DXVECTOR3 Rot = m_pArrow->GetRotation();
 
 	if (OceanFlowKeep == CIceManager::STREAM_UP)
 	{
-		m_pArrow->SetRotation(D3DXVECTOR3(0.0f, 1.57f, 0.0f));
+		universal::FactingRot(&Rot.y, D3DX_PI * 0.5f, 0.02f);
 	}
 
 	if (OceanFlowKeep == CIceManager::STREAM_RIGHT)
 	{
-		m_pArrow->SetRotation(D3DXVECTOR3(0.0f, 3.14f, 0.0f));
+		universal::FactingRot(&Rot.y, D3DX_PI, 0.02f);
 	}
 
 	if (OceanFlowKeep == CIceManager::STREAM_DOWN)
 	{
-		m_pArrow->SetRotation(D3DXVECTOR3(0.0f, -1.57f, 0.0f));
+		universal::FactingRot(&Rot.y, -D3DX_PI * 0.5f, 0.02f);
 	}
 
 	if (OceanFlowKeep == CIceManager::STREAM_LEFT)
 	{
-		m_pArrow->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		universal::FactingRot(&Rot.y, 0.0f, 0.02f);
 	}
 
+	m_pArrow->SetRotation(Rot);
+
 	// èÛë‘ä«óù
-	ResultState();
+	OceanState();
 }
 
 //====================================================
 // èÛë‘ä«óù
 //====================================================
-void COceanFlowUI::ResultState(void)
+void COceanFlowUI::OceanState(void)
 {
 
 }

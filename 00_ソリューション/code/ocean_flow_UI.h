@@ -43,7 +43,7 @@ private:
 		STATE_MAX
 	};
 
-	void ResultState(void); // リザルトUIの状態
+	void OceanState(void); // リザルトUIの状態
 
 	CObjectX* m_pArrow;	// 矢印のモデル
 	STATE m_state;	// 状態
