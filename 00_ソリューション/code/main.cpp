@@ -100,14 +100,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 #endif	
 	}
 
-	//RECT size;
-	//RECT wndsize;
-	//GetClientRect(hWnd, &size);
-	//GetWindowRect(hWnd, &wndsize);
-	//wndsize.right = wndsize.right - wndsize.left;
-	//wndsize.bottom = wndsize.bottom - wndsize.top;
-	//SetWindowPos(hWnd, NULL, 0, 0, SCREEN_WIDTH + wndsize.right - size.right, SCREEN_HEIGHT + wndsize.bottom - size.bottom, SWP_NOMOVE | SWP_NOREPOSITION | SWP_NOZORDER);
-
 	//ï™âî\Çê›íË
 	timeBeginPeriod(1);
 	dwCurrentTime = 0;
