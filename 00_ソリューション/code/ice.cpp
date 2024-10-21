@@ -53,7 +53,7 @@ std::vector<CIce*> CIce::m_Vector = {};	// 自身のポインタ
 // コンストラクタ
 //=====================================================
 CIce::CIce(int nPriority) : CGameObject(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false), m_bPeck(false), m_bAliveStandBlock(false),
-m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false)
+m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false), m_bStop(nullptr)
 {
 	s_nNumAll++;
 	m_Vector.push_back(this);
@@ -285,7 +285,7 @@ void CIce::ChangeState(CIceState *pState)
 //=====================================================
 void CIceStaeteNormal::Init(CIce *pIce)
 {
-
+	pIce->EnableStop(true);
 }
 
 //=====================================================
@@ -410,7 +410,7 @@ void CIceStaeteBreak::Update(CIce *pIce)
 //=====================================================
 void CIceStateFlow::Init(CIce *pIce)
 {
-
+	pIce->EnableStop(false);
 }
 
 //=====================================================
@@ -494,28 +494,31 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 		return;
 
 	D3DXVECTOR3 posIce = pIce->GetPosition();
-	pIceManager->GetIdxGridFromPosition(posIce, &nIdxV, &nIdxH);
+	bool bOk = pIceManager->GetIdxGridFromPosition(posIce, &nIdxV, &nIdxH);
+
+	if (bOk)
+	{
+		// 番号を保存
+		m_nIdxDriftV = nIdxV;
+		m_nIdxDriftH = nIdxH;
+	}
 
 	// 海流の方向に合わせた判定関数の呼び出し
 	DirectionFunc directionFuncs[CIceManager::E_Stream::STREAM_MAX] = 
 	{
 		&CIceStateFlow::CheckUp,
-		&CIceStateFlow::CheckDown,
 		&CIceStateFlow::CheckRight,
+		&CIceStateFlow::CheckDown,
 		&CIceStateFlow::CheckLeft
 	};
 
 	CIceManager::E_Stream stream = pIceManager->GetDirStream();
 	
 	// 漂着する氷があったら、フラグを立てて漂着グリッド番号を保存
-	m_bDrift = (this->*directionFuncs[stream])(pIce, nIdxV, nIdxH);
+	m_bDrift = (this->*directionFuncs[stream])(pIce, m_nIdxDriftV, m_nIdxDriftH);
 
 	if (m_bDrift)
 	{
-		// 番号を保存
-		m_nIdxDriftV = nIdxV;
-		m_nIdxDriftH = nIdxH;
-
 		// グリッドに氷情報を保存
 		pIceManager->SetIceInGrid(nIdxV, nIdxH, pIce);
 	}

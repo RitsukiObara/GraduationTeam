@@ -549,7 +549,13 @@ bool CIceManager::CheckStandBlock(vector<CIce*> apIce, CIce *pIceStand, int nIdx
 //=====================================================
 void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 {
+	int nIdxV = 0;
+	int nIdxH = 0;
+	D3DXVECTOR3 posIce = GetPosition();
 
+	GetIdxGridFromPosition(posIce, &nIdxV, &nIdxH);
+
+	SetIceInGrid(nIdxV, nIdxH, pIce);
 }
 
 //=====================================================
@@ -972,19 +978,10 @@ CIce* CIceManager::GetGridObject(int* pNumV, int* pNumH)
 //=====================================================
 // 位置からグリッド番号を取得する処理
 //=====================================================
-void CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH)
+bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH)
 {
 	if (pIdxV == nullptr || pIdxH == nullptr)
-		return;
-
-	//pos.z -= DEPTH_GRID * 0.5f;
-
-	//*pIdxV = (int)((pos.z + DEPTH_GRID * m_nNumGridVirtical * 0.5f) / DEPTH_GRID);
-	//
-	//if(*pIdxV % 2 == 0)
-	//	pos.x += WIDTH_GRID * 0.5f;
-
-	//*pIdxH = (int)((pos.x + WIDTH_GRID * m_nNumGridVirtical * 0.5f) / WIDTH_GRID);
+		return false;
 
 	pos.y = 10.0f;
 
@@ -1004,10 +1001,12 @@ void CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH
 				*pIdxV = i;
 				*pIdxH = j;
 
-				return;
+				return true;
 			}
 		}
 	}
+
+	return false;
 }
 
 //=====================================================

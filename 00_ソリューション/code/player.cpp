@@ -17,6 +17,7 @@
 #include "particle.h"
 #include "camera.h"
 #include "manager.h"
+#include "flowIce.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -501,10 +502,8 @@ void CPlayer::Debug(void)
 
 		if (pIceManager != nullptr)
 		{
-			CIce *pIce = pIceManager->CreateIce(m_nGridV, m_nGridH, CIce::E_Type::TYPE_NORMAL);
-			pIce->ChangeState(new CIceStateFlow);
+			CFlowIce::Create();
 		}
-
 	}
 
 	if (pInputKeyboard->GetTrigger(DIK_F8))
