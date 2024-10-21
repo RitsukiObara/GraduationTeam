@@ -17,6 +17,7 @@
 // 前方宣言
 //*****************************************************
 class CIce;	// 氷
+class CFlowIce;	// 流氷システム
 
 //*****************************************************
 // クラスの定義
@@ -101,6 +102,8 @@ private:
 	void DisableFromHardIce(int nNumV, int nNumH,vector<CIce*> apIce);	// 硬い氷から信号を出して、破壊信号を解除
 	void DisableFromPlayer(int nNumV, int nNumH, CIce *pIcePeck,vector<CIce*> apIce);	// プレイヤーから信号を出して、破壊信号を解除
 	void DisableBreak(int nNumV, int nNumH);	// 氷の破壊を解除
+	void SummarizeIce(int nNumV, int nNumH);	// 氷をまとめる処理
+	void SaveFlowIce(int nNumV, int nNumH, CFlowIce *pFlowIce);	// 流氷にまとめる処理
 	void BreakIce(void);	// 氷の破壊
 	bool CheckStandBlock(vector<CIce*> apIce, CIce *pIce,int nIdx);
 	bool CheckCorner(int nNumV, int nNumH);	// 角の確認

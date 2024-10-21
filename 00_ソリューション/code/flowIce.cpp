@@ -63,7 +63,7 @@ CFlowIce *CFlowIce::Create(void)
 HRESULT CFlowIce::Init(void)
 {
 	// •X‚Ì¶¬
-	CreateIce();
+	//CreateIce();
 
 	return S_OK;
 }
@@ -93,6 +93,14 @@ void CFlowIce::CreateIce(void)
 		pIce->ChangeState(new CIceStateFlow);
 		m_apIce.push_back(pIce);
 	}
+}
+
+//=====================================================
+// •X‚ð”z—ñ‚É’Ç‰Á
+//=====================================================
+void CFlowIce::AddIceToArray(CIce *pIce)
+{
+	m_apIce.push_back(pIce);
 }
 
 //=====================================================
