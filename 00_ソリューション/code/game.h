@@ -17,6 +17,7 @@
 #include "UI_enemy.h"
 #include "stageResultUI.h"
 #include "pause.h"
+#include "ocean_flow_UI.h"
 
 //*****************************************************
 // 前方宣言
@@ -82,6 +83,7 @@ private:
 	vector<CLight*> m_aLight;	// ゲーム中のライト
 	CTimer* m_pTimer;		// タイマー
 	CScore* m_pScore;		// スコア
+	COceanFlowUI* m_pOceanFlowUI;		// 海流UI
 	D3DXCOLOR m_colLight;	// ライト色
 	D3DXVECTOR3 m_posMid;	// プレイヤーと敵の中心座標
 	CStageResultUI* m_pStageResultUI;	// ステージクリアUI
