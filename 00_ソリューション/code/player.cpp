@@ -495,6 +495,18 @@ void CPlayer::Debug(void)
 		}
 	}
 
+	if (pInputKeyboard->GetTrigger(DIK_LSHIFT))
+	{// —¬‚ê‚é•X‚Ìİ’u
+		CIceManager* pIceManager = CIceManager::GetInstance();
+
+		if (pIceManager != nullptr)
+		{
+			CIce *pIce = pIceManager->CreateIce(m_nGridV, m_nGridH, CIce::E_Type::TYPE_HARD);
+			pIce->ChangeState(new CIceStateFlow);
+		}
+
+	}
+
 	if (pInputKeyboard->GetTrigger(DIK_F8))
 	{// –³“GØ‚è‘Ö‚¦
 		m_state = (m_state == STATE_INVINCIBLE) ? STATE_NORMAL : STATE_INVINCIBLE;
