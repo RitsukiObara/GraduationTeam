@@ -153,8 +153,8 @@ const D3DXVECTOR3 VECTOR_STREAM[CIceManager::E_Stream::STREAM_MAX] =
 {
 	{ 0.0f, 0.0f, 1.0f },   // è„
 	{ 1.0f, 0.0f, 0.0f },   // âE
-	{ -1.0f, 0.0f, 0.0f },  // ç∂
 	{ 0.0f, 0.0f, -1.0f }, // â∫
+	{ -1.0f, 0.0f, 0.0f },  // ç∂
 };
 }
 
