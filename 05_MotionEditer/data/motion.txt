@@ -65,18 +65,18 @@ END_CHARACTERSET
 # [0]番目のモーション
 #===============================
 MOTIONSET
-    LOOP = 0
+    LOOP = 255
     NUM_KEY = 2
 
     KEYSET     #---<< 0 / 2 >>
-        FRAME = 2
+        FRAME = 20
         KEY # -----[0]----
             POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 0.00
+            ROT = 0.11 0.00 0.00
         END_KEY
         KEY # -----[1]----
             POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 0.00
+            ROT = 0.00 -1.19 0.00
         END_KEY
         KEY # -----[2]----
             POS = 0.00 0.00 0.00
@@ -88,30 +88,30 @@ MOTIONSET
         END_KEY
         KEY # -----[4]----
             POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 0.00
+            ROT = -0.82 0.00 0.00
         END_KEY
     END_KEYSET
     KEYSET     #---<< 1 / 2 >>
-        FRAME = 2
+        FRAME = 20
         KEY # -----[0]----
             POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 0.00
+            ROT = 0.28 0.00 0.00
         END_KEY
         KEY # -----[1]----
             POS = 0.00 0.00 0.00
-            ROT = 0.00 1.51 0.00
+            ROT = 0.00 0.00 0.00
         END_KEY
         KEY # -----[2]----
             POS = 0.00 0.00 0.00
-            ROT = 0.00 1.51 0.00
+            ROT = 0.00 1.30 0.00
         END_KEY
         KEY # -----[3]----
             POS = 0.00 0.00 0.00
-            ROT = 0.00 1.51 0.00
+            ROT = -1.15 0.00 0.00
         END_KEY
         KEY # -----[4]----
             POS = 0.00 0.00 0.00
-            ROT = 0.00 1.51 0.00
+            ROT = 0.00 0.00 0.00
         END_KEY
     END_KEYSET
 END_MOTIONSET
@@ -119,11 +119,11 @@ END_MOTIONSET
 # [1]番目のモーション
 #===============================
 MOTIONSET
-    LOOP = -1
+    LOOP = 255
     NUM_KEY = 2
 
     KEYSET     #---<< 0 / 2 >>
-        FRAME = 15
+        FRAME = 20
         KEY # -----[0]----
             POS = 0.00 0.00 0.00
             ROT = 0.00 0.00 -0.41
@@ -146,7 +146,7 @@ MOTIONSET
         END_KEY
     END_KEYSET
     KEYSET     #---<< 1 / 2 >>
-        FRAME = 15
+        FRAME = 20
         KEY # -----[0]----
             POS = 0.00 0.00 0.00
             ROT = 0.00 0.00 0.39
