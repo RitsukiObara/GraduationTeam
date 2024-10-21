@@ -549,7 +549,13 @@ bool CIceManager::CheckStandBlock(vector<CIce*> apIce, CIce *pIceStand, int nIdx
 //=====================================================
 void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 {
+	int nIdxV = 0;
+	int nIdxH = 0;
+	D3DXVECTOR3 posIce = GetPosition();
 
+	GetIdxGridFromPosition(posIce, &nIdxV, &nIdxH);
+
+	SetIceInGrid(nIdxV, nIdxH, pIce);
 }
 
 //=====================================================

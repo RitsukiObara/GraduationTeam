@@ -122,6 +122,7 @@ void CFlowIce::CheckSomeIceStop(void)
 		if (it->IsStop())
 		{// Ž~‚Ü‚Á‚Ä‚¢‚é‚È‚ç‘S‚Ä‚Ì•X‚ðŽ~‚ß‚é
 			StopAllIce();
+			Uninit();	// Ž©g‚Ì”jŠü
 			break;
 		}
 	}
@@ -132,9 +133,16 @@ void CFlowIce::CheckSomeIceStop(void)
 //=====================================================
 void CFlowIce::StopAllIce(void)
 {
+	CIceManager *pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return;
+
 	for (auto it : m_apIce)
 	{
 		it->ChangeState(new CIceStaeteNormal);
+
+		pIceManager->AddIce(it, it->GetPosition());
 	}
 }
 
