@@ -63,6 +63,7 @@ public:
 	void GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH);	// グリッド番号を位置から取得する処理
 	void SetDirStream(E_Stream direction) { m_dirStream = direction; }	// 海流の方向
 	E_Stream GetDirStream(void) { return m_dirStream; }
+	void SetIceInGrid(int nNumV, int nNumH, CIce *pIce);	// グリッドに氷を設定
 
 	// 変数取得・設定関数
 	D3DXVECTOR3 GetGridPosition(int *pNumV, int *pNumH);

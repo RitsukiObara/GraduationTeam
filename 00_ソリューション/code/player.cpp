@@ -501,7 +501,7 @@ void CPlayer::Debug(void)
 
 		if (pIceManager != nullptr)
 		{
-			CIce *pIce = pIceManager->CreateIce(m_nGridV, m_nGridH, CIce::E_Type::TYPE_HARD);
+			CIce *pIce = pIceManager->CreateIce(m_nGridV, m_nGridH, CIce::E_Type::TYPE_NORMAL);
 			pIce->ChangeState(new CIceStateFlow);
 		}
 

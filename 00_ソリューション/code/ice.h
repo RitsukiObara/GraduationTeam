@@ -145,7 +145,7 @@ private:
 class CIceStateFlow : public CIceState
 {// 氷の流れステイト
 public:
-	CIceStateFlow() {};	// コンストラクタ
+	CIceStateFlow() : m_bDrift(false), m_nIdxDriftV(0), m_nIdxDriftH(0) {};	// コンストラクタ
 	~CIceStateFlow() {};	// デストラクタ
 
 	void Init(CIce *pIce) override;	// 初期化
@@ -153,15 +153,23 @@ public:
 	void Update(CIce *pIce) override;	// 更新
 
 private:
+
 	// 関数ポインタ型の定義
-	typedef void (CIceStateFlow::*DirectionFunc)(CIce *pIce,int nIdxV,int nIdxH);
+	typedef bool (CIceStateFlow::*DirectionFunc)(CIce *pIce,int nIdxV,int nIdxH);
 
 	// メンバ関数
+	void UpdateSarchIce(CIce *pIce);	// 氷を探してる時の更新
+	void UpdateDriftIce(CIce *pIce);	// 漂着する時の更新
 	void CollideIce(CIce *pIce);	// 氷との判定
-	void CheckUp(CIce *pIce, int nIdxV, int nIdxH);	// 上方向の確認
-	void CheckRight(CIce *pIce, int nIdxV, int nIdxH);	// 右側の確認
-	void CheckDown(CIce *pIce, int nIdxV, int nIdxH);	// 下方向の確認
-	void CheckLeft(CIce *pIce, int nIdxV, int nIdxH);	// 左側の確認
+	bool CheckUp(CIce *pIce, int nIdxV, int nIdxH);	// 上方向の確認
+	bool CheckRight(CIce *pIce, int nIdxV, int nIdxH);	// 右側の確認
+	bool CheckDown(CIce *pIce, int nIdxV, int nIdxH);	// 下方向の確認
+	bool CheckLeft(CIce *pIce, int nIdxV, int nIdxH);	// 左側の確認
+
+	// メンバー変数
+	int m_bDrift;	// 漂着しているフラグ
+	int m_nIdxDriftV;	// 漂着するグリッドの縦番号
+	int m_nIdxDriftH;	// 漂着するグリッドの横番号
 };
 
 class CIceStaeteSink : public CIceState
