@@ -39,6 +39,8 @@ const int MIN_SCALE = 20; // スケールの最小値
 const string PATH_ICE_DEBRIS = "data\\MODEL\\block\\Drift_ice_small.x";	// 破片氷のモデルパス
 const float SPEED_SINK = 5.0f;	// 沈む速度
 const float HEIGHT_DELETE = -100.0f;	// 削除するまでの高さ
+
+const float LINE_STOP_ICE = 10.0f;	// 氷が止まるしきい値
 }
 
 //*****************************************************
@@ -438,8 +440,43 @@ void CIceStateFlow::Update(CIce *pIce)
 	vecStream *= SPEED_FLOWS;
 	pIce->AddPosition(vecStream);
 
+	if (!m_bDrift)
+		UpdateSarchIce(pIce);	// 氷を探している時の更新
+	else
+		UpdateDriftIce(pIce);	// 漂着してるときの更新
+}
+
+//=====================================================
+// 氷を探しているときの更新
+//=====================================================
+void CIceStateFlow::UpdateSarchIce(CIce *pIce)
+{
 	// 氷との判定
 	CollideIce(pIce);
+}
+
+//=====================================================
+// 漂着するときの更新
+//=====================================================
+void CIceStateFlow::UpdateDriftIce(CIce *pIce)
+{
+	CIceManager *pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return;
+
+	// グリッドの位置取得
+	D3DXVECTOR3 posDrift = pIceManager->GetGridPosition(&m_nIdxDriftV, &m_nIdxDriftH);
+
+	// グリッドの位置との距離がしきい値を下回ったら止める
+	D3DXVECTOR3 posIce = pIce->GetPosition();
+	bool bStop = universal::DistCmpFlat(posIce, posDrift, LINE_STOP_ICE,nullptr);
+
+	if (bStop)
+	{
+		pIce->ChangeState(new CIceStaeteNormal);
+		return;
+	}
 }
 
 //=====================================================
@@ -457,68 +494,136 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 		return;
 
 	D3DXVECTOR3 posIce = pIce->GetPosition();
-	pIceManager->GetIdxGridFromPosition(posIce, &nIdxV, &nIdxH);
+	bool bOk = pIceManager->GetIdxGridFromPosition(posIce, &nIdxV, &nIdxH);
+
+	if (bOk)
+	{
+		// 番号を保存
+		m_nIdxDriftV = nIdxV;
+		m_nIdxDriftH = nIdxH;
+	}
 
 	// 海流の方向に合わせた判定関数の呼び出し
 	DirectionFunc directionFuncs[CIceManager::E_Stream::STREAM_MAX] = 
-	{ 
+	{
 		&CIceStateFlow::CheckUp,
-		&CIceStateFlow::CheckDown,
 		&CIceStateFlow::CheckRight,
+		&CIceStateFlow::CheckDown,
 		&CIceStateFlow::CheckLeft
 	};
 
 	CIceManager::E_Stream stream = pIceManager->GetDirStream();
+	
+	// 漂着する氷があったら、フラグを立てて漂着グリッド番号を保存
+	m_bDrift = (this->*directionFuncs[stream])(pIce, m_nIdxDriftV, m_nIdxDriftH);
 
-	(this->*directionFuncs[stream])(pIce, nIdxV, nIdxH);
+	if (m_bDrift)
+	{
+		// グリッドに氷情報を保存
+		pIceManager->SetIceInGrid(nIdxV, nIdxH, pIce);
+	}
 }
 
 //=====================================================
 // 上方向の確認
 //=====================================================
-void CIceStateFlow::CheckUp(CIce *pIce, int nIdxV, int nIdxH)
+bool CIceStateFlow::CheckUp(CIce *pIce, int nIdxV, int nIdxH)
 {
+	CIceManager *pIceManager = CIceManager::GetInstance();
 
+	if (pIceManager == nullptr)
+		return false;
+
+	// 周辺の氷の取得
+	vector<CIce*> apIce = pIceManager->GetAroundIce(nIdxV, nIdxH);
+
+	bool bDrift = false;
+
+	// 左側のグリッドどれかに氷があれば漂着
+	if (apIce[CIceManager::DIRECTION_LEFTUP] != nullptr ||
+		apIce[CIceManager::DIRECTION_RIGHTUP] != nullptr)
+	{
+		bDrift = true;
+	}
+
+	return bDrift;
 }
 
 //=====================================================
 // 右方向の確認
 //=====================================================
-void CIceStateFlow::CheckRight(CIce *pIce, int nIdxV, int nIdxH)
+bool CIceStateFlow::CheckRight(CIce *pIce, int nIdxV, int nIdxH)
 {
+	CIceManager *pIceManager = CIceManager::GetInstance();
 
+	if (pIceManager == nullptr)
+		return false;
+
+	// 周辺の氷の取得
+	vector<CIce*> apIce = pIceManager->GetAroundIce(nIdxV, nIdxH);
+
+	bool bDrift = false;
+
+	// 左側のグリッドどれかに氷があれば漂着
+	if (apIce[CIceManager::DIRECTION_RIGHTUP] != nullptr ||
+		apIce[CIceManager::DIRECTION_RIGHT] != nullptr ||
+		apIce[CIceManager::DIRECTION_RIGHTDOWN] != nullptr)
+	{
+		bDrift = true;
+	}
+
+	return bDrift;
 }
 
 //=====================================================
 // 下方向の確認
 //=====================================================
-void CIceStateFlow::CheckDown(CIce *pIce, int nIdxV, int nIdxH)
+bool CIceStateFlow::CheckDown(CIce *pIce, int nIdxV, int nIdxH)
 {
+	CIceManager *pIceManager = CIceManager::GetInstance();
 
+	if (pIceManager == nullptr)
+		return false;
+
+	// 周辺の氷の取得
+	vector<CIce*> apIce = pIceManager->GetAroundIce(nIdxV, nIdxH);
+
+	bool bDrift = false;
+
+	// 左側のグリッドどれかに氷があれば漂着
+	if (apIce[CIceManager::DIRECTION_RIGHTDOWN] != nullptr ||
+		apIce[CIceManager::DIRECTION_LEFTDOWN] != nullptr)
+	{
+		bDrift = true;
+	}
+
+	return bDrift;
 }
 
 //=====================================================
 // 左方向の確認
 //=====================================================
-void CIceStateFlow::CheckLeft(CIce *pIce, int nIdxV, int nIdxH)
+bool CIceStateFlow::CheckLeft(CIce *pIce, int nIdxV, int nIdxH)
 {
 	CIceManager *pIceManager = CIceManager::GetInstance();
 
 	if (pIceManager == nullptr)
-		return;
+		return false;
 
 	// 周辺の氷の取得
 	vector<CIce*> apIce = pIceManager->GetAroundIce(nIdxV, nIdxH);
+
+	bool bDrift = false;
 
 	// 左側のグリッドどれかに氷があれば漂着
 	if (apIce[CIceManager::DIRECTION_LEFTUP] != nullptr ||
 		apIce[CIceManager::DIRECTION_LEFT] != nullptr ||
 		apIce[CIceManager::DIRECTION_LEFTDOWN] != nullptr)
 	{
-		pIce->ChangeState(new CIceStaeteNormal);
-
-		return;
+		bDrift = true;
 	}
+
+	return bDrift;
 }
 
 //*******************************************************************************

@@ -97,7 +97,7 @@ HRESULT CMotion::Init(void)
 	ResetEnableMotion();
 
 	CObject3D::Init();
-
+	
 	return S_OK;
 }
 

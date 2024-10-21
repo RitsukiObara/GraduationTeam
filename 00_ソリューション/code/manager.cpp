@@ -107,9 +107,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// パーティクルの読込
 	CParticle::Load();
 
-	// 破片スポナーの読込
-	CDebrisSpawner::Load();
-
 	SetMode(m_mode);
 
 	return S_OK;

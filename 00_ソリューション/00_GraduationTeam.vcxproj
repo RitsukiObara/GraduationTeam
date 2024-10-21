@@ -181,6 +181,7 @@
     <ClCompile Include="code\effect2D.cpp" />
     <ClCompile Include="code\effect3D.cpp" />
     <ClCompile Include="code\enemy.cpp" />
+    <ClCompile Include="code\flowIce.cpp" />
     <ClCompile Include="code\frame.cpp" />
     <ClCompile Include="code\gameObject.cpp" />
     <ClCompile Include="code\gauge.cpp" />
@@ -218,6 +219,7 @@
     <ClCompile Include="code\object.cpp" />
     <ClCompile Include="code\object3D.cpp" />
     <ClCompile Include="code\ocean.cpp" />
+    <ClCompile Include="code\ocean_flow_UI.cpp" />
     <ClCompile Include="code\player.cpp" />
     <ClCompile Include="code\polygon2D.cpp" />
     <ClCompile Include="code\polygon3D.cpp" />
@@ -270,6 +272,7 @@
     <ClInclude Include="code\effect2D.h" />
     <ClInclude Include="code\effect3D.h" />
     <ClInclude Include="code\enemy.h" />
+    <ClInclude Include="code\flowIce.h" />
     <ClInclude Include="code\frame.h" />
     <ClInclude Include="code\gameObject.h" />
     <ClInclude Include="code\gauge.h" />
@@ -309,6 +312,7 @@
     <ClInclude Include="code\object.h" />
     <ClInclude Include="code\object3D.h" />
     <ClInclude Include="code\ocean.h" />
+    <ClInclude Include="code\ocean_flow_UI.h" />
     <ClInclude Include="code\player.h" />
     <ClInclude Include="code\polygon2D.h" />
     <ClInclude Include="code\polygon3D.h" />

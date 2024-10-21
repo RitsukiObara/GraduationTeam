@@ -972,19 +972,10 @@ CIce* CIceManager::GetGridObject(int* pNumV, int* pNumH)
 //=====================================================
 // 位置からグリッド番号を取得する処理
 //=====================================================
-void CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH)
+bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH)
 {
 	if (pIdxV == nullptr || pIdxH == nullptr)
-		return;
-
-	//pos.z -= DEPTH_GRID * 0.5f;
-
-	//*pIdxV = (int)((pos.z + DEPTH_GRID * m_nNumGridVirtical * 0.5f) / DEPTH_GRID);
-	//
-	//if(*pIdxV % 2 == 0)
-	//	pos.x += WIDTH_GRID * 0.5f;
-
-	//*pIdxH = (int)((pos.x + WIDTH_GRID * m_nNumGridVirtical * 0.5f) / WIDTH_GRID);
+		return false;
 
 	pos.y = 10.0f;
 
@@ -1004,9 +995,43 @@ void CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH
 				*pIdxV = i;
 				*pIdxH = j;
 
-				return;
+				return true;
 			}
 		}
+	}
+
+	return false;
+}
+
+//=====================================================
+// グリッドに氷を設定
+//=====================================================
+void CIceManager::SetIceInGrid(int nNumV, int nNumH, CIce *pIce)
+{
+	if (m_aGrid.empty())
+		return;
+
+	if (nNumV > (int)m_aGrid.size() - 1)
+	{// 上から飛び出てた時の制限
+		return;
+	}
+	else if (nNumV < 0)
+	{// 下から飛び出た時の制限
+		return;
+	}
+
+	if (nNumH > (int)m_aGrid[nNumH].size() - 1)
+	{// 右から飛び出てた時の制限
+		return;
+	}
+	else if (nNumH < 0)
+	{// 左から飛び出た時の制限
+		return;
+	}
+
+	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
+	{
+		m_aGrid[nNumV][nNumH].pIce = pIce;
 	}
 }
 

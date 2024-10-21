@@ -25,7 +25,11 @@ public:
 		TYPE_RUN,	// 疾走
 		TYPE_RESULTSMOKE,	// リザルトの煙
 		TYPE_ICEBREAK,	// 氷破壊時
-
+		TYPE_HITENEMY,	// 敵と当たったときのパーティクル
+		TYPE_PECKHARDICE,	// 硬い氷を叩いた時のパーティクル
+		TYPE_REPAIRICE,	// 氷の修復するときのパーティクル
+		TYPE_DROP,	// 水しぶき
+		TYPE_BUBBLE_SINK,	// 沈むときの泡
 		TYPE_MAX
 	}TYPE;
 
