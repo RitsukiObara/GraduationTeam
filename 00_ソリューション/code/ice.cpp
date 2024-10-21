@@ -53,7 +53,7 @@ std::vector<CIce*> CIce::m_Vector = {};	// 自身のポインタ
 // コンストラクタ
 //=====================================================
 CIce::CIce(int nPriority) : CGameObject(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false), m_bPeck(false), m_bAliveStandBlock(false),
-m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false)
+m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false), m_bStop(nullptr)
 {
 	s_nNumAll++;
 	m_Vector.push_back(this);
@@ -285,7 +285,7 @@ void CIce::ChangeState(CIceState *pState)
 //=====================================================
 void CIceStaeteNormal::Init(CIce *pIce)
 {
-
+	pIce->EnableStop(true);
 }
 
 //=====================================================
@@ -410,7 +410,7 @@ void CIceStaeteBreak::Update(CIce *pIce)
 //=====================================================
 void CIceStateFlow::Init(CIce *pIce)
 {
-
+	pIce->EnableStop(false);
 }
 
 //=====================================================

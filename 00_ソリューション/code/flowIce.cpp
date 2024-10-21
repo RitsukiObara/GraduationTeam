@@ -9,13 +9,15 @@
 // インクルード
 //*****************************************************
 #include "flowIce.h"
+#include "ice.h"
+#include "iceManager.h"
 
 //*****************************************************
 // 定数定義
 //*****************************************************
 namespace
 {
-
+const int NUM_ICE = 4;	// 氷の数
 }
 
 //*****************************************************
@@ -39,11 +41,58 @@ CFlowIce::~CFlowIce()
 }
 
 //=====================================================
+// 生成処理
+//=====================================================
+CFlowIce *CFlowIce::Create(void)
+{
+	CFlowIce* pFlowice = nullptr;
+
+	pFlowice = new CFlowIce;
+
+	if (pFlowice == nullptr)
+		return nullptr;
+
+	pFlowice->Init();
+
+	return pFlowice;
+}
+
+//=====================================================
 // 初期化処理
 //=====================================================
 HRESULT CFlowIce::Init(void)
 {
+	// 氷の生成
+	CreateIce();
+
 	return S_OK;
+}
+
+//=====================================================
+// 氷の生成
+//=====================================================
+void CFlowIce::CreateIce(void)
+{
+	CIceManager *pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return;
+
+	int aV[NUM_ICE] =
+	{// 縦のグリッド番号の配列
+		3,4,5,6
+	};
+	int aH[NUM_ICE] =
+	{// 横のグリッド番号の配列
+		9,9,9,9
+	};
+
+	for (int i = 0; i < NUM_ICE; i++)
+	{
+		CIce *pIce = pIceManager->CreateIce(aV[i], aH[i]);
+		pIce->ChangeState(new CIceStateFlow);
+		m_apIce.push_back(pIce);
+	}
 }
 
 //=====================================================
@@ -59,7 +108,34 @@ void CFlowIce::Uninit(void)
 //=====================================================
 void CFlowIce::Update(void)
 {
+	// どれかの氷が止まっていないかのチェック
+	CheckSomeIceStop();
+}
 
+//=====================================================
+// どれかの氷が止まっていないかのチェック
+//=====================================================
+void CFlowIce::CheckSomeIceStop(void)
+{
+	for (auto it : m_apIce)
+	{
+		if (it->IsStop())
+		{// 止まっているなら全ての氷を止める
+			StopAllIce();
+			break;
+		}
+	}
+}
+
+//=====================================================
+// 全ての氷を止める
+//=====================================================
+void CFlowIce::StopAllIce(void)
+{
+	for (auto it : m_apIce)
+	{
+		it->ChangeState(new CIceStaeteNormal);
+	}
 }
 
 //=====================================================
