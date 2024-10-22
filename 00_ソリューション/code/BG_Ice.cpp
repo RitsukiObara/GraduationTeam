@@ -51,11 +51,12 @@ CBgIce::~CBgIce()
 //====================================================
 // ¶¬ˆ—
 //====================================================
-CBgIce* CBgIce::Create(D3DXVECTOR3 pos,TYPE type)
+CBgIce* CBgIce::Create(D3DXVECTOR3 pos,D3DXVECTOR3 rot,TYPE type)
 {
 	CBgIce* pBgIce = new CBgIce;
 
 	pBgIce->SetPosition(pos);
+	pBgIce->SetRotation(rot);
 
 	pBgIce->m_type = type;
 

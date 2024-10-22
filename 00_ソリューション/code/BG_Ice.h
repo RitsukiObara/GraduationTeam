@@ -28,7 +28,7 @@ public:
 	CBgIce();	// コンストラクタ
 	~CBgIce();	// デストラクタ
 
-	static CBgIce* Create(D3DXVECTOR3 pos,TYPE type);
+	static CBgIce* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot,TYPE type);
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
