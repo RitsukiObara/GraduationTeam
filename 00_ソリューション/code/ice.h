@@ -116,14 +116,21 @@ private:
 class CIceStaeteNormal : public CIceState
 {// 氷の通常ステイト
 public:
-	CIceStaeteNormal() {};	// コンストラクタ
+	CIceStaeteNormal() : m_nIdxDriftV(0), m_nIdxDriftH(0) {};	// コンストラクタ
 	~CIceStaeteNormal() {};	// デストラクタ
 
+	// メンバ関数
 	void Init(CIce *pIce) override;	// 初期化
 	void Uninit(CIce *pIce) override;	// 終了
 	void Update(CIce *pIce) override;	// 更新
 
 private:
+	// メンバ関数
+	void MoveToGrid(CIce *pIce);	// グリッドの位置に向かって移動する処理
+
+	// メンバ変数
+	int m_nIdxDriftV;	// 漂着してるグリッドの縦番号
+	int m_nIdxDriftH;	// 漂着してるグリッドの横番号
 };
 
 class CIceStaeteBreak : public CIceState

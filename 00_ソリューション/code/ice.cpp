@@ -40,7 +40,7 @@ const string PATH_ICE_DEBRIS = "data\\MODEL\\block\\Drift_ice_small.x";	// ”j•Ð•
 const float SPEED_SINK = 5.0f;	// ’¾‚Þ‘¬“x
 const float HEIGHT_DELETE = -100.0f;	// íœ‚·‚é‚Ü‚Å‚Ì‚‚³
 
-const float LINE_STOP_ICE = 10.0f;	// •X‚ªŽ~‚Ü‚é‚µ‚«‚¢’l
+const float LINE_STOP_ICE = 1.0f;	// •X‚ªŽ~‚Ü‚é‚µ‚«‚¢’l
 }
 
 //*****************************************************
@@ -286,6 +286,14 @@ void CIce::ChangeState(CIceState *pState)
 void CIceStaeteNormal::Init(CIce *pIce)
 {
 	pIce->EnableStop(true);
+
+	// •Y’…‚µ‚Ä‚¢‚é”Ô†‚ðŽæ“¾
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	pIceMgr->GetIceIndex(pIce, &m_nIdxDriftV, &m_nIdxDriftH);
 }
 
 //=====================================================
@@ -301,7 +309,31 @@ void CIceStaeteNormal::Uninit(CIce *pIce)
 //=====================================================
 void CIceStaeteNormal::Update(CIce *pIce)
 {
+	// ƒOƒŠƒbƒh‚ÉŒü‚©‚Á‚ÄˆÚ“®‚·‚éˆ—
+	//MoveToGrid(pIce);
+}
 
+//=====================================================
+// ƒOƒŠƒbƒh‚ÉŒü‚©‚Á‚ÄˆÚ“®‚·‚éˆ—
+//=====================================================
+void CIceStaeteNormal::MoveToGrid(CIce *pIce)
+{
+	// ƒOƒŠƒbƒh‚ÌˆÊ’u‚ðŽæ“¾
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	D3DXVECTOR3 posGrid = pIceMgr->GetGridPosition(&m_nIdxDriftV, &m_nIdxDriftH);
+	D3DXVECTOR3 posIce = pIce->GetPosition();
+
+	// ·•ªƒxƒNƒgƒ‹‚ð•Y—¬‘¬“x‚É³‹K‰»
+	D3DXVECTOR3 vecDiff = posGrid - posIce;
+
+	posIce += vecDiff * 0.1f;
+
+	// •X‚ÌˆÊ’u‚ÉˆÚ“®—Ê‚ð‰ÁŽZ
+	pIce->SetPosition(posIce);
 }
 
 //*******************************************************************************
@@ -426,6 +458,17 @@ void CIceStateFlow::Uninit(CIce *pIce)
 //=====================================================
 void CIceStateFlow::Update(CIce *pIce)
 {
+	if (!m_bDrift)
+		UpdateSarchIce(pIce);	// •X‚ð’T‚µ‚Ä‚¢‚éŽž‚ÌXV
+	else
+		UpdateDriftIce(pIce);	// •Y’…‚µ‚Ä‚é‚Æ‚«‚ÌXV
+}
+
+//=====================================================
+// •X‚ð’T‚µ‚Ä‚¢‚é‚Æ‚«‚ÌXV
+//=====================================================
+void CIceStateFlow::UpdateSarchIce(CIce *pIce)
+{
 	CIceManager *pIceManager = CIceManager::GetInstance();
 
 	if (pIceManager == nullptr)
@@ -440,17 +483,6 @@ void CIceStateFlow::Update(CIce *pIce)
 	vecStream *= SPEED_FLOWS;
 	pIce->AddPosition(vecStream);
 
-	if (!m_bDrift)
-		UpdateSarchIce(pIce);	// •X‚ð’T‚µ‚Ä‚¢‚éŽž‚ÌXV
-	else
-		UpdateDriftIce(pIce);	// •Y’…‚µ‚Ä‚é‚Æ‚«‚ÌXV
-}
-
-//=====================================================
-// •X‚ð’T‚µ‚Ä‚¢‚é‚Æ‚«‚ÌXV
-//=====================================================
-void CIceStateFlow::UpdateSarchIce(CIce *pIce)
-{
 	// •X‚Æ‚Ì”»’è
 	CollideIce(pIce);
 }
@@ -468,9 +500,21 @@ void CIceStateFlow::UpdateDriftIce(CIce *pIce)
 	// ƒOƒŠƒbƒh‚ÌˆÊ’uŽæ“¾
 	D3DXVECTOR3 posDrift = pIceManager->GetGridPosition(&m_nIdxDriftV, &m_nIdxDriftH);
 
-	// ƒOƒŠƒbƒh‚ÌˆÊ’u‚Æ‚Ì‹——£‚ª‚µ‚«‚¢’l‚ð‰º‰ñ‚Á‚½‚çŽ~‚ß‚é
+	// ŠC—¬‚ÌƒxƒNƒgƒ‹Žæ“¾
 	D3DXVECTOR3 posIce = pIce->GetPosition();
-	bool bStop = universal::DistCmpFlat(posIce, posDrift, LINE_STOP_ICE,nullptr);
+	if (pIceManager == nullptr)
+		return;
+
+	// ŠC—¬‚ÌƒxƒNƒgƒ‹Žæ“¾
+	D3DXVECTOR3 vecDiff = posDrift - posIce;
+
+	// —¬‚ê‚é‘¬“x‚É³‹K‰»‚µ‚ÄˆÊ’u‚ð‰ÁŽZ
+	D3DXVec3Normalize(&vecDiff, &vecDiff);
+	vecDiff *= SPEED_FLOWS;
+	pIce->AddPosition(vecDiff);
+
+	// ƒOƒŠƒbƒh‚ÌˆÊ’u‚Æ‚Ì‹——£‚ª‚µ‚«‚¢’l‚ð‰º‰ñ‚Á‚½‚çŽ~‚ß‚é
+	bool bStop = universal::DistCmpFlat(posIce, posDrift, LINE_STOP_ICE, nullptr);
 
 	if (bStop)
 	{

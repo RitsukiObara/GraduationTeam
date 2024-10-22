@@ -65,6 +65,7 @@ public:
 	void SetDirStream(E_Stream direction) { m_dirStream = direction; }	// 海流の方向
 	E_Stream GetDirStream(void) { return m_dirStream; }
 	void SetIceInGrid(int nNumV, int nNumH, CIce *pIce);	// グリッドに氷を設定
+	void GetIceIndex(CIce *pIce, int *pNumV, int *pNumH);	// 氷のグリッド番号を取得
 
 	// 変数取得・設定関数
 	D3DXVECTOR3 GetGridPosition(int *pNumV, int *pNumH);

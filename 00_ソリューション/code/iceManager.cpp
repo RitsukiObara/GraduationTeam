@@ -274,6 +274,9 @@ void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 	if (!m_aGrid[nNumBreakV][nNumBreakH].pIce->IsCanPeck())
 		return;	// 突っつけないブロックなら後の処理を通らない
 
+	if (m_aGrid[nNumBreakV][nNumBreakH].pIce->IsPeck())
+		return;	// 既に突っついていたら通らない
+
 	// 氷を突っついた判定にする
 	if (m_aGrid[nNumBreakV][nNumBreakH].pIce)
 	{
@@ -438,7 +441,7 @@ void CIceManager::Collide(D3DXVECTOR3 *pPos)
 
 #ifdef _DEBUG
 	D3DXVECTOR3 posIce = m_aGrid[nIdxV][nIdxH].pos;
-	CEffect3D::Create(posIce, 100.0f, 5, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+	//CEffect3D::Create(posIce, 100.0f, 5, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 
 	CDebugProc::GetInstance()->Print("\n今いるグリッド[%d,%d]", nIdxV, nIdxH);
 #endif
@@ -490,7 +493,7 @@ bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand, vecto
 	}
 
 #ifdef _DEBUG
-	CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+	//CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 #endif
 
 	// 再帰関数の深さをインクリメント
@@ -585,7 +588,7 @@ void CIceManager::DisableFromHardIce(int nNumV, int nNumH, vector<CIce*> apIce)
 	m_aGrid[nNumV][nNumH].pIce->EnableBreak(false);
 
 #ifdef _DEBUG
-	CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+	//CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 #endif
 
 	// 周辺グリッドの計算
@@ -638,7 +641,7 @@ void CIceManager::DisableFromPlayer(int nNumV, int nNumH, CIce *pIcePeck, vector
 	m_aGrid[nNumV][nNumH].pIce->EnableBreak(false);
 
 #ifdef _DEBUG
-	CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+	//CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 #endif
 
 	// 周辺グリッドの計算
@@ -697,7 +700,7 @@ void CIceManager::DisableBreak(int nNumV, int nNumH)
 	m_aGrid[nNumV][nNumH].pIce->EnableBreak(false);
 
 #ifdef _DEBUG
-	CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+	//CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 #endif
 
 	// 周辺グリッドの計算
@@ -753,6 +756,8 @@ void CIceManager::SummarizeIce(int nNumV, int nNumH)
 
 	Grid::CalcAroundGrids(nNumV, nNumH, aV, aH);
 
+	m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
+
 	// 氷のポインタの保存
 	for (int i = 0; i < DIRECTION_MAX; i++)
 	{
@@ -769,6 +774,9 @@ void CIceManager::SummarizeIce(int nNumV, int nNumH)
 	for (int i = 0; i < DIRECTION_MAX; i++)
 	{
 		if (apIce[i] == nullptr)
+			continue;
+
+		if (!apIce[i]->IsCanFind())
 			continue;
 
 		// 流氷システムの生成
@@ -794,6 +802,10 @@ void CIceManager::SaveFlowIce(int nNumV, int nNumH, CFlowIce *pFlowIce)
 
 	// 探索済みのフラグを立てる
 	m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
+
+#ifdef _DEBUG
+	CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 100, 120, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+#endif
 
 	for (int i = 0; i < DIRECTION_MAX; i++)
 	{
@@ -875,7 +887,7 @@ bool CIceManager::CheckCorner(int nNumV, int nNumH)
 			return false;
 	}
 
-	CEffect3D::Create(m_aGrid[nNumV][nNumH].pos, 300.0f, 60, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
+	//CEffect3D::Create(m_aGrid[nNumV][nNumH].pos, 300.0f, 60, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
 
 	return true;
 }
@@ -916,7 +928,7 @@ bool CIceManager::CheckCommon(vector<CIce*> apIce, vector<CIce*> apIceLast, CIce
 #ifdef _DEBUG
 	if (!bBreak)
 	{
-		CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+		//CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
 	}
 #endif
 
@@ -949,7 +961,7 @@ void CIceManager::BreakPeck(int nNumV, int nNumH)
 	}
 
 	if (nNumIce == nNumPeck)
-	{
+	{// くっついている氷が全てつっついたものだったら壊す
 		if (m_aGrid[nNumV][nNumH].pIce != nullptr)
 		{
 			m_aGrid[nNumV][nNumH].pIce->Uninit();
@@ -1133,6 +1145,28 @@ void CIceManager::SetIceInGrid(int nNumV, int nNumH, CIce *pIce)
 	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
 	{
 		m_aGrid[nNumV][nNumH].pIce = pIce;
+	}
+}
+
+//=====================================================
+// 氷のグリッド番号を取得
+//=====================================================
+void CIceManager::GetIceIndex(CIce *pIce, int *pNumV, int *pNumH)
+{
+	if (pIce == nullptr || pNumV == nullptr || pNumV == nullptr)
+		return;
+
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			if (pIce == m_aGrid[i][j].pIce)
+			{// 同じ氷のポインタだった場合、番号を保存して関数を終了
+				*pNumV = i;
+				*pNumH = j;
+				return;
+			}
+		}
 	}
 }
 
