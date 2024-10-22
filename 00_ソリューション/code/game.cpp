@@ -46,6 +46,7 @@
 #include "UI_enemy.h"
 #include "ocean_flow_UI.h"
 #include "flowIce.h"
+#include "flowIceFactory.h"
 
 //*****************************************************
 // マクロ定義
@@ -152,6 +153,9 @@ HRESULT CGame::Init(void)
 
 	// 流氷生成
 	CFlowIce::Create();
+
+	// 流氷ファクトリーの生成
+	CFlowIceFct::Create();
 
 	return S_OK;
 }
