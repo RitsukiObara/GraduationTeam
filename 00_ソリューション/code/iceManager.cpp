@@ -248,6 +248,7 @@ void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 	int nNumBreakV = nNumV;
 	int nNumBreakH = nNumH;
 
+	// つっつく方向に合わせて番号を計算
 	switch (direction)
 	{
 	/*case CIceManager::DIRECTION_UP:
@@ -266,6 +267,12 @@ void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 		break;
 	}
 
+	// 番号が範囲内かどうかチェック
+	if (universal::LimitValueInt(&nNumBreakV, m_nNumGridVirtical - 1, 0) ||
+		universal::LimitValueInt(&nNumBreakH, m_nNumGridHorizontal - 1, 0))
+		return;
+
+	// 氷がつっつける状態かのチェック
 	if (m_aGrid[nNumBreakV][nNumBreakH].pIce == nullptr)
 		return;
 
