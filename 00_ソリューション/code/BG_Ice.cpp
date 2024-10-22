@@ -25,7 +25,7 @@
 //*****************************************************
 namespace
 {
-	
+	const char* MODEL[CBgIce::TYPE_MAX] = { "data\\MODEL\\block\\Drift_ice.x","data\\MODEL\\block\\Drift_ice_small.x" };
 }
 
 //*****************************************************
@@ -37,7 +37,7 @@ namespace
 //====================================================
 CBgIce::CBgIce()
 {
-	
+	m_type = TYPE_BIG;
 }
 
 //====================================================
@@ -51,11 +51,13 @@ CBgIce::~CBgIce()
 //====================================================
 // ¶¬ˆ—
 //====================================================
-CBgIce* CBgIce::Create(D3DXVECTOR3 pos)
+CBgIce* CBgIce::Create(D3DXVECTOR3 pos,TYPE type)
 {
 	CBgIce* pBgIce = new CBgIce;
 
 	pBgIce->SetPosition(pos);
+
+	pBgIce->m_type = type;
 
 	pBgIce->Init();
 
@@ -69,7 +71,7 @@ HRESULT CBgIce::Init(void)
 {
 	CObjectX::Init();
 
-	CObjectX::BindModel(CModel::Load("data\\MODEL\\block\\Drift_ice.x"));
+	CObjectX::BindModel(CModel::Load(MODEL[m_type]));
 
 	return S_OK;
 }
