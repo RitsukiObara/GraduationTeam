@@ -46,6 +46,7 @@
 #include "UI_enemy.h"
 #include "ocean_flow_UI.h"
 #include "flowIce.h"
+#include "BG_Ice.h"
 
 //*****************************************************
 // É}ÉNÉçíËã`
@@ -152,6 +153,9 @@ HRESULT CGame::Init(void)
 
 	// ó¨ïXê∂ê¨
 	CFlowIce::Create();
+
+	// îwåiïXê∂ê¨
+	CBgIce::Create(D3DXVECTOR3(0.0f,0.0f,500.0f));
 
 	return S_OK;
 }
