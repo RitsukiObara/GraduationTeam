@@ -356,11 +356,12 @@ void CIceStaeteNormal::MoveToGrid(CIce *pIce)
 
 	// ·•ªƒxƒNƒgƒ‹‚ð•Y—¬‘¬“x‚É³‹K‰»
 	D3DXVECTOR3 vecDiff = posGrid - posIce;
+	D3DXVec3Normalize(&vecDiff, &vecDiff);
 
-	posIce += vecDiff * 0.05f;
+	vecDiff *= SPEED_FLOWS;
 
 	// •X‚ÌˆÊ’u‚ÉˆÚ“®—Ê‚ð‰ÁŽZ
-	pIce->SetPosition(posIce);
+	pIce->AddPosition(vecDiff);
 }
 
 //*******************************************************************************
