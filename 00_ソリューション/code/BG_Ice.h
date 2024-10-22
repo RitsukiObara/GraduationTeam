@@ -18,16 +18,24 @@
 class CBgIce : public CObjectX
 {
 public:
+	typedef enum
+	{
+		TYPE_BIG = 0,
+		TYPE_SMALL,
+		TYPE_MAX
+	}TYPE;
+
 	CBgIce();	// コンストラクタ
 	~CBgIce();	// デストラクタ
 
-	static CBgIce* Create(D3DXVECTOR3 pos);
+	static CBgIce* Create(D3DXVECTOR3 pos,TYPE type);
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
 private:
+	TYPE m_type;	//モデルのタイプ分け変数
 };
 
 #endif
