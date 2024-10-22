@@ -182,12 +182,12 @@ void CIce::Uninit(void)
 // 更新処理
 //=====================================================
 void CIce::Update(void)
-{
-	if (m_pState != nullptr)
-		m_pState->Update(this);
-	
+{	
 	if (!IsSink())	// 沈むフラグがたっていないときのみ行う
 		FollowWave();	// 波に追従する処理
+
+	if (m_pState != nullptr)
+		m_pState->Update(this);
 }
 
 //=====================================================
@@ -309,8 +309,34 @@ void CIceStaeteNormal::Uninit(CIce *pIce)
 //=====================================================
 void CIceStaeteNormal::Update(CIce *pIce)
 {
-	// グリッドに向かって移動する処理
-	//MoveToGrid(pIce);
+	// 番号取得に失敗しているかの確認
+	bool bMove = CheckFailGetIndex(pIce);
+
+	if(bMove)
+		MoveToGrid(pIce);	// グリッドに向かって移動する処理
+}
+
+//=====================================================
+// 番号取得に失敗しているかの確認
+//=====================================================
+bool CIceStaeteNormal::CheckFailGetIndex(CIce *pIce)
+{
+	if (m_nIdxDriftV == -1 ||
+		m_nIdxDriftH == -1)
+	{// 番号取得に失敗している場合、再取得
+		CIceManager *pIceMgr = CIceManager::GetInstance();
+
+		if (pIceMgr == nullptr)
+			return false;
+
+		pIceMgr->GetIceIndex(pIce, &m_nIdxDriftV, &m_nIdxDriftH);
+
+		if (m_nIdxDriftV == -1 ||
+			m_nIdxDriftH == -1)
+			return false;	// それでも失敗した場合、偽を返すs
+	}
+
+	return true;
 }
 
 //=====================================================

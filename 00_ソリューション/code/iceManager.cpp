@@ -30,6 +30,7 @@ const float DEPTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_Z;	// グリッドの奥行
 const float OceanFlow_Min = 1.00f;
 const float OceanFlow_Max = 10.00f;
 
+const float RATE_SIZE_COLLIDE_GRID = 0.7f;	// グリッドの判定の割合
 }
 
 //*****************************************************
@@ -779,6 +780,9 @@ void CIceManager::SummarizeIce(int nNumV, int nNumH)
 		if (!apIce[i]->IsCanFind())
 			continue;
 
+		if (apIce[i]->IsPeck())
+			continue;
+
 		// 流氷システムの生成
 		CFlowIce *pFlowIce = CFlowIce::Create();
 
@@ -828,6 +832,9 @@ void CIceManager::SaveFlowIce(int nNumV, int nNumH, CFlowIce *pFlowIce)
 			continue;
 
 		if (!apIce[i]->IsCanFind())
+			continue;
+
+		if (apIce[i]->IsPeck())
 			continue;
 
 		pFlowIce->AddIceToArray(apIce[i]);
@@ -1103,7 +1110,7 @@ bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH
 
 			float fDist = D3DXVec3Length(&vecDiff);
 
-			if (fDist < WIDTH_GRID * 0.5f)
+			if (fDist < WIDTH_GRID * RATE_SIZE_COLLIDE_GRID)
 			{// 氷のサイズ分の半径より小さかったら乗ってる判定
 				*pIdxV = i;
 				*pIdxH = j;
@@ -1168,6 +1175,10 @@ void CIceManager::GetIceIndex(CIce *pIce, int *pNumV, int *pNumH)
 			}
 		}
 	}
+
+	// どのポインタにも入らなかった場合は-1を返す
+	*pNumV = -1;
+	*pNumH = -1;
 }
 
 //=====================================================

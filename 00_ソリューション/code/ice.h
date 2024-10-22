@@ -126,6 +126,7 @@ public:
 
 private:
 	// メンバ関数
+	bool CheckFailGetIndex(CIce *pIce);	// 番号取得に失敗しているかの確認
 	void MoveToGrid(CIce *pIce);	// グリッドの位置に向かって移動する処理
 
 	// メンバ変数
