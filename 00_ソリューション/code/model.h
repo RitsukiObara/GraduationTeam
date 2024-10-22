@@ -35,7 +35,7 @@ public:
 	CModel();	// コンストラクタ
 	~CModel();	// デストラクタ
 	
-	static int Load(char *pPath);
+	static int Load(const char *pPath);
 	static void Unload(void);
 	static void Init(int nIdx);
 	static Model *GetModel(int nIdx) { return m_apModel[nIdx]; }

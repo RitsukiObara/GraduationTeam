@@ -165,7 +165,7 @@ void COceanFlowUI::OceanLevelState(void)
 	float Colorrate = OceanFlowLevel / MAX_OCEANLEVEL;	// ŠC—¬Å‘åƒŒƒxƒ‹‚Æ‚ÌŠ„‡
 
 	// –Ú•W‚ÌF‚É‘JˆÚ
-	fEmissiveCol = D3DXCOLOR(0.8f + (0.2f * Colorrate), 0.8f - (0.6 * Colorrate), 0.2f, 1.0f);
+	fEmissiveCol = D3DXCOLOR(0.8f + (0.2f * Colorrate), 0.8f - (0.6f * Colorrate), 0.2f, 1.0f);
 
 	m_pArrow->SetEmissiveCol(fEmissiveCol);
 }

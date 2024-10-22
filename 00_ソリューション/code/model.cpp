@@ -47,7 +47,7 @@ void CModel::Init(int nIdx)
 //=====================================================
 // ì«çûèàóù
 //=====================================================
-int CModel::Load(char *pPath)
+int CModel::Load(const char *pPath)
 {
 	int nIdxModel = -1;
 
