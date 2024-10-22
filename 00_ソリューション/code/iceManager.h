@@ -69,7 +69,7 @@ public:
 
 	// 変数取得・設定関数
 	D3DXVECTOR3 GetGridPosition(int *pNumV, int *pNumH);
-	CIce* GetGridObject(int* pNumV, int* pNumH);
+	CIce* GetGridIce(int* pNumV, int* pNumH);
 	int GetNumGridV(void) { return m_nNumGridVirtical; }	// 縦のグリッド数
 	int GetNumGridH(void) { return m_nNumGridHorizontal; }	// 横のグリッド数
 	float GetOceanLevel(void) { return m_fOceanLevel; }	// 海流レベルの取得

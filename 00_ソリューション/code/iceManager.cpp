@@ -211,7 +211,7 @@ CIce *CIceManager::CreateIce(int nGridV, int nGridH, CIce::E_Type type)
 	// 氷のトランスフォーム設定
 	pIce->SetPosition(m_aGrid[nGridV][nGridH].pos);
 	pIce->SetTransform(Grid::SIZE);
-
+	
 	// 氷を配列にセット
 	m_aGrid[nGridV][nGridH].pIce = pIce;
 
@@ -1060,7 +1060,7 @@ D3DXVECTOR3 CIceManager::GetGridPosition(int *pNumV, int *pNumH)
 //=====================================================
 // グリッドオブジェクトの取得
 //=====================================================
-CIce* CIceManager::GetGridObject(int* pNumV, int* pNumH)
+CIce* CIceManager::GetGridIce(int* pNumV, int* pNumH)
 {
 	if (m_aGrid.empty())
 		return nullptr;
