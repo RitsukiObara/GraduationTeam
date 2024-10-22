@@ -57,6 +57,8 @@ CBgIce* CBgIce::Create(D3DXVECTOR3 pos,TYPE type)
 
 	pBgIce->SetPosition(pos);
 
+	pBgIce->m_type = type;
+
 	pBgIce->Init();
 
 	return pBgIce;
