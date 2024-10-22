@@ -72,6 +72,7 @@ public:
 	CIce* GetGridObject(int* pNumV, int* pNumH);
 	int GetNumGridV(void) { return m_nNumGridVirtical; }	// 縦のグリッド数
 	int GetNumGridH(void) { return m_nNumGridHorizontal; }	// 横のグリッド数
+	float GetOceanLevel(void) { return m_fOceanLevel; }	// 海流レベルの取得
 
 	// 静的メンバ関数
 	static CIceManager *Create(int nNumV, int nNumH);
@@ -115,6 +116,7 @@ private:
 	// メンバ変数
 	int m_nNumGridVirtical;	// 縦グリッドの数
 	int m_nNumGridHorizontal;	// 横グリッドの数
+	float m_fOceanLevel;	//	海流の強さ
 	vector<vector<S_Grid>> m_aGrid;	// グリッドの配列
 	E_Stream m_dirStream;	// 海流の方向
 

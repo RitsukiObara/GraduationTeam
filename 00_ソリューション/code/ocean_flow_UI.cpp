@@ -83,7 +83,7 @@ COceanFlowUI* COceanFlowUI::Create(void)
 //====================================================
 HRESULT COceanFlowUI::Init(void)
 {
-	m_pArrow = CObjectX::Create(D3DXVECTOR3(800.0f, 200.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	m_pArrow = CObjectX::Create(D3DXVECTOR3(-1000.0f, 200.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	//	–îˆóƒ‚ƒfƒ‹‚Ì‰Šú‰»
 	if (m_pArrow != nullptr)
@@ -126,6 +126,7 @@ void COceanFlowUI::Update(void)
 	OceanFlowKeep = CIceManager::GetInstance()->GetDirStream();
 	D3DXVECTOR3 Rot = m_pArrow->GetRotation();
 
+	//	–îˆó‚ªŠC—¬‚ÌŒü‚«‚É—¬‚ê‚éˆ—
 	if (OceanFlowKeep == CIceManager::STREAM_UP)
 	{
 		universal::FactingRot(&Rot.y, D3DX_PI * 0.5f, 0.02f);
@@ -148,16 +149,34 @@ void COceanFlowUI::Update(void)
 
 	m_pArrow->SetRotation(Rot);
 
-	// ó‘ÔŠÇ—
-	OceanState();
+	// ŠC—¬ƒŒƒxƒ‹ó‘ÔŠÇ—
+	OceanLevelState();
 }
 
 //====================================================
-// ó‘ÔŠÇ—
+// ŠC—¬ƒŒƒxƒ‹‚ÌUIˆ—
 //====================================================
-void COceanFlowUI::OceanState(void)
+void COceanFlowUI::OceanLevelState(void)
 {
+	OceanFlowLevel = CIceManager::GetInstance()->GetOceanLevel();	//	ŠC—¬ƒŒƒxƒ‹‚ÌŽæ“¾
+	D3DXCOLOR fEmissiveCol = m_pArrow->GetEmissiveCol();	//	ŠC—¬UI‚ÌFŽæ“¾
 
+	if (OceanFlowLevel > 0.00f && OceanFlowLevel < 3.00f)
+	{
+		fEmissiveCol = D3DXCOLOR(0.2f, 0.8f, 0.8f, 1.0f);
+	}
+
+	if (OceanFlowLevel > 3.00f && OceanFlowLevel < 5.00f)
+	{
+		fEmissiveCol = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);
+	}
+
+	if (OceanFlowLevel > 5.00f && OceanFlowLevel < 7.00f)
+	{
+		fEmissiveCol = D3DXCOLOR(1.0f, 0.8f, 0.8f, 1.0f);
+	}
+
+	m_pArrow->SetEmissiveCol(fEmissiveCol);
 }
 
 //====================================================
