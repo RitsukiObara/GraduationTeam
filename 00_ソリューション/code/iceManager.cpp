@@ -1189,6 +1189,30 @@ void CIceManager::GetIceIndex(CIce *pIce, int *pNumV, int *pNumH)
 }
 
 //=====================================================
+// ‰E‰º‚Ì•X‚ðŽæ“¾
+//=====================================================
+CIce* CIceManager::GetRightDownIdx(int *pNumV, int *pNumH)
+{
+	if (pNumV == nullptr || pNumH == nullptr)
+		return nullptr;
+
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			if (m_aGrid[i][j].pIce != nullptr)
+			{// •X‚ª‚ ‚Á‚½‚ç”Ô†‚ð•Û‘¶
+				*pNumV = i;
+				*pNumH = j;
+				return m_aGrid[i][j].pIce;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
+//=====================================================
 // •`‰æˆ—
 //=====================================================
 void CIceManager::Draw(void)

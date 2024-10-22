@@ -95,6 +95,9 @@ HRESULT CPlayer::Init(void)
 
 	InitPose(0);
 
+	// グリッド番号の初期化
+	InitGridIdx();
+
 	// 状態設定
 #ifdef _DEBUG
 	m_state = STATE_INVINCIBLE;
@@ -102,8 +105,20 @@ HRESULT CPlayer::Init(void)
 	m_state = STATE_NORMAL;
 #endif // _DEBUG
 
-
 	return S_OK;
+}
+
+//=====================================================
+// グリッド番号の初期化
+//=====================================================
+void CPlayer::InitGridIdx(void)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	pIceMgr->GetRightDownIdx(&m_nGridV, &m_nGridH);
 }
 
 //=====================================================
@@ -127,15 +142,6 @@ void CPlayer::Update(void)
 
 	// モーション更新
 	CMotion::Update();
-
-	// 横軸移動
-	MovePositionXZ();
-
-	// 着地確認
-	LandCheck();
-
-	// モーション完了後の処理
-	MotionFinishCheck();
 
 #ifdef _DEBUG
 	Debug();
@@ -273,171 +279,8 @@ void CPlayer::MoveGrid(void)
 	if (pIceManager == nullptr)
 		return;
 
-	// グリッド取得========================================
-	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
-
-	// 移動していなければ入力受付========================================
-	if (m_bMove == false)
-	{
-		// 移動の入力========================================
-		if (pInputManager->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_LEFT))
-		{
-			m_nNextGridH--;
-			m_bMove = true;
-		}
-		else if (pInputManager->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_RIGHT))
-		{
-			m_nNextGridH++;
-			m_bMove = true;
-		}
-		else if (pInputManager->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_UP))
-		{
-			m_nNextGridV++;
-			m_bMove = true;
-		}
-		else if (pInputManager->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_DOWN))
-		{
-			m_nNextGridV--;
-			m_bMove = true;
-		}
-
-		if (m_bMove == true && GetMotion() == 0)
-		{
-			// ジャンプモーション
-			SetMotion(MOTION_JUMPSTART);
-		}
-
-		// つつきの入力========================================
-		if (pInputManager->GetTrigger(CInputManager::E_Button::BUTTON_PECK))
-		{// 乗っている氷を割る
-			pIceManager->PeckIce(m_nGridV, m_nGridH, CIceManager::E_Direction::DIRECTION_LEFT);	// 割る処理
-
-			CParticle::Create(D3DXVECTOR3(posGrid.x, posGrid.y - 20.0f, posGrid.z), CParticle::TYPE_ICEBREAK, D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
-			// 氷割りモーション
-			SetMotion(MOTION_PECK);
-		}
-	}
-
-	// 移動処理
-	MoveToGrid();
-}
-
-//=====================================================
-// グリッドまでの移動
-//=====================================================
-void CPlayer::MoveToGrid(void)
-{
-	CIceManager* pIceManager = CIceManager::GetInstance();
-
-	if (pIceManager == nullptr)
-		return;
-
-#ifdef DEBUG_WARP
-	if (m_bMove == true)
-	{// デバッグ時瞬間移動
-		D3DXVECTOR3 pos = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
-		SetPosition(pos);
-		SetMotion(MOTION_NEUTRAL);
-		m_bMove = false;
-	}
-#else
-	if (m_bMove == true && GetMotion() == MOTION_JUMPSTART && IsFinish() == true)
-	{// ジャンプモーション終了
-		m_nGridV = m_nNextGridV;
-		m_nGridH = m_nNextGridH;
-
-		// 新しいグリッドで位置取得・目標位置設定================
-		m_posDest = pIceManager->GetGridPosition(&m_nGridV, &m_nGridH);
-
-		// 移動量設定========================================
-		D3DXVECTOR3 pos = GetPosition();
-		D3DXVECTOR3 move = (m_posDest - pos) / MOVE_FRAME;
-		move.y = 10.0f;
-		SetMove(move);
-
-		// ジャンプモーション
-		SetMotion(MOTION_JUMPFLY);
-	}
-#endif
-	if (m_bMove == false)
-	{
-		CIce* pIce = pIceManager->GetGridIce(&m_nGridV, &m_nGridH);
-		if (pIce != nullptr)
-		{
-			D3DXVECTOR3 posObject = pIce->GetPosition();
-			SetPosition(posObject);
-		}
-	}
-}
-
-//=====================================================
-// 目標位置に移動
-//=====================================================
-void CPlayer::MovePositionXZ(void)
-{
-	// XZ移動
-	D3DXVECTOR3 pos = GetPosition();
-	pos.x += m_move.x;
-	pos.z += m_move.z;
-
-	D3DXVECTOR3 vecLength = D3DXVECTOR3(m_posDest.x, 0.0f, m_posDest.z) - D3DXVECTOR3(pos.x, 0.0f, pos.z);
-	if (D3DXVec3Length(&vecLength) <= POSDEST_NEAREQUAL)
-	{
-		// XZ位置移動完了
-		pos.x = m_posDest.x;
-		pos.z = m_posDest.z;
-		m_move = D3DXVECTOR3(0.0f, m_move.y, 0.0f);
-	}
-
-	CGameObject::SetPosition(pos);
-}
-
-//=====================================================
-// 着地確認
-//=====================================================
-void CPlayer::LandCheck(void)
-{
-	D3DXVECTOR3 pos = GetPosition();
-	D3DXVECTOR3 posDest = m_posDest;
-
-	CIceManager* pIceManager = CIceManager::GetInstance();
-	if (pIceManager == nullptr)
-		return;
-
-	CIce* pIce = pIceManager->GetGridIce(&m_nGridV, &m_nGridH);
-	if (pIce != nullptr)
-	{// 着地地点あり
-		D3DXVECTOR3 posObject = pIce->GetPosition();
-		posDest = posObject;
-	}
-
-	m_jumpTime += CManager::GetInstance()->GetDeltaTime();
-	pos.y += m_move.y - 9.8f * DEFAULT_WEIGHT * m_jumpTime;
-	universal::LimitValuefloat(&pos.y, 1000.0f, posDest.y);
-
-	if (pos.y <= posDest.y)
-	{
-		// Y位置移動完了
-		pos.y = posDest.y;
-		m_move.y = 0.0f;
-		m_jumpTime = 0.0f;
-
-		// 移動完了後氷に乗っているか判定
-		if (pIce != nullptr || m_state == STATE_INVINCIBLE)
-		{// 乗っている（普通に着地モーション）
-			if (GetMotion() == MOTION_JUMPFLY)
-			{
-				SetMotion(MOTION_LANDING);
-			}
-		}
-		else
-		{// 乗っていないかつ無敵ではない
-			m_state = STATE_DEATH;
-		}
-	}
-
-	SetPosition(pos);
+	// 移動方向取得
+	
 }
 
 //=====================================================
@@ -517,25 +360,6 @@ void CPlayer::Debug(void)
 	else
 	{
 		pDebugProc->Print("\n<<通常(-_-)zzz（F8で無敵）>>");
-	}
-}
-
-//=====================================================
-// モーション完了後の処理
-//=====================================================
-void CPlayer::MotionFinishCheck(void)
-{
-	if (CMotion::IsFinish() == true)
-	{// 何かしらのモーション終了
-		if (CMotion::GetMotion() == MOTION_LANDING)
-		{// 着地終了（通常状態遷移）
-			SetMotion(MOTION_NEUTRAL);
-			m_bMove = false;
-		}
-		if (CMotion::GetMotion() == MOTION_PECK)
-		{// 氷割り終了（通常状態遷移）
-			SetMotion(MOTION_NEUTRAL);
-		}
 	}
 }
 
