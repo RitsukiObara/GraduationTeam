@@ -27,9 +27,7 @@ CInputManager *CInputManager::m_pInputManager = nullptr;	// 自身のポインタ
 CInputManager::CInputManager()
 {
 	ZeroMemory(&m_info, sizeof(SInfo));
-	ZeroMemory(&m_axis, sizeof(SAxis));
-	m_fAccele = 0.0f;
-	m_fBreake = 0.0f;
+	ZeroMemory(&m_axis, sizeof(S_Axis));
 }
 
 //=====================================================
@@ -231,7 +229,7 @@ void CInputManager::Update(void)
 	);
 
 	// 方向のリセット
-	ZeroMemory(&m_axis, sizeof(SAxis));
+	ZeroMemory(&m_axis, sizeof(S_Axis));
 
 	// 移動方向の設定=============
 	// ジョイパッド
@@ -263,22 +261,6 @@ void CInputManager::Update(void)
 	m_axis.axisCamera += D3DXVECTOR3(pMouse->GetMoveIX(), pMouse->GetMoveIY(), 0.0f);
 
 	D3DXVec3Normalize(&m_axis.axisCamera, &m_axis.axisCamera);
-
-	// アクセルの操作
-	m_fAccele = pJoypad->GetTriggerR(0);
-
-	if (pKeyboard->GetPress(DIK_W))
-	{
-		m_fAccele = 1.0f;
-	}
-
-	// ブレーキの操作
-	m_fBreake = pJoypad->GetTriggerL(0);
-
-	if (pKeyboard->GetPress(DIK_S))
-	{
-		m_fBreake = 1.0f;
-	}
 }
 
 void CInputManager::UpdateDevice(void)
