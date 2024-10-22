@@ -469,6 +469,14 @@ void CIceStaeteBreak::Update(CIce *pIce)
 void CIceStateFlow::Init(CIce *pIce)
 {
 	pIce->EnableStop(false);
+
+	// 自身のポインタをグリッドから外す
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	pIceMgr->DeleteIce(pIce);
 }
 
 //=====================================================
