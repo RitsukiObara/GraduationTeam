@@ -85,6 +85,8 @@ void CFlowIceFct::Update(void)
 	{
 		// 流氷の生成
 		CreateFlowIce();
+
+		m_fTimerCreateFlowIce = 0.0f;
 	}
 }
 
@@ -121,10 +123,19 @@ void CFlowIceFct::CreateFlowIce(void)
 	{// 横のグリッド番号の配列
 		9,9,9,9
 	};
-
+	
 	for (int i = 0; i < NUM_ICE; i++)
 	{
+		// 生成する場所に既に氷がある場合は、スキップ
+		if (pIceManager->GetGridIce(&aV[i], &aH[i]) != nullptr)
+			continue;
+
+		// 氷を生成し、流氷システムに追加
 		CIce *pIce = pIceManager->CreateIce(aV[i], aH[i]);
+
+		if (pIce == nullptr)
+			continue;
+
 		pIce->ChangeState(new CIceStateFlow);
 		pFlowIce->AddIceToArray(pIce);
 	}

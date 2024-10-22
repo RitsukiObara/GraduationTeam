@@ -90,7 +90,7 @@ HRESULT CIceManager::Init(void)
 	SetGridPos();
 
 	// 仮マップ生成
-	CreateIce(3, 6,CIce::E_Type::TYPE_HARD);
+	CreateIce(3, 6,CIce::E_Type::TYPE_HARD);/*
 	CreateIce(3, 5);
 	CreateIce(3, 4);
 	CreateIce(3, 3);
@@ -102,7 +102,7 @@ HRESULT CIceManager::Init(void)
 	CreateIce(5, 5);
 	CreateIce(5, 4);
 	CreateIce(4, 6);
-	CreateIce(6, 6);
+	CreateIce(6, 6);*/
 
 	// 海流を初期化
 	m_dirStream = E_Stream::STREAM_LEFT;
@@ -211,12 +211,9 @@ CIce *CIceManager::CreateIce(int nGridV, int nGridH, CIce::E_Type type)
 	// 氷のトランスフォーム設定
 	pIce->SetPosition(m_aGrid[nGridV][nGridH].pos);
 	pIce->SetTransform(Grid::SIZE);
-
+	
 	// 氷を配列にセット
 	m_aGrid[nGridV][nGridH].pIce = pIce;
-
-	// 氷の停止
-	StopIce(pIce);
 
 	return pIce;
 }
@@ -1063,7 +1060,7 @@ D3DXVECTOR3 CIceManager::GetGridPosition(int *pNumV, int *pNumH)
 //=====================================================
 // グリッドオブジェクトの取得
 //=====================================================
-CIce* CIceManager::GetGridObject(int* pNumV, int* pNumH)
+CIce* CIceManager::GetGridIce(int* pNumV, int* pNumH)
 {
 	if (m_aGrid.empty())
 		return nullptr;

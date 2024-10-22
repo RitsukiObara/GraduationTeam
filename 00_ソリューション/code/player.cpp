@@ -362,7 +362,7 @@ void CPlayer::MoveToGrid(void)
 #endif
 	if (m_bMove == false)
 	{
-		CIce* pIce = pIceManager->GetGridObject(&m_nGridV, &m_nGridH);
+		CIce* pIce = pIceManager->GetGridIce(&m_nGridV, &m_nGridH);
 		if (pIce != nullptr)
 		{
 			D3DXVECTOR3 posObject = pIce->GetPosition();
@@ -405,7 +405,7 @@ void CPlayer::LandCheck(void)
 	if (pIceManager == nullptr)
 		return;
 
-	CIce* pIce = pIceManager->GetGridObject(&m_nGridV, &m_nGridH);
+	CIce* pIce = pIceManager->GetGridIce(&m_nGridV, &m_nGridH);
 	if (pIce != nullptr)
 	{// ’…’n’n“_‚ ‚è
 		D3DXVECTOR3 posObject = pIce->GetPosition();

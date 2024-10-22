@@ -20,6 +20,7 @@
 #include "manager.h"
 #include "particle.h"
 #include "model.h"
+#include "effect3D.h"
 
 //*****************************************************
 // 定数定義
@@ -356,7 +357,7 @@ void CIceStaeteNormal::MoveToGrid(CIce *pIce)
 	// 差分ベクトルを漂流速度に正規化
 	D3DXVECTOR3 vecDiff = posGrid - posIce;
 
-	posIce += vecDiff * 0.1f;
+	posIce += vecDiff * 0.05f;
 
 	// 氷の位置に移動量を加算
 	pIce->SetPosition(posIce);
@@ -469,6 +470,14 @@ void CIceStaeteBreak::Update(CIce *pIce)
 void CIceStateFlow::Init(CIce *pIce)
 {
 	pIce->EnableStop(false);
+
+	// 自身のポインタをグリッドから外す
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	pIceMgr->DeleteIce(pIce);
 }
 
 //=====================================================
@@ -542,9 +551,12 @@ void CIceStateFlow::UpdateDriftIce(CIce *pIce)
 	// グリッドの位置との距離がしきい値を下回ったら止める
 	bool bStop = universal::DistCmpFlat(posIce, posDrift, LINE_STOP_ICE, nullptr);
 
+#ifdef _DEBUG
+	CEffect3D::Create(posIce, 100.0f, 5, D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f));
+#endif
+
 	if (bStop)
 	{
-		pIce->ChangeState(new CIceStaeteNormal);
 		return;
 	}
 }
@@ -587,11 +599,22 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 	// 漂着する氷があったら、フラグを立てて漂着グリッド番号を保存
 	m_bDrift = (this->*directionFuncs[stream])(pIce, m_nIdxDriftV, m_nIdxDriftH);
 
+#ifdef _DEBUG
+	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nIdxDriftV, &m_nIdxDriftH);
+	CEffect3D::Create(posGrid, 100.0f, 5, D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f));
+#endif
+
 	if (m_bDrift)
 	{
 		// グリッドに氷情報を保存
 		pIceManager->SetIceInGrid(nIdxV, nIdxH, pIce);
+		pIce->ChangeState(new CIceStaeteNormal);
 	}
+
+#ifdef _DEBUG
+	CEffect3D::Create(posIce, 100.0f, 5, D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+#endif
+
 }
 
 //=====================================================
