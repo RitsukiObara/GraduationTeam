@@ -34,6 +34,11 @@ public:
 	// 静的メンバ関数
 	static CFlowIceFct *Create(void);	// 生成処理
 private:
+	// メンバ関数
+	void CreateFlowIce(void);	// 流氷の生成
+
+	// メンバ変数
+	float m_fTimerCreateFlowIce;	// 流氷製造タイマー
 };
 
 #endif
