@@ -811,6 +811,9 @@ void CIceManager::SaveFlowIce(int nNumV, int nNumH, CFlowIce *pFlowIce)
 	// ’TõÏ‚Ý‚Ìƒtƒ‰ƒO‚ð—§‚Ä‚é
 	m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
 
+	// Ž©g‚ð—¬•X‚É’Ç‰Á
+	pFlowIce->AddIceToArray(m_aGrid[nNumV][nNumH].pIce);
+
 #ifdef _DEBUG
 	CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 100, 120, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 #endif

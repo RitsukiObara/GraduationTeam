@@ -43,6 +43,7 @@ private:
 	void CreateIce(void);	// 氷の生成
 	void CheckSomeIceStop(void);	// どれかの氷が止まっていないかのチェック
 	void StopAllIce(void);	// 全ての氷を止める
+	void Debug(void);	// デバッグ処理
 
 	// メンバ変数
 	vector<CIce*> m_apIce;	// 氷の配列

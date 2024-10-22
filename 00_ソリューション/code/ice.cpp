@@ -427,6 +427,22 @@ void CIceStaeteBreak::Uninit(CIce *pIce)
 //=====================================================
 void CIceStaeteBreak::Update(CIce *pIce)
 {
+	// •X‚ÌC•œ‚ÌXV
+	UpdateRepair(pIce);
+
+	// •X‚Ì’Ç]
+	FollowIce(pIce);
+}
+
+//=====================================================
+// C•œ‚ÌXV
+//=====================================================
+void CIceStaeteBreak::UpdateRepair(CIce *pIce)
+{
+	// ’¾‚ñ‚Å‚¢‚éó‘Ô‚È‚ç’Ê‚ç‚È‚¢
+	if (pIce->IsSink())
+		return;
+
 	// ƒ^ƒCƒ}[‚ðŒ¸‚ç‚·
 	m_fTimerRepair -= CManager::GetDeltaTime();
 
@@ -437,7 +453,13 @@ void CIceStaeteBreak::Update(CIce *pIce)
 		pIce->ChangeState(new CIceStaeteNormal);
 		pIce->EnablePeck(false);
 	}
+}
 
+//=====================================================
+// •X‚Ì’Ç]
+//=====================================================
+void CIceStaeteBreak::FollowIce(CIce *pIce)
+{
 	// •X‚Ì’Ç]
 	for (auto it : m_aPeaceIce)
 	{
@@ -553,7 +575,7 @@ void CIceStateFlow::UpdateDriftIce(CIce *pIce)
 	bool bStop = universal::DistCmpFlat(posIce, posDrift, LINE_STOP_ICE, nullptr);
 
 #ifdef _DEBUG
-	CEffect3D::Create(posIce, 100.0f, 5, D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f));
+	//CEffect3D::Create(posIce, 100.0f, 5, D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f));
 #endif
 
 	if (bStop)
@@ -601,8 +623,8 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 	m_bDrift = (this->*directionFuncs[stream])(pIce, m_nIdxDriftV, m_nIdxDriftH);
 
 #ifdef _DEBUG
-	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nIdxDriftV, &m_nIdxDriftH);
-	CEffect3D::Create(posGrid, 100.0f, 5, D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f));
+	//D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nIdxDriftV, &m_nIdxDriftH);
+	//CEffect3D::Create(posGrid, 100.0f, 5, D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f));
 #endif
 
 	if (m_bDrift)
@@ -613,7 +635,7 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 	}
 
 #ifdef _DEBUG
-	CEffect3D::Create(posIce, 100.0f, 5, D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+	//CEffect3D::Create(posIce, 100.0f, 5, D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
 #endif
 
 }

@@ -159,7 +159,7 @@ HRESULT CGame::Init(void)
 	//CBgIce::Create(D3DXVECTOR3(0.0f,200.0f,0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f),CBgIce::TYPE_BIG);
 
 	// 流氷ファクトリーの生成
-	CFlowIceFct::Create();
+	//CFlowIceFct::Create();
 
 	return S_OK;
 }
