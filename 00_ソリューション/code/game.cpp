@@ -156,7 +156,7 @@ HRESULT CGame::Init(void)
 	CFlowIce::Create();
 
 	// 背景氷生成
-	CBgIce::Create(D3DXVECTOR3(0.0f,200.0f,0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f),CBgIce::TYPE_BIG);
+	/*CBgIce::Create(D3DXVECTOR3(0.0f,200.0f,0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f),CBgIce::TYPE_SMALL);*/
 
 	// 流氷ファクトリーの生成
 	CFlowIceFct::Create();
