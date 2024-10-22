@@ -27,7 +27,7 @@ namespace
 	const std::string PATH_BODY = "data\\MOTION\\motionPenguin.txt";	// ボディのパス
 	const int MOVE_FRAME = 25;	// 移動にかかるフレーム数
 
-	const float SPEED_MOVE_ANALOG = 1.0f;	// アナログ移動での移動距離
+	const float SPEED_MOVE_ANALOG = 4.0f;	// アナログ移動での移動距離
 	const float RATE_DECREASE_MOVE = 0.5f;	// 移動減衰の割合
 	const float LINE_FACT_ROT = 0.3f;	// 向きを補正するまでの入力しきい値
 	const float FACT_ROTATION = 0.3f;	// 回転係数
