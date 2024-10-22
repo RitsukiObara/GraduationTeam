@@ -200,7 +200,7 @@ void CPlayer::InputMoveAnalog(void)
 	CCamera::Camera* pInfoCamera = pCamera->GetCamera();
 
 	// –Ú•W•ûŒü‚Ìİ’è
-	CInputManager::SAxis axis = pInputManager->GetAxis();
+	CInputManager::S_Axis axis = pInputManager->GetAxis();
 	D3DXVECTOR3 axisMove = axis.axisMove;
 
 	// ²‚ğ³‹K‰»
@@ -280,22 +280,22 @@ void CPlayer::MoveGrid(void)
 	if (m_bMove == false)
 	{
 		// ˆÚ“®‚Ì“ü—Í========================================
-		if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_LEFT))
+		if (pInputManager->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_LEFT))
 		{
 			m_nNextGridH--;
 			m_bMove = true;
 		}
-		else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_RIGHT))
+		else if (pInputManager->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_RIGHT))
 		{
 			m_nNextGridH++;
 			m_bMove = true;
 		}
-		else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_UP))
+		else if (pInputManager->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_UP))
 		{
 			m_nNextGridV++;
 			m_bMove = true;
 		}
-		else if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_AXIS_DOWN))
+		else if (pInputManager->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_DOWN))
 		{
 			m_nNextGridV--;
 			m_bMove = true;
@@ -308,7 +308,7 @@ void CPlayer::MoveGrid(void)
 		}
 
 		// ‚Â‚Â‚«‚Ì“ü—Í========================================
-		if (pInputManager->GetTrigger(CInputManager::BUTTON::BUTTON_PECK))
+		if (pInputManager->GetTrigger(CInputManager::E_Button::BUTTON_PECK))
 		{// æ‚Á‚Ä‚¢‚é•X‚ğŠ„‚é
 			pIceManager->PeckIce(m_nGridV, m_nGridH, CIceManager::E_Direction::DIRECTION_LEFT);	// Š„‚éˆ—
 

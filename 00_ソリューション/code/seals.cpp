@@ -68,6 +68,7 @@ HRESULT CSeals::Init(void)
 		return E_FAIL;
 	}
 
+	// ƒ|[ƒY‰Šú‰»
 	InitPose(0);
 
 	return S_OK;

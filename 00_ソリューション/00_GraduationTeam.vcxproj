@@ -171,6 +171,7 @@
     <ClCompile Include="code\animEffect3D.cpp" />
     <ClCompile Include="code\backends\imgui_impl_dx9.cpp" />
     <ClCompile Include="code\backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="code\BG_Ice.cpp" />
     <ClCompile Include="code\blur.cpp" />
     <ClCompile Include="code\blurEvent.cpp" />
     <ClCompile Include="code\camera.cpp" />
@@ -262,6 +263,7 @@
     <ClInclude Include="code\animEffect3D.h" />
     <ClInclude Include="code\backends\imgui_impl_dx9.h" />
     <ClInclude Include="code\backends\imgui_impl_win32.h" />
+    <ClInclude Include="code\BG_Ice.h" />
     <ClInclude Include="code\blur.h" />
     <ClInclude Include="code\blurEvent.h" />
     <ClInclude Include="code\camera.h" />
