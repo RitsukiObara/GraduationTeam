@@ -315,6 +315,9 @@
     <ClCompile Include="code\BG_Ice.cpp">
       <Filter>ソース ファイル\gameobject</Filter>
     </ClCompile>
+    <ClCompile Include="code\flowIceFactory.cpp">
+      <Filter>ソース ファイル\factory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\game.h">
@@ -583,6 +586,9 @@
     </ClInclude>
     <ClInclude Include="code\BG_Ice.h">
       <Filter>ソース ファイル\gameobject</Filter>
+    </ClInclude>
+    <ClInclude Include="code\flowIceFactory.h">
+      <Filter>ソース ファイル\factory</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -30,6 +30,7 @@
 #define MOVE_FACT	(0.15f)	// 移動速度
 #define LINE_ARRIVAL	(0.05f)	// 到着したとされるしきい値
 #define LINE_UNINIT	(3.0f)	// 終了するまでのしきい値
+#define MAX_OCEANLEVEL (7.00f)	// 海流最大レベル
 
 //*****************************************************
 // 定数定義
@@ -161,20 +162,10 @@ void COceanFlowUI::OceanLevelState(void)
 	OceanFlowLevel = CIceManager::GetInstance()->GetOceanLevel();	//	海流レベルの取得
 	D3DXCOLOR fEmissiveCol = m_pArrow->GetEmissiveCol();	//	海流UIの色取得
 
-	if (OceanFlowLevel > 0.00f && OceanFlowLevel < 3.00f)
-	{
-		fEmissiveCol = D3DXCOLOR(0.2f, 0.8f, 0.8f, 1.0f);
-	}
+	float Colorrate = OceanFlowLevel / MAX_OCEANLEVEL;	// 海流最大レベルとの割合
 
-	if (OceanFlowLevel > 3.00f && OceanFlowLevel < 5.00f)
-	{
-		fEmissiveCol = D3DXCOLOR(0.8f, 0.8f, 0.8f, 1.0f);
-	}
-
-	if (OceanFlowLevel > 5.00f && OceanFlowLevel < 7.00f)
-	{
-		fEmissiveCol = D3DXCOLOR(1.0f, 0.8f, 0.8f, 1.0f);
-	}
+	// 目標の色に遷移
+	fEmissiveCol = D3DXCOLOR(0.8f + (0.2f * Colorrate), 0.8f - (0.6 * Colorrate), 0.2f, 1.0f);
 
 	m_pArrow->SetEmissiveCol(fEmissiveCol);
 }
