@@ -132,7 +132,7 @@ HRESULT CGame::Init(void)
 	m_pScore = CScore::Create();
 	m_pScore->SetPosition(D3DXVECTOR3(0.09f, 0.07f, 0.0f));
 
-	// ステージリザルト表示の生成
+	//// ステージリザルト表示の生成
 	//m_pStageResultUI = CStageResultUI::Create();
 	//m_pStageResultUI->SetPosition(D3DXVECTOR3(0.4f, 0.07f, 0.0f));
 

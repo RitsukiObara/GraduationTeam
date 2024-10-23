@@ -43,6 +43,7 @@ private:
 		STATE_MAX
 	};
 
+	void OceanRotState(void); // ŠC—¬‚ÌŒü‚«•â³ˆ—
 	void OceanLevelState(void); // ŠC—¬ƒŒƒxƒ‹‚ÌUIˆ—
 
 	CObjectX* m_pArrow;	// –îˆó‚Ìƒ‚ƒfƒ‹
