@@ -28,7 +28,7 @@ namespace
 	const std::string PATH_BODY = "data\\MOTION\\motionPenguin.txt";	// ボディのパス
 	const int MOVE_FRAME = 25;	// 移動にかかるフレーム数
 	
-	const float SPEED_MOVE_ANALOG = 4.0f;	// アナログ移動での移動距離
+	const float SPEED_MOVE_ANALOG = 3.0f;	// アナログ移動での移動距離
 	const float RATE_DECREASE_MOVE = 0.5f;	// 移動減衰の割合
 	const float LINE_FACT_ROT = 0.3f;	// 向きを補正するまでの入力しきい値
 	const float FACT_ROTATION = 0.3f;	// 回転係数
@@ -39,7 +39,7 @@ namespace
 
 	const float LINE_INPUT_MOVE = 0.3f;	// 移動するまでのスティック入力のしきい値
 	const float RANGE_SELECT_ICE = D3DX_PI * 2 / 6;	// 氷を選択するときの角度の範囲
-	const float RATE_CHANGE_GRID = 0.2f;	// 次のグリッドに移る判定の割合
+	const float RATE_CHANGE_GRID = 0.8f;	// 次のグリッドに移る判定の割合
 }
 
 //*****************************************************
@@ -50,7 +50,7 @@ CPlayer* CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_bAnalog(false), m_posDest(), m_move(), m_state(STATE_NORMAL), m_pIceMoveDest(nullptr)
+CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_bAnalog(false), m_state(STATE_NORMAL), m_pIceMoveDest(nullptr)
 {
 
 }
@@ -256,6 +256,9 @@ void CPlayer::InputMoveAnalog(void)
 		universal::FactingRot(&rot.y, fRotDest, FACT_ROTATION);
 		SetRotation(rot);
 	}
+
+	// 今いるグリッド番号の取得
+	CheckGridChange();
 }
 
 //=====================================================
@@ -270,8 +273,7 @@ void CPlayer::CollideIce(void)
 
 	D3DXVECTOR3 pos = GetPosition();
 
-	pIceManager->Collide(&pos);
-	pIceManager->GetIdxGridFromPosition(pos, &m_nGridV, &m_nGridH);
+	//pIceManager->Collide(&pos, m_nGridV, m_nGridH);
 
 	SetPosition(pos);
 }
@@ -455,7 +457,6 @@ bool CPlayer::CheckGridChange(void)
 #ifdef _DEBUG
 		CEffect3D::Create(pIceMgr->GetGridPosition(&nIdxV, &nIdxH), 50.0f, 120, D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
 #endif
-
 		return true;
 	}
 }
@@ -540,7 +541,13 @@ void CPlayer::InputPeck(void)
 	if (pInputManager->GetTrigger(CInputManager::BUTTON_PECK))
 	{
 		// 突っつく処理
-		pIceManager->PeckIce(m_nGridV, m_nGridH, CIceManager::E_Direction::DIRECTION_LEFT);
+		D3DXVECTOR3 rot = GetRotation();
+		D3DXVECTOR3 pos = GetPosition();
+
+		rot.y += D3DX_PI;
+		universal::LimitRot(&rot.y);
+
+		pIceManager->PeckIce(m_nGridV, m_nGridH, rot.y, pos);
 	}
 }
 
@@ -603,6 +610,13 @@ void CPlayer::Debug(void)
 	{
 		pDebugProc->Print("\n<<通常(-_-)zzz（F8で無敵）>>");
 	}
+
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	CEffect3D::Create(pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH), 50.0f, 5, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 }
 
 //=====================================================

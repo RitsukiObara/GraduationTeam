@@ -55,12 +55,12 @@ public:
 	void Draw(void);	// 描画
 	CIce *CreateIce(int nGridV,int nGridH, CIce::E_Type type = CIce::E_Type::TYPE_NORMAL);	// 氷の生成
 	void StopIce(CIce *pIce);	// 氷の停止
-	void PeckIce(int nNumV, int nNumH, E_Direction direction);	// 氷をつつく
+	void PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos);	// 氷をつつく
 	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// 氷の追加
 	bool FindIce(int nNumV, int nNumH, int nIdx,CIce *pIceStand,vector<CIce*> apIceLast,bool bBreak);	// アイスの発見
 	vector<CIce*> GetAroundIce(int nNumV, int nNumH);	// 周辺の氷を取得
 	void DeleteIce(CIce *pIce);	// 指定したポインタと同じ氷を削除する
-	void Collide(D3DXVECTOR3 *pPos);	// 外に出さない判定処理
+	void Collide(D3DXVECTOR3 *pPos,int nIdxV,int nIdxH);	// 外に出さない判定処理
 	bool GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH,float fRate = 0.7f);	// グリッド番号を位置から取得する処理
 	void SetDirStream(E_Stream direction) { m_dirStream = direction; }	// 海流の方向
 	E_Stream GetDirStream(void) { return m_dirStream; }

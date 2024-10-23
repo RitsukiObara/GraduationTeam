@@ -57,8 +57,6 @@ public:
 	static CPlayer* GetInstance(void) { return s_pPlayer; }
 
 	// 取得・設定
-	void SetPositionDest(D3DXVECTOR3 pos) { m_posDest = pos; }
-	D3DXVECTOR3 GetPositionDest(void) { return m_posDest; }
 	void SetMove(D3DXVECTOR3 move) { m_move = move; }
 	D3DXVECTOR3 GetMove(void) { return m_move; }	// 取得処理
 
@@ -83,7 +81,6 @@ private:
 	int m_nGridV;	// 今いるグリッドの縦番号
 	int m_nGridH;	// 今いるグリッドの横番号
 	bool m_bAnalog;	// アナログ操作
-	D3DXVECTOR3 m_posDest;	// 目標位置
 	D3DXVECTOR3 m_move;	// 移動量
 	STATE m_state;		// プレイヤー状態
 	CIce *m_pIceMoveDest;	// 移動目標の氷
