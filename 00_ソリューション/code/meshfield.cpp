@@ -18,6 +18,7 @@
 #include "game.h"
 #include "effect3D.h"
 #include "texture.h"
+#include "iceManager.h"
 
 //*****************************************************
 // マクロ定義
@@ -93,6 +94,7 @@ HRESULT CMeshField::Init(void)
 	m_nDivNumU = MESH_U;
 	m_nDivNumV = MESH_V;
 	m_col = { 1.0f,1.0f,1.0f,1.0f };
+	m_fOceanSpeed = 1.0f;
 
 	// 読込処理
 	Load("data\\MAP\\field00.bin");
@@ -194,7 +196,7 @@ HRESULT CMeshField::Init(void)
 	// インデックスバッファをアンロック
 	m_pIdxBuff->Unlock();
 
-	//EnableWire(true);
+	EnableWire(true);
 
 	return S_OK;
 }
@@ -777,14 +779,64 @@ void CMeshField::Wave(float fRot)
 
 	int nCountV, nCountU;
 
+	int OceanFlowKeep = CIceManager::GetInstance()->GetDirStream();
+
+	m_fOceanSpeed = GetOceanSpeed();
+
+	// 海流の速度が80以下のとき80に戻るように補正
+	if (m_fOceanSpeed < 80.0f)
+	{
+		m_fOceanSpeed += 0.5f;
+	}
+
+	if (m_fOceanSpeed > 80.0f)
+	{
+		m_fOceanSpeed = 80.0f;
+	}
+
 	for (nCountV = 0; nCountV < m_nDivNumV + 1; nCountV++)
 	{// 頂点座標の設定
 		for (nCountU = 0; nCountU < m_nDivNumU + 1; nCountU++)
 		{
-			// 頂点座標
-			pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.y = sinf(fRot) * 80;
+			//	矢印が海流の向きに流れる処理
+			if (OceanFlowKeep == CIceManager::STREAM_UP)
+			{// 海流が上向き
+				pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.y = sinf(fRot) * m_fOceanSpeed;
+
+				if (m_fOceanSpeed > 81.0f)
+				{
+					m_fOceanSpeed = 1.0f;
+				}
+			}
+
+			if (OceanFlowKeep == CIceManager::STREAM_RIGHT)
+			{// 海流が右向き
+				pVtx[nCountU * (m_nDivNumV + 1) + nCountV].pos.y = sinf(fRot) * m_fOceanSpeed;
+			}
+
+			if (OceanFlowKeep == CIceManager::STREAM_DOWN)
+			{// 海流が下向き
+				pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.y = sinf(fRot) * m_fOceanSpeed;
+			}
+
+			if (OceanFlowKeep == CIceManager::STREAM_LEFT)
+			{// 海流が左向き
+				pVtx[nCountU * (m_nDivNumV + 1) + nCountV].pos.y = sinf(fRot) * m_fOceanSpeed;
+			}
 		}
-		fRot += 1.0f;
+
+		if (OceanFlowKeep == CIceManager::STREAM_UP || 
+			OceanFlowKeep == CIceManager::STREAM_LEFT)
+		{// 海流が上向き
+			fRot += 1.0f;
+		}
+
+		if (OceanFlowKeep == CIceManager::STREAM_DOWN ||
+			OceanFlowKeep == CIceManager::STREAM_RIGHT)
+		{// 海流が下向き
+			fRot -= 1.0f;
+		}
+
 		universal::LimitRot(&fRot);
 	}
 

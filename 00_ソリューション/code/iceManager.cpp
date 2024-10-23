@@ -13,9 +13,9 @@
 #include "ice.h"
 #include "particle.h"
 #include "flowIce.h"
-
 #include "inputkeyboard.h"
 #include "debugproc.h"
+#include "meshfield.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -105,7 +105,7 @@ HRESULT CIceManager::Init(void)
 	CreateIce(6, 6);
 
 	// ŠC—¬‚ð‰Šú‰»
-	m_dirStream = E_Stream::STREAM_LEFT;
+	m_dirStream = E_Stream::STREAM_UP;
 	m_fOceanLevel = OCEAN_FLOW_MAX;
 
 	return S_OK;
@@ -1032,7 +1032,12 @@ void CIceManager::Debug(void)
 
 	// ŠC—¬‚ÌŒü‚«‚ð•ÏX
 	if (pKeyboard->GetTrigger(DIK_LEFT))
+	{
+		CMeshField* pMeshField = CMeshField::GetInstance();
+		//pMeshField->SetOceanSpeed(81.0f);
+
 		m_dirStream = (E_Stream)((m_dirStream + 1) % E_Stream::STREAM_MAX);
+	}
 
 	if (pKeyboard->GetTrigger(DIK_RIGHT))
 		m_dirStream = (E_Stream)((m_dirStream + E_Stream::STREAM_MAX - 1) % E_Stream::STREAM_MAX);
