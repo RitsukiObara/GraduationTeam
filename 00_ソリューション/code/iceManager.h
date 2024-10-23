@@ -61,7 +61,7 @@ public:
 	vector<CIce*> GetAroundIce(int nNumV, int nNumH);	// 周辺の氷を取得
 	void DeleteIce(CIce *pIce);	// 指定したポインタと同じ氷を削除する
 	void Collide(D3DXVECTOR3 *pPos);	// 外に出さない判定処理
-	bool GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH);	// グリッド番号を位置から取得する処理
+	bool GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH,float fRate = 0.7f);	// グリッド番号を位置から取得する処理
 	void SetDirStream(E_Stream direction) { m_dirStream = direction; }	// 海流の方向
 	E_Stream GetDirStream(void) { return m_dirStream; }
 	void SetIceInGrid(int nNumV, int nNumH, CIce *pIce);	// グリッドに氷を設定

@@ -29,8 +29,6 @@ const float WIDTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_X;	// グリッドの幅
 const float DEPTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_Z;	// グリッドの奥行き
 const float OceanFlow_Min = 1.00f;
 const float OceanFlow_Max = 10.00f;
-
-const float RATE_SIZE_COLLIDE_GRID = 0.7f;	// グリッドの判定の割合
 }
 
 //*****************************************************
@@ -90,7 +88,7 @@ HRESULT CIceManager::Init(void)
 	SetGridPos();
 
 	// 仮マップ生成
-	CreateIce(3, 6,CIce::E_Type::TYPE_HARD);/*
+	CreateIce(3, 6,CIce::E_Type::TYPE_HARD);
 	CreateIce(3, 5);
 	CreateIce(3, 4);
 	CreateIce(3, 3);
@@ -102,7 +100,7 @@ HRESULT CIceManager::Init(void)
 	CreateIce(5, 5);
 	CreateIce(5, 4);
 	CreateIce(4, 6);
-	CreateIce(6, 6);*/
+	CreateIce(6, 6);
 
 	// 海流を初期化
 	m_dirStream = E_Stream::STREAM_LEFT;
@@ -1099,7 +1097,7 @@ CIce* CIceManager::GetGridIce(int* pNumV, int* pNumH)
 //=====================================================
 // 位置からグリッド番号を取得する処理
 //=====================================================
-bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH)
+bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH, float fRate)
 {
 	if (pIdxV == nullptr || pIdxH == nullptr)
 		return false;
@@ -1117,7 +1115,7 @@ bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH
 
 			float fDist = D3DXVec3Length(&vecDiff);
 
-			if (fDist < WIDTH_GRID * RATE_SIZE_COLLIDE_GRID)
+			if (fDist < WIDTH_GRID * fRate)
 			{// 氷のサイズ分の半径より小さかったら乗ってる判定
 				*pIdxV = i;
 				*pIdxH = j;
