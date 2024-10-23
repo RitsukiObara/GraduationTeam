@@ -29,8 +29,6 @@ const float WIDTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_X;	// グリッドの幅
 const float DEPTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_Z;	// グリッドの奥行き
 const float OCEAN_FLOW_MIN = 1.00f;		// 海流の速度最小
 const float OCEAN_FLOW_MAX = 5.00f;	// 海流の速度最大
-
-const float RATE_SIZE_COLLIDE_GRID = 0.7f;	// グリッドの判定の割合
 }
 
 //*****************************************************
@@ -1104,7 +1102,7 @@ CIce* CIceManager::GetGridIce(int* pNumV, int* pNumH)
 //=====================================================
 // 位置からグリッド番号を取得する処理
 //=====================================================
-bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH)
+bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH, float fRate)
 {
 	if (pIdxV == nullptr || pIdxH == nullptr)
 		return false;
@@ -1122,7 +1120,7 @@ bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH
 
 			float fDist = D3DXVec3Length(&vecDiff);
 
-			if (fDist < WIDTH_GRID * RATE_SIZE_COLLIDE_GRID)
+			if (fDist < WIDTH_GRID * fRate)
 			{// 氷のサイズ分の半径より小さかったら乗ってる判定
 				*pIdxV = i;
 				*pIdxH = j;

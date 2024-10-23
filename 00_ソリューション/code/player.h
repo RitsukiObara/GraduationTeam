@@ -16,6 +16,7 @@
 // 前方宣言
 //*****************************************************
 class CPolygon3D;
+class CIce;
 
 //*****************************************************
 // クラスの定義
@@ -69,20 +70,23 @@ private:
 	void InputMoveAnalog(void);	// アナログ移動入力
 	void CollideIce(void);	// 氷との判定
 	void MoveGrid(void);	// グリッド移動
+	bool JudgeSarchOrMove(void);	// 選択状態か移動状態かの判定
+	void UpdateInputSelectIce(void);	// 氷選択状態の更新
+	void UpdateInputMoveToIce(void);	// 氷に向かって移動している状態の更新
+	CIce *SelectIceByRot(float fRot);	// 氷を向きで取得
+	void WalkToDestIce(CIce *pIceDest);	// 目標の氷に向かって移動する処理
+	bool CheckGridChange(void);	// グリッドが変わったかどうかの判定
 	void InputPeck(void);	// 突っつきの入力
 	void Debug(void);	// デバッグ処理
 
 	// メンバ変数
 	int m_nGridV;	// 今いるグリッドの縦番号
 	int m_nGridH;	// 今いるグリッドの横番号
-	int m_nNextGridV;	// 飛び移る先のグリッドの縦番号
-	int m_nNextGridH;	// 飛び移る先のグリッドの横番号
-	bool m_bMove;	// 移動中フラグ
 	bool m_bAnalog;	// アナログ操作
 	D3DXVECTOR3 m_posDest;	// 目標位置
 	D3DXVECTOR3 m_move;	// 移動量
-	float m_jumpTime;	// ジャンプ時間
 	STATE m_state;		// プレイヤー状態
+	CIce *m_pIceMoveDest;	// 移動目標の氷
 
 	// 静的メンバ変数
 	static CPlayer* s_pPlayer;	// 自身のポインタ

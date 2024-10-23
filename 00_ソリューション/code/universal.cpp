@@ -891,6 +891,22 @@ D3DXVECTOR3 CollideOBBToPlane(D3DXVECTOR3* posOBB, D3DXVECTOR3 vecAxial, D3DXVEC
 }
 
 //========================================
+// Y軸平面において、ターゲットが扇範囲内にいるかの判定
+//========================================
+bool IsInFanTargetYFlat(D3DXVECTOR3 posOwn, D3DXVECTOR3 posTarget, float fRot, float fRange)
+{
+	// 差分ベクトルの角度を取得
+	D3DXVECTOR3 vecDiff = posTarget - posOwn;
+	float fRotToTarget = atan2f(vecDiff.x, vecDiff.z);
+
+	// 差分角度が範囲内かどうか取得
+	float fRotDiff = fRotToTarget - fRot;
+	universal::LimitRot(&fRotDiff);
+
+	return fRange * fRange > fRotDiff * fRotDiff;
+}
+
+//========================================
 // 矩形の中にいるかどうかの計算
 //========================================
 bool CubeCrossProduct(D3DXVECTOR3 vtx1, D3DXVECTOR3 vtx2, D3DXVECTOR3 vtx3, D3DXVECTOR3 vtx4, D3DXVECTOR3 pos)
