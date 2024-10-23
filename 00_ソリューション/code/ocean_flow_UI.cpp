@@ -136,7 +136,7 @@ void COceanFlowUI::Update(void)
 //====================================================
 void COceanFlowUI::OceanRotState(void)
 {
-	OceanFlowKeep = CIceManager::GetInstance()->GetDirStream();
+	int OceanFlowKeep = CIceManager::GetInstance()->GetDirStream();
 	D3DXVECTOR3 Rot = m_pArrow->GetRotation();
 
 	//	–îˆó‚ªŠC—¬‚ÌŒü‚«‚É—¬‚ê‚éˆ—
@@ -168,7 +168,7 @@ void COceanFlowUI::OceanRotState(void)
 //====================================================
 void COceanFlowUI::OceanLevelState(void)
 {
-	OceanFlowLevel = CIceManager::GetInstance()->GetOceanLevel();	//	ŠC—¬ƒŒƒxƒ‹‚Ìæ“¾
+	float OceanFlowLevel = CIceManager::GetInstance()->GetOceanLevel();	//	ŠC—¬ƒŒƒxƒ‹‚Ìæ“¾
 	D3DXCOLOR fEmissiveCol = m_pArrow->GetEmissiveCol();	//	ŠC—¬UI‚ÌFæ“¾
 
 	float Colorrate = OceanFlowLevel / MAX_OCEANLEVEL;	// ŠC—¬Å‘åƒŒƒxƒ‹‚Æ‚ÌŠ„‡

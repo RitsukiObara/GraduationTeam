@@ -18,6 +18,7 @@
 #include "effect3D.h"
 #include "texture.h"
 #include "ocean.h"
+#include "iceManager.h"
 
 //*****************************************************
 // マクロ定義
@@ -96,13 +97,16 @@ void COcean::Uninit(void)
 //=====================================================
 void COcean::Update(void)
 {
+	float OceanFlowLevel = CIceManager::GetInstance()->GetOceanLevel();	//	海流レベルの取得
+
 	CMeshField::Update();
 
-	m_fRot += 0.02f;
+	m_fRot += 0.007f * OceanFlowLevel;
 
 	universal::LimitRot(&m_fRot);
 
 	CMeshField::Wave(m_fRot);
+
 }
 
 //=====================================================
