@@ -163,6 +163,18 @@ void CStageResultUI::Update(void)
 //====================================================
 void CStageResultUI::ResultState(void)
 {
+	// リザルトがクリアの時の処理
+	ResultClear();
+
+	// リザルトが失敗の時の処理
+	ResultFail();
+}
+
+//====================================================
+// リザルトがクリアの時
+//====================================================
+void CStageResultUI::ResultClear(void)
+{
 	CInputManager* pInputManager = CInputManager::GetInstance();
 
 	// クリアの時
@@ -180,37 +192,17 @@ void CStageResultUI::ResultState(void)
 			}
 
 			// ポリゴンをカウントごとに動かす
-			if (nCountMove > 0 && nCountMove < 20)
+			if (nCountMove > 0 && nCountMove < 20 ||
+				nCountMove > 50 && nCountMove < 80 ||
+				nCountMove > 110 && nCountMove < 140)
 			{
 				size.x += 1.0f;
 				size.y += 0.6f;
 			}
 
-			else if (nCountMove > 20 && nCountMove < 50)
-			{
-				size.x -= 1.0f;
-				size.y -= 0.6f;
-			}
-
-			else if (nCountMove > 50 && nCountMove < 80)
-			{
-				size.x += 1.0f;
-				size.y += 0.6f;
-			}
-
-			else if (nCountMove > 80 && nCountMove < 110)
-			{
-				size.x -= 1.0f;
-				size.y -= 0.6f;
-			}
-
-			else if (nCountMove > 110 && nCountMove < 140)
-			{
-				size.x += 1.0f;
-				size.y += 0.6f;
-			}
-
-			else if (nCountMove > 140 && nCountMove < 170)
+			else if (nCountMove > 20 && nCountMove < 50 ||
+				nCountMove > 80 && nCountMove < 110 ||
+				nCountMove > 140 && nCountMove < 170)
 			{
 				size.x -= 1.0f;
 				size.y -= 0.6f;
@@ -231,9 +223,17 @@ void CStageResultUI::ResultState(void)
 			m_apResult[RESULT_CLEAR]->SetVtx();
 		}
 	}
+}
+
+//====================================================
+// リザルトが失敗の時
+//====================================================
+void CStageResultUI::ResultFail(void)
+{
+	CInputManager* pInputManager = CInputManager::GetInstance();
 
 	// 失敗の時
-	else if (m_Result == RESULT_FAIL)
+	if (m_Result == RESULT_FAIL)
 	{
 		if (m_apResult[RESULT_FAIL] != nullptr)
 		{
@@ -248,42 +248,18 @@ void CStageResultUI::ResultState(void)
 			}
 
 			// ポリゴンをカウントごとに動かす
-			if (nCountMove > 0 && nCountMove < 40)
+			if (nCountMove > 0 && nCountMove < 40 ||
+				nCountMove > 75 && nCountMove < 105 ||
+				nCountMove > 130 && nCountMove < 150 ||
+				nCountMove > 165 && nCountMove < 175)
 			{
 				pos.y += 1.0f;
 			}
 
-			else if (nCountMove > 40 && nCountMove < 75)
-			{
-				pos.y -= 1.0f;
-			}
-
-			else if (nCountMove > 75 && nCountMove < 105)
-			{
-				pos.y += 1.0f;
-			}
-
-			else if (nCountMove > 105 && nCountMove < 130)
-			{
-				pos.y -= 1.0f;
-			}
-
-			else if (nCountMove > 130 && nCountMove < 150)
-			{
-				pos.y += 1.0f;
-			}
-
-			else if (nCountMove > 150 && nCountMove < 165)
-			{
-				pos.y -= 1.0f;
-			}
-
-			else if (nCountMove > 165 && nCountMove < 175)
-			{
-				pos.y += 1.0f;
-			}
-
-			else if (nCountMove > 175 && nCountMove < 180)
+			else if (nCountMove > 40 && nCountMove < 75 ||
+				nCountMove > 105 && nCountMove < 130 ||
+				nCountMove > 150 && nCountMove < 165 ||
+				nCountMove > 175 && nCountMove < 180)
 			{
 				pos.y -= 1.0f;
 			}

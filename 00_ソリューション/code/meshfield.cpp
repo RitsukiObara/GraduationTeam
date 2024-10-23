@@ -24,7 +24,7 @@
 //*****************************************************
 #define MESHFIELD_TEX_FILE			"data\\TEXTURE\\BG\\map_sea.png"				// テクスチャファイル名
 #define MOVE_SPEED					(1.0f)										// 移動速度
-#define MESH_LENGTH					(800.0f)									// メッシュの一辺の長さ
+#define MESH_LENGTH					(300.0f)									// メッシュの一辺の長さ
 #define MESH_U						(254)											// 横のブロック数
 #define MESH_V						(254)											// 縦のブロック数
 #define SPLIT_TEX					(10)										// テクスチャ分割数
@@ -193,6 +193,8 @@ HRESULT CMeshField::Init(void)
 
 	// インデックスバッファをアンロック
 	m_pIdxBuff->Unlock();
+
+	//EnableWire(true);
 
 	return S_OK;
 }

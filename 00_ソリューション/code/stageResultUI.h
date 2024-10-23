@@ -52,6 +52,8 @@ private:
 	};
 
 	void ResultState(void); // リザルトUIの状態
+	void ResultClear(void); // リザルトがクリアの時
+	void ResultFail(void); // リザルトが失敗の時
 	void Fade(RESULT RESULT);
 
 	RESULT m_Result;	// 選択項目

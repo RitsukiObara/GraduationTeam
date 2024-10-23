@@ -86,7 +86,7 @@ HRESULT COceanFlowUI::Init(void)
 {
 	m_pArrow = CObjectX::Create(D3DXVECTOR3(-1000.0f, 200.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
-	//	矢印モデルの初期化
+	// 矢印モデルの初期化
 	if (m_pArrow != nullptr)
 	{
 		m_pArrow->Init();
@@ -124,7 +124,19 @@ void COceanFlowUI::Uninit(void)
 //====================================================
 void COceanFlowUI::Update(void)
 {
-	OceanFlowKeep = CIceManager::GetInstance()->GetDirStream();
+	// 海流の向き補正処理
+	OceanRotState();
+
+	// 海流レベル状態管理
+	OceanLevelState();
+}
+
+//====================================================
+// 海流の向き補正処理
+//====================================================
+void COceanFlowUI::OceanRotState(void)
+{
+	int OceanFlowKeep = CIceManager::GetInstance()->GetDirStream();
 	D3DXVECTOR3 Rot = m_pArrow->GetRotation();
 
 	//	矢印が海流の向きに流れる処理
@@ -149,9 +161,6 @@ void COceanFlowUI::Update(void)
 	}
 
 	m_pArrow->SetRotation(Rot);
-
-	// 海流レベル状態管理
-	OceanLevelState();
 }
 
 //====================================================
@@ -159,7 +168,7 @@ void COceanFlowUI::Update(void)
 //====================================================
 void COceanFlowUI::OceanLevelState(void)
 {
-	OceanFlowLevel = CIceManager::GetInstance()->GetOceanLevel();	//	海流レベルの取得
+	float OceanFlowLevel = CIceManager::GetInstance()->GetOceanLevel();	//	海流レベルの取得
 	D3DXCOLOR fEmissiveCol = m_pArrow->GetEmissiveCol();	//	海流UIの色取得
 
 	float Colorrate = OceanFlowLevel / MAX_OCEANLEVEL;	// 海流最大レベルとの割合
