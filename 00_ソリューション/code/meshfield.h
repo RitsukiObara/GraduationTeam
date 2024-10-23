@@ -46,6 +46,10 @@ public:
 	void Reset(void);
 	void Wave(float fRot);
 
+	// 変数取得・設定関数
+	float GetOceanSpeed(void) { return m_fOceanSpeed; }	// 海流の速度の取得
+	void SetOceanSpeed(float fOceanSpeed) { m_fOceanSpeed = fOceanSpeed; }	// 海流の速度の設定
+
 private:
 	int m_nIdxTexture;	// テクスチャ番号
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	//頂点バッファへのポインタ
@@ -56,6 +60,7 @@ private:
 	int m_nDivNumU;
 	int m_nDivNumV;
 	int m_nDivTex;
+	float m_fOceanSpeed;	// 海流の速度
 	static CMeshField *m_pMeshField;	// 自身のポインタ
 };
 #endif

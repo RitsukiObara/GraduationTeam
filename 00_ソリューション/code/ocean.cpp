@@ -43,7 +43,8 @@ COcean* COcean::m_pOcean = nullptr;	// 自身のポインタ
 //=====================================================
 COcean::COcean()
 {
-	m_fRot = 0.0f;
+	m_fSpeed = 0.0f;
+	m_fRot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 }
 
 //=====================================================
@@ -101,11 +102,13 @@ void COcean::Update(void)
 
 	CMeshField::Update();
 
-	m_fRot += 0.007f * OceanFlowLevel;
+	m_fSpeed += 0.007f * OceanFlowLevel;
 
-	universal::LimitRot(&m_fRot);
+	//OceanRotState();
 
-	CMeshField::Wave(m_fRot);
+	universal::LimitRot(&m_fSpeed);
+
+	CMeshField::Wave(m_fSpeed);
 
 }
 
@@ -122,4 +125,36 @@ void COcean::Draw(void)
 	//頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
 
+}
+
+//====================================================
+// 海流の向きとメッシュの向きを連動させる処理
+//====================================================
+void COcean::OceanRotState(void)
+{
+	int OceanFlowKeep = CIceManager::GetInstance()->GetDirStream();
+	m_fRot = CMeshField::GetRotation();
+
+	//	矢印が海流の向きに流れる処理
+	if (OceanFlowKeep == CIceManager::STREAM_UP)
+	{
+		m_fRot.y = 0.0f;
+	}
+
+	if (OceanFlowKeep == CIceManager::STREAM_RIGHT)
+	{
+		m_fRot.y = D3DX_PI * 0.5f;
+	}
+
+	if (OceanFlowKeep == CIceManager::STREAM_DOWN)
+	{
+		m_fRot.y = D3DX_PI;
+	}
+
+	if (OceanFlowKeep == CIceManager::STREAM_LEFT)
+	{
+		m_fRot.y = -D3DX_PI * 0.5f;
+	}
+
+	CMeshField::SetRotation(m_fRot);
 }
