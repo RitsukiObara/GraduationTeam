@@ -13,9 +13,9 @@
 #include "ice.h"
 #include "particle.h"
 #include "flowIce.h"
-
 #include "inputkeyboard.h"
 #include "debugproc.h"
+#include "meshfield.h"
 
 //*****************************************************
 // 定数定義
@@ -27,10 +27,8 @@ const float RATE_HEX_Z = 0.13f;	// 六角形の割合Z
 
 const float WIDTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_X;	// グリッドの幅
 const float DEPTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_Z;	// グリッドの奥行き
-const float OceanFlow_Min = 1.00f;
-const float OceanFlow_Max = 10.00f;
-
-const float RATE_SIZE_COLLIDE_GRID = 0.7f;	// グリッドの判定の割合
+const float OCEAN_FLOW_MIN = 1.00f;		// 海流の速度最小
+const float OCEAN_FLOW_MAX = 5.00f;	// 海流の速度最大
 }
 
 //*****************************************************
@@ -90,7 +88,7 @@ HRESULT CIceManager::Init(void)
 	SetGridPos();
 
 	// 仮マップ生成
-	CreateIce(3, 6,CIce::E_Type::TYPE_HARD);/*
+	CreateIce(3, 6,CIce::E_Type::TYPE_HARD);
 	CreateIce(3, 5);
 	CreateIce(3, 4);
 	CreateIce(3, 3);
@@ -102,11 +100,11 @@ HRESULT CIceManager::Init(void)
 	CreateIce(5, 5);
 	CreateIce(5, 4);
 	CreateIce(4, 6);
-	CreateIce(6, 6);*/
+	CreateIce(6, 6);
 
 	// 海流を初期化
-	m_dirStream = E_Stream::STREAM_LEFT;
-	m_fOceanLevel = OceanFlow_Min;
+	m_dirStream = E_Stream::STREAM_UP;
+	m_fOceanLevel = OCEAN_FLOW_MAX;
 
 	return S_OK;
 }
@@ -1032,7 +1030,12 @@ void CIceManager::Debug(void)
 
 	// 海流の向きを変更
 	if (pKeyboard->GetTrigger(DIK_LEFT))
+	{
+		CMeshField* pMeshField = CMeshField::GetInstance();
+		//pMeshField->SetOceanSpeed(81.0f);
+
 		m_dirStream = (E_Stream)((m_dirStream + 1) % E_Stream::STREAM_MAX);
+	}
 
 	if (pKeyboard->GetTrigger(DIK_RIGHT))
 		m_dirStream = (E_Stream)((m_dirStream + E_Stream::STREAM_MAX - 1) % E_Stream::STREAM_MAX);
@@ -1099,7 +1102,7 @@ CIce* CIceManager::GetGridIce(int* pNumV, int* pNumH)
 //=====================================================
 // 位置からグリッド番号を取得する処理
 //=====================================================
-bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH)
+bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH, float fRate)
 {
 	if (pIdxV == nullptr || pIdxH == nullptr)
 		return false;
@@ -1117,7 +1120,7 @@ bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH
 
 			float fDist = D3DXVec3Length(&vecDiff);
 
-			if (fDist < WIDTH_GRID * RATE_SIZE_COLLIDE_GRID)
+			if (fDist < WIDTH_GRID * fRate)
 			{// 氷のサイズ分の半径より小さかったら乗ってる判定
 				*pIdxV = i;
 				*pIdxH = j;

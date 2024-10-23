@@ -43,12 +43,11 @@ private:
 		STATE_MAX
 	};
 
+	void OceanRotState(void); // 海流の向き補正処理
 	void OceanLevelState(void); // 海流レベルのUI処理
 
 	CObjectX* m_pArrow;	// 矢印のモデル
 	STATE m_state;	// 状態
-	int OceanFlowKeep;	//	海流の保存
-	float OceanFlowLevel;	//	海流レベルの保存
 	static COceanFlowUI* m_pOceanFlowUI;	// 自身のポインタ
 };
 
