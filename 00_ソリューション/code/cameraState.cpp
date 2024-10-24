@@ -48,7 +48,13 @@ CFollowPlayer::CFollowPlayer() : m_fTimerPosR(0.0f), m_fLengthPosR(0.0f),m_bDebu
 //=====================================================
 void CFollowPlayer::Update(CCamera *pCamera)
 {
+	if (pCamera == nullptr)
+		return;
 
+	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+
+	pInfoCamera->posR = POSR_GAME;
+	pInfoCamera->posV = POSV_GAME;
 }
 
 //=====================================================

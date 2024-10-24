@@ -35,6 +35,7 @@ public:
 		BUTTON_PECK,	// つつき
 		BUTTON_SCORE,	// スコア
 		BUTTON_RESULT,	// リザルト演出
+		BUTTON_SETICE,	// 氷設置
 		BUTTON_MAX
 	};
 	struct S_Axis

@@ -295,6 +295,13 @@ void CInputManager::Update(void)
 		pKeyboard->GetTrigger(DIK_R)
 	);
 
+	// 氷設置
+	m_info.abTrigger[BUTTON_SETICE] =
+	(
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_RB, m_nID) ||
+		pKeyboard->GetTrigger(DIK_RSHIFT)
+	);
+
 	// 方向のリセット
 	ZeroMemory(&m_axis, sizeof(S_Axis));
 

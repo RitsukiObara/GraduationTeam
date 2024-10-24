@@ -560,9 +560,10 @@ void CPlayer::ManageMotion(void)
 //=====================================================
 void CPlayer::Debug(void)
 {
-	CDebugProc* pDebugProc = CDebugProc::GetInstance();
-	CInputKeyboard* pInputKeyboard = CInputKeyboard::GetInstance();
-	CInputJoypad* pJoypad = CInputJoypad::GetInstance();
+	CDebugProc *pDebugProc = CDebugProc::GetInstance();
+	CInputKeyboard *pInputKeyboard = CInputKeyboard::GetInstance();
+	CInputJoypad *pJoypad = CInputJoypad::GetInstance();
+	CInputManager *pInputMgr = CInputManager::GetInstance();
 
 	if (pDebugProc == nullptr || pInputKeyboard == nullptr || pJoypad == nullptr)
 		return;
@@ -570,8 +571,7 @@ void CPlayer::Debug(void)
 	pDebugProc->Print("\nc[%d]‰¡[%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\nˆÊ’u[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
 
-	if (pInputKeyboard->GetTrigger(DIK_RSHIFT) ||
-		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_RB, 0))
+	if (pInputMgr->GetTrigger(CInputManager::BUTTON_SETICE))
 	{
 		CIceManager* pIceManager = CIceManager::GetInstance();
 
