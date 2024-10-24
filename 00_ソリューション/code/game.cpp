@@ -101,6 +101,9 @@ HRESULT CGame::Init(void)
 	// スカイボックスの生成
 	CSkybox::Create();
 
+	//背景氷のロード
+	CBgIce::Load("data\\TEXT\\BG_Ice.txt");
+
 	 //海の追加
 	COcean::Create();
 
@@ -154,9 +157,6 @@ HRESULT CGame::Init(void)
 
 	// 流氷生成
 	CFlowIce::Create();
-
-	// 背景氷生成
-	//CBgIce::Create(D3DXVECTOR3(0.0f,200.0f,0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f),CBgIce::TYPE_BIG);
 
 	// 流氷ファクトリーの生成
 	//CFlowIceFct::Create();
