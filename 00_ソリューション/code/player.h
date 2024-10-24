@@ -71,10 +71,6 @@ private:
 	void MoveAnalog(void);	// アナログ移動
 	void InputMoveAnalog(void);	// アナログ移動入力
 	void CollideIce(void);	// 氷との判定
-	void MoveGrid(void);	// グリッド移動
-	bool JudgeSarchOrMove(void);	// 選択状態か移動状態かの判定
-	void UpdateInputSelectIce(void);	// 氷選択状態の更新
-	void UpdateInputMoveToIce(void);	// 氷に向かって移動している状態の更新
 	CIce *SelectIceByRot(float fRot);	// 氷を向きで取得
 	void WalkToDestIce(CIce *pIceDest);	// 目標の氷に向かって移動する処理
 	bool CheckGridChange(void);	// グリッドが変わったかどうかの判定
@@ -84,7 +80,6 @@ private:
 	// メンバ変数
 	int m_nGridV;	// 今いるグリッドの縦番号
 	int m_nGridH;	// 今いるグリッドの横番号
-	bool m_bAnalog;	// アナログ操作フラグ
 	bool m_bEnableInput;	// 入力可能フラグ
 	D3DXVECTOR3 m_move;	// 移動量
 	STATE m_state;		// プレイヤー状態
