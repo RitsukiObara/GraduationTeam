@@ -28,7 +28,7 @@
 #define MESH_LENGTH					(300.0f)									// メッシュの一辺の長さ
 #define MESH_U						(254)											// 横のブロック数
 #define MESH_V						(254)											// 縦のブロック数
-#define SPLIT_TEX					(10)										// テクスチャ分割数
+#define SPLIT_TEX					(4)										// テクスチャ分割数
 #define CHENGE_LENGTH	(10000)	// 操作できる頂点までの距離
 #define ANGLE_SLIP	(0.7f)	// 坂を滑る角度
 #define CMP_LENGTH	(1000.0f)	// 判定する半径
@@ -794,7 +794,7 @@ void CMeshField::Wave(float fRot)
 		if (nOceanRot != nOceanRotNext)
 		{
 			nOceanRot = nOceanRotNext;
-			pIceManager->SetDirStream(nOceanRot);
+			pIceManager->SetDirStream(nOceanRot);	//現状の海流の向きを次の向きに更新
 		}
 	}
 
