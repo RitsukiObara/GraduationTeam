@@ -17,6 +17,7 @@
 #include "debugproc.h"
 #include "meshfield.h"
 #include "ocean.h"
+#include "polygon3D.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -104,6 +105,9 @@ HRESULT CIceManager::Init(void)
 	CreateIce(5, 4);
 	CreateIce(4, 6);
 	CreateIce(6, 6);
+	CreateIce(6, 7);
+	CreateIce(6, 8);
+	CreateIce(6, 9);
 
 	// ŠC—¬‚ð‰Šú‰»
 	m_dirStream = E_Stream::STREAM_UP;
@@ -131,6 +135,14 @@ void CIceManager::SetGridPos(void)
 			}
 
 			m_aGrid[i][j].pos = pos;
+
+#ifdef _DEBUG
+			//CPolygon3D *pPolygon = CPolygon3D::Create(pos);
+			
+			//pPolygon->SetMode(CPolygon3D::MODE::MODE_BILLBOARD);
+			//pPolygon->SetSize(WIDTH_GRID * 0.2f, WIDTH_GRID * 0.2f);
+			//pPolygon->SetVtx();
+#endif
 		}
 	}
 }
@@ -802,7 +814,7 @@ void CIceManager::SaveFlowIce(int nNumV, int nNumH, CFlowIce *pFlowIce)
 	pFlowIce->AddIceToArray(m_aGrid[nNumV][nNumH].pIce);
 
 #ifdef _DEBUG
-	CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 100, 120, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+	//CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 100, 120, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 #endif
 
 	for (int i = 0; i < DIRECTION_MAX; i++)
@@ -1000,8 +1012,6 @@ void CIceManager::Debug(void)
 					col = { 0.0f,1.0f,0.0f,1.0f };
 				}
 			}
-
-			CEffect3D::Create(m_aGrid[i][j].pos, 50.0f, 5, col);
 		}
 	}
 

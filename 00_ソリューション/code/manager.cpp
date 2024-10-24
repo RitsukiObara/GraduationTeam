@@ -66,8 +66,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// レンダラーの生成
 	CRenderer::Create(hWnd, bWindow);
 
-	// 入力マネージャー生成
-	CInputManager::Create(hInstance, hWnd);
+	// 入力デバイス初期化
+	CInputManager::InitDevice(hInstance, hWnd);
 
 	// デバッグ表示の生成
 	CDebugProc::Create();
@@ -146,13 +146,8 @@ void CManager::Uninit(void)
 		pRenderer->Uninit();
 	}
 
-	// 入力マネージャー終了
-	CInputManager *pInputManager = CInputManager::GetInstance();
-
-	if (pInputManager != nullptr)
-	{
-		pInputManager->Uninit();
-	}
+	// 入力デバイス初期化
+	CInputManager::UninitDevice();
 
 	CSound *pSound = CSound::GetInstance();
 
@@ -225,17 +220,11 @@ void CManager::Update(void)
 		pFade->Update();
 	}
 
+	CInputManager::UpdateAll();
+
 	if (m_pScene != nullptr)
 	{
 		m_pScene->Update();
-	}
-
-	// 入力マネージャー更新
-	CInputManager *pInputManager = CInputManager::GetInstance();
-
-	if (pInputManager != nullptr)
-	{
-		pInputManager->Update();
 	}
 
 	CSound *pSound = CSound::GetInstance();

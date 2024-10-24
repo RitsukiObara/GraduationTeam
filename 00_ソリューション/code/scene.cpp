@@ -19,6 +19,7 @@
 #include "camera.h"
 #include "light.h"
 #include "sound.h"
+#include "inputManager.h"
 
 #include "texture.h"
 #include "objectX.h"
@@ -72,6 +73,8 @@ void CScene::Uninit(void)
 		pSound->Stop();
 
 	CLight::ReleaseAll();
+
+	CInputManager::ReleaseAll();
 }
 
 //=====================================================

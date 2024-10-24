@@ -17,6 +17,7 @@
 //*****************************************************
 class CPolygon3D;
 class CIce;
+class CInputManager;
 
 //*****************************************************
 // クラスの定義
@@ -55,15 +56,14 @@ public:
 	void Update(void);
 	void Draw(void);
 
-	// 静的メンバ関数
-	static CPlayer* Create(void);
-	static CPlayer* GetInstance(void) { return s_pPlayer; }
-
 	// 取得・設定
 	void SetMove(D3DXVECTOR3 move) { m_move = move; }	// 移動量
 	D3DXVECTOR3 GetMove(void) { return m_move; }
 	void EnableInput(bool bEnable) { m_bEnableInput = bEnable; }	// 入力可能フラグ
 	bool IsEnableInput(void) { return m_bEnableInput; }
+
+	// 静的メンバ関数
+	static CPlayer* Create(void);
 
 private:
 	// 構造体定義
@@ -102,9 +102,7 @@ private:
 	STATE m_state;		// プレイヤー状態
 	CIce *m_pIceMoveDest;	// 移動目標の氷
 	S_FragMotion m_fragMotion;	// モーションフラグ
-
-	// 静的メンバ変数
-	static CPlayer* s_pPlayer;	// 自身のポインタ
+	CInputManager *m_pInputMgr;	// 入力マネージャー
 };
 
 #endif

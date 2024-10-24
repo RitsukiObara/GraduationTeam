@@ -359,7 +359,7 @@ HRESULT CResult::Init(void)
 	m_state = STATE_FADE;
 
 	// ゲーム画面をリザルト状態にする
-	CGame::SetState(CGame::STATE::STATE_RESULT);
+	CGame::SetState(CGame::E_State::STATE_RESULT);
 
 	CSound* pSound = CSound::GetInstance();	// サウンド情報
 	assert(pSound != nullptr);
