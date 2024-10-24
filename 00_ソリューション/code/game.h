@@ -34,7 +34,7 @@ class CGame : public CScene
 public:
 	static constexpr float MAX_TIME = 60.0f;	// 最大時間
 
-	enum STATE
+	enum E_State
 	{// 状態
 		STATE_NONE,		// 何もしていない状態
 		STATE_START,	// 開始状態
@@ -42,6 +42,13 @@ public:
 		STATE_RESULT,	// リザルト状態
 		STATE_END,		// 終了状態
 		STATE_MAX
+	};
+	enum E_GameMode
+	{// ゲームのモード
+		MODE_NONE = 0,	// 何でもないモード
+		MODE_SINGLE,	// シングルモード
+		MODE_MULTI,		// マルチ
+		MODE_MAX
 	};
 
 	CGame();	// コンストラクタ
@@ -52,8 +59,8 @@ public:
 	virtual void Uninit(void);
 	virtual void Update();
 	virtual void Draw();
-	static void SetState(STATE state) { m_state = state; }
-	static STATE GetState(void) { return m_state; }
+	static void SetState(E_State state) { m_state = state; }
+	static E_State GetState(void) { return m_state; }
 	void EnableStop(bool bStop) { m_bStop = bStop; }
 	bool GetStop(void) { return m_bStop; }
 	void ReleasePause(void) { m_pPause = nullptr; };	// ポーズの解放
@@ -88,9 +95,10 @@ private:
 	D3DXVECTOR3 m_posMid;	// プレイヤーと敵の中心座標
 	CStageResultUI* m_pStageResultUI;	// ステージクリアUI
 	CPause *m_pPause;	// ポーズのポインタ
+	E_GameMode m_GameMode;	// ゲームモード
 
 	// 静的メンバ変数
-	static STATE m_state;	// 状態
+	static E_State m_state;	// 状態
 	static CGame *m_pGame;	// 自身のポインタ
 };
 

@@ -60,14 +60,13 @@ const int NUM_LIGHT = 3;	// ライトの数
 const D3DXCOLOR COL_LIGHT_DEFAULT = { 0.9f,0.9f,0.9f,1.0f };	// ライトのデフォルト色
 const float SPEED_CHANGE_LIGHTCOL = 0.1f;	// ライトの色が変わる速度
 
-const int NUM_GRID_V = 10;	// 縦グリッドの数
-const int NUM_GRID_H = 10;	// 横グリッドの数
+const int SIZE_GRID[CGame::E_GameMode::MODE_MAX] = { 0, 10, 15 };	// モードごとのステージのサイズ
 }
 
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CGame::STATE CGame::m_state = STATE_NONE;	// 状態
+CGame::E_State CGame::m_state = STATE_NONE;	// 状態
 CGame *CGame::m_pGame = nullptr;	// 自身のポインタ
 
 //=====================================================
@@ -79,6 +78,7 @@ CGame::CGame()
 	m_bStop = false;
 	m_posMid = { 0.0f,0.0f,0.0f };
 	m_pPause = nullptr;
+	m_GameMode = E_GameMode::MODE_NONE;
 }
 
 //=====================================================
@@ -102,7 +102,7 @@ HRESULT CGame::Init(void)
 	CSkybox::Create();
 
 	//背景氷のロード
-	CBgIce::Load("data\\TEXT\\BG_Ice.txt");
+	//CBgIce::Load("data\\TEXT\\BG_Ice.txt");
 
 	 //海の追加
 	COcean::Create();
@@ -139,8 +139,11 @@ HRESULT CGame::Init(void)
 	//m_pStageResultUI = CStageResultUI::Create();
 	//m_pStageResultUI->SetPosition(D3DXVECTOR3(0.4f, 0.07f, 0.0f));
 
+	// モードの取得
+	m_GameMode = E_GameMode::MODE_SINGLE;
+
 	// 氷マネージャー
-	CIceManager::Create(NUM_GRID_V, NUM_GRID_H);
+	CIceManager::Create(SIZE_GRID[m_GameMode], SIZE_GRID[m_GameMode]);
 
 	// 矢印モデルの生成
 	m_pOceanFlowUI = COceanFlowUI::Create();
@@ -411,7 +414,7 @@ void CGame::Draw(void)
 		return;
 	}
 
-	char *apString[STATE::STATE_MAX] =
+	char *apString[E_State::STATE_MAX] =
 	{
 		"NONE",
 		"NORMAL",

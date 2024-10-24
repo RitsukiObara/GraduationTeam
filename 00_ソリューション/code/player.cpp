@@ -41,16 +41,12 @@ const float RANGE_SELECT_ICE = D3DX_PI * 2 / 6;	// 氷を選択するときの角度の範囲
 const float RATE_CHANGE_GRID = 0.6f;	// 次のグリッドに移る判定の割合
 
 const float TIME_MAX_SPEED = 1.0f;	// 最大速度に達するまでにかかる時間
-const float SPEED_MOVE_MAX = 3.0f;	// 最大移動速度
+const float SPEED_MOVE_MAX = 2.5f;	// 最大移動速度
 
-const float LINE_STOP_TURN = 0.1f;	// 振り向きを停止するしきい値
-const float LINE_START_TURN = D3DX_PI * 0.7f;	// 振り向きを開始するしきい値
+const float LINE_STOP_TURN = 0.2f;	// 振り向きを停止するしきい値
+const float LINE_START_TURN = D3DX_PI * 0.6f;	// 振り向きを開始するしきい値
+const float FACT_ROTATION_TURN = 0.2f;	// 振り向き回転係数
 }
-
-//*****************************************************
-// 静的メンバ変数宣言
-//*****************************************************
-CPlayer* CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -74,17 +70,16 @@ CPlayer::~CPlayer()
 //=====================================================
 CPlayer* CPlayer::Create(void)
 {
-	if (s_pPlayer == nullptr)
-	{
-		s_pPlayer = new CPlayer;
+	CPlayer *pPlayer = nullptr;
 
-		if (s_pPlayer != nullptr)
-		{
-			s_pPlayer->Init();
-		}
+	pPlayer = new CPlayer;
+
+	if (pPlayer != nullptr)
+	{
+		pPlayer->Init();
 	}
 
-	return s_pPlayer;
+	return pPlayer;
 }
 
 //=====================================================
@@ -137,8 +132,6 @@ void CPlayer::InitGridIdx(void)
 //=====================================================
 void CPlayer::Uninit(void)
 {
-	s_pPlayer = nullptr;
-
 	// 継承クラスの終了
 	CMotion::Uninit();
 }
@@ -239,7 +232,7 @@ void CPlayer::DisableTurn(void)
 {
 	// 目標の向きに補正する
 	D3DXVECTOR3 rot = GetRotation();
-	universal::FactingRot(&rot.y, m_fRotTurn, FACT_ROTATION);
+	universal::FactingRot(&rot.y, m_fRotTurn, FACT_ROTATION_TURN);
 	SetRotation(rot);
 
 	// 差分角度が一定以下になったら振り返りを停止する
@@ -372,12 +365,29 @@ void CPlayer::JudgeTurn(void)
 	float fAngleInput = pInputMgr->GetAngleMove();
 	D3DXVECTOR3 rot = GetRotation();
 
+	// 目標方向の設定
+	CInputManager::S_Axis axis = pInputMgr->GetAxis();
+	D3DXVECTOR3 axisMove = axis.axisMove;
+
+	// 軸を正規化
+	float fLengthAxis = D3DXVec3Length(&axisMove);
+
+	// 一定以上入力していなければ通らない
+	if (fLengthAxis <= LINE_FACT_ROT)
+		return;
+
+	// 向きの判定
 	float fRotDiff = fAngleInput - rot.y;
 	universal::LimitRot(&fRotDiff);
 
 	if (LINE_START_TURN * LINE_START_TURN < fRotDiff * fRotDiff)
 	{
+#if 0
 		m_fRotTurn = fAngleInput;
+#else 
+		m_fRotTurn = rot.y + D3DX_PI;
+		universal::LimitRot(&m_fRotTurn);
+#endif
 
 		m_bTurn = true;	// しきい値を越えていたら振り返る判定
 	}

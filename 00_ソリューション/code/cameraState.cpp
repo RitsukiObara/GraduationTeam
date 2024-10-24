@@ -40,19 +40,7 @@ const D3DXVECTOR3 POSV_GAME = { 0.0f,1044.0f,-581.0f };	// ƒQ[ƒ€’†‚ÌŽ‹“_ˆÊ’u
 //=====================================================
 CFollowPlayer::CFollowPlayer() : m_fTimerPosR(0.0f), m_fLengthPosR(0.0f),m_bDebug(false)
 {
-	CCamera *pCamera = CManager::GetCamera();
 
-	if (pCamera != nullptr)
-	{
-		CCamera::Camera *pInfoCamera = pCamera->GetCamera();
-
-		pInfoCamera->fLength = LENGTH_FOLLOW;
-
-		pInfoCamera->rot.x = ANGLE_FOLLOW;
-
-		pInfoCamera->posR = POSR_GAME;
-		pInfoCamera->posV = POSV_GAME;
-	}
 }
 
 //=====================================================
@@ -60,13 +48,7 @@ CFollowPlayer::CFollowPlayer() : m_fTimerPosR(0.0f), m_fLengthPosR(0.0f),m_bDebu
 //=====================================================
 void CFollowPlayer::Update(CCamera *pCamera)
 {
-	if (pCamera == nullptr)
-		return;
 
-	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
-
-	pInfoCamera->posR = POSR_GAME;
-	pInfoCamera->posV = POSV_GAME;
 }
 
 //=====================================================
