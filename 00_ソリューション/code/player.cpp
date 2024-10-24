@@ -39,7 +39,7 @@ namespace
 
 	const float LINE_INPUT_MOVE = 0.3f;	// 移動するまでのスティック入力のしきい値
 	const float RANGE_SELECT_ICE = D3DX_PI * 2 / 6;	// 氷を選択するときの角度の範囲
-	const float RATE_CHANGE_GRID = 0.8f;	// 次のグリッドに移る判定の割合
+	const float RATE_CHANGE_GRID = 0.6f;	// 次のグリッドに移る判定の割合
 }
 
 //*****************************************************
@@ -191,8 +191,8 @@ void CPlayer::MoveAnalog(void)
 	// アナログ移動入力
 	InputMoveAnalog();
 
-	// 氷との判定
-	CollideIce();
+	if(m_state != STATE::STATE_INVINCIBLE)	// 無敵時は行わない
+		CollideIce();	// 氷との判定
 }
 
 //=====================================================
@@ -266,14 +266,21 @@ void CPlayer::InputMoveAnalog(void)
 //=====================================================
 void CPlayer::CollideIce(void)
 {
-	CIceManager* pIceManager = CIceManager::GetInstance();
+	CIceManager* pIceMgr = CIceManager::GetInstance();
 
-	if (pIceManager == nullptr)
+	if (pIceMgr == nullptr)
 		return;
 
 	D3DXVECTOR3 pos = GetPosition();
 
-	//pIceManager->Collide(&pos, m_nGridV, m_nGridH);
+	// グリッドの位置に合わせる
+	pIceMgr->Collide(&pos, m_nGridV, m_nGridH);
+
+	// 氷の高さに合わせる
+	CIce *pIceStand = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
+		
+	if (pIceStand != nullptr)
+		pos.y = pIceStand->GetPosition().y;
 
 	SetPosition(pos);
 }
@@ -441,6 +448,10 @@ bool CPlayer::CheckGridChange(void)
 	// グリッド番号の取得
 	D3DXVECTOR3 pos = GetPosition();
 	pIceMgr->GetIdxGridFromPosition(pos, &nIdxV, &nIdxH, RATE_CHANGE_GRID);
+
+	if(m_state != STATE::STATE_INVINCIBLE &&
+		pIceMgr->GetGridIce(&nIdxV, &nIdxH) == nullptr)
+		return false;	// 無敵状態でない場合、氷がないグリッドの上に行っても番号を変えない
 
 	if ((nIdxV == m_nGridV &&
 		nIdxH == m_nGridH) ||

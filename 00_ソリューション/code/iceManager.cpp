@@ -438,7 +438,7 @@ void CIceManager::Collide(D3DXVECTOR3 *pPos, int nIdxV, int nIdxH)
 
 	D3DXVECTOR3 posGrid = m_aGrid[nIdxV][nIdxH].pos;
 
-	universal::LimitDistSphereInSide(WIDTH_GRID * 0.5f, pPos, posGrid);
+	universal::LimitDistCylinderInSide(WIDTH_GRID * 0.6f, pPos, posGrid);
 }
 
 //=====================================================
