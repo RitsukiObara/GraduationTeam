@@ -108,8 +108,6 @@ void CBgIce::Load(char* pPath)
 {
 	//変数宣言
 	char cTemp[MAX_STRING];
-	int nCntMotion = 0;
-	int nCntModel = 0;
 
 	D3DXVECTOR3 pos;
 	D3DXVECTOR3 rot;
@@ -124,13 +122,7 @@ void CBgIce::Load(char* pPath)
 		{
 			//文字読み込み
 			(void)fscanf(pFile, "%s", &cTemp[0]);
-
-			//変数宣言
-			int nCntKey = 0;
-			int nCntPart = 0;
-			int nCntEvent = 0;
-
-					if (strcmp(cTemp, "SET") == 0)
+			if (strcmp(cTemp, "SET") == 0)
 					{//キースタート
 						while (strcmp(cTemp, "END_SET") != 0)
 						{//終わりまでキー設定
@@ -166,23 +158,15 @@ void CBgIce::Load(char* pPath)
 										(void)fscanf(pFile, "%d", &type);
 									}
 								}
-
 						CBgIce::Create(pos, rot, type);
-								nCntPart++;
-
-						nCntKey++;
-						nCntPart = 0;
 					}
 
 					if (strcmp(cTemp, "END_SCRIPT") == 0)
 					{
 						break;
 					}
-		}//MOTIONwhile
-
-				nCntMotion++;
-
-	}//while閉じ
+		}//while
+	}//file
 	else
 	{
 		assert(("モーションデータ読み込みに失敗", false));
