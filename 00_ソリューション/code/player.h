@@ -82,6 +82,7 @@ private:
 	int m_nGridH;	// 今いるグリッドの横番号
 	bool m_bEnableInput;	// 入力可能フラグ
 	D3DXVECTOR3 m_move;	// 移動量
+	float m_fTimerStartMove;	// 移動の立ち上がりのタイマー
 	STATE m_state;		// プレイヤー状態
 	CIce *m_pIceMoveDest;	// 移動目標の氷
 

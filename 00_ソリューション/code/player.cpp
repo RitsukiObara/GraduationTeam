@@ -25,21 +25,23 @@
 //*****************************************************
 namespace
 {
-	const std::string PATH_BODY = "data\\MOTION\\motionPenguin.txt";	// ボディのパス
-	const int MOVE_FRAME = 25;	// 移動にかかるフレーム数
-	
-	const float SPEED_MOVE_ANALOG = 3.0f;	// アナログ移動での移動距離
-	const float RATE_DECREASE_MOVE = 0.5f;	// 移動減衰の割合
-	const float LINE_FACT_ROT = 0.3f;	// 向きを補正するまでの入力しきい値
-	const float FACT_ROTATION = 0.3f;	// 回転係数
-	const float DEFAULT_WEIGHT = 5.0f;	// 仮の重さ
-	const float POSDEST_NEAREQUAL = 0.01f;	// 大体目標位置に着いたとする距離
+const std::string PATH_BODY = "data\\MOTION\\motionPenguin.txt";	// ボディのパス
+const int MOVE_FRAME = 25;	// 移動にかかるフレーム数
 
-	const float LINE_JUDGE_MOVE = 50.0f;	// 移動に移ったと判断するライン
+const float RATE_DECREASE_MOVE = 0.5f;	// 移動減衰の割合
+const float LINE_FACT_ROT = 0.3f;	// 向きを補正するまでの入力しきい値
+const float FACT_ROTATION = 0.3f;	// 回転係数
+const float DEFAULT_WEIGHT = 5.0f;	// 仮の重さ
+const float POSDEST_NEAREQUAL = 0.01f;	// 大体目標位置に着いたとする距離
 
-	const float LINE_INPUT_MOVE = 0.3f;	// 移動するまでのスティック入力のしきい値
-	const float RANGE_SELECT_ICE = D3DX_PI * 2 / 6;	// 氷を選択するときの角度の範囲
-	const float RATE_CHANGE_GRID = 0.6f;	// 次のグリッドに移る判定の割合
+const float LINE_JUDGE_MOVE = 50.0f;	// 移動に移ったと判断するライン
+
+const float LINE_INPUT_MOVE = 0.3f;	// 移動するまでのスティック入力のしきい値
+const float RANGE_SELECT_ICE = D3DX_PI * 2 / 6;	// 氷を選択するときの角度の範囲
+const float RATE_CHANGE_GRID = 0.6f;	// 次のグリッドに移る判定の割合
+
+const float TIME_MAX_SPEED = 1.0f;	// 最大速度に達するまでにかかる時間
+const float SPEED_MOVE_MAX = 3.0f;	// 最大移動速度
 }
 
 //*****************************************************
@@ -50,7 +52,7 @@ CPlayer* CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(STATE_NONE), m_pIceMoveDest(nullptr), m_bEnableInput(false)
+CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(STATE_NONE), m_pIceMoveDest(nullptr), m_bEnableInput(false), m_fTimerStartMove(0.0f)
 {
 
 }
@@ -218,16 +220,29 @@ void CPlayer::InputMoveAnalog(void)
 
 	D3DXVECTOR3 vecMove = { 0.0f,0.0f,0.0f };
 	D3DXVECTOR3 rot = GetRotation();
+	
+	float fSpeed = SPEED_MOVE_MAX;
 
-	fLengthAxis *= SPEED_MOVE_ANALOG;
+	if (LINE_INPUT_MOVE < fLengthAxis)
+	{// 移動軸操作がしきい値を越えていたら、移動速度の立ち上がりを開始
+		m_fTimerStartMove += CManager::GetDeltaTime();
+	}
+	else
+	{// 減速
+		m_fTimerStartMove = 0.0f;
+	}
+
+	// 値の補正
+	universal::LimitValuefloat(&m_fTimerStartMove, TIME_MAX_SPEED, 0.0f);
+
+	// イージングで補正
+	fSpeed *= easing::EaseOutQuart(m_fTimerStartMove / TIME_MAX_SPEED);
 
 	// 移動速度の設定
 	D3DXVECTOR3 move = GetMove();
 
 	// 向いている方向にベクトルを伸ばす
-	vecMove -= {sinf(rot.y)* fLengthAxis, 0.0f, cosf(rot.y)* fLengthAxis};
-	D3DXVec3Normalize(&vecMove, &vecMove);
-	vecMove *= SPEED_MOVE_ANALOG;
+	vecMove -= {sinf(rot.y) * fSpeed, 0.0f, cosf(rot.y) * fSpeed};
 	move += vecMove;
 
 	SetMove(move);
@@ -326,7 +341,7 @@ void CPlayer::WalkToDestIce(CIce *pIceDest)
 	D3DXVECTOR3 vecDiff = posIce - posPlayer;
 	D3DXVec3Normalize(&vecDiff, &vecDiff);
 
-	D3DXVECTOR3 move = vecDiff *= SPEED_MOVE_ANALOG;
+	D3DXVECTOR3 move = vecDiff *= SPEED_MOVE_MAX;
 
 	// 移動量を反映
 	AddPosition(move);
