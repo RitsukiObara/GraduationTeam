@@ -52,7 +52,8 @@ CPlayer* CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(STATE_NONE), m_pIceMoveDest(nullptr), m_bEnableInput(false), m_fTimerStartMove(0.0f)
+CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(STATE_NONE), m_pIceMoveDest(nullptr), m_bEnableInput(false), m_fTimerStartMove(0.0f),
+m_fragMotion()
 {
 
 }
@@ -154,6 +155,9 @@ void CPlayer::Update(void)
 	// 入力処理
 	Input();
 
+	// モーションの管理
+	ManageMotion();
+
 	// モーション更新
 	CMotion::Update();
 
@@ -226,10 +230,14 @@ void CPlayer::InputMoveAnalog(void)
 	if (LINE_INPUT_MOVE < fLengthAxis)
 	{// 移動軸操作がしきい値を越えていたら、移動速度の立ち上がりを開始
 		m_fTimerStartMove += CManager::GetDeltaTime();
+
+		m_fragMotion.bWalk = true;
 	}
 	else
 	{// 減速
 		m_fTimerStartMove = 0.0f;
+
+		m_fragMotion.bWalk = false;
 	}
 
 	// 値の補正
@@ -412,6 +420,26 @@ void CPlayer::InputPeck(void)
 		universal::LimitRot(&rot.y);
 
 		pIceManager->PeckIce(m_nGridV, m_nGridH, rot.y, pos);
+	}
+}
+
+//=====================================================
+// モーションの管理
+//=====================================================
+void CPlayer::ManageMotion(void)
+{
+	int nMotion = GetMotion();
+	bool bFinifh = IsFinish();
+
+	if (m_fragMotion.bWalk == true)
+	{// 歩きモーションフラグ有効
+		if (nMotion != MOTION::MOTION_WALK)
+			SetMotion(MOTION::MOTION_WALK);
+	}
+	else
+	{// 何もフラグが立っていない状態
+		if(nMotion != MOTION::MOTION_NEUTRAL)
+			SetMotion(MOTION::MOTION_NEUTRAL);
 	}
 }
 

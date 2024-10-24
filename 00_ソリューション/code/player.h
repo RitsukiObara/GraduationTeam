@@ -28,13 +28,14 @@ public:
 	enum MOTION
 	{
 		MOTION_NEUTRAL = 0,
-		MOTION_JUMPSTART,
-		MOTION_JUMPFLY,
+		MOTION_WALK,
+		MOTION_STARTJUMP,
+		MOTION_STAYJUMP,
 		MOTION_LANDING,
 		MOTION_PECK,
+		MOTION_FLOW,
 		MOTION_MAX
 	};
-
 	// プレイヤー状態
 	enum STATE
 	{
@@ -65,6 +66,13 @@ public:
 	bool IsEnableInput(void) { return m_bEnableInput; }
 
 private:
+	// 構造体定義
+	struct S_FragMotion
+	{// モーションフラグの構造体
+		bool bWalk;	// 歩行
+		bool bPeck;	// 突っつき
+	};
+
 	// メンバ関数
 	void InitGridIdx(void);	// グリッド番号の初期化
 	void Input(void);	// 入力
@@ -75,6 +83,7 @@ private:
 	void WalkToDestIce(CIce *pIceDest);	// 目標の氷に向かって移動する処理
 	bool CheckGridChange(void);	// グリッドが変わったかどうかの判定
 	void InputPeck(void);	// 突っつきの入力
+	void ManageMotion(void);	// モーションの管理
 	void Debug(void);	// デバッグ処理
 
 	// メンバ変数
@@ -85,6 +94,7 @@ private:
 	float m_fTimerStartMove;	// 移動の立ち上がりのタイマー
 	STATE m_state;		// プレイヤー状態
 	CIce *m_pIceMoveDest;	// 移動目標の氷
+	S_FragMotion m_fragMotion;	// モーションフラグ
 
 	// 静的メンバ変数
 	static CPlayer* s_pPlayer;	// 自身のポインタ
