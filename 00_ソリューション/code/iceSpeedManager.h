@@ -18,6 +18,11 @@
 class CIce;
 
 //*****************************************************
+// マクロ定義
+//*****************************************************
+#define MAX_ICEFLOW	(40)	// 流れてくる氷の最大数
+
+//*****************************************************
 // クラスの定義
 //*****************************************************
 class CIceSpeedManager : public CObject
@@ -31,6 +36,7 @@ public:
 	void Uninit(void);	// 終了
 	void Update(void);	// 更新
 	void Draw(void);	// 描画
+	void Load(char* pPath);
 
 	// 変数設定・取得処理
 	void AddIceToArray(CIce* pIce);
