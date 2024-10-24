@@ -794,7 +794,7 @@ void CMeshField::Wave(float fRot)
 		if (nOceanRot != nOceanRotNext)
 		{
 			nOceanRot = nOceanRotNext;
-			pIceManager->SetDirStream(nOceanRot);
+			pIceManager->SetDirStream(nOceanRot);	//Œ»ó‚ÌŠC—¬‚ÌŒü‚«‚ğŸ‚ÌŒü‚«‚ÉXV
 		}
 	}
 
