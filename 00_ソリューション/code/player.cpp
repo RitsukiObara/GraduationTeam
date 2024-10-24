@@ -50,7 +50,7 @@ CPlayer* CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_bAnalog(false), m_state(STATE_NORMAL), m_pIceMoveDest(nullptr)
+CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_bAnalog(false), m_state(STATE_NONE), m_pIceMoveDest(nullptr)
 {
 
 }

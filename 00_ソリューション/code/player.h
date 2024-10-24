@@ -38,9 +38,11 @@ public:
 	// プレイヤー状態
 	enum STATE
 	{
-		STATE_NORMAL = 0,	// 通常
+		STATE_NONE = 0,	// 何でもない状態
+		STATE_NORMAL,	// 通常
 		STATE_DEATH,		// 死
 		STATE_INVINCIBLE,	// デバッグ向け無敵
+		STATE_MAX
 	};
 
 	CPlayer(int nPriority = 4);	// コンストラクタ
