@@ -160,6 +160,33 @@ float LimitDistSphereInSide(float fLength, D3DXVECTOR3 *pPos, D3DXVECTOR3 posTar
 }
 
 //========================================
+// 円柱の距離制限（内側）
+//========================================
+float LimitDistCylinderInSide(float fLength, D3DXVECTOR3 *pPos, D3DXVECTOR3 posTarget)
+{
+	if (pPos == nullptr)
+		return 0.0f;
+
+	D3DXVECTOR3 vecDiff = posTarget - *pPos;
+	vecDiff.y = 0.0f;
+
+	float fDistDiff = sqrtf(vecDiff.x * vecDiff.x + vecDiff.z * vecDiff.z);
+
+	if (fLength <= fDistDiff)
+	{
+		fDistDiff = fLength;
+
+		D3DXVec3Normalize(&vecDiff, &vecDiff);
+
+		vecDiff *= fLength;
+
+		*pPos = posTarget - vecDiff;
+	}
+
+	return fDistDiff;
+}
+
+//========================================
 // ホーミング
 //========================================
 void Horming(D3DXVECTOR3 pos, D3DXVECTOR3 posTarget, float fSpeedChase, D3DXVECTOR3 *pMove)

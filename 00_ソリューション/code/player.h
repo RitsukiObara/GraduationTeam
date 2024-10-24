@@ -28,19 +28,22 @@ public:
 	enum MOTION
 	{
 		MOTION_NEUTRAL = 0,
-		MOTION_JUMPSTART,
-		MOTION_JUMPFLY,
+		MOTION_WALK,
+		MOTION_STARTJUMP,
+		MOTION_STAYJUMP,
 		MOTION_LANDING,
 		MOTION_PECK,
+		MOTION_FLOW,
 		MOTION_MAX
 	};
-
 	// プレイヤー状態
 	enum STATE
 	{
-		STATE_NORMAL = 0,	// 通常
+		STATE_NONE = 0,	// 何でもない状態
+		STATE_NORMAL,	// 通常
 		STATE_DEATH,		// 死
 		STATE_INVINCIBLE,	// デバッグ向け無敵
+		STATE_MAX
 	};
 
 	CPlayer(int nPriority = 4);	// コンストラクタ
@@ -57,33 +60,41 @@ public:
 	static CPlayer* GetInstance(void) { return s_pPlayer; }
 
 	// 取得・設定
-	void SetMove(D3DXVECTOR3 move) { m_move = move; }
-	D3DXVECTOR3 GetMove(void) { return m_move; }	// 取得処理
+	void SetMove(D3DXVECTOR3 move) { m_move = move; }	// 移動量
+	D3DXVECTOR3 GetMove(void) { return m_move; }
+	void EnableInput(bool bEnable) { m_bEnableInput = bEnable; }	// 入力可能フラグ
+	bool IsEnableInput(void) { return m_bEnableInput; }
 
 private:
+	// 構造体定義
+	struct S_FragMotion
+	{// モーションフラグの構造体
+		bool bWalk;	// 歩行
+		bool bPeck;	// 突っつき
+	};
+
 	// メンバ関数
 	void InitGridIdx(void);	// グリッド番号の初期化
 	void Input(void);	// 入力
 	void MoveAnalog(void);	// アナログ移動
 	void InputMoveAnalog(void);	// アナログ移動入力
 	void CollideIce(void);	// 氷との判定
-	void MoveGrid(void);	// グリッド移動
-	bool JudgeSarchOrMove(void);	// 選択状態か移動状態かの判定
-	void UpdateInputSelectIce(void);	// 氷選択状態の更新
-	void UpdateInputMoveToIce(void);	// 氷に向かって移動している状態の更新
 	CIce *SelectIceByRot(float fRot);	// 氷を向きで取得
 	void WalkToDestIce(CIce *pIceDest);	// 目標の氷に向かって移動する処理
 	bool CheckGridChange(void);	// グリッドが変わったかどうかの判定
 	void InputPeck(void);	// 突っつきの入力
+	void ManageMotion(void);	// モーションの管理
 	void Debug(void);	// デバッグ処理
 
 	// メンバ変数
 	int m_nGridV;	// 今いるグリッドの縦番号
 	int m_nGridH;	// 今いるグリッドの横番号
-	bool m_bAnalog;	// アナログ操作
+	bool m_bEnableInput;	// 入力可能フラグ
 	D3DXVECTOR3 m_move;	// 移動量
+	float m_fTimerStartMove;	// 移動の立ち上がりのタイマー
 	STATE m_state;		// プレイヤー状態
 	CIce *m_pIceMoveDest;	// 移動目標の氷
+	S_FragMotion m_fragMotion;	// モーションフラグ
 
 	// 静的メンバ変数
 	static CPlayer* s_pPlayer;	// 自身のポインタ
