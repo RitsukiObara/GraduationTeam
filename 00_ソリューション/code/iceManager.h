@@ -55,17 +55,16 @@ public:
 	void Draw(void);	// 描画
 	CIce *CreateIce(int nGridV,int nGridH, CIce::E_Type type = CIce::E_Type::TYPE_NORMAL);	// 氷の生成
 	void StopIce(CIce *pIce);	// 氷の停止
-	void PeckIce(int nNumV, int nNumH, E_Direction direction);	// 氷をつつく
+	void PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos);	// 氷をつつく
 	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// 氷の追加
 	bool FindIce(int nNumV, int nNumH, int nIdx,CIce *pIceStand,vector<CIce*> apIceLast,bool bBreak);	// アイスの発見
 	vector<CIce*> GetAroundIce(int nNumV, int nNumH);	// 周辺の氷を取得
 	void DeleteIce(CIce *pIce);	// 指定したポインタと同じ氷を削除する
-	void Collide(D3DXVECTOR3 *pPos);	// 外に出さない判定処理
-	bool GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH);	// グリッド番号を位置から取得する処理
-	void SetDirStream(E_Stream direction) { m_dirStream = direction; }	// 海流の方向
-	E_Stream GetDirStream(void) { return m_dirStream; }
+	void Collide(D3DXVECTOR3 *pPos,int nIdxV,int nIdxH);	// 外に出さない判定処理
+	bool GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH,float fRate = 0.7f);	// グリッド番号を位置から取得する処理
 	void SetIceInGrid(int nNumV, int nNumH, CIce *pIce);	// グリッドに氷を設定
 	void GetIceIndex(CIce *pIce, int *pNumV, int *pNumH);	// 氷のグリッド番号を取得
+	CIce* GetRightDownIdx(int *pNumV, int *pNumH);	// 右下の氷取得
 
 	// 変数取得・設定関数
 	D3DXVECTOR3 GetGridPosition(int *pNumV, int *pNumH);
@@ -73,6 +72,11 @@ public:
 	int GetNumGridV(void) { return m_nNumGridVirtical; }	// 縦のグリッド数
 	int GetNumGridH(void) { return m_nNumGridHorizontal; }	// 横のグリッド数
 	float GetOceanLevel(void) { return m_fOceanLevel; }	// 海流レベルの取得
+	E_Stream GetDirStream(void) { return m_dirStream; }	// 海流の方向取得
+	E_Stream GetDirStreamNext(void) { return m_dirStreamNext; }	// 次の海流の方向取得
+
+	void SetDirStream(E_Stream direction) { m_dirStream = direction; }	// 海流の方向
+	void SetDirStreamNext(E_Stream directionNext) { m_dirStreamNext = directionNext; }	// 次の海流の方向
 
 	// 静的メンバ関数
 	static CIceManager *Create(int nNumV, int nNumH);
@@ -119,6 +123,7 @@ private:
 	float m_fOceanLevel;	//	海流の強さ
 	vector<vector<S_Grid>> m_aGrid;	// グリッドの配列
 	E_Stream m_dirStream;	// 海流の方向
+	E_Stream m_dirStreamNext;	// 次の海流の方向
 
 	// 静的メンバ変数
 	static CIceManager *s_pIceManager;	// 自身のポインタ

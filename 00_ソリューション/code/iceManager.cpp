@@ -13,9 +13,10 @@
 #include "ice.h"
 #include "particle.h"
 #include "flowIce.h"
-
 #include "inputkeyboard.h"
 #include "debugproc.h"
+#include "meshfield.h"
+#include "ocean.h"
 
 //*****************************************************
 // 定数定義
@@ -27,10 +28,10 @@ const float RATE_HEX_Z = 0.13f;	// 六角形の割合Z
 
 const float WIDTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_X;	// グリッドの幅
 const float DEPTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_Z;	// グリッドの奥行き
-const float OceanFlow_Min = 1.00f;
-const float OceanFlow_Max = 10.00f;
+const float OCEAN_FLOW_MIN = 1.00f;		// 海流の速度最小
+const float OCEAN_FLOW_MAX = 5.00f;	// 海流の速度最大
 
-const float RATE_SIZE_COLLIDE_GRID = 0.7f;	// グリッドの判定の割合
+const float RANGE_SELECT_ICE = D3DX_PI / 6;	// 氷を選択するときの角度の範囲
 }
 
 //*****************************************************
@@ -90,7 +91,7 @@ HRESULT CIceManager::Init(void)
 	SetGridPos();
 
 	// 仮マップ生成
-	CreateIce(3, 6,CIce::E_Type::TYPE_HARD);/*
+	CreateIce(3, 6,CIce::E_Type::TYPE_HARD);
 	CreateIce(3, 5);
 	CreateIce(3, 4);
 	CreateIce(3, 3);
@@ -102,11 +103,11 @@ HRESULT CIceManager::Init(void)
 	CreateIce(5, 5);
 	CreateIce(5, 4);
 	CreateIce(4, 6);
-	CreateIce(6, 6);*/
+	CreateIce(6, 6);
 
 	// 海流を初期化
-	m_dirStream = E_Stream::STREAM_LEFT;
-	m_fOceanLevel = OceanFlow_Min;
+	m_dirStream = E_Stream::STREAM_UP;
+	m_fOceanLevel = OCEAN_FLOW_MAX;
 
 	return S_OK;
 }
@@ -234,7 +235,7 @@ void CIceManager::StopIce(CIce *pIce)
 //=====================================================
 // 氷をつつく
 //=====================================================
-void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
+void CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos)
 {
 	if (m_aGrid[nNumV][nNumH].pIce != nullptr)
 	{
@@ -248,45 +249,43 @@ void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 	int nNumBreakV = nNumV;
 	int nNumBreakH = nNumH;
 
-	// つっつく方向に合わせて番号を計算
-	switch (direction)
+	CIce* pIcePeck = nullptr;
+
+	// 向きに合わせて氷を選択
+	for (auto it : apIce)
 	{
-	/*case CIceManager::DIRECTION_UP:
-		nNumV++;
-		break;*/
-	case CIceManager::DIRECTION_RIGHT:
-		nNumBreakH++;
-		break;
-	/*case CIceManager::DIRECTION_DOWN:
-		nNumV--;
-		break;*/
-	case CIceManager::DIRECTION_LEFT:
-		nNumBreakH--;
-		break;
-	default:
-		break;
+		if (it == nullptr)
+			continue;
+
+		// 氷とスティック角度の比較
+		D3DXVECTOR3 posIce = it->GetPosition();
+		bool bSelect = universal::IsInFanTargetYFlat(pos, posIce, fRot, RANGE_SELECT_ICE);
+
+		if (bSelect)
+		{// 氷が選べたらfor文を終了
+			pIcePeck = it;
+			break;
+		}
 	}
 
-	// 番号が範囲内かどうかチェック
-	if (universal::LimitValueInt(&nNumBreakV, m_nNumGridVirtical - 1, 0) ||
-		universal::LimitValueInt(&nNumBreakH, m_nNumGridHorizontal - 1, 0))
-		return;
+	// 番号を取得
+	GetIceIndex(pIcePeck, &nNumBreakV, &nNumBreakH);
 
 	// 氷がつっつける状態かのチェック
-	if (m_aGrid[nNumBreakV][nNumBreakH].pIce == nullptr)
+	if (pIcePeck == nullptr)
 		return;
 
-	if (!m_aGrid[nNumBreakV][nNumBreakH].pIce->IsCanPeck())
+	if (!pIcePeck->IsCanPeck())
 		return;	// 突っつけないブロックなら後の処理を通らない
 
-	if (m_aGrid[nNumBreakV][nNumBreakH].pIce->IsPeck())
+	if (pIcePeck->IsPeck())
 		return;	// 既に突っついていたら通らない
 
 	// 氷を突っついた判定にする
-	if (m_aGrid[nNumBreakV][nNumBreakH].pIce)
+	if (pIcePeck)
 	{
-		m_aGrid[nNumBreakV][nNumBreakH].pIce->EnablePeck(true);
-		m_aGrid[nNumBreakV][nNumBreakH].pIce->ChangeState(new CIceStaeteBreak);
+		pIcePeck->EnablePeck(true);
+		pIcePeck->ChangeState(new CIceStaeteBreak);
 	}
 
 	// 氷探索の再帰関数
@@ -317,7 +316,7 @@ void CIceManager::PeckIce(int nNumV, int nNumH, E_Direction direction)
 	DisableFind();
 
 	// プレイヤーから壊さないブロックの流れを出す
-	DisableFromPlayer(nNumV, nNumH, m_aGrid[nNumBreakV][nNumBreakH].pIce, apIce);
+	DisableFromPlayer(nNumV, nNumH, pIcePeck, apIce);
 
 	// 探索フラグの無効化
 	DisableFind();
@@ -433,26 +432,14 @@ void CIceManager::DeleteIce(CIce *pIce)
 //=====================================================
 // 外に出さないようにする判定
 //=====================================================
-void CIceManager::Collide(D3DXVECTOR3 *pPos)
+void CIceManager::Collide(D3DXVECTOR3 *pPos, int nIdxV, int nIdxH)
 {
 	if (pPos == nullptr)
 		return;
 
-	int nIdxV = 0;
-	int nIdxH = 0;
+	D3DXVECTOR3 posGrid = m_aGrid[nIdxV][nIdxH].pos;
 
-	// 位置から、今いるグリッドを計算
-	GetIdxGridFromPosition(*pPos, &nIdxV, &nIdxH);
-
-#ifdef _DEBUG
-	D3DXVECTOR3 posIce = m_aGrid[nIdxV][nIdxH].pos;
-	//CEffect3D::Create(posIce, 100.0f, 5, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-
-	CDebugProc::GetInstance()->Print("\n今いるグリッド[%d,%d]", nIdxV, nIdxH);
-#endif
-
-	// 今いるグリッドの氷との判定を行う
-	LimitInIce(pPos, nIdxV, nIdxH);
+	universal::LimitDistCylinderInSide(WIDTH_GRID * 0.6f, pPos, posGrid);
 }
 
 //=====================================================
@@ -811,6 +798,9 @@ void CIceManager::SaveFlowIce(int nNumV, int nNumH, CFlowIce *pFlowIce)
 	// 探索済みのフラグを立てる
 	m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
 
+	// 自身を流氷に追加
+	pFlowIce->AddIceToArray(m_aGrid[nNumV][nNumH].pIce);
+
 #ifdef _DEBUG
 	CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 100, 120, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 #endif
@@ -1029,10 +1019,20 @@ void CIceManager::Debug(void)
 
 	// 海流の向きを変更
 	if (pKeyboard->GetTrigger(DIK_LEFT))
-		m_dirStream = (E_Stream)((m_dirStream + 1) % E_Stream::STREAM_MAX);
+	{
+		COcean* pOcean = COcean::GetInstance();
+		pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);
+
+		m_dirStreamNext = (E_Stream)((m_dirStreamNext + 1) % E_Stream::STREAM_MAX);
+	}
 
 	if (pKeyboard->GetTrigger(DIK_RIGHT))
-		m_dirStream = (E_Stream)((m_dirStream + E_Stream::STREAM_MAX - 1) % E_Stream::STREAM_MAX);
+	{
+		COcean* pOcean = COcean::GetInstance();
+		pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);
+
+		m_dirStreamNext = (E_Stream)((m_dirStreamNext + E_Stream::STREAM_MAX - 1) % E_Stream::STREAM_MAX);
+	}
 }
 
 //=====================================================
@@ -1096,7 +1096,7 @@ CIce* CIceManager::GetGridIce(int* pNumV, int* pNumH)
 //=====================================================
 // 位置からグリッド番号を取得する処理
 //=====================================================
-bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH)
+bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH, float fRate)
 {
 	if (pIdxV == nullptr || pIdxH == nullptr)
 		return false;
@@ -1114,7 +1114,7 @@ bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH
 
 			float fDist = D3DXVec3Length(&vecDiff);
 
-			if (fDist < WIDTH_GRID * RATE_SIZE_COLLIDE_GRID)
+			if (fDist < WIDTH_GRID * fRate)
 			{// 氷のサイズ分の半径より小さかったら乗ってる判定
 				*pIdxV = i;
 				*pIdxH = j;
@@ -1183,6 +1183,30 @@ void CIceManager::GetIceIndex(CIce *pIce, int *pNumV, int *pNumH)
 	// どのポインタにも入らなかった場合は-1を返す
 	*pNumV = -1;
 	*pNumH = -1;
+}
+
+//=====================================================
+// 右下の氷を取得
+//=====================================================
+CIce* CIceManager::GetRightDownIdx(int *pNumV, int *pNumH)
+{
+	if (pNumV == nullptr || pNumH == nullptr)
+		return nullptr;
+
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			if (m_aGrid[i][j].pIce != nullptr)
+			{// 氷があったら番号を保存
+				*pNumV = i;
+				*pNumH = j;
+				return m_aGrid[i][j].pIce;
+			}
+		}
+	}
+
+	return nullptr;
 }
 
 //=====================================================

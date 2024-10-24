@@ -148,6 +148,10 @@ private:
 	// 定数定義
 	static const int NUM_ICE_BREAK = 5;	// 壊れた氷の数
 	
+	// メンバ関数
+	void UpdateRepair(CIce *pIce);	// 修復する更新
+	void FollowIce(CIce *pIce);	// 氷の追従
+
 	// メンバ変数
 	vector<CObjectX*> m_aPeaceIce;	// 氷の破片のポイント
 	float m_fTimerRepair;	// 修復タイマー

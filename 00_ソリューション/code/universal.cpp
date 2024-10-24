@@ -160,6 +160,33 @@ float LimitDistSphereInSide(float fLength, D3DXVECTOR3 *pPos, D3DXVECTOR3 posTar
 }
 
 //========================================
+// 円柱の距離制限（内側）
+//========================================
+float LimitDistCylinderInSide(float fLength, D3DXVECTOR3 *pPos, D3DXVECTOR3 posTarget)
+{
+	if (pPos == nullptr)
+		return 0.0f;
+
+	D3DXVECTOR3 vecDiff = posTarget - *pPos;
+	vecDiff.y = 0.0f;
+
+	float fDistDiff = sqrtf(vecDiff.x * vecDiff.x + vecDiff.z * vecDiff.z);
+
+	if (fLength <= fDistDiff)
+	{
+		fDistDiff = fLength;
+
+		D3DXVec3Normalize(&vecDiff, &vecDiff);
+
+		vecDiff *= fLength;
+
+		*pPos = posTarget - vecDiff;
+	}
+
+	return fDistDiff;
+}
+
+//========================================
 // ホーミング
 //========================================
 void Horming(D3DXVECTOR3 pos, D3DXVECTOR3 posTarget, float fSpeedChase, D3DXVECTOR3 *pMove)
@@ -888,6 +915,22 @@ D3DXVECTOR3 CollideOBBToPlane(D3DXVECTOR3* posOBB, D3DXVECTOR3 vecAxial, D3DXVEC
 		return vecNorPlane * (lenProjection - fabs(lenPos));
 	else
 		return vecNorPlane * (lenProjection + fabs(lenPos));
+}
+
+//========================================
+// Y軸平面において、ターゲットが扇範囲内にいるかの判定
+//========================================
+bool IsInFanTargetYFlat(D3DXVECTOR3 posOwn, D3DXVECTOR3 posTarget, float fRot, float fRange)
+{
+	// 差分ベクトルの角度を取得
+	D3DXVECTOR3 vecDiff = posTarget - posOwn;
+	float fRotToTarget = atan2f(vecDiff.x, vecDiff.z);
+
+	// 差分角度が範囲内かどうか取得
+	float fRotDiff = fRotToTarget - fRot;
+	universal::LimitRot(&fRotDiff);
+
+	return fRange * fRange > fRotDiff * fRotDiff;
 }
 
 //========================================

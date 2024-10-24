@@ -18,19 +18,21 @@
 #include "game.h"
 #include "effect3D.h"
 #include "texture.h"
+#include "iceManager.h"
 
 //*****************************************************
 // マクロ定義
 //*****************************************************
 #define MESHFIELD_TEX_FILE			"data\\TEXTURE\\BG\\map_sea.png"				// テクスチャファイル名
 #define MOVE_SPEED					(1.0f)										// 移動速度
-#define MESH_LENGTH					(800.0f)									// メッシュの一辺の長さ
+#define MESH_LENGTH					(300.0f)									// メッシュの一辺の長さ
 #define MESH_U						(254)											// 横のブロック数
 #define MESH_V						(254)											// 縦のブロック数
 #define SPLIT_TEX					(10)										// テクスチャ分割数
 #define CHENGE_LENGTH	(10000)	// 操作できる頂点までの距離
 #define ANGLE_SLIP	(0.7f)	// 坂を滑る角度
 #define CMP_LENGTH	(1000.0f)	// 判定する半径
+#define OCEAN_SPEED	(80.0f)	// 海流の速度
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -49,6 +51,8 @@ CMeshField::CMeshField()
 	m_fLengthMesh = 0.0f;
 	m_nDivNumU = 0;
 	m_nDivNumV = 0;
+	m_fOceanSpeed = 0.0f;
+	m_eOcean_Speed_State = OCEAN_STATE_NONE;
 	m_col = { 0.0f,0.0f,0.0f,0.0f };
 }
 
@@ -93,6 +97,7 @@ HRESULT CMeshField::Init(void)
 	m_nDivNumU = MESH_U;
 	m_nDivNumV = MESH_V;
 	m_col = { 1.0f,1.0f,1.0f,1.0f };
+	m_fOceanSpeed = OCEAN_SPEED;
 
 	// 読込処理
 	Load("data\\MAP\\field00.bin");
@@ -193,6 +198,8 @@ HRESULT CMeshField::Init(void)
 
 	// インデックスバッファをアンロック
 	m_pIdxBuff->Unlock();
+
+	//EnableWire(true);
 
 	return S_OK;
 }
@@ -775,14 +782,76 @@ void CMeshField::Wave(float fRot)
 
 	int nCountV, nCountU;
 
+	CIceManager* pIceManager = CIceManager::GetInstance();
+	CIceManager::E_Stream nOceanRot = CIceManager::GetInstance()->GetDirStream();	// 海流の向きを取得
+	CIceManager::E_Stream nOceanRotNext = CIceManager::GetInstance()->GetDirStreamNext();	// 次の海流の向きを取得
+
+	// 海流の速度が上がっている状態の時
+	if (m_eOcean_Speed_State == OCEAN_STATE_UP)
+	{
+		m_fOceanSpeed += 0.3f;
+
+		if (nOceanRot != nOceanRotNext)
+		{
+			nOceanRot = nOceanRotNext;
+			pIceManager->SetDirStream(nOceanRot);
+		}
+	}
+
+	// 海流の速度が下がっている状態の時
+	if (m_eOcean_Speed_State == OCEAN_STATE_DOWN)
+	{
+		m_fOceanSpeed -= 0.5f;
+	}
+
+	if (m_fOceanSpeed < 0.0f)
+	{
+		m_eOcean_Speed_State = OCEAN_STATE_UP;
+	}
+
+	if (m_fOceanSpeed > 80.0f)
+	{
+		m_eOcean_Speed_State = OCEAN_STATE_NONE;
+	}
+
 	for (nCountV = 0; nCountV < m_nDivNumV + 1; nCountV++)
 	{// 頂点座標の設定
 		for (nCountU = 0; nCountU < m_nDivNumU + 1; nCountU++)
 		{
-			// 頂点座標
-			pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.y = sinf(fRot) * 80;
+			//	矢印が海流の向きに流れる処理
+			if (nOceanRot == CIceManager::STREAM_UP)
+			{// 海流が上向き
+				pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.y = sinf(fRot) * m_fOceanSpeed;
+			}
+
+			if (nOceanRot == CIceManager::STREAM_RIGHT)
+			{// 海流が右向き
+				pVtx[nCountU * (m_nDivNumV + 1) + nCountV].pos.y = sinf(fRot) * m_fOceanSpeed;
+			}
+
+			if (nOceanRot == CIceManager::STREAM_DOWN)
+			{// 海流が下向き
+				pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.y = sinf(fRot) * m_fOceanSpeed;
+			}
+
+			if (nOceanRot == CIceManager::STREAM_LEFT)
+			{// 海流が左向き
+				pVtx[nCountU * (m_nDivNumV + 1) + nCountV].pos.y = sinf(fRot) * m_fOceanSpeed;
+			}
 		}
-		fRot += 1.0f;
+
+		if (nOceanRot == CIceManager::STREAM_UP ||
+			nOceanRot == CIceManager::STREAM_LEFT)
+		{// 海流が上向き
+			fRot += 1.0f;
+		}
+
+		if (nOceanRot == CIceManager::STREAM_DOWN ||
+			nOceanRot == CIceManager::STREAM_RIGHT)
+		{// 海流が下向き
+			fRot -= 1.0f;
+		}
+
 		universal::LimitRot(&fRot);
 	}
 

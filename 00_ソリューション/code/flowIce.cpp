@@ -11,6 +11,7 @@
 #include "flowIce.h"
 #include "ice.h"
 #include "iceManager.h"
+#include "effect3D.h"
 
 //*****************************************************
 // 定数定義
@@ -118,6 +119,10 @@ void CFlowIce::Update(void)
 {
 	// どれかの氷が止まっていないかのチェック
 	CheckSomeIceStop();
+
+#ifdef _DEBUG
+	Debug();
+#endif
 }
 
 //=====================================================
@@ -151,6 +156,19 @@ void CFlowIce::StopAllIce(void)
 		it->ChangeState(new CIceStaeteNormal);
 
 		pIceManager->AddIce(it, it->GetPosition());
+	}
+}
+
+//=====================================================
+// デバッグ処理
+//=====================================================
+void CFlowIce::Debug(void)
+{
+	for (auto it : m_apIce)
+	{
+		D3DXVECTOR3 posIce = it->GetPosition();
+
+		CEffect3D::Create(posIce, 50.0f, 5, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 	}
 }
 
