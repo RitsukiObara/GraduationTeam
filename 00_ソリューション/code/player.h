@@ -59,8 +59,10 @@ public:
 	static CPlayer* GetInstance(void) { return s_pPlayer; }
 
 	// 取得・設定
-	void SetMove(D3DXVECTOR3 move) { m_move = move; }
-	D3DXVECTOR3 GetMove(void) { return m_move; }	// 取得処理
+	void SetMove(D3DXVECTOR3 move) { m_move = move; }	// 移動量
+	D3DXVECTOR3 GetMove(void) { return m_move; }
+	void EnableInput(bool bEnable) { m_bEnableInput = bEnable; }	// 入力可能フラグ
+	bool IsEnableInput(void) { return m_bEnableInput; }
 
 private:
 	// メンバ関数
@@ -82,7 +84,8 @@ private:
 	// メンバ変数
 	int m_nGridV;	// 今いるグリッドの縦番号
 	int m_nGridH;	// 今いるグリッドの横番号
-	bool m_bAnalog;	// アナログ操作
+	bool m_bAnalog;	// アナログ操作フラグ
+	bool m_bEnableInput;	// 入力可能フラグ
 	D3DXVECTOR3 m_move;	// 移動量
 	STATE m_state;		// プレイヤー状態
 	CIce *m_pIceMoveDest;	// 移動目標の氷

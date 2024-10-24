@@ -50,7 +50,7 @@ CPlayer* CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_bAnalog(false), m_state(STATE_NONE), m_pIceMoveDest(nullptr)
+CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_bAnalog(false), m_state(STATE_NONE), m_pIceMoveDest(nullptr), m_bEnableInput(false)
 {
 
 }
@@ -99,6 +99,9 @@ HRESULT CPlayer::Init(void)
 
 	// アナログ移動に設定
 	m_bAnalog = true;
+
+	// 入力可能フラグを設定
+	m_bEnableInput = true;
 
 	// 状態設定
 #ifdef _DEBUG
@@ -165,7 +168,7 @@ void CPlayer::Update(void)
 //=====================================================
 void CPlayer::Input(void)
 {
-	if (m_state == STATE_NORMAL || m_state == STATE_INVINCIBLE)
+	if (m_bEnableInput)
 	{
 		if (m_bAnalog)
 			MoveAnalog();
