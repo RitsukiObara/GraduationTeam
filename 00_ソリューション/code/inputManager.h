@@ -57,6 +57,8 @@ public:
 	bool GetRelease(E_Button button) { return m_info.abRelease[button]; }
 	S_Axis GetAxis(void) { return m_axis; }
 
+	float GetAngleMove(void) { return atan2f(-m_axis.axisMove.x, -m_axis.axisMove.z); }	// ˆÚ“®“ü—ÍŠp“x‚Ìæ“¾
+
 private:
 	struct S_Info
 	{// î•ñ‚Ì\‘¢‘Ì

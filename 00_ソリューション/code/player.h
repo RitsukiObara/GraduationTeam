@@ -78,6 +78,11 @@ private:
 	void Input(void);	// 入力
 	void MoveAnalog(void);	// アナログ移動
 	void InputMoveAnalog(void);	// アナログ移動入力
+	void DisableTurn(void);	// 振り返りの無効化
+	void Forward(void);	// 前進処理
+	void DecreaseMove(void);	// 移動量の減衰
+	void FactingRot(void);	// 向きの補正
+	void JudgeTurn(void);	// 振り向きの検出
 	void CollideIce(void);	// 氷との判定
 	CIce *SelectIceByRot(float fRot);	// 氷を向きで取得
 	void WalkToDestIce(CIce *pIceDest);	// 目標の氷に向かって移動する処理
@@ -90,6 +95,8 @@ private:
 	int m_nGridV;	// 今いるグリッドの縦番号
 	int m_nGridH;	// 今いるグリッドの横番号
 	bool m_bEnableInput;	// 入力可能フラグ
+	bool m_bTurn;	// 振り返っているフラグ
+	float m_fRotTurn;	// 振り返る角度
 	D3DXVECTOR3 m_move;	// 移動量
 	float m_fTimerStartMove;	// 移動の立ち上がりのタイマー
 	STATE m_state;		// プレイヤー状態
