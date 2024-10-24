@@ -30,7 +30,7 @@ const int MOVE_FRAME = 25;	// 移動にかかるフレーム数
 
 const float RATE_DECREASE_MOVE = 0.5f;	// 移動減衰の割合
 const float LINE_FACT_ROT = 0.3f;	// 向きを補正するまでの入力しきい値
-const float FACT_ROTATION = 0.3f;	// 回転係数
+const float FACT_ROTATION = 0.1f;	// 回転係数
 const float DEFAULT_WEIGHT = 5.0f;	// 仮の重さ
 const float POSDEST_NEAREQUAL = 0.01f;	// 大体目標位置に着いたとする距離
 
@@ -42,6 +42,9 @@ const float RATE_CHANGE_GRID = 0.6f;	// 次のグリッドに移る判定の割合
 
 const float TIME_MAX_SPEED = 1.0f;	// 最大速度に達するまでにかかる時間
 const float SPEED_MOVE_MAX = 3.0f;	// 最大移動速度
+
+const float LINE_STOP_TURN = 0.1f;	// 振り向きを停止するしきい値
+const float LINE_START_TURN = D3DX_PI * 0.7f;	// 振り向きを開始するしきい値
 }
 
 //*****************************************************
@@ -53,7 +56,7 @@ CPlayer* CPlayer::s_pPlayer = nullptr;	// 自身のポインタ
 // コンストラクタ
 //=====================================================
 CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(STATE_NONE), m_pIceMoveDest(nullptr), m_bEnableInput(false), m_fTimerStartMove(0.0f),
-m_fragMotion()
+m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f)
 {
 
 }
@@ -198,6 +201,61 @@ void CPlayer::MoveAnalog(void)
 //=====================================================
 void CPlayer::InputMoveAnalog(void)
 {
+	if (m_bTurn)
+	{// 振り返ってる判定の入力
+		// 振り返りの無効化
+		DisableTurn();
+
+#ifdef _DEBUG
+		CDebugProc::GetInstance()->Print("\n振り返ってるよ！！！！！！！！！！！！！！");
+#endif
+	}
+	else
+	{// 通常の前進状態
+#ifdef _DEBUG
+		CDebugProc::GetInstance()->Print("\n振り返ってない");
+#endif
+		// 前進処理
+		Forward();
+
+		// 振り返りの検出
+		JudgeTurn();
+
+		// 向きの補正
+		FactingRot();
+	}
+
+	// 移動量の減衰
+	DecreaseMove();
+
+	// 今いるグリッド番号の取得
+	CheckGridChange();
+}
+
+//=====================================================
+// 振り返りの無効化
+//=====================================================
+void CPlayer::DisableTurn(void)
+{
+	// 目標の向きに補正する
+	D3DXVECTOR3 rot = GetRotation();
+	universal::FactingRot(&rot.y, m_fRotTurn, FACT_ROTATION);
+	SetRotation(rot);
+
+	// 差分角度が一定以下になったら振り返りを停止する
+	float fRotDiff = m_fRotTurn - rot.y;
+
+	universal::LimitRot(&fRotDiff);
+
+	if (LINE_STOP_TURN * LINE_STOP_TURN > fRotDiff * fRotDiff)
+		m_bTurn = false;
+}
+
+//=====================================================
+// 前進処理
+//=====================================================
+void CPlayer::Forward(void)
+{
 	CInputManager* pInputManager = CInputManager::GetInstance();
 
 	if (pInputManager == nullptr)
@@ -224,7 +282,7 @@ void CPlayer::InputMoveAnalog(void)
 
 	D3DXVECTOR3 vecMove = { 0.0f,0.0f,0.0f };
 	D3DXVECTOR3 rot = GetRotation();
-	
+
 	float fSpeed = SPEED_MOVE_MAX;
 
 	if (LINE_INPUT_MOVE < fLengthAxis)
@@ -257,23 +315,72 @@ void CPlayer::InputMoveAnalog(void)
 
 	// 移動量の反映
 	AddPosition(move);
+}
+
+//=====================================================
+// 移動量減衰
+//=====================================================
+void CPlayer::DecreaseMove(void)
+{
+	D3DXVECTOR3 move = GetMove();
 
 	// 移動量の減衰
 	move *= RATE_DECREASE_MOVE;
 
 	SetMove(move);
+}
+
+//=====================================================
+// 向きの補正
+//=====================================================
+void CPlayer::FactingRot(void)
+{
+	CInputManager* pInputManager = CInputManager::GetInstance();
+
+	if (pInputManager == nullptr)
+		return;
+
+	// 目標方向の設定
+	CInputManager::S_Axis axis = pInputManager->GetAxis();
+	D3DXVECTOR3 axisMove = axis.axisMove;
+
+	// 軸を正規化
+	float fLengthAxis = D3DXVec3Length(&axisMove);
 
 	if (fLengthAxis >= LINE_FACT_ROT)
 	{// 入力がしきい値を越えていたら補正
 		// 目標の向きに補正する
 		float fRotDest = atan2f(-axisMove.x, -axisMove.z);
 
+		D3DXVECTOR3 rot = GetRotation();
 		universal::FactingRot(&rot.y, fRotDest, FACT_ROTATION);
 		SetRotation(rot);
 	}
+}
 
-	// 今いるグリッド番号の取得
-	CheckGridChange();
+//=====================================================
+// 振り向きの検出
+//=====================================================
+void CPlayer::JudgeTurn(void)
+{
+	CInputManager* pInputMgr = CInputManager::GetInstance();
+
+	if (pInputMgr == nullptr)
+		return;
+
+	// 差分角度を作成
+	float fAngleInput = pInputMgr->GetAngleMove();
+	D3DXVECTOR3 rot = GetRotation();
+
+	float fRotDiff = fAngleInput - rot.y;
+	universal::LimitRot(&fRotDiff);
+
+	if (LINE_START_TURN * LINE_START_TURN < fRotDiff * fRotDiff)
+	{
+		m_fRotTurn = fAngleInput;
+
+		m_bTurn = true;	// しきい値を越えていたら振り返る判定
+	}
 }
 
 //=====================================================
@@ -431,7 +538,7 @@ void CPlayer::ManageMotion(void)
 	int nMotion = GetMotion();
 	bool bFinifh = IsFinish();
 
-	if (m_fragMotion.bWalk == true)
+	if (m_fragMotion.bWalk)
 	{// 歩きモーションフラグ有効
 		if (nMotion != MOTION::MOTION_WALK)
 			SetMotion(MOTION::MOTION_WALK);
