@@ -32,6 +32,7 @@
 #define CHENGE_LENGTH	(10000)	// 操作できる頂点までの距離
 #define ANGLE_SLIP	(0.7f)	// 坂を滑る角度
 #define CMP_LENGTH	(1000.0f)	// 判定する半径
+#define OCEAN_SPEED	(80.0f)	// 海流の速度
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -50,6 +51,8 @@ CMeshField::CMeshField()
 	m_fLengthMesh = 0.0f;
 	m_nDivNumU = 0;
 	m_nDivNumV = 0;
+	m_fOceanSpeed = 0.0f;
+	m_eOcean_Speed_State = OCEAN_STATE_NONE;
 	m_col = { 0.0f,0.0f,0.0f,0.0f };
 }
 
@@ -94,7 +97,7 @@ HRESULT CMeshField::Init(void)
 	m_nDivNumU = MESH_U;
 	m_nDivNumV = MESH_V;
 	m_col = { 1.0f,1.0f,1.0f,1.0f };
-	m_fOceanSpeed = 1.0f;
+	m_fOceanSpeed = OCEAN_SPEED;
 
 	// 読込処理
 	Load("data\\MAP\\field00.bin");
@@ -196,7 +199,7 @@ HRESULT CMeshField::Init(void)
 	// インデックスバッファをアンロック
 	m_pIdxBuff->Unlock();
 
-	EnableWire(true);
+	//EnableWire(true);
 
 	return S_OK;
 }
@@ -779,19 +782,36 @@ void CMeshField::Wave(float fRot)
 
 	int nCountV, nCountU;
 
-	int OceanFlowKeep = CIceManager::GetInstance()->GetDirStream();
+	CIceManager* pIceManager = CIceManager::GetInstance();
+	CIceManager::E_Stream nOceanRot = CIceManager::GetInstance()->GetDirStream();	// 海流の向きを取得
+	CIceManager::E_Stream nOceanRotNext = CIceManager::GetInstance()->GetDirStreamNext();	// 次の海流の向きを取得
 
-	m_fOceanSpeed = GetOceanSpeed();
-
-	// 海流の速度が80以下のとき80に戻るように補正
-	if (m_fOceanSpeed < 80.0f)
+	// 海流の速度が上がっている状態の時
+	if (m_eOcean_Speed_State == OCEAN_STATE_UP)
 	{
-		m_fOceanSpeed += 0.5f;
+		m_fOceanSpeed += 0.3f;
+
+		if (nOceanRot != nOceanRotNext)
+		{
+			nOceanRot = nOceanRotNext;
+			pIceManager->SetDirStream(nOceanRot);
+		}
+	}
+
+	// 海流の速度が下がっている状態の時
+	if (m_eOcean_Speed_State == OCEAN_STATE_DOWN)
+	{
+		m_fOceanSpeed -= 0.5f;
+	}
+
+	if (m_fOceanSpeed < 0.0f)
+	{
+		m_eOcean_Speed_State = OCEAN_STATE_UP;
 	}
 
 	if (m_fOceanSpeed > 80.0f)
 	{
-		m_fOceanSpeed = 80.0f;
+		m_eOcean_Speed_State = OCEAN_STATE_NONE;
 	}
 
 	for (nCountV = 0; nCountV < m_nDivNumV + 1; nCountV++)
@@ -799,40 +819,35 @@ void CMeshField::Wave(float fRot)
 		for (nCountU = 0; nCountU < m_nDivNumU + 1; nCountU++)
 		{
 			//	矢印が海流の向きに流れる処理
-			if (OceanFlowKeep == CIceManager::STREAM_UP)
+			if (nOceanRot == CIceManager::STREAM_UP)
 			{// 海流が上向き
 				pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.y = sinf(fRot) * m_fOceanSpeed;
-
-				if (m_fOceanSpeed > 81.0f)
-				{
-					m_fOceanSpeed = 1.0f;
-				}
 			}
 
-			if (OceanFlowKeep == CIceManager::STREAM_RIGHT)
+			if (nOceanRot == CIceManager::STREAM_RIGHT)
 			{// 海流が右向き
 				pVtx[nCountU * (m_nDivNumV + 1) + nCountV].pos.y = sinf(fRot) * m_fOceanSpeed;
 			}
 
-			if (OceanFlowKeep == CIceManager::STREAM_DOWN)
+			if (nOceanRot == CIceManager::STREAM_DOWN)
 			{// 海流が下向き
 				pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.y = sinf(fRot) * m_fOceanSpeed;
 			}
 
-			if (OceanFlowKeep == CIceManager::STREAM_LEFT)
+			if (nOceanRot == CIceManager::STREAM_LEFT)
 			{// 海流が左向き
 				pVtx[nCountU * (m_nDivNumV + 1) + nCountV].pos.y = sinf(fRot) * m_fOceanSpeed;
 			}
 		}
 
-		if (OceanFlowKeep == CIceManager::STREAM_UP || 
-			OceanFlowKeep == CIceManager::STREAM_LEFT)
+		if (nOceanRot == CIceManager::STREAM_UP ||
+			nOceanRot == CIceManager::STREAM_LEFT)
 		{// 海流が上向き
 			fRot += 1.0f;
 		}
 
-		if (OceanFlowKeep == CIceManager::STREAM_DOWN ||
-			OceanFlowKeep == CIceManager::STREAM_RIGHT)
+		if (nOceanRot == CIceManager::STREAM_DOWN ||
+			nOceanRot == CIceManager::STREAM_RIGHT)
 		{// 海流が下向き
 			fRot -= 1.0f;
 		}

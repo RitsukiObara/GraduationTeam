@@ -136,7 +136,7 @@ void COceanFlowUI::Update(void)
 //====================================================
 void COceanFlowUI::OceanRotState(void)
 {
-	int OceanFlowKeep = CIceManager::GetInstance()->GetDirStream();
+	int OceanFlowKeep = CIceManager::GetInstance()->GetDirStreamNext();
 	D3DXVECTOR3 Rot = m_pArrow->GetRotation();
 
 	//	–îˆó‚ªŠC—¬‚ÌŒü‚«‚É—¬‚ê‚éˆ—

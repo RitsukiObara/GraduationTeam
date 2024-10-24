@@ -16,6 +16,7 @@
 #include "inputkeyboard.h"
 #include "debugproc.h"
 #include "meshfield.h"
+#include "ocean.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -1019,14 +1020,19 @@ void CIceManager::Debug(void)
 	// ŠC—¬‚ÌŒü‚«‚ð•ÏX
 	if (pKeyboard->GetTrigger(DIK_LEFT))
 	{
-		CMeshField* pMeshField = CMeshField::GetInstance();
-		//pMeshField->SetOceanSpeed(81.0f);
+		COcean* pOcean = COcean::GetInstance();
+		pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);
 
-		m_dirStream = (E_Stream)((m_dirStream + 1) % E_Stream::STREAM_MAX);
+		m_dirStreamNext = (E_Stream)((m_dirStreamNext + 1) % E_Stream::STREAM_MAX);
 	}
 
 	if (pKeyboard->GetTrigger(DIK_RIGHT))
-		m_dirStream = (E_Stream)((m_dirStream + E_Stream::STREAM_MAX - 1) % E_Stream::STREAM_MAX);
+	{
+		COcean* pOcean = COcean::GetInstance();
+		pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);
+
+		m_dirStreamNext = (E_Stream)((m_dirStreamNext + E_Stream::STREAM_MAX - 1) % E_Stream::STREAM_MAX);
+	}
 }
 
 //=====================================================
