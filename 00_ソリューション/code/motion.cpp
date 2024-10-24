@@ -188,7 +188,7 @@ void CMotion::Update(void)
 
 		// –Ú“I‚Ì’l=======================================================================================================
 		float fRate = (float)(1.0f / (float)m_nFrame) * m_fCounterMotion;
-		fRate = easing::EaseInOutExpo(fRate);
+		//fRate = easing::EaseInOutExpo(fRate);
 
 		float DestPosX = pos.x + m_aKeyOld[nCntParts].fPosX +
 			DiffPosX * fRate;

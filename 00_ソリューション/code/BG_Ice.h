@@ -33,9 +33,14 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	static void Load(char* pPath);
+
+	void SetType(TYPE type) { m_type = type; }
+	TYPE GetType(void) { return m_type; }
 
 private:
 	TYPE m_type;	//モデルのタイプ分け変数
+
 };
 
 #endif

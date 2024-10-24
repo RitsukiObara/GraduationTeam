@@ -34,6 +34,7 @@ void LimitSpeed(D3DXVECTOR3 *pVec, float fSpeedMax);
 void LimitPosInSq(float fWidth, float fHeight, D3DXVECTOR3 *pPos);
 float LimitDistCylinder(float fLength, D3DXVECTOR3 *pPos, D3DXVECTOR3 posTarget);
 float LimitDistSphereInSide(float fLength, D3DXVECTOR3 *pPos, D3DXVECTOR3 posTarget);
+float LimitDistCylinderInSide(float fLength, D3DXVECTOR3 *pPos, D3DXVECTOR3 posTarget);
 
 //======================================
 // ŒvŽZŒn

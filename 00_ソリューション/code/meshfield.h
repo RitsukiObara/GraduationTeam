@@ -28,6 +28,15 @@ public:
 		int nNumVtx;							//頂点数
 	}MeshField;
 
+	// 列挙型定義
+	enum E_Ocean_Speed
+	{// 海流の状態
+		OCEAN_STATE_NONE = 0,	// 何でもない状態
+		OCEAN_STATE_UP,	// 速度が上がってる状態
+		OCEAN_STATE_DOWN,	// 速度が下がってる状態
+		OCEAN_STATE_MAX
+	};
+
 	static CMeshField *Create(void);
 	static CMeshField *GetInstance(void) { return m_pMeshField; }
 	HRESULT Init(void);
@@ -47,8 +56,8 @@ public:
 	void Wave(float fRot);
 
 	// 変数取得・設定関数
-	float GetOceanSpeed(void) { return m_fOceanSpeed; }	// 海流の速度の取得
-	void SetOceanSpeed(float fOceanSpeed) { m_fOceanSpeed = fOceanSpeed; }	// 海流の速度の設定
+	E_Ocean_Speed GetOceanSpeedState(void) { return m_eOcean_Speed_State; }	// 海流の速度状態の取得
+	void SetOceanSpeedState(E_Ocean_Speed fOceanSpeedState) { m_eOcean_Speed_State = fOceanSpeedState; }	// 海流の速度状態の設定
 
 private:
 	int m_nIdxTexture;	// テクスチャ番号
@@ -56,6 +65,7 @@ private:
 	LPDIRECT3DINDEXBUFFER9 m_pIdxBuff;	//インデックスバッファへのポインタ
 	MeshField m_MeshField;	//構造体の情報
 	D3DXCOLOR m_col;	// 色
+	E_Ocean_Speed m_eOcean_Speed_State;	// 海流の速度状態
 	float m_fLengthMesh;	// メッシュ一辺の長さ
 	int m_nDivNumU;
 	int m_nDivNumV;
