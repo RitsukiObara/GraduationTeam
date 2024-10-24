@@ -157,6 +157,7 @@ HRESULT CGame::Init(void)
 
 	// ƒvƒŒƒCƒ„[¶¬
 	CPlayer::Create();
+	CPlayer::Create();
 
 	// —¬•X¶¬
 	CFlowIce::Create();

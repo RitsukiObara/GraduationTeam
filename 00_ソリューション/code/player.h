@@ -17,6 +17,7 @@
 //*****************************************************
 class CPolygon3D;
 class CIce;
+class CInputManager;
 
 //*****************************************************
 // クラスの定義
@@ -101,6 +102,7 @@ private:
 	STATE m_state;		// プレイヤー状態
 	CIce *m_pIceMoveDest;	// 移動目標の氷
 	S_FragMotion m_fragMotion;	// モーションフラグ
+	CInputManager *m_pInputMgr;	// 入力マネージャー
 };
 
 #endif

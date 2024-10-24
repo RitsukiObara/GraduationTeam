@@ -87,6 +87,9 @@ CPlayer* CPlayer::Create(void)
 //=====================================================
 HRESULT CPlayer::Init(void)
 {
+	// 入力マネージャー生成
+	m_pInputMgr = CInputManager::Create();
+
 	// 読込
 	Load((char*)&PATH_BODY[0]);
 
@@ -249,9 +252,7 @@ void CPlayer::DisableTurn(void)
 //=====================================================
 void CPlayer::Forward(void)
 {
-	CInputManager* pInputManager = CInputManager::GetInstance();
-
-	if (pInputManager == nullptr)
+	if (m_pInputMgr == nullptr)
 	{
 		return;
 	}
@@ -267,7 +268,7 @@ void CPlayer::Forward(void)
 	CCamera::Camera* pInfoCamera = pCamera->GetCamera();
 
 	// 目標方向の設定
-	CInputManager::S_Axis axis = pInputManager->GetAxis();
+	CInputManager::S_Axis axis = m_pInputMgr->GetAxis();
 	D3DXVECTOR3 axisMove = axis.axisMove;
 
 	// 軸を正規化
@@ -328,13 +329,11 @@ void CPlayer::DecreaseMove(void)
 //=====================================================
 void CPlayer::FactingRot(void)
 {
-	CInputManager* pInputManager = CInputManager::GetInstance();
-
-	if (pInputManager == nullptr)
+	if (m_pInputMgr == nullptr)
 		return;
 
 	// 目標方向の設定
-	CInputManager::S_Axis axis = pInputManager->GetAxis();
+	CInputManager::S_Axis axis = m_pInputMgr->GetAxis();
 	D3DXVECTOR3 axisMove = axis.axisMove;
 
 	// 軸を正規化
@@ -356,17 +355,15 @@ void CPlayer::FactingRot(void)
 //=====================================================
 void CPlayer::JudgeTurn(void)
 {
-	CInputManager* pInputMgr = CInputManager::GetInstance();
-
-	if (pInputMgr == nullptr)
+	if (m_pInputMgr == nullptr)
 		return;
 
 	// 差分角度を作成
-	float fAngleInput = pInputMgr->GetAngleMove();
+	float fAngleInput = m_pInputMgr->GetAngleMove();
 	D3DXVECTOR3 rot = GetRotation();
 
 	// 目標方向の設定
-	CInputManager::S_Axis axis = pInputMgr->GetAxis();
+	CInputManager::S_Axis axis = m_pInputMgr->GetAxis();
 	D3DXVECTOR3 axisMove = axis.axisMove;
 
 	// 軸を正規化
@@ -517,9 +514,7 @@ bool CPlayer::CheckGridChange(void)
 //=====================================================
 void CPlayer::InputPeck(void)
 {
-	CInputManager* pInputManager = CInputManager::GetInstance();
-
-	if (pInputManager == nullptr)
+	if (m_pInputMgr == nullptr)
 		return;
 
 	CIceManager* pIceManager = CIceManager::GetInstance();
@@ -527,7 +522,7 @@ void CPlayer::InputPeck(void)
 	if (pIceManager == nullptr)
 		return;
 
-	if (pInputManager->GetTrigger(CInputManager::BUTTON_PECK))
+	if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_PECK))
 	{
 		// 突っつく処理
 		D3DXVECTOR3 rot = GetRotation();

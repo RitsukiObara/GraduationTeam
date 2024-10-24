@@ -46,18 +46,24 @@ public:
 	CInputManager();	// コンストラクタ
 	~CInputManager();	// デストラクタ
 
-	static CInputManager *Create(HINSTANCE hInstance, HWND hWnd);
-	HRESULT Init(HINSTANCE hInstance, HWND hWnd);
+	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
 	void UpdateDevice(void);
-	static CInputManager *GetInstance(void) { return m_pInputManager; }
 	bool GetTrigger(E_Button button) { return m_info.abTrigger[button]; }
 	bool GetPress(E_Button button) { return m_info.abPress[button]; }
 	bool GetRelease(E_Button button) { return m_info.abRelease[button]; }
 	S_Axis GetAxis(void) { return m_axis; }
 
 	float GetAngleMove(void) { return atan2f(-m_axis.axisMove.x, -m_axis.axisMove.z); }	// 移動入力角度の取得
+
+	// 静的メンバ関数
+	static CInputManager *Create(void);
+	static CInputManager *GetInstance(int nIdx = 0);
+	static void InitDevice(HINSTANCE hInstance, HWND hWnd);	// デバイスの総初期化
+	static void UninitDevice(void);	// デバイスの総終了
+	static void ReleaseAll(void);	// 全インスタンス解放
+	static void UpdateAll(void);	// 全インスタンス更新
 
 private:
 	struct S_Info
@@ -67,9 +73,11 @@ private:
 		bool abRelease[BUTTON_MAX];	// リリース情報
 	};
 
-	static CInputManager *m_pInputManager;	// 自身のポインタ
 	S_Info m_info;	// 情報
 	S_Axis m_axis;	// 方向の情報
+	int m_nID;	// 番号
+
+	static vector<CInputManager*> s_aInputMgr;	// 格納用配列
 };
 
 #endif

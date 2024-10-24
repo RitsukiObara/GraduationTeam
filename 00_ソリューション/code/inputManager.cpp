@@ -19,7 +19,7 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CInputManager *CInputManager::m_pInputManager = nullptr;	// 自身のポインタ
+vector<CInputManager*> CInputManager::s_aInputMgr;	// 格納用の配列
 
 //=====================================================
 // コンストラクタ
@@ -28,6 +28,7 @@ CInputManager::CInputManager()
 {
 	ZeroMemory(&m_info, sizeof(S_Info));
 	ZeroMemory(&m_axis, sizeof(S_Axis));
+	m_nID = -1;
 }
 
 //=====================================================
@@ -39,25 +40,9 @@ CInputManager::~CInputManager()
 }
 
 //=====================================================
-// 生成処理
+// デバイスの総初期化
 //=====================================================
-CInputManager *CInputManager::Create(HINSTANCE hInstance, HWND hWnd)
-{
-	if (m_pInputManager == nullptr)
-	{// インスタンス生成
-		m_pInputManager = new CInputManager;
-
-		// 初期化処理
-		m_pInputManager->Init(hInstance, hWnd);
-	}
-
-	return m_pInputManager;
-}
-
-//=====================================================
-// 初期化処理
-//=====================================================
-HRESULT CInputManager::Init(HINSTANCE hInstance, HWND hWnd)
+void CInputManager::InitDevice(HINSTANCE hInstance, HWND hWnd)
 {
 	// ジョイパッド生成
 	CInputJoypad::Create();
@@ -67,6 +52,44 @@ HRESULT CInputManager::Init(HINSTANCE hInstance, HWND hWnd)
 
 	// マウス生成
 	CInputMouse::Create(hInstance, hWnd);
+}
+
+//=====================================================
+// 生成処理
+//=====================================================
+CInputManager *CInputManager::Create(void)
+{
+	CInputManager *pInputMgr = new CInputManager;
+
+	if (pInputMgr != nullptr)
+	{
+		pInputMgr->Init();
+	}
+
+	return pInputMgr;
+}
+
+//=====================================================
+// インスタンスの取得
+//=====================================================
+CInputManager *CInputManager::GetInstance(int nIdx)
+{
+	if (nIdx < 0 || nIdx > (int)s_aInputMgr.size() - 1)
+		return nullptr;
+
+	return s_aInputMgr[nIdx];
+}
+
+//=====================================================
+// 初期化処理
+//=====================================================
+HRESULT CInputManager::Init(void)
+{
+	// 番号の保存
+	m_nID = s_aInputMgr.size();
+
+	// 配列に格納
+	s_aInputMgr.push_back(this);
 
 	return S_OK;
 }
@@ -75,6 +98,24 @@ HRESULT CInputManager::Init(HINSTANCE hInstance, HWND hWnd)
 // 終了処理
 //=====================================================
 void CInputManager::Uninit(void)
+{
+	for (auto itr = s_aInputMgr.begin(); itr < s_aInputMgr.end(); itr++)
+	{
+		if (*itr == this)
+		{
+			s_aInputMgr.erase(itr);
+			break;
+		}
+	}
+
+	// 自身のポインタ破棄
+	delete this;
+}
+
+//=====================================================
+// デバイスの総初期化
+//=====================================================
+void CInputManager::UninitDevice(void)
 {
 	CInputJoypad *pJoypad = CInputJoypad::GetInstance();
 	CInputKeyboard *pKeyboard = CInputKeyboard::GetInstance();
@@ -94,16 +135,26 @@ void CInputManager::Uninit(void)
 	{
 		pMouse->Uninit();
 	}
-
-	// 自身のポインタ破棄
-	m_pInputManager = nullptr;
-	delete this;
 }
 
 //=====================================================
-// 更新処理
+// 全インスタンスの解放
 //=====================================================
-void CInputManager::Update(void)
+void CInputManager::ReleaseAll(void)
+{
+	for (auto it : s_aInputMgr)
+	{
+		if (it != nullptr)
+			it->Uninit();
+	}
+
+	s_aInputMgr.clear();
+}
+
+//=====================================================
+// 全インスタンスの更新
+//=====================================================
+void CInputManager::UpdateAll(void)
 {
 	// 各入力デバイスの更新
 	CInputJoypad *pJoypad = CInputJoypad::GetInstance();
@@ -125,11 +176,27 @@ void CInputManager::Update(void)
 		pMouse->Update();
 	}
 
+	for (auto it : s_aInputMgr)
+	{
+		if (it != nullptr)
+			it->Update();
+	}
+}
+
+//=====================================================
+// 更新処理
+//=====================================================
+void CInputManager::Update(void)
+{
+	CInputJoypad *pJoypad = CInputJoypad::GetInstance();
+	CInputKeyboard *pKeyboard = CInputKeyboard::GetInstance();
+	CInputMouse *pMouse = CInputMouse::GetInstance();
+
 	// エンター
 	m_info.abTrigger[BUTTON_ENTER] =
 	(
 		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_A, 0) ||
-		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_START, 0) ||
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_START, m_nID) ||
 		pMouse->GetTrigger(CInputMouse::BUTTON_LMB) ||
 		pKeyboard->GetTrigger(DIK_RETURN)
 	);
@@ -138,81 +205,81 @@ void CInputManager::Update(void)
 	m_info.abTrigger[BUTTON_BACK] =
 	(
 		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_B, 0) ||
-		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_BACK, 0) ||
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_BACK, m_nID) ||
 		pMouse->GetTrigger(CInputMouse::BUTTON_RMB)
 	);
 
 	// ポーズ
 	m_info.abTrigger[BUTTON_PAUSE] =
 	(
-		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_START, 0) ||
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_START, m_nID) ||
 		pKeyboard->GetTrigger(DIK_P)
 	);
 
 	// 上方向キー
 	m_info.abTrigger[BUTTON_AXIS_UP] =
 	(
-		pJoypad->GetLStickTrigger(CInputJoypad::DIRECTION_UP,0) || 
-		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_UP,0) ||
+		pJoypad->GetLStickTrigger(CInputJoypad::DIRECTION_UP, m_nID) ||
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_UP, m_nID) ||
 		pKeyboard->GetTrigger(DIK_W)
 	);
 
 	// 下方向キー
 	m_info.abTrigger[BUTTON_AXIS_DOWN] =
 	(
-		pJoypad->GetLStickTrigger(CInputJoypad::DIRECTION_DOWN, 0) ||
-		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_DOWN, 0) ||
+		pJoypad->GetLStickTrigger(CInputJoypad::DIRECTION_DOWN, m_nID) ||
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_DOWN, m_nID) ||
 		pKeyboard->GetTrigger(DIK_S)
 	);
 
 	// 左方向キー
 	m_info.abTrigger[BUTTON_AXIS_LEFT] =
 		(
-			pJoypad->GetLStickTrigger(CInputJoypad::DIRECTION_LEFT, 0) ||
-			pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_LEFT, 0) ||
+			pJoypad->GetLStickTrigger(CInputJoypad::DIRECTION_LEFT, m_nID) ||
+			pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_LEFT, m_nID) ||
 			pKeyboard->GetTrigger(DIK_A)
 		);
 
 	// 右方向キー
 	m_info.abTrigger[BUTTON_AXIS_RIGHT] =
 		(
-			pJoypad->GetLStickTrigger(CInputJoypad::DIRECTION_RIGHT, 0) ||
-			pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_RIGHT, 0) ||
+			pJoypad->GetLStickTrigger(CInputJoypad::DIRECTION_RIGHT, m_nID) ||
+			pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_RIGHT, m_nID) ||
 			pKeyboard->GetTrigger(DIK_D)
 		);
 
 	// 上方向弾き
 	m_info.abTrigger[BUTTON_TRIGGER_UP] =
 	(
-		pJoypad->GetRStickTrigger(CInputJoypad::DIRECTION_UP, 0) ||
-		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_UP, 0)
+		pJoypad->GetRStickTrigger(CInputJoypad::DIRECTION_UP, m_nID) ||
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_UP, m_nID)
 	);
 
 	// 下方向弾き
 	m_info.abTrigger[BUTTON_TRIGGER_DOWN] =
 	(
-		pJoypad->GetRStickTrigger(CInputJoypad::DIRECTION_DOWN, 0) ||
-		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_DOWN, 0)
+		pJoypad->GetRStickTrigger(CInputJoypad::DIRECTION_DOWN, m_nID) ||
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_DOWN, m_nID)
 	);
 
 	// 右方向弾き
 	m_info.abTrigger[BUTTON_TRIGGER_RIGHT] =
 	(
-		pJoypad->GetRStickTrigger(CInputJoypad::DIRECTION_RIGHT, 0) ||
-		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_RIGHT, 0)
+		pJoypad->GetRStickTrigger(CInputJoypad::DIRECTION_RIGHT, m_nID) ||
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_RIGHT, m_nID)
 	);
 
 	// 左方向弾き
 	m_info.abTrigger[BUTTON_TRIGGER_LEFT] =
 	(
-		pJoypad->GetRStickTrigger(CInputJoypad::DIRECTION_LEFT, 0) ||
-		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_LEFT, 0)
+		pJoypad->GetRStickTrigger(CInputJoypad::DIRECTION_LEFT, m_nID) ||
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_LEFT, m_nID)
 	);
 
 	// つつき
 	m_info.abTrigger[BUTTON_PECK] =
 	(
-		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_B, 0) ||
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_B, m_nID) ||
 		pKeyboard->GetTrigger(DIK_RETURN)
 	);
 
@@ -233,7 +300,7 @@ void CInputManager::Update(void)
 
 	// 移動方向の設定=============
 	// ジョイパッド
-	m_axis.axisMove = D3DXVECTOR3(pJoypad->GetJoyStickLX(0), 0.0f, pJoypad->GetJoyStickLY(0));
+	m_axis.axisMove = D3DXVECTOR3(pJoypad->GetJoyStickLX(m_nID), 0.0f, pJoypad->GetJoyStickLY(m_nID));
 
 	// キーボード
 	if (pKeyboard->GetPress(DIK_W))
@@ -257,7 +324,7 @@ void CInputManager::Update(void)
 		D3DXVec3Normalize(&m_axis.axisMove, &m_axis.axisMove);
 
 	// カメラの向く方向設定=============
-	m_axis.axisCamera += D3DXVECTOR3(pJoypad->GetJoyStickRX(0), -pJoypad->GetJoyStickRY(0), 0.0f);
+	m_axis.axisCamera += D3DXVECTOR3(pJoypad->GetJoyStickRX(m_nID), -pJoypad->GetJoyStickRY(m_nID), 0.0f);
 	m_axis.axisCamera += D3DXVECTOR3(pMouse->GetMoveIX(), pMouse->GetMoveIY(), 0.0f);
 
 	D3DXVec3Normalize(&m_axis.axisCamera, &m_axis.axisCamera);
