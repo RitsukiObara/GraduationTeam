@@ -73,6 +73,7 @@ public:
 	void SetPosMid(D3DXVECTOR3 pos) { m_posMid = pos; };
 	void AddPosMid(D3DXVECTOR3 pos) { m_posMid += pos; };
 	float GetTimeSecond(void) { return m_pTimer->GetSecond(); }
+	CScore* GetScore(void) { return m_pScore; };
 
 private:
 	// ƒƒ“ƒoŠÖ”

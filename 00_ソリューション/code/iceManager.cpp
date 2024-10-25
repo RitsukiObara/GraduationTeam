@@ -30,7 +30,7 @@ const float RATE_HEX_Z = 0.13f;	// ˜ZŠpŒ`‚ÌŠ„‡Z
 const float WIDTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_X;	// ƒOƒŠƒbƒh‚Ì•
 const float DEPTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_Z;	// ƒOƒŠƒbƒh‚Ì‰œs‚«
 const float OCEAN_FLOW_MIN = 1.00f;		// ŠC—¬‚Ì‘¬“xÅ¬
-const float OCEAN_FLOW_MAX = 5.00f;	// ŠC—¬‚Ì‘¬“xÅ‘å
+const float OCEAN_FLOW_MAX = 1.00f;	// ŠC—¬‚Ì‘¬“xÅ‘å
 
 const float RANGE_SELECT_ICE = D3DX_PI / 6;	// •X‚ð‘I‘ð‚·‚é‚Æ‚«‚ÌŠp“x‚Ì”ÍˆÍ
 }
@@ -451,7 +451,7 @@ void CIceManager::Collide(D3DXVECTOR3 *pPos, int nIdxV, int nIdxH)
 
 	D3DXVECTOR3 posGrid = m_aGrid[nIdxV][nIdxH].pos;
 
-	universal::LimitDistCylinderInSide(WIDTH_GRID * 0.6f, pPos, posGrid);
+	universal::LimitDistCylinderInSide(WIDTH_GRID * 0.7f, pPos, posGrid);
 }
 
 //=====================================================
@@ -464,7 +464,7 @@ void CIceManager::Collide(D3DXVECTOR3 *pPos, CIce *pIce)
 
 	D3DXVECTOR3 posGrid = pIce->GetPosition();
 
-	universal::LimitDistCylinderInSide(WIDTH_GRID * 0.6f, pPos, posGrid);
+	universal::LimitDistCylinderInSide(WIDTH_GRID * 0.7f, pPos, posGrid);
 }
 
 //=====================================================
@@ -797,6 +797,9 @@ void CIceManager::SummarizeIce(int nNumV, int nNumH)
 			continue;
 
 		if (apIce[i]->IsPeck())
+			continue;
+
+		if (!apIce[i]->IsBreak())
 			continue;
 
 		// —¬•XƒVƒXƒeƒ€‚Ì¶¬
@@ -1179,6 +1182,7 @@ bool CIceManager::IsInIce(D3DXVECTOR3 pos, CIce *pIce, float fRate)
 	D3DXVECTOR3 posIce = pIce->GetPosition();
 
 	D3DXVECTOR3 vecDiff = posIce - pos;
+	vecDiff.y = 0.0f;
 
 	float fDist = D3DXVec3Length(&vecDiff);
 

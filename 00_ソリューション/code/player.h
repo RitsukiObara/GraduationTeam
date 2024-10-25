@@ -105,6 +105,7 @@ private:
 	void SarchJumpIce(void);	// ジャンプ先の氷を探す
 	void StartJump(void);	// ジャンプの開始
 	void StayJump(void);	// ジャンプ中の処理
+	void LimitInSideFlowIce(void);	// 流氷の内側に制限
 	void EndJump(void);		// ジャンプの終了
 
 	void ManageMotion(void);	// モーションの管理
@@ -121,6 +122,7 @@ private:
 	float m_fTimerStartMove;	// 移動の立ち上がりのタイマー
 	STATE m_state;		// プレイヤー状態
 	CIce *m_pIceMoveDest;	// 移動目標の氷
+	CIce *m_pLandFlow;	// 漂流時に乗ってる氷のポインタ
 	CFlowIce *m_pLandSystemFlow;	// 乗ってる流氷システム
 	S_FragMotion m_fragMotion;	// モーションフラグ
 	CInputManager *m_pInputMgr;	// 入力マネージャー

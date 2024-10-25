@@ -292,25 +292,15 @@ void CScore::SetScaleNumber(float fScale)
 	TransformNumber();
 }
 
-////=====================================================
-//// 色の設定
-////=====================================================
-//void CScore::SetColor(E_Number number, D3DXCOLOR col)
-//{
-//	if (number < 0 || number > SCORE_DIGIT)
-//		return;
-//
-//	if (number == SCORE_DIGIT)
-//	{// 全数字の色設定
-//		for (auto it : m_aNumber)	// 数字
-//			it->SetColor(col);
-//	}
-//	else
-//	{// 各数字の色設定
-//		m_aNumber[number]->SetColor(col);
-//	}
-//}
-//
+//=====================================================
+// 色の設定
+//=====================================================
+void CScore::SetColor(D3DXCOLOR col)
+{
+	for (auto it : m_aNumber)	// 数字
+			it->SetColor(col);
+}
+
 ////=====================================================
 //// 色の取得
 ////=====================================================
