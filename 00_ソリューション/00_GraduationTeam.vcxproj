@@ -179,6 +179,7 @@
     <ClCompile Include="code\debris.cpp" />
     <ClCompile Include="code\debrisspawner.cpp" />
     <ClCompile Include="code\debugproc.cpp" />
+    <ClCompile Include="code\destroy_score.cpp" />
     <ClCompile Include="code\effect2D.cpp" />
     <ClCompile Include="code\effect3D.cpp" />
     <ClCompile Include="code\enemy.cpp" />
@@ -273,6 +274,7 @@
     <ClInclude Include="code\debris.h" />
     <ClInclude Include="code\debrisSpawner.h" />
     <ClInclude Include="code\debugproc.h" />
+    <ClInclude Include="code\destroy_score.h" />
     <ClInclude Include="code\effect2D.h" />
     <ClInclude Include="code\effect3D.h" />
     <ClInclude Include="code\enemy.h" />
