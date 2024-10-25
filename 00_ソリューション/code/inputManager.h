@@ -33,8 +33,10 @@ public:
 		BUTTON_TRIGGER_RIGHT,	// 右方向弾き
 		BUTTON_TRIGGER_LEFT,	// 左方向弾き
 		BUTTON_PECK,	// つつき
+		BUTTON_JUMP,	// ジャンプ
 		BUTTON_SCORE,	// スコア
 		BUTTON_RESULT,	// リザルト演出
+		BUTTON_SETICE,	// 氷設置
 		BUTTON_MAX
 	};
 	struct S_Axis

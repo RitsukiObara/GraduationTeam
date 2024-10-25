@@ -283,6 +283,13 @@ void CInputManager::Update(void)
 		pKeyboard->GetTrigger(DIK_RETURN)
 	);
 
+	// ジャンプ
+	m_info.abTrigger[BUTTON_JUMP] =
+	(
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_A, m_nID) ||
+		pKeyboard->GetTrigger(DIK_SPACE)
+	);
+
 	// スコア加算
 	m_info.abTrigger[BUTTON_SCORE] =
 	(
@@ -293,6 +300,13 @@ void CInputManager::Update(void)
 	m_info.abTrigger[BUTTON_RESULT] =
 	(
 		pKeyboard->GetTrigger(DIK_R)
+	);
+
+	// 氷設置
+	m_info.abTrigger[BUTTON_SETICE] =
+	(
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_RB, m_nID) ||
+		pKeyboard->GetTrigger(DIK_RSHIFT)
 	);
 
 	// 方向のリセット

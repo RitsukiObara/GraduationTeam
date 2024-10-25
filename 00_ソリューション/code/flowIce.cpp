@@ -24,13 +24,14 @@ const int NUM_ICE = 4;	// 氷の数
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
+vector<CFlowIce*> CFlowIce::s_vector;	// 格納用の配列
 
 //=====================================================
 // コンストラクタ
 //=====================================================
 CFlowIce::CFlowIce(int nPriority) : CObject(nPriority)
 {
-
+	s_vector.push_back(this);
 }
 
 //=====================================================
@@ -109,6 +110,16 @@ void CFlowIce::AddIceToArray(CIce *pIce)
 //=====================================================
 void CFlowIce::Uninit(void)
 {
+	for (auto itr = s_vector.begin(); itr < s_vector.end(); itr++)
+	{
+		if (*itr == this)
+		{
+			s_vector.erase(itr);
+
+			break;
+		}
+	}
+
 	Release();
 }
 

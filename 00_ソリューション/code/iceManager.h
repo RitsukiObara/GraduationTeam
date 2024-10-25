@@ -60,8 +60,10 @@ public:
 	bool FindIce(int nNumV, int nNumH, int nIdx,CIce *pIceStand,vector<CIce*> apIceLast,bool bBreak);	// アイスの発見
 	vector<CIce*> GetAroundIce(int nNumV, int nNumH);	// 周辺の氷を取得
 	void DeleteIce(CIce *pIce);	// 指定したポインタと同じ氷を削除する
-	void Collide(D3DXVECTOR3 *pPos,int nIdxV,int nIdxH);	// 外に出さない判定処理
+	void Collide(D3DXVECTOR3 *pPos, int nIdxV, int nIdxH);	// 外に出さない判定処理
+	void Collide(D3DXVECTOR3 *pPos, CIce *pice);	// 外に出さない判定処理
 	bool GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH,float fRate = 0.7f);	// グリッド番号を位置から取得する処理
+	bool IsInIce(D3DXVECTOR3 pos, CIce *pIce, float fRate = 0.7f);	// 氷に乗ってるかの判定
 	void SetIceInGrid(int nNumV, int nNumH, CIce *pIce);	// グリッドに氷を設定
 	void GetIceIndex(CIce *pIce, int *pNumV, int *pNumH);	// 氷のグリッド番号を取得
 	CIce* GetRightDownIdx(int *pNumV, int *pNumH);	// 右下の氷取得
@@ -74,6 +76,7 @@ public:
 	float GetOceanLevel(void) { return m_fOceanLevel; }	// 海流レベルの取得
 	E_Stream GetDirStream(void) { return m_dirStream; }	// 海流の方向取得
 	E_Stream GetDirStreamNext(void) { return m_dirStreamNext; }	// 次の海流の方向取得
+	vector<CIce*> GetFlows(void);	// 流れてる氷の取得
 
 	void SetDirStream(E_Stream direction) { m_dirStream = direction; }	// 海流の方向
 	void SetDirStreamNext(E_Stream directionNext) { m_dirStreamNext = directionNext; }	// 次の海流の方向
