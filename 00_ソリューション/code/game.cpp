@@ -48,6 +48,7 @@
 #include "flowIce.h"
 #include "BG_Ice.h"
 #include "flowIceFactory.h"
+#include "destroy_score.h"
 
 //*****************************************************
 // マクロ定義
@@ -187,8 +188,16 @@ void CGame::Uninit(void)
 void CGame::Update(void)
 {
 	CFade *pFade = CFade::GetInstance();
-	CInputManager *pInputManager = CInputManager::GetInstance();
+	CInputManager* pInputManager = CInputManager::GetInstance();
+	CInputKeyboard* pKeyboard = CInputKeyboard::GetInstance();
 	CSound* pSound = CSound::GetInstance();
+
+	// 敵を倒したスコア出す========================================
+	if (pKeyboard->GetTrigger(DIK_K))
+	{
+		//敵を倒した時のスコア生成
+		CDestroyScore::Create();
+	}
 
 	if (!m_bStop)
 	{
