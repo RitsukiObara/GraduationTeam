@@ -52,7 +52,7 @@ const float FACT_ROTATION_TURN = 0.2f;	// 振り向き回転係数
 // コンストラクタ
 //=====================================================
 CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(STATE_NONE), m_pIceMoveDest(nullptr), m_bEnableInput(false), m_fTimerStartMove(0.0f),
-m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f)
+m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f), m_pLandSystemFlow(nullptr)
 {
 
 }
@@ -144,15 +144,17 @@ void CPlayer::Uninit(void)
 //=====================================================
 void CPlayer::Update(void)
 {
-	// 目標の氷が死んでたらnullにする
 	if (m_pIceMoveDest != nullptr)
-	{
+	{// 目標の氷が死んでたらnullにする
 		if (m_pIceMoveDest->IsDeath())
 			m_pIceMoveDest = nullptr;
 	}
 
 	// 入力処理
 	Input();
+
+	if (m_state == STATE_FLOW)
+		StayFlow();	// 漂流中の処理
 
 	// モーションの管理
 	ManageMotion();
@@ -524,6 +526,65 @@ bool CPlayer::CheckGridChange(void)
 // 漂流の開始
 //=====================================================
 void CPlayer::StartFlows(void)
+{
+	if (FindFlowIce())
+	{// 漂流する氷が見つかれば、漂流状態へ移行
+		m_state = STATE::STATE_FLOW;
+	}
+}
+
+//=====================================================
+// 漂流する氷の検出
+//=====================================================
+bool CPlayer::FindFlowIce(void)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+	
+	if (pIceMgr == nullptr)
+		return false;
+
+	vector<CFlowIce*> apSystemFlow = CFlowIce::GetInstance();
+
+	for (auto itSystem : apSystemFlow)
+	{
+		if (itSystem == nullptr)
+			continue;
+
+		// 流氷システムが所持する氷の取得
+		vector<CIce*> apIce = itSystem->GetIce();
+
+		for (auto itIce : apIce)
+		{
+			D3DXVECTOR3 posPlayer = GetPosition();
+			D3DXVECTOR3 posIce = itIce->GetPosition();
+
+			if (pIceMgr->IsInIce(posPlayer, itIce))
+			{// どれかに乗っていたら現在のシステムを保存して関数を終了
+				m_pLandSystemFlow = itSystem;
+
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+//=====================================================
+// 漂流中の処理
+//=====================================================
+void CPlayer::StayFlow(void)
+{
+	if (m_pLandSystemFlow == nullptr)
+		return;
+
+
+}
+
+//=====================================================
+// 漂流の終了
+//=====================================================
+void CPlayer::EndFlows(void)
 {
 
 }

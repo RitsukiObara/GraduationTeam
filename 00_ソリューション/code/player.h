@@ -18,6 +18,7 @@
 class CPolygon3D;
 class CIce;
 class CInputManager;
+class CFlowIce;
 
 //*****************************************************
 // クラスの定義
@@ -42,6 +43,7 @@ public:
 	{
 		STATE_NONE = 0,	// 何でもない状態
 		STATE_NORMAL,	// 通常
+		STATE_FLOW,		// 流されている
 		STATE_DEATH,		// 死
 		STATE_INVINCIBLE,	// デバッグ向け無敵
 		STATE_MAX
@@ -95,7 +97,9 @@ private:
 	bool CheckGridChange(void);	// グリッドが変わったかどうかの判定
 	
 	void StartFlows(void);	// 漂流開始
-	void EndFlows(void);	// 漂流開始
+	bool FindFlowIce(void);	// 漂流する氷の検出
+	void StayFlow(void);	// 漂流中の処理
+	void EndFlows(void);	// 漂流終了
 
 	void InputJump(void);	// ジャンプの入力
 	void SarchJumpIce(void);	// ジャンプ先の氷を探す
@@ -117,6 +121,7 @@ private:
 	float m_fTimerStartMove;	// 移動の立ち上がりのタイマー
 	STATE m_state;		// プレイヤー状態
 	CIce *m_pIceMoveDest;	// 移動目標の氷
+	CFlowIce *m_pLandSystemFlow;	// 乗ってる流氷システム
 	S_FragMotion m_fragMotion;	// モーションフラグ
 	CInputManager *m_pInputMgr;	// 入力マネージャー
 };

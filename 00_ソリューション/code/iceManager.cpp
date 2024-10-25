@@ -455,6 +455,19 @@ void CIceManager::Collide(D3DXVECTOR3 *pPos, int nIdxV, int nIdxH)
 }
 
 //=====================================================
+// ŠO‚Éo‚³‚È‚¢‚æ‚¤‚É‚·‚é”»’è
+//=====================================================
+void CIceManager::Collide(D3DXVECTOR3 *pPos, CIce *pIce)
+{
+	if (pPos == nullptr)
+		return;
+
+	D3DXVECTOR3 posGrid = pIce->GetPosition();
+
+	universal::LimitDistCylinderInSide(WIDTH_GRID * 0.6f, pPos, posGrid);
+}
+
+//=====================================================
 // •X“à‚ÉŽû‚ß‚éˆ—
 //=====================================================
 void CIceManager::LimitInIce(D3DXVECTOR3 *pPos, int nNumV, int nNumH)
@@ -1152,6 +1165,26 @@ bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH
 				return true;
 			}
 		}
+	}
+
+	return false;
+}
+
+//=====================================================
+// •X“à”»’è
+//=====================================================
+bool CIceManager::IsInIce(D3DXVECTOR3 pos, CIce *pIce, float fRate)
+{
+	// ‹——£‚ÌŒvŽZ
+	D3DXVECTOR3 posIce = pIce->GetPosition();
+
+	D3DXVECTOR3 vecDiff = posIce - pos;
+
+	float fDist = D3DXVec3Length(&vecDiff);
+
+	if (fDist < WIDTH_GRID * fRate)
+	{// •X‚ÌƒTƒCƒY•ª‚Ì”¼Œa‚æ‚è¬‚³‚©‚Á‚½‚çæ‚Á‚Ä‚é”»’è
+		return true;
 	}
 
 	return false;

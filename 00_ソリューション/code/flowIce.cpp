@@ -110,10 +110,14 @@ void CFlowIce::AddIceToArray(CIce *pIce)
 //=====================================================
 void CFlowIce::Uninit(void)
 {
-	for (auto it = s_vector.begin(); it < s_vector.end(); it++)
+	for (auto itr = s_vector.begin(); itr < s_vector.end(); itr++)
 	{
-		if (*it == this)
-			s_vector.erase(it);
+		if (*itr == this)
+		{
+			s_vector.erase(itr);
+
+			break;
+		}
 	}
 
 	Release();
