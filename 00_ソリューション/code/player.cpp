@@ -52,7 +52,7 @@ const float FACT_ROTATION_TURN = 0.2f;	// U‚èŒü‚«‰ñ“]ŒW”
 // ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 //=====================================================
 CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(STATE_NONE), m_pIceMoveDest(nullptr), m_bEnableInput(false), m_fTimerStartMove(0.0f),
-m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f), m_pLandSystemFlow(nullptr)
+m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f), m_pLandSystemFlow(nullptr), m_pLandFlow(nullptr)
 {
 
 }
@@ -627,9 +627,19 @@ void CPlayer::LimitInSideFlowIce(void)
 		if (pIceMgr->IsInIce(posPlayer, itIce,0.7f))
 		{// ã‚Éæ‚Á‚Ä‚½‚çˆÊ’u‚ð§ŒÀ
 			pIceMgr->Collide(&posPlayer, itIce);
+			posPlayer.y = posIce.y;
 			SetPosition(posPlayer);
-			break;
+			m_pLandFlow = itIce;
+			return;
 		}
+	}
+
+	if (m_pLandFlow != nullptr)
+	{// ‚à‚µ‚Ç‚Ì•X‚É‚àˆø‚Á‚©‚©‚ç‚È‚¯‚ê‚ÎA‘O‰ñ‚Ì•X‚Æ‚Ì”»’è‚ðs‚¤
+		D3DXVECTOR3 posPlayer = GetPosition();
+		pIceMgr->Collide(&posPlayer, m_pLandFlow);
+		posPlayer.y = m_pLandFlow->GetPosition().y;
+		SetPosition(posPlayer);
 	}
 }
 
