@@ -1104,6 +1104,26 @@ CIce* CIceManager::GetGridIce(int* pNumV, int* pNumH)
 }
 
 //=====================================================
+// 浮いてる氷の取得
+//=====================================================
+vector<CIce*> CIceManager::GetFlows(void)
+{
+	vector<CIce*> apIceFlows;
+	vector<CIce*> apIce = CIce::GetInstance();
+
+	for (auto it : apIce)
+	{
+		if (it == nullptr)
+			continue;
+
+		if (!it->IsStop())	// 停止していなければ保存
+			apIceFlows.push_back(it);
+	}
+
+	return apIceFlows;
+}
+
+//=====================================================
 // 位置からグリッド番号を取得する処理
 //=====================================================
 bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH, float fRate)

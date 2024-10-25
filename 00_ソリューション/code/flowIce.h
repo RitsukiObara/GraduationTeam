@@ -34,9 +34,11 @@ public:
 
 	// 変数設定・取得処理
 	void AddIceToArray(CIce *pIce);
-
+	vector<CIce*> GetIce(void) { return m_apIce; }	// 氷の取得
+	
 	// 静的メンバ関数
 	static CFlowIce *Create(void);	// 生成処理
+	static vector<CFlowIce*> GetInstance(void) { return s_vector; }	// インスタンス取得
 
 private:
 	// メンバ関数
@@ -47,6 +49,9 @@ private:
 
 	// メンバ変数
 	vector<CIce*> m_apIce;	// 氷の配列
+
+	// 静的メンバ変数
+	static vector<CFlowIce*> s_vector;	// 格納用の配列
 };
 
 #endif

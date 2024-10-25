@@ -177,7 +177,13 @@ void CPlayer::Input(void)
 
 		// 突っつきの入力
 		InputPeck();
+
+		// ジャンプの処理
+		InputJump();
 	}
+
+	if (false)
+		StayJump();	// ジャンプ中の処理
 }
 
 //=====================================================
@@ -486,15 +492,20 @@ bool CPlayer::CheckGridChange(void)
 	D3DXVECTOR3 pos = GetPosition();
 	pIceMgr->GetIdxGridFromPosition(pos, &nIdxV, &nIdxH, RATE_CHANGE_GRID);
 
-	if(m_state != STATE::STATE_INVINCIBLE &&
+	if (m_state != STATE::STATE_INVINCIBLE &&
 		pIceMgr->GetGridIce(&nIdxV, &nIdxH) == nullptr)
-		return false;	// 無敵状態でない場合、氷がないグリッドの上に行っても番号を変えない
+	{// 無敵状態でない場合、氷がないグリッドの上に行っても番号を変えない
+		return false;
+	}
 
 	if ((nIdxV == m_nGridV &&
 		nIdxH == m_nGridH) ||
 		nIdxV == -1 ||
 		nIdxH == -1)
 	{// グリッドが変わってない時は偽を返す
+		// 漂流を開始
+		StartFlows();
+
 		return false;
 	}
 	else
@@ -507,6 +518,14 @@ bool CPlayer::CheckGridChange(void)
 #endif
 		return true;
 	}
+}
+
+//=====================================================
+// 漂流の開始
+//=====================================================
+void CPlayer::StartFlows(void)
+{
+
 }
 
 //=====================================================
@@ -533,6 +552,65 @@ void CPlayer::InputPeck(void)
 
 		pIceManager->PeckIce(m_nGridV, m_nGridH, rot.y, pos);
 	}
+}
+
+//=====================================================
+// ジャンプの入力
+//=====================================================
+void CPlayer::InputJump(void)
+{
+	//if (m_pInputMgr == nullptr)
+	return;
+
+	if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_JUMP))
+		SarchJumpIce();	// ジャンプ先の氷を探す
+}
+
+//=====================================================
+// ジャンプ先の氷を探す
+//=====================================================
+void CPlayer::SarchJumpIce(void)
+{
+	// プレイヤーの先から扇で判定をとる
+
+	if (true)
+		StartJump();	// 流れてる氷があればジャンプを開始
+}
+
+//=====================================================
+// ジャンプの開始
+//=====================================================
+void CPlayer::StartJump(void)
+{
+	// ジャンプモーションフラグを立てる
+
+
+	// 入力を無効化
+	EnableInput(false);
+}
+
+//=====================================================
+// ジャンプ中の処理
+//=====================================================
+void CPlayer::StayJump(void)
+{
+	// 目標の氷に向かって移動
+
+
+	// 氷に着地したらジャンプを終了
+	EndJump();
+}
+
+//=====================================================
+// ジャンプの終了
+//=====================================================
+void CPlayer::EndJump(void)
+{
+	// ジャンプモーションフラグを折る
+
+
+	// 入力を有効化
+	EnableInput(true);
 }
 
 //=====================================================

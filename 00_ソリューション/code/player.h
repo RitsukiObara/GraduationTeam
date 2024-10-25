@@ -75,7 +75,9 @@ private:
 
 	// メンバ関数
 	void InitGridIdx(void);	// グリッド番号の初期化
+	
 	void Input(void);	// 入力
+	
 	void MoveAnalog(void);	// アナログ移動
 	void InputMoveAnalog(void);	// アナログ移動入力
 	void DisableTurn(void);	// 振り返りの無効化
@@ -83,12 +85,26 @@ private:
 	void DecreaseMove(void);	// 移動量の減衰
 	void FactingRot(void);	// 向きの補正
 	void JudgeTurn(void);	// 振り向きの検出
+	
 	void CollideIce(void);	// 氷との判定
+
+	void InputPeck(void);	// 突っつきの入力
+	
 	CIce *SelectIceByRot(float fRot);	// 氷を向きで取得
 	void WalkToDestIce(CIce *pIceDest);	// 目標の氷に向かって移動する処理
 	bool CheckGridChange(void);	// グリッドが変わったかどうかの判定
-	void InputPeck(void);	// 突っつきの入力
+	
+	void StartFlows(void);	// 漂流開始
+	void EndFlows(void);	// 漂流開始
+
+	void InputJump(void);	// ジャンプの入力
+	void SarchJumpIce(void);	// ジャンプ先の氷を探す
+	void StartJump(void);	// ジャンプの開始
+	void StayJump(void);	// ジャンプ中の処理
+	void EndJump(void);		// ジャンプの終了
+
 	void ManageMotion(void);	// モーションの管理
+
 	void Debug(void);	// デバッグ処理
 
 	// メンバ変数

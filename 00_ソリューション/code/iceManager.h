@@ -74,6 +74,7 @@ public:
 	float GetOceanLevel(void) { return m_fOceanLevel; }	// ŠC—¬ƒŒƒxƒ‹‚ÌŽæ“¾
 	E_Stream GetDirStream(void) { return m_dirStream; }	// ŠC—¬‚Ì•ûŒüŽæ“¾
 	E_Stream GetDirStreamNext(void) { return m_dirStreamNext; }	// ŽŸ‚ÌŠC—¬‚Ì•ûŒüŽæ“¾
+	vector<CIce*> GetFlows(void);	// —¬‚ê‚Ä‚é•X‚ÌŽæ“¾
 
 	void SetDirStream(E_Stream direction) { m_dirStream = direction; }	// ŠC—¬‚Ì•ûŒü
 	void SetDirStreamNext(E_Stream directionNext) { m_dirStreamNext = directionNext; }	// ŽŸ‚ÌŠC—¬‚Ì•ûŒü
