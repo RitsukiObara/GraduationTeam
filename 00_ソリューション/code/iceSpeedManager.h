@@ -1,7 +1,7 @@
 //*****************************************************
 //
-// 流氷の処理[flowIce.h]
-// Author:髙山桃也
+// 流氷が流れてくる処理[iceSpeedManager.h]
+// Author:若木 一真
 //
 //*****************************************************
 #ifndef _ICESPEEDMANAGER_H_
@@ -28,6 +28,15 @@ class CIce;
 class CIceSpeedManager : public CObject
 {
 public:
+
+	// 氷の構造体
+	typedef struct
+	{
+		int nIdx;
+		int nIdxParent;
+		CIce* pIce;
+	}Ice;
+
 	CIceSpeedManager(int nPriority = 2);	// コンストラクタ
 	~CIceSpeedManager();	// デストラクタ
 
@@ -52,7 +61,9 @@ private:
 	void Debug(void);	// デバッグ処理
 
 	// メンバ変数
-	vector<CIce*> m_apIce;	// 氷の配列
+	int m_nNumIce;	// 氷の総数
+	Ice* m_apIce[MAX_ICEFLOW];	// 氷の構造体
+	vector<CIce*> m_apIceSpeed;	// 氷速度の配列
 };
 
 #endif
