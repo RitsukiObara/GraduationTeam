@@ -283,6 +283,13 @@ void CInputManager::Update(void)
 		pKeyboard->GetTrigger(DIK_RETURN)
 	);
 
+	// ジャンプ
+	m_info.abTrigger[BUTTON_JUMP] =
+	(
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_A, m_nID) ||
+		pKeyboard->GetTrigger(DIK_SPACE)
+	);
+
 	// スコア加算
 	m_info.abTrigger[BUTTON_SCORE] =
 	(

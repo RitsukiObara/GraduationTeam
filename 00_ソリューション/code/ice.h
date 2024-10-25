@@ -80,7 +80,6 @@ public:
 
 private:
 	// ƒƒ“ƒoŠÖ”
-	void Flows(void);	// —¬‚ê‚éˆ—
 	void FollowWave(void);	// ”g‚É’Ç]‚·‚éˆ—
 
 	// ƒƒ“ƒo•Ï”
