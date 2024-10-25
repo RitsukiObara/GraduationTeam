@@ -73,7 +73,7 @@ public:
 	bool IsStop(void) { return m_bStop; }
 	CFan3D *GetFan3D(void) { return m_pUp; }	// 上側の扇ポリゴン取得
 
-	// 静的メンバ関数
+	// 静的メンバ関数W
 	static CIce *Create(E_Type type = E_Type::TYPE_NORMAL, E_State state = E_State::STATE_FLOWS);	// 生成処理
 	static int GetNumAll(void) { return s_nNumAll; }	// 総数取得
 	static std::vector<CIce*> GetInstance(void) { return m_Vector; }

@@ -196,7 +196,7 @@ void CPlayer::MoveAnalog(void)
 	// アナログ移動入力
 	InputMoveAnalog();
 
-	if(m_state != STATE::STATE_INVINCIBLE)	// 無敵時は行わない
+	if(m_state != STATE::STATE_INVINCIBLE && m_state != STATE::STATE_FLOW)	// 無敵時は行わない
 		CollideIce();	// 氷との判定
 }
 
@@ -497,6 +497,9 @@ bool CPlayer::CheckGridChange(void)
 	if (m_state != STATE::STATE_INVINCIBLE &&
 		pIceMgr->GetGridIce(&nIdxV, &nIdxH) == nullptr)
 	{// 無敵状態でない場合、氷がないグリッドの上に行っても番号を変えない
+		// 漂流を開始
+		StartFlows();
+
 		return false;
 	}
 
@@ -505,9 +508,6 @@ bool CPlayer::CheckGridChange(void)
 		nIdxV == -1 ||
 		nIdxH == -1)
 	{// グリッドが変わってない時は偽を返す
-		// 漂流を開始
-		StartFlows();
-
 		return false;
 	}
 	else
@@ -558,7 +558,7 @@ bool CPlayer::FindFlowIce(void)
 			D3DXVECTOR3 posPlayer = GetPosition();
 			D3DXVECTOR3 posIce = itIce->GetPosition();
 
-			if (pIceMgr->IsInIce(posPlayer, itIce))
+			if (pIceMgr->IsInIce(posPlayer, itIce, 0.7f))
 			{// どれかに乗っていたら現在のシステムを保存して関数を終了
 				m_pLandSystemFlow = itSystem;
 
@@ -575,10 +575,62 @@ bool CPlayer::FindFlowIce(void)
 //=====================================================
 void CPlayer::StayFlow(void)
 {
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
 	if (m_pLandSystemFlow == nullptr)
 		return;
 
+	if (m_pLandSystemFlow->IsDeath())
+	{
+		// 漂流の終了
+		EndFlows();
+	}
 
+	// 海流のベクトル取得
+	CIceManager::E_Stream dir = pIceMgr->GetDirStream();
+	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[dir];
+
+	// 流れる速度に正規化して位置を加算
+	float fSpeedFlow = pIceMgr->GetOceanLevel();
+	D3DXVec3Normalize(&vecStream, &vecStream);
+	vecStream *= fSpeedFlow;
+	AddPosition(vecStream);
+
+	// 流氷内に位置を制限
+	LimitInSideFlowIce();
+}
+
+//=====================================================
+// 流氷の内側に制限
+//=====================================================
+void CPlayer::LimitInSideFlowIce(void)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	if (m_pLandSystemFlow == nullptr)
+		return;
+
+	// 流氷システムが所持する氷の取得
+	vector<CIce*> apIce = m_pLandSystemFlow->GetIce();
+
+	for (auto itIce : apIce)
+	{
+		D3DXVECTOR3 posPlayer = GetPosition();
+		D3DXVECTOR3 posIce = itIce->GetPosition();
+
+		if (pIceMgr->IsInIce(posPlayer, itIce,0.7f))
+		{// 上に乗ってたら位置を制限
+			pIceMgr->Collide(&posPlayer, itIce);
+			SetPosition(posPlayer);
+			break;
+		}
+	}
 }
 
 //=====================================================
@@ -586,7 +638,8 @@ void CPlayer::StayFlow(void)
 //=====================================================
 void CPlayer::EndFlows(void)
 {
-
+	m_state = STATE::STATE_NORMAL;
+	m_pLandSystemFlow = nullptr;
 }
 
 //=====================================================

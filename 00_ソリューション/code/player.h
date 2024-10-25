@@ -105,6 +105,7 @@ private:
 	void SarchJumpIce(void);	// ジャンプ先の氷を探す
 	void StartJump(void);	// ジャンプの開始
 	void StayJump(void);	// ジャンプ中の処理
+	void LimitInSideFlowIce(void);	// 流氷の内側に制限
 	void EndJump(void);		// ジャンプの終了
 
 	void ManageMotion(void);	// モーションの管理
