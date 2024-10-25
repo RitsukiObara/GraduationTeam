@@ -27,7 +27,6 @@
 //*****************************************************
 namespace
 {
-const float SPEED_FLOWS = 1.0f;	// 流れる速度
 const string PATH_TEX = "data\\TEXTURE\\UI\\ice.png";	// テクスチャパス
 const float SIZE_INIT = 100.0f;	// 初期サイズ
 const float HEIGHT_ICE = 50.0f;	// 氷の高さ
@@ -192,14 +191,6 @@ void CIce::Update(void)
 }
 
 //=====================================================
-// 流れる処理
-//=====================================================
-void CIce::Flows(void)
-{
-	AddPosition(D3DXVECTOR3(SPEED_FLOWS, 0.0f, 0.0f));
-}
-
-//=====================================================
 // 波に追従する処理
 //=====================================================
 void CIce::FollowWave(void)
@@ -355,10 +346,11 @@ void CIceStaeteNormal::MoveToGrid(CIce *pIce)
 	D3DXVECTOR3 posIce = pIce->GetPosition();
 
 	// 差分ベクトルを漂流速度に正規化
+	float fSpeedFlow = pIceMgr->GetOceanLevel();
 	D3DXVECTOR3 vecDiff = posGrid - posIce;
 	D3DXVec3Normalize(&vecDiff, &vecDiff);
 
-	vecDiff *= SPEED_FLOWS;
+	vecDiff *= fSpeedFlow;
 
 	// 氷の位置に移動量を加算
 	pIce->AddPosition(vecDiff);
@@ -537,8 +529,9 @@ void CIceStateFlow::UpdateSarchIce(CIce *pIce)
 	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[dir];
 
 	// 流れる速度に正規化して位置を加算
+	float fSpeedFlow = pIceManager->GetOceanLevel();
 	D3DXVec3Normalize(&vecStream, &vecStream);
-	vecStream *= SPEED_FLOWS;
+	vecStream *= fSpeedFlow;
 	pIce->AddPosition(vecStream);
 
 	// 氷との判定
@@ -567,8 +560,9 @@ void CIceStateFlow::UpdateDriftIce(CIce *pIce)
 	D3DXVECTOR3 vecDiff = posDrift - posIce;
 
 	// 流れる速度に正規化して位置を加算
+	float fSpeedFlow = pIceManager->GetOceanLevel();
 	D3DXVec3Normalize(&vecDiff, &vecDiff);
-	vecDiff *= SPEED_FLOWS;
+	vecDiff *= fSpeedFlow;
 	pIce->AddPosition(vecDiff);
 
 	// グリッドの位置との距離がしきい値を下回ったら止める

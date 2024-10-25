@@ -52,7 +52,7 @@ const float FACT_ROTATION_TURN = 0.2f;	// 振り向き回転係数
 // コンストラクタ
 //=====================================================
 CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(STATE_NONE), m_pIceMoveDest(nullptr), m_bEnableInput(false), m_fTimerStartMove(0.0f),
-m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f)
+m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f), m_pLandSystemFlow(nullptr), m_pLandFlow(nullptr)
 {
 
 }
@@ -144,15 +144,17 @@ void CPlayer::Uninit(void)
 //=====================================================
 void CPlayer::Update(void)
 {
-	// 目標の氷が死んでたらnullにする
 	if (m_pIceMoveDest != nullptr)
-	{
+	{// 目標の氷が死んでたらnullにする
 		if (m_pIceMoveDest->IsDeath())
 			m_pIceMoveDest = nullptr;
 	}
 
 	// 入力処理
 	Input();
+
+	if (m_state == STATE_FLOW)
+		StayFlow();	// 漂流中の処理
 
 	// モーションの管理
 	ManageMotion();
@@ -177,7 +179,13 @@ void CPlayer::Input(void)
 
 		// 突っつきの入力
 		InputPeck();
+
+		// ジャンプの処理
+		InputJump();
 	}
+
+	if (false)
+		StayJump();	// ジャンプ中の処理
 }
 
 //=====================================================
@@ -188,7 +196,7 @@ void CPlayer::MoveAnalog(void)
 	// アナログ移動入力
 	InputMoveAnalog();
 
-	if(m_state != STATE::STATE_INVINCIBLE)	// 無敵時は行わない
+	if(m_state != STATE::STATE_INVINCIBLE && m_state != STATE::STATE_FLOW)	// 無敵時は行わない
 		CollideIce();	// 氷との判定
 }
 
@@ -486,9 +494,14 @@ bool CPlayer::CheckGridChange(void)
 	D3DXVECTOR3 pos = GetPosition();
 	pIceMgr->GetIdxGridFromPosition(pos, &nIdxV, &nIdxH, RATE_CHANGE_GRID);
 
-	if(m_state != STATE::STATE_INVINCIBLE &&
+	if (m_state != STATE::STATE_INVINCIBLE &&
 		pIceMgr->GetGridIce(&nIdxV, &nIdxH) == nullptr)
-		return false;	// 無敵状態でない場合、氷がないグリッドの上に行っても番号を変えない
+	{// 無敵状態でない場合、氷がないグリッドの上に行っても番号を変えない
+		// 漂流を開始
+		StartFlows();
+
+		return false;
+	}
 
 	if ((nIdxV == m_nGridV &&
 		nIdxH == m_nGridH) ||
@@ -507,6 +520,136 @@ bool CPlayer::CheckGridChange(void)
 #endif
 		return true;
 	}
+}
+
+//=====================================================
+// 漂流の開始
+//=====================================================
+void CPlayer::StartFlows(void)
+{
+	if (FindFlowIce())
+	{// 漂流する氷が見つかれば、漂流状態へ移行
+		m_state = STATE::STATE_FLOW;
+	}
+}
+
+//=====================================================
+// 漂流する氷の検出
+//=====================================================
+bool CPlayer::FindFlowIce(void)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+	
+	if (pIceMgr == nullptr)
+		return false;
+
+	vector<CFlowIce*> apSystemFlow = CFlowIce::GetInstance();
+
+	for (auto itSystem : apSystemFlow)
+	{
+		if (itSystem == nullptr)
+			continue;
+
+		// 流氷システムが所持する氷の取得
+		vector<CIce*> apIce = itSystem->GetIce();
+
+		for (auto itIce : apIce)
+		{
+			D3DXVECTOR3 posPlayer = GetPosition();
+			D3DXVECTOR3 posIce = itIce->GetPosition();
+
+			if (pIceMgr->IsInIce(posPlayer, itIce, 0.7f))
+			{// どれかに乗っていたら現在のシステムを保存して関数を終了
+				m_pLandSystemFlow = itSystem;
+
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+//=====================================================
+// 漂流中の処理
+//=====================================================
+void CPlayer::StayFlow(void)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	if (m_pLandSystemFlow == nullptr)
+		return;
+
+	if (m_pLandSystemFlow->IsDeath())
+	{
+		// 漂流の終了
+		EndFlows();
+	}
+
+	// 海流のベクトル取得
+	CIceManager::E_Stream dir = pIceMgr->GetDirStream();
+	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[dir];
+
+	// 流れる速度に正規化して位置を加算
+	float fSpeedFlow = pIceMgr->GetOceanLevel();
+	D3DXVec3Normalize(&vecStream, &vecStream);
+	vecStream *= fSpeedFlow;
+	AddPosition(vecStream);
+
+	// 流氷内に位置を制限
+	LimitInSideFlowIce();
+}
+
+//=====================================================
+// 流氷の内側に制限
+//=====================================================
+void CPlayer::LimitInSideFlowIce(void)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	if (m_pLandSystemFlow == nullptr)
+		return;
+
+	// 流氷システムが所持する氷の取得
+	vector<CIce*> apIce = m_pLandSystemFlow->GetIce();
+
+	for (auto itIce : apIce)
+	{
+		D3DXVECTOR3 posPlayer = GetPosition();
+		D3DXVECTOR3 posIce = itIce->GetPosition();
+
+		if (pIceMgr->IsInIce(posPlayer, itIce,0.7f))
+		{// 上に乗ってたら位置を制限
+			pIceMgr->Collide(&posPlayer, itIce);
+			posPlayer.y = posIce.y;
+			SetPosition(posPlayer);
+			m_pLandFlow = itIce;
+			return;
+		}
+	}
+
+	if (m_pLandFlow != nullptr)
+	{// もしどの氷にも引っかからなければ、前回の氷との判定を行う
+		D3DXVECTOR3 posPlayer = GetPosition();
+		pIceMgr->Collide(&posPlayer, m_pLandFlow);
+		posPlayer.y = m_pLandFlow->GetPosition().y;
+		SetPosition(posPlayer);
+	}
+}
+
+//=====================================================
+// 漂流の終了
+//=====================================================
+void CPlayer::EndFlows(void)
+{
+	m_state = STATE::STATE_NORMAL;
+	m_pLandSystemFlow = nullptr;
 }
 
 //=====================================================
@@ -533,6 +676,65 @@ void CPlayer::InputPeck(void)
 
 		pIceManager->PeckIce(m_nGridV, m_nGridH, rot.y, pos);
 	}
+}
+
+//=====================================================
+// ジャンプの入力
+//=====================================================
+void CPlayer::InputJump(void)
+{
+	//if (m_pInputMgr == nullptr)
+	return;
+
+	if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_JUMP))
+		SarchJumpIce();	// ジャンプ先の氷を探す
+}
+
+//=====================================================
+// ジャンプ先の氷を探す
+//=====================================================
+void CPlayer::SarchJumpIce(void)
+{
+	// プレイヤーの先から扇で判定をとる
+
+	if (true)
+		StartJump();	// 流れてる氷があればジャンプを開始
+}
+
+//=====================================================
+// ジャンプの開始
+//=====================================================
+void CPlayer::StartJump(void)
+{
+	// ジャンプモーションフラグを立てる
+
+
+	// 入力を無効化
+	EnableInput(false);
+}
+
+//=====================================================
+// ジャンプ中の処理
+//=====================================================
+void CPlayer::StayJump(void)
+{
+	// 目標の氷に向かって移動
+
+
+	// 氷に着地したらジャンプを終了
+	EndJump();
+}
+
+//=====================================================
+// ジャンプの終了
+//=====================================================
+void CPlayer::EndJump(void)
+{
+	// ジャンプモーションフラグを折る
+
+
+	// 入力を有効化
+	EnableInput(true);
 }
 
 //=====================================================

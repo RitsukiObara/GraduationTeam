@@ -191,7 +191,6 @@
     <ClCompile Include="code\ice.cpp" />
     <ClCompile Include="code\iceHard.cpp" />
     <ClCompile Include="code\iceManager.cpp" />
-    <ClCompile Include="code\iceSpeedManager.cpp" />
     <ClCompile Include="code\logo.cpp" />
     <ClCompile Include="code\meshCube.cpp" />
     <ClCompile Include="code\MyEffekseer.cpp" />
@@ -286,7 +285,6 @@
     <ClInclude Include="code\ice.h" />
     <ClInclude Include="code\iceHard.h" />
     <ClInclude Include="code\iceManager.h" />
-    <ClInclude Include="code\iceSpeedManager.h" />
     <ClInclude Include="code\logo.h" />
     <ClInclude Include="code\meshCube.h" />
     <ClInclude Include="code\MyEffekseer.h" />

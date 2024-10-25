@@ -318,9 +318,6 @@
     <ClCompile Include="code\flowIceFactory.cpp">
       <Filter>ソース ファイル\factory</Filter>
     </ClCompile>
-    <ClCompile Include="code\iceSpeedManager.cpp">
-      <Filter>ソース ファイル\gameobject</Filter>
-    </ClCompile>
     <ClCompile Include="code\destroy_score.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
@@ -595,9 +592,6 @@
     </ClInclude>
     <ClInclude Include="code\flowIceFactory.h">
       <Filter>ソース ファイル\factory</Filter>
-    </ClInclude>
-    <ClInclude Include="code\iceSpeedManager.h">
-      <Filter>ソース ファイル\gameobject</Filter>
     </ClInclude>
     <ClInclude Include="code\destroy_score.h">
       <Filter>ソース ファイル\UI</Filter>

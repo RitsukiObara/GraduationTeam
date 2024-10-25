@@ -30,7 +30,7 @@ const float RATE_HEX_Z = 0.13f;	// 六角形の割合Z
 const float WIDTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_X;	// グリッドの幅
 const float DEPTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_Z;	// グリッドの奥行き
 const float OCEAN_FLOW_MIN = 1.00f;		// 海流の速度最小
-const float OCEAN_FLOW_MAX = 5.00f;	// 海流の速度最大
+const float OCEAN_FLOW_MAX = 1.00f;	// 海流の速度最大
 
 const float RANGE_SELECT_ICE = D3DX_PI / 6;	// 氷を選択するときの角度の範囲
 }
@@ -451,7 +451,20 @@ void CIceManager::Collide(D3DXVECTOR3 *pPos, int nIdxV, int nIdxH)
 
 	D3DXVECTOR3 posGrid = m_aGrid[nIdxV][nIdxH].pos;
 
-	universal::LimitDistCylinderInSide(WIDTH_GRID * 0.6f, pPos, posGrid);
+	universal::LimitDistCylinderInSide(WIDTH_GRID * 0.7f, pPos, posGrid);
+}
+
+//=====================================================
+// 外に出さないようにする判定
+//=====================================================
+void CIceManager::Collide(D3DXVECTOR3 *pPos, CIce *pIce)
+{
+	if (pPos == nullptr)
+		return;
+
+	D3DXVECTOR3 posGrid = pIce->GetPosition();
+
+	universal::LimitDistCylinderInSide(WIDTH_GRID * 0.7f, pPos, posGrid);
 }
 
 //=====================================================
@@ -786,6 +799,9 @@ void CIceManager::SummarizeIce(int nNumV, int nNumH)
 		if (apIce[i]->IsPeck())
 			continue;
 
+		if (!apIce[i]->IsBreak())
+			continue;
+
 		// 流氷システムの生成
 		CFlowIce *pFlowIce = CFlowIce::Create();
 
@@ -1104,6 +1120,26 @@ CIce* CIceManager::GetGridIce(int* pNumV, int* pNumH)
 }
 
 //=====================================================
+// 浮いてる氷の取得
+//=====================================================
+vector<CIce*> CIceManager::GetFlows(void)
+{
+	vector<CIce*> apIceFlows;
+	vector<CIce*> apIce = CIce::GetInstance();
+
+	for (auto it : apIce)
+	{
+		if (it == nullptr)
+			continue;
+
+		if (!it->IsStop())	// 停止していなければ保存
+			apIceFlows.push_back(it);
+	}
+
+	return apIceFlows;
+}
+
+//=====================================================
 // 位置からグリッド番号を取得する処理
 //=====================================================
 bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH, float fRate)
@@ -1132,6 +1168,27 @@ bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH
 				return true;
 			}
 		}
+	}
+
+	return false;
+}
+
+//=====================================================
+// 氷内判定
+//=====================================================
+bool CIceManager::IsInIce(D3DXVECTOR3 pos, CIce *pIce, float fRate)
+{
+	// 距離の計算
+	D3DXVECTOR3 posIce = pIce->GetPosition();
+
+	D3DXVECTOR3 vecDiff = posIce - pos;
+	vecDiff.y = 0.0f;
+
+	float fDist = D3DXVec3Length(&vecDiff);
+
+	if (fDist < WIDTH_GRID * fRate)
+	{// 氷のサイズ分の半径より小さかったら乗ってる判定
+		return true;
 	}
 
 	return false;
