@@ -22,7 +22,6 @@ namespace
 	const int	SCORE_MIN = 0;	// 最少スコア
 	const int	SCORE_MAX = 999999;	// 最大スコア
 	const int SCORE_LIMIT = 9;	// スコアの上限値
-	//const int SCORE_DIGIT = 6;	// スコア表示の桁数
 	const float DIST_NUMBER = 0.01f;	// 数字間の距離
 	D3DXVECTOR2 SIZE_NORMAL_NUM = { 0.02f, 0.06f };	// 通常数字のサイズ
 	D3DXVECTOR2 SIZE_MINI_NUM = { 0.014f, 0.028f };	// ミニ数字のサイズ
@@ -161,22 +160,11 @@ void CScore::UpdateNumber()
 	if (m_aNumber.empty())
 		return;
 
-	//// 値の用意
-	//int aValue[SCORE_DIGIT] =
-	//{
-	//	(m_nScore % 1000000 / 100000),
-	//	(m_nScore % 100000 / 10000),
-	//	(m_nScore % 10000 / 1000),
-	//	(m_nScore % 1000 / 100),
-	//	(m_nScore % 100 / 10),
-	//	(m_nScore % 10),
-	//};
-
 	std::vector<int> value;
 
 	value.resize(m_aNumber.size());
 
-	for (int nCnt = 0; nCnt < m_aNumber.size(); nCnt++)
+	for (int nCnt = 0; nCnt < (int)m_aNumber.size(); nCnt++)
 	{
 		// 値を計算
 		value[nCnt] = (m_nScore % (int)(pow(10, (m_aNumber.size() - (nCnt)))) / (int)(pow(10, (m_aNumber.size() - (nCnt + 1)))));
@@ -188,17 +176,14 @@ void CScore::UpdateNumber()
 		AddScore(1000);
 	}
 
-	for (int i = 0; i < m_aNumber.size(); i++)
+	for (int i = 0; i < (int)m_aNumber.size(); i++)
 	{
 		m_aNumber[i]->SetValue(value[i]);
 	}
 
-	//D3DXVECTOR3 pos = GetPosition();
-
 #ifdef _DEBUG
 #if 1
 	CDebugProc::GetInstance()->Print("\n現在のスコア：[%d]", m_nScore);
-	//CDebugProc::GetInstance()->Print("\nスコアの位置：[%f,%f,%f]", pos.x, pos.y, pos.z);
 #endif
 #endif
 }
@@ -217,7 +202,7 @@ void CScore::TransformNumber()
 	D3DXVECTOR3 posBase = GetPosition();
 
 	// 数字分、生成して設定
-	for (int i = 0; i < m_aNumber.size(); i++)
+	for (int i = 0; i < (int)m_aNumber.size(); i++)
 	{
 		if (m_aNumber[i] == nullptr)
 			continue;
@@ -227,11 +212,6 @@ void CScore::TransformNumber()
 
 		if (nIdx > 0)
 			nIdx--;	// 0番目でなければ前回のサイズを参照する
-
-		//// パラメーター設定
-		//float fWidth = aSize[nIdx].x * aDigit[nIdx] * 2 + DIST_NUMBER * m_fScaleNumber;	// サイズに応じて数字間のスペースをあける
-
-		//D3DXVECTOR3 pos = { posBase.x + fWidth * (i - 1), posBase.y, 0.0f };
 
 		// パラメーター設定
 		float fWidth = Size.x * 2 + DIST_NUMBER * m_fScaleNumber;	// サイズに応じて数字間のスペースをあける
@@ -293,17 +273,6 @@ void CScore::SetColor(D3DXCOLOR col)
 	for (auto it : m_aNumber)	// 数字
 			it->SetColor(col);
 }
-
-////=====================================================
-//// 色の取得
-////=====================================================
-//D3DXCOLOR CScore::GetColor(E_Number number)
-//{
-//	if (number < 0 || number >= SCORE_DIGIT)
-//		return D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-//
-//	return m_aNumber[number]->GetColor();
-//}
 
 //=====================================================
 // 描画処理
