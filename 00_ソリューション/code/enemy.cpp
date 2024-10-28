@@ -82,7 +82,26 @@ HRESULT CEnemy::Init(void)
 	// 継承クラスの初期化
 	CMotion::Init();
 
+	// グリッド番号初期化
+	InitGridIdx();
+
 	return S_OK;
+}
+
+//=====================================================
+// グリッド番号の初期化
+//=====================================================
+void CEnemy::InitGridIdx(void)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	pIceMgr->GetRightDownIdx(&m_nGridV, &m_nGridH);
+
+	D3DXVECTOR3 pos = pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH);
+	SetPosition(pos);
 }
 
 //=====================================================
@@ -119,11 +138,56 @@ void CEnemy::Update(void)
 {
 	CMotion::Update();
 
+	// 氷に追従
+	FollowIce();
+
 #ifdef _DEBUG
 	Debug();
 #endif
 }
 
+//=====================================================
+// 氷に追従
+//=====================================================
+void CEnemy::FollowIce(void)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	D3DXVECTOR3 pos = GetPosition();
+
+	// 氷の高さに合わせる
+	CIce *pIceStand = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
+
+	if (pIceStand != nullptr)
+		pos.y = pIceStand->GetPosition().y;
+
+	SetPosition(pos);
+}
+
+//=====================================================
+// グリッドによる移動
+//=====================================================
+void CEnemy::TranslateByGrid(int nIdxV, int nIdxH)
+{
+	CIceManager *pIcemgr = CIceManager::GetInstance();
+
+	if (pIcemgr == nullptr)
+		return;
+
+	D3DXVECTOR3 pos = pIcemgr->GetGridPosition(&nIdxV, &nIdxH);
+
+	CIce *pIce = pIcemgr->GetGridIce(&nIdxV, &nIdxH);
+
+	if (pIce == nullptr)
+		return;
+
+	pos.y = pIce->GetPosition().y;
+
+	SetPosition(pos);
+}
 
 //=====================================================
 // デバッグ処理

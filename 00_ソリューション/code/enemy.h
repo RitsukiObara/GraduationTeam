@@ -38,8 +38,14 @@ public:
 	void Uninit(void);	// 終了
 	void Update(void);	// 更新
 	void Draw(void);	// 描画
+	void TranslateByGrid(int nIdxV,int nIdxH);	// グリッドによる移動
+	void FollowIce(void);	// 氷に追従
 
 	// 変数取得・設定関数
+	void SetGridV(int nValue) { m_nGridV = nValue; }	// グリッドの縦番号
+	int GetGridV(void) { return m_nGridV; }
+	void SetGridH(int nValue) { m_nGridH = nValue; }	// グリッドの横番号
+	int GetGridVH(void) { return m_nGridH; }
 
 	// 静的メンバ関数
 	static CEnemy* Create(int nType);	// 生成処理
@@ -47,6 +53,7 @@ public:
 
 private:
 	// メンバ関数
+	void InitGridIdx(void);	// グリッド番号の初期化
 	void Debug(void);	// デバッグ処理
 
 	// メンバ変数
