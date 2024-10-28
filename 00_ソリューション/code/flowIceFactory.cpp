@@ -234,6 +234,7 @@ void CFlowIceFct::CreateFlowIce(void)
 		return;
 
 	S_InfoFlowIce *pInfo = m_apInfoFlowIce[m_nIdxNextIce];
+	int nRandV = universal::RandRange(nNumGridV - m_apInfoFlowIce[m_nIdxNextIce]->aIdx.size(), 0);
 
 	for (int i = 0; i < (int)pInfo->aIdx.size(); i++)
 	{
@@ -244,7 +245,7 @@ void CFlowIceFct::CreateFlowIce(void)
 			if (pInfo->aIdx[i][j] != 0)
 			{// •X‚ð¶¬‚·‚éƒ}ƒX‚È‚ç•X‚ð¶¬
 				// •X‚ð¶¬‚µA—¬•XƒVƒXƒeƒ€‚É’Ç‰Á
-				CIce *pIce = pIceManager->CreateFlowIce(0 + (int)pInfo->aIdx.size() - i - 1, nNumGridH + j);
+				CIce *pIce = pIceManager->CreateFlowIce(nRandV + (int)pInfo->aIdx.size() - i - 1, nNumGridH + j);
 
 				if (pIce == nullptr)
 					continue;
