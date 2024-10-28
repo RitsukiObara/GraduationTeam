@@ -28,8 +28,9 @@ namespace
 	const float	THINITY_SPEED = 0.02f;	// 透明になっていく速度
 	const float	GOAL_Y = 0.08f;	// Yのゴール地点
 	const float	THINITY_COL = 0.0f;	// 透明になる
-	const int	ADD_SCORE = 1000;	// 追加するスコア
-	
+	const int	ADD_SEALS_SCORE = 10000;	// 追加するスコア(アザラシ)
+	const int	VALUE_SEALS_SCORE = 5;	// 追加するスコアの桁数(アザラシ)
+	const float	SCORE_SCALE = 0.8f;	// スコアのスケール
 }
 
 //=====================================================
@@ -40,6 +41,8 @@ CDestroyScore::CDestroyScore()
 	m_State = STATE_BESIDE;
 	m_nCntState = 0;
 	m_Col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	m_nScore = 0;
+	m_nValue = 0;
 }
 
 //=====================================================
@@ -53,7 +56,7 @@ CDestroyScore::~CDestroyScore()
 //=====================================================
 // 生成処理
 //=====================================================
-CDestroyScore* CDestroyScore::Create(void)
+CDestroyScore* CDestroyScore::Create(CEnemy::TYPE type)
 {
 	CDestroyScore* pScore = nullptr;
 
@@ -63,7 +66,16 @@ CDestroyScore* CDestroyScore::Create(void)
 	{// 初期化
 		pScore->Init();
 
-		pScore->SetScore(1000);
+		pScore->SetScaleNumber(SCORE_SCALE);
+
+		//敵ごとのスコアの設定
+		pScore->SetEnemyScore(type);
+
+		//情報の設定
+		pScore->SetData(pScore->m_nValue);
+
+		//スコアの設定
+		pScore->SetScore(pScore->m_nScore);
 	}
 
 	return pScore;
@@ -161,7 +173,7 @@ void CDestroyScore::Update(void)
 		}
 		if (pos.y <= GOAL_Y || m_Col.a <= THINITY_COL)
 		{
-			CGame::GetInstance()->GetScore()->AddScore(ADD_SCORE);
+			CGame::GetInstance()->GetScore()->AddScore(m_nScore);
 
 			Uninit();
 		}
@@ -208,4 +220,23 @@ void CDestroyScore::Update(void)
 void CDestroyScore::Draw()
 {
 	CScore::Draw();
+}
+
+//=====================================================
+// セットスコア処理
+//=====================================================
+void CDestroyScore::SetEnemyScore(CEnemy::TYPE type)
+{
+	switch (type)
+	{
+	case CEnemy::TYPE_SEALS:
+
+		m_nScore = ADD_SEALS_SCORE;
+		m_nValue = VALUE_SEALS_SCORE;
+
+		break;
+
+	default:
+		break;
+	}
 }

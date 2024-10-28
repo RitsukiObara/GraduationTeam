@@ -22,7 +22,7 @@ namespace
 	const int	SCORE_MIN = 0;	// 最少スコア
 	const int	SCORE_MAX = 999999;	// 最大スコア
 	const int SCORE_LIMIT = 9;	// スコアの上限値
-	const int SCORE_DIGIT = 6;	// スコア表示の桁数
+	//const int SCORE_DIGIT = 6;	// スコア表示の桁数
 	const float DIST_NUMBER = 0.01f;	// 数字間の距離
 	D3DXVECTOR2 SIZE_NORMAL_NUM = { 0.02f, 0.06f };	// 通常数字のサイズ
 	D3DXVECTOR2 SIZE_MINI_NUM = { 0.014f, 0.028f };	// ミニ数字のサイズ
@@ -58,6 +58,9 @@ CScore* CScore::Create(void)
 	if (pScore != nullptr)
 	{// 初期化
 		pScore->Init();
+
+		//情報の設定
+		pScore->SetData();
 	}
 
 	return pScore;
@@ -122,28 +125,6 @@ HRESULT CScore::Init(void)
 	// 初期位置の設定
 	SetPosition(POS_INITIAL);
 
-	// 数字の配列のリサイズ
-	m_aNumber.resize(SCORE_DIGIT);
-
-	int aDigit[SCORE_DIGIT] =
-	{// 桁数
-		1,
-		1,
-		1,
-		1,
-		1,
-		1,
-	};
-
-	// 数字の生成
-	for (int i = 0; i < SCORE_DIGIT; i++)
-	{
-		m_aNumber[i] = CNumber::Create(aDigit[i], 0);	// 数字の生成
-	}
-
-	// 数字のトランスフォームの設定
-	TransformNumber();
-
 	return S_OK;
 }
 
@@ -180,16 +161,26 @@ void CScore::UpdateNumber()
 	if (m_aNumber.empty())
 		return;
 
-	// 値の用意
-	int aValue[SCORE_DIGIT] =
+	//// 値の用意
+	//int aValue[SCORE_DIGIT] =
+	//{
+	//	(m_nScore % 1000000 / 100000),
+	//	(m_nScore % 100000 / 10000),
+	//	(m_nScore % 10000 / 1000),
+	//	(m_nScore % 1000 / 100),
+	//	(m_nScore % 100 / 10),
+	//	(m_nScore % 10),
+	//};
+
+	std::vector<int> value;
+
+	value.resize(m_aNumber.size());
+
+	for (int nCnt = 0; nCnt < m_aNumber.size(); nCnt++)
 	{
-		(m_nScore % 1000000 / 100000),
-		(m_nScore % 100000 / 10000),
-		(m_nScore % 10000 / 1000),
-		(m_nScore % 1000 / 100),
-		(m_nScore % 100 / 10),
-		(m_nScore % 10),
-	};
+		// 値を計算
+		value[nCnt] = (m_nScore % (int)(pow(10, (m_aNumber.size() - (nCnt)))) / (int)(pow(10, (m_aNumber.size() - (nCnt + 1)))));
+	}
 
 	// スコアの加算========================================
 	if (pInputManager->GetTrigger(CInputManager::BUTTON_SCORE))
@@ -197,9 +188,9 @@ void CScore::UpdateNumber()
 		AddScore(1000);
 	}
 
-	for (int i = 0; i < SCORE_DIGIT; i++)
+	for (int i = 0; i < m_aNumber.size(); i++)
 	{
-		m_aNumber[i]->SetValue(aValue[i]);
+		m_aNumber[i]->SetValue(value[i]);
 	}
 
 	//D3DXVECTOR3 pos = GetPosition();
@@ -220,30 +211,13 @@ void CScore::TransformNumber()
 	if (m_aNumber.empty())
 		return;
 
-	int aDigit[SCORE_DIGIT] =
-	{// 桁数
-		1,
-		1,
-		1,
-		1,
-		1,
-		1,
-	};
-
-	D3DXVECTOR2 aSize[SCORE_DIGIT] =
-	{// 数字のサイズ
-		SIZE_NORMAL_NUM * m_fScaleNumber,
-		SIZE_NORMAL_NUM * m_fScaleNumber,
-		SIZE_NORMAL_NUM * m_fScaleNumber,
-		SIZE_NORMAL_NUM * m_fScaleNumber,
-		SIZE_NORMAL_NUM * m_fScaleNumber,
-		SIZE_NORMAL_NUM * m_fScaleNumber
-	};
+	// 数字のサイズ
+	D3DXVECTOR2 Size = SIZE_NORMAL_NUM * m_fScaleNumber;
 
 	D3DXVECTOR3 posBase = GetPosition();
 
 	// 数字分、生成して設定
-	for (int i = 0; i < SCORE_DIGIT; i++)
+	for (int i = 0; i < m_aNumber.size(); i++)
 	{
 		if (m_aNumber[i] == nullptr)
 			continue;
@@ -260,14 +234,33 @@ void CScore::TransformNumber()
 		//D3DXVECTOR3 pos = { posBase.x + fWidth * (i - 1), posBase.y, 0.0f };
 
 		// パラメーター設定
-		float fWidth = aSize[nIdx].x * aDigit[nIdx] * 2 + DIST_NUMBER * m_fScaleNumber;	// サイズに応じて数字間のスペースをあける
+		float fWidth = Size.x * 2 + DIST_NUMBER * m_fScaleNumber;	// サイズに応じて数字間のスペースをあける
 		D3DXVECTOR3 pos = { posBase.x + fWidth * (i - 1), posBase.y, 0.0f };
 		m_aNumber[i]->SetPosition(pos);
-		m_aNumber[i]->SetSizeAll(aSize[i].x, aSize[i].y);
+		m_aNumber[i]->SetSizeAll(Size.x, Size.y);
 
 		if (i == 0)	// 0以上のときしか入らない処理
 			continue;
 	}
+}
+
+//=====================================================
+// 情報の設定
+//=====================================================
+void CScore::SetData(int nDigit)
+{
+	// 数字の配列のリサイズ
+	m_aNumber.resize(nDigit);
+
+	// 数字の生成
+	for (int i = 0; i < nDigit; i++)
+	{
+		m_aNumber[i] = CNumber::Create(1, 0);	// 数字の生成
+	}
+
+	// 数字のトランスフォームの設定
+	TransformNumber();
+
 }
 
 //=====================================================

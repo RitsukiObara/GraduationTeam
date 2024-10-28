@@ -160,7 +160,7 @@ HRESULT CGame::Init(void)
 	CFlowIce::Create();
 
 	// 流氷ファクトリーの生成
-	//CFlowIceFct::Create();
+	CFlowIceFct::Create();
 
 	return S_OK;
 }
@@ -192,7 +192,7 @@ void CGame::Update(void)
 	if (pKeyboard->GetTrigger(DIK_K))
 	{
 		//敵を倒した時のスコア生成
-		CDestroyScore::Create();
+		CDestroyScore::Create(CEnemy::TYPE_SEALS);
 	}
 
 	if (!m_bStop)
