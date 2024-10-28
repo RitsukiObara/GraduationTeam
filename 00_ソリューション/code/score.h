@@ -32,6 +32,7 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+	void SetData(int nDigit = 6);
 
 	// 変数取得・設定関数
 	int GetScore() { return m_nScore; }	// スコア

@@ -34,6 +34,7 @@ public:
 		STATE_ADD,	// スコアに加算
 		STATE_MAX
 	};
+
 	CDestroyScore();	// コンストラクタ
 	~CDestroyScore();	// デストラクタ
 

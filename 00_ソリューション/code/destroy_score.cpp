@@ -63,6 +63,10 @@ CDestroyScore* CDestroyScore::Create(void)
 	{// ‰Šú‰»
 		pScore->Init();
 
+		//î•ñ‚ÌÝ’è
+		pScore->SetData(4);
+
+		//ƒXƒRƒA‚ÌÝ’è
 		pScore->SetScore(1000);
 	}
 
