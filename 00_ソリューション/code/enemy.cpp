@@ -15,6 +15,16 @@
 #include "debugproc.h"
 #include "seals.h"
 #include "UI_enemy.h"
+#include "ocean.h"
+#include "destroy_score.h"
+
+//*****************************************************
+// 定数定義
+//*****************************************************
+namespace
+{
+const float HEIGHT_ICE = 10.0f;	// 氷の高さ
+}
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -24,7 +34,7 @@ std::vector<CEnemy*> CEnemy::s_vector = {};	// 自身のポインタ
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
-CEnemy::CEnemy(int nPriority) : m_nGridV(0), m_nGridH(0),m_state(E_State::STATE_NONE)
+CEnemy::CEnemy(int nPriority) : m_nGridV(0), m_nGridH(0),m_state(E_State::STATE_NONE), m_pIceLand(nullptr)
 {
 	s_vector.push_back(this);
 }
@@ -176,9 +186,48 @@ void CEnemy::FollowIce(void)
 
 	// 氷の高さに合わせる
 	CIce *pIceStand = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
-
+	
 	if (pIceStand != nullptr)
-		pos.y = pIceStand->GetPosition().y;
+		pos.y = pIceStand->GetPosition().y;	// 高さを合わせる
+	else
+		SetState(E_State::STATE_DRIFT);	// 漂流状態にする
+
+	SetPosition(pos);
+}
+
+//=====================================================
+// 漂流中の動き
+//=====================================================
+void CEnemy::UpdateDrift(void)
+{
+	CIceManager *pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return;
+
+	// 海流のベクトル取得
+	CIceManager::E_Stream dir = pIceManager->GetDirStream();
+	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[dir];
+
+	// 流れる速度に正規化して位置を加算
+	float fSpeedFlow = pIceManager->GetOceanLevel();
+	D3DXVec3Normalize(&vecStream, &vecStream);
+	vecStream *= fSpeedFlow;
+	AddPosition(vecStream);
+
+	COcean *pOcean = COcean::GetInstance();
+
+	if (pOcean == nullptr)
+	{
+		return;
+	}
+
+	// 海と一緒に氷を動かす処理
+	D3DXVECTOR3 pos = GetPosition();
+
+	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	pos.y = pOcean->GetHeight(pos, &move) + HEIGHT_ICE;
 
 	SetPosition(pos);
 }

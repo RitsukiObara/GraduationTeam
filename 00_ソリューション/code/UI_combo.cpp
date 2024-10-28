@@ -15,7 +15,6 @@
 #include "UI.h"
 #include "inputManager.h"
 #include "debugproc.h"
-#include "player.h"
 
 //*****************************************************
 // Ã“Iƒƒ“ƒo•Ï”éŒ¾

@@ -16,6 +16,7 @@
 // 前方宣言
 //*****************************************************
 class CPolygon3D;
+class CIce;
 
 //*****************************************************
 // クラスの定義
@@ -56,7 +57,7 @@ public:
 	virtual void UpdateStop(void) = 0;		// 停止状態の更新
 	virtual void UpdateMove(void) = 0;		// 移動状態の更新
 	virtual void UpdateAttack(void) = 0;	// 攻撃状態の更新
-	virtual void UpdateDrift(void) = 0;		// 漂流状態の更新
+	virtual void UpdateDrift(void);		// 漂流状態の更新
 
 	// 変数取得・設定関数
 	void SetGridV(int nValue) { m_nGridV = nValue; }	// グリッドの縦番号
@@ -67,6 +68,8 @@ public:
 	int GetGridVNext(void) { return m_nGridVNext; }
 	void SetGridHNext(int nValue) { m_nGridHNext = nValue; }	// 次のグリッドの横番号
 	int GetGridHNext(void) { return m_nGridHNext; }
+	void SetState(E_State state) { m_state = state; }	// 状態
+	E_State GetState(void) { return m_state; }
 
 	// 静的メンバ関数
 	static CEnemy* Create(int nType);	// 生成処理
@@ -83,6 +86,7 @@ private:
 	int m_nGridVNext;	// 次行くグリッドの縦番号
 	int m_nGridHNext;	// 次行くグリッドの横番号
 	E_State m_state;	// 状態
+	CIce *m_pIceLand;	// 乗っている氷
 
 	// 静的メンバ変数
 	static std::vector<CEnemy*> s_vector;	// 自身のポインタ
