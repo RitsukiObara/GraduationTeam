@@ -32,6 +32,7 @@ public:
 private:
 
 	void OceanRotState(void); // 海流の向きとメッシュの向きを連動させる処理
+	void OceanCycleTimer(void); // 海流周期を時間で管理する処理
 
 	float m_fSpeed;	// 海流のスピード
 	D3DXVECTOR3 m_fRot;	// 海流の向き

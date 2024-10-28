@@ -30,7 +30,7 @@ const float RATE_HEX_Z = 0.13f;	// ˜ZŠpŒ`‚ÌŠ„‡Z
 const float WIDTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_X;	// ƒOƒŠƒbƒh‚Ì•
 const float DEPTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_Z;	// ƒOƒŠƒbƒh‚Ì‰œs‚«
 const float OCEAN_FLOW_MIN = 1.00f;		// ŠC—¬‚Ì‘¬“xÅ¬
-const float OCEAN_FLOW_MAX = 1.00f;	// ŠC—¬‚Ì‘¬“xÅ‘å
+const float OCEAN_FLOW_MAX = 5.00f;	// ŠC—¬‚Ì‘¬“xÅ‘å
 
 const float RANGE_SELECT_ICE = D3DX_PI / 6;	// •X‚ð‘I‘ð‚·‚é‚Æ‚«‚ÌŠp“x‚Ì”ÍˆÍ
 }
@@ -111,6 +111,7 @@ HRESULT CIceManager::Init(void)
 
 	// ŠC—¬‚ð‰Šú‰»
 	m_dirStream = E_Stream::STREAM_UP;
+	m_dirStreamNext = E_Stream::STREAM_UP;
 	m_fOceanLevel = OCEAN_FLOW_MAX;
 
 	return S_OK;
@@ -1047,17 +1048,15 @@ void CIceManager::Debug(void)
 	if (pKeyboard->GetTrigger(DIK_LEFT))
 	{
 		COcean* pOcean = COcean::GetInstance();
-		pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);
-
-		m_dirStreamNext = (E_Stream)((m_dirStreamNext + 1) % E_Stream::STREAM_MAX);
+		pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);	// ŠC—¬‚Ì‘¬“x‚ð‰º‚°‚é
+		m_dirStreamNext = (E_Stream)((m_dirStreamNext + 1) % E_Stream::STREAM_MAX);	// ŽŸ‚ÌŠC—¬‚ÌŒü‚«‚É‚·‚é
 	}
 
 	if (pKeyboard->GetTrigger(DIK_RIGHT))
 	{
 		COcean* pOcean = COcean::GetInstance();
-		pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);
-
-		m_dirStreamNext = (E_Stream)((m_dirStreamNext + E_Stream::STREAM_MAX - 1) % E_Stream::STREAM_MAX);
+		pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);	// ŠC—¬‚Ì‘¬“x‚ð‰º‚°‚é
+		m_dirStreamNext = (E_Stream)((m_dirStreamNext + E_Stream::STREAM_MAX - 1) % E_Stream::STREAM_MAX);	// ŽŸ‚ÌŠC—¬‚ÌŒü‚«‚É‚·‚é
 	}
 }
 

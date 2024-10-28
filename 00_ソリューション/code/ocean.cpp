@@ -19,6 +19,8 @@
 #include "texture.h"
 #include "ocean.h"
 #include "iceManager.h"
+#include "timer.h"
+#include "universal.h"
 
 //*****************************************************
 // マクロ定義
@@ -101,6 +103,7 @@ void COcean::Update(void)
 	float OceanFlowLevel = CIceManager::GetInstance()->GetOceanLevel();	// 海流レベルの取得
 
 	CMeshField::Update();
+	OceanCycleTimer();
 
 	// 海流の速度を設定
 	m_fSpeed += 0.007f * OceanFlowLevel;
@@ -122,7 +125,6 @@ void COcean::Draw(void)
 
 	//頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
-
 }
 
 //====================================================
@@ -155,4 +157,30 @@ void COcean::OceanRotState(void)
 	}
 
 	CMeshField::SetRotation(m_fRot);
+}
+
+//====================================================
+// 海流周期を時間で管理する処理
+//====================================================
+void COcean::OceanCycleTimer(void)
+{
+	COcean* pOcean = COcean::GetInstance();
+	CIceManager* pIceManager = CIceManager::GetInstance();
+	float OceanCycleTimer = CGame::GetInstance()->GetTimeSecond();	 // 現在のタイムを取得
+
+	if (OceanCycleTimer <= 111.0f &&
+		OceanCycleTimer >= 110.0f)
+	{
+		pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);	// 海流の速度を下げる
+		pIceManager->SetDirStreamNext(pIceManager->E_Stream::STREAM_DOWN);	// 海流の向きを下にする
+		//universal::RandRange();
+	}
+
+	if (OceanCycleTimer <= 101.0f &&
+		OceanCycleTimer >= 100.0f)
+	{
+		pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);	// 海流の速度を下げる
+		pIceManager->SetDirStreamNext(pIceManager->E_Stream::STREAM_LEFT);	// 海流の向きを下にする
+	}
+
 }
