@@ -163,7 +163,7 @@ HRESULT CGame::Init(void)
 	CFlowIce::Create();
 
 	// 流氷ファクトリーの生成
-	//CFlowIceFct::Create();
+	CFlowIceFct::Create();
 
 	return S_OK;
 }

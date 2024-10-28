@@ -19,6 +19,8 @@
 //*****************************************************
 namespace
 {
+const string PATH_TEXT = "data\\TEXT\\flowIce.txt";	// 流氷情報のファイルパス
+
 const float TIME_CREATE_FLOWICE = 5.0f;	// 流氷を作る時間
 const int NUM_ICE = 4;	// 適当な初期アイス数
 }
@@ -61,7 +63,141 @@ CFlowIceFct *CFlowIceFct::Create(void)
 //=====================================================
 HRESULT CFlowIceFct::Init(void)
 {
+	// 読込処理
+	Load();
+
 	return S_OK;
+}
+
+//=====================================================
+// 読込
+//=====================================================
+void CFlowIceFct::Load(void)
+{
+	std::ifstream file(PATH_TEXT);
+
+	if (file.is_open())
+	{
+		std::string temp;
+
+		while (std::getline(file, temp))
+		{// 読み込むものがなくなるまで読込
+			std::istringstream iss(temp);
+			std::string key;
+			iss >> key;
+
+			if (key == "SETFLOWICE")
+			{// 流氷情報読込開始
+				// 流氷情報の生成
+				S_InfoFlowIce *pInfoFlowIce = new S_InfoFlowIce;
+
+				if (pInfoFlowIce == nullptr)
+					continue;
+
+				// 最大の行数を決める
+				int nNumV;
+				int nNumH;
+				GetNumFlowIce(file, temp, &nNumV, &nNumH, pInfoFlowIce);
+
+				while (std::getline(file, temp))
+				{
+					std::istringstream iss(temp);
+					std::string key;
+					iss >> key;
+
+					for (int i = 0; i < (int)temp.length(); i++)
+					{
+						char cData = temp[i];
+
+
+					}
+
+					//if (key == "TYPE")
+					//{// 種類
+					//	int nType;
+					//	iss >> temp >> nType;
+					//	lightInfo.Type = (D3DLIGHTTYPE)nType;
+					//}
+
+					if (key == "END_SETFLOWICE")
+					{// 終了
+						if (pInfoFlowIce != nullptr)
+							m_apInfoFlowIce.push_back(pInfoFlowIce);
+
+						break;
+					}
+				}
+			}
+
+			if (file.eof())
+			{// 読み込み終了
+				break;
+			}
+		}
+
+		file.close();
+	}
+	else
+	{
+		assert(("ファイルが開けませんでした", false));
+	}
+}
+
+//=====================================================
+// 氷の縦横の数を取得
+//=====================================================
+void CFlowIceFct::GetNumFlowIce(std::ifstream& file, string str, int *pNumV, int *pNumH, S_InfoFlowIce* pInfoFlowIce)
+{
+	if (pInfoFlowIce == nullptr)
+		return;
+
+	// 数字のリセット
+	*pNumV = 0;
+	*pNumH = 0;
+
+	while (std::getline(file, str))
+	{// 読込開始
+		std::istringstream iss(str);
+		std::string key;
+		iss >> key;
+
+		if (str.length() == 0)
+			continue;	// 読み込んだ文字が空なら通らない
+
+		// 行の配列追加
+		vector<int> aIdx;
+		pInfoFlowIce->aIdx.push_back(aIdx);
+
+		for (int i = 0; i < (int)str.length(); i++)
+		{// 文字列の行の長さ検知
+			char cData = str[i];
+
+			if (cData != ' ')
+			{// 空白じゃない場合、行の長さを増やす
+				*pNumH += 1;
+			}
+		}
+
+		for (int i = 0; i < (int)str.length(); i++)
+		{// 文字列を分解して解析
+			char cData = str[i];
+
+			if (cData != ' ')
+			{// 空白じゃない場合、行の長さを増やす
+				int nData = cData - '0';
+
+				pInfoFlowIce->aIdx[*pNumV].push_back(nData);
+			}
+		}
+
+		// なにかしら文字があれば行数を増やす
+		*pNumV += 1;
+
+		if (key == "END_SETFLOWICE")
+		{// 値を保存して終了
+			break;
+		}
+	}
 }
 
 //=====================================================
@@ -84,7 +220,7 @@ void CFlowIceFct::Update(void)
 	if (m_fTimerCreateFlowIce > TIME_CREATE_FLOWICE)
 	{
 		// 流氷の生成
-		CreateFlowIce();
+		//CreateFlowIce();
 
 		m_fTimerCreateFlowIce = 0.0f;
 	}
