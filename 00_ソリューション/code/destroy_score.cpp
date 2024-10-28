@@ -30,6 +30,7 @@ namespace
 	const float	THINITY_COL = 0.0f;	// 透明になる
 	const int	ADD_SEALS_SCORE = 10000;	// 追加するスコア(アザラシ)
 	const int	VALUE_SEALS_SCORE = 5;	// 追加するスコアの桁数(アザラシ)
+	const float	SCORE_SCALE = 0.8f;	// スコアのスケール
 }
 
 //=====================================================
@@ -64,6 +65,8 @@ CDestroyScore* CDestroyScore::Create(CEnemy::TYPE type)
 	if (pScore != nullptr)
 	{// 初期化
 		pScore->Init();
+
+		pScore->SetScaleNumber(SCORE_SCALE);
 
 		//敵ごとのスコアの設定
 		pScore->SetEnemyScore(type);
