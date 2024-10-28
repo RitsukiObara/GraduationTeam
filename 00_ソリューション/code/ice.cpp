@@ -623,6 +623,11 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 
 	if (m_bDrift)
 	{
+		if (nIdxH == 0 && nIdxV == 0)
+		{
+			int n = 0;
+		}
+
 		// ƒOƒŠƒbƒh‚É•Xî•ñ‚ð•Û‘¶
 		pIceManager->SetIceInGrid(nIdxV, nIdxH, pIce);
 		pIce->ChangeState(new CIceStaeteNormal);

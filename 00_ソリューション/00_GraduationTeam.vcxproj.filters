@@ -608,5 +608,8 @@
     <ClInclude Include="code\nextflowice.h">
       <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
+    <ClInclude Include="container.h">
+      <Filter>ソース ファイル\base</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
