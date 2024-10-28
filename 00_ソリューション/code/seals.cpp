@@ -68,6 +68,8 @@ HRESULT CSeals::Init(void)
 		return E_FAIL;
 	}
 
+	SetMotion(0);
+
 	// É|Å[ÉYèâä˙âª
 	InitPose(0);
 
@@ -120,7 +122,7 @@ void CSeals::UpdateAttack(void)
 //=====================================================
 void CSeals::UpdateDrift(void)
 {
-
+	CEnemy::UpdateDrift();
 }
 
 //=====================================================
