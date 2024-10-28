@@ -111,7 +111,7 @@ HRESULT CIceManager::Init(void)
 
 	// äCó¨Çèâä˙âª
 	m_dirStream = E_Stream::STREAM_LEFT;
-	m_dirStreamNext = E_Stream::STREAM_UP;
+	m_dirStreamNext = E_Stream::STREAM_LEFT;
 	m_fOceanLevel = OCEAN_FLOW_MAX;
 
 	return S_OK;
@@ -1253,7 +1253,7 @@ bool CIceManager::SetIceInGrid(int nNumV, int nNumH, CIce *pIce)
 		return false;
 	}
 
-	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
+	if (m_aGrid[nNumV][nNumH].pIce == nullptr || m_aGrid[nNumV][nNumH].pIce == pIce)
 	{
 		m_aGrid[nNumV][nNumH].pIce = pIce;
 

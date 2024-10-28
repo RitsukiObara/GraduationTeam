@@ -103,7 +103,7 @@ void COcean::Update(void)
 	float OceanFlowLevel = CIceManager::GetInstance()->GetOceanLevel();	//	ŠC—¬ƒŒƒxƒ‹‚ÌŽæ“¾
 
 	CMeshField::Update();
-	OceanCycleTimer();
+	//OceanCycleTimer();
 
 	m_fSpeed += 0.007f * OceanFlowLevel;
 
