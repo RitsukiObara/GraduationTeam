@@ -142,7 +142,7 @@ void CFlowIceFct::GetNumFlowIce(std::ifstream& file, string str, int *pNumV, int
 			continue;	// 読み込んだ文字が空なら通らない
 
 		if (key == "END_SETFLOWICE")
-		{// 値を保存して終了
+		{// 終了
 			break;
 		}
 
@@ -244,7 +244,7 @@ void CFlowIceFct::CreateFlowIce(void)
 			if (pInfo->aIdx[i][j] != 0)
 			{// 氷を生成するマスなら氷を生成
 				// 氷を生成し、流氷システムに追加
-				CIce *pIce = pIceManager->CreateFlowIce(0 + i, nNumGridH + j);
+				CIce *pIce = pIceManager->CreateFlowIce(0 + (int)pInfo->aIdx.size() - i - 1, nNumGridH + j);
 
 				if (pIce == nullptr)
 					continue;
