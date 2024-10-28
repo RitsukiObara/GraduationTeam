@@ -21,7 +21,6 @@ const float	TIME_MIN = 0.0f;	// 最少タイム
 const float	TIME_MAX = 60.0f * 99.0f + 59.0f + 0.999f;	// 最大タイム
 const int MINUTES_LIMIT = 9;	// 分の上限値
 const int SECOND_LIMIT = 59;	// 秒の上限値
-const int MILLI_LIMIT = 99;	// ミリ秒の上限
 const int MINUTES_DIGIT = 2;	// 分表示の桁数
 const int TIME_DIGIT = 2;	// それぞれの桁数
 const float MAGNIFICATION = 100.0f;	// 掛ける倍率
@@ -134,7 +133,6 @@ HRESULT CTimer::Init(void)
 	{// 桁数
 		MINUTES_DIGIT,
 		TIME_DIGIT,
-		TIME_DIGIT
 	};
 
 	// 数字の生成
@@ -190,7 +188,7 @@ void CTimer::Uninit(void)
 //=====================================================
 void CTimer::Update(void)
 {
-
+	UpdateNumber();
 }
 
 //=====================================================
@@ -211,7 +209,6 @@ void CTimer::UpdateNumber()
 #else
 		(int)((DWORD)(m_fSecond * 1000.0f) / 60000),
 		(int)((DWORD)(m_fSecond * 1000.0f) / 1000 % 60),
-		(int)((DWORD)(m_fSecond * 1000.0f) % 1000)
 #endif
 	};
 
@@ -233,14 +230,12 @@ void CTimer::TransformNumber()
 	{// 桁数
 		MINUTES_DIGIT,
 		TIME_DIGIT,
-		TIME_DIGIT
 	};
 
 	D3DXVECTOR2 aSize[E_Number::NUMBER_MAX] =
 	{// 数字のサイズ
 		SIZE_NORMAL_NUM * m_fScaleNumber,
 		SIZE_NORMAL_NUM * m_fScaleNumber,
-		SIZE_NORMAL_NUM * m_fScaleNumber
 	};
 
 	D3DXVECTOR3 posBase = GetPosition();

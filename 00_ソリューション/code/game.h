@@ -32,7 +32,7 @@ class CPause;
 class CGame : public CScene
 {
 public:
-	static constexpr float MAX_TIME = 60.0f;	// Å‘åŠÔ
+	static constexpr float MAX_TIME = 120.0f;	// Å‘åŠÔ
 
 	enum E_State
 	{// ó‘Ô
@@ -73,6 +73,7 @@ public:
 	void SetPosMid(D3DXVECTOR3 pos) { m_posMid = pos; };
 	void AddPosMid(D3DXVECTOR3 pos) { m_posMid += pos; };
 	float GetTimeSecond(void) { return m_pTimer->GetSecond(); }
+	CScore* GetScore(void) { return m_pScore; };
 
 private:
 	// ƒƒ“ƒoŠÖ”

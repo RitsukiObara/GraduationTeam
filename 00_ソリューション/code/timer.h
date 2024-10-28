@@ -29,7 +29,6 @@ public:
 	{// ”Žš‚ÌŽí—Þ
 		NUMBER_MINUTE = 0,	// •ª
 		NUMBER_SECOND,	// •b
-		NUMBER_MILLI,	// ƒ~ƒŠ•b
 		NUMBER_MAX
 	};
 

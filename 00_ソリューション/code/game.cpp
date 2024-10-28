@@ -48,6 +48,7 @@
 #include "flowIce.h"
 #include "BG_Ice.h"
 #include "flowIceFactory.h"
+#include "destroy_score.h"
 
 //*****************************************************
 // マクロ定義
@@ -135,10 +136,6 @@ HRESULT CGame::Init(void)
 	m_pScore = CScore::Create();
 	m_pScore->SetPosition(D3DXVECTOR3(0.09f, 0.07f, 0.0f));
 
-	// ステージリザルト表示の生成
-	//m_pStageResultUI = CStageResultUI::Create();
-	//m_pStageResultUI->SetPosition(D3DXVECTOR3(0.4f, 0.07f, 0.0f));
-
 	// モードの取得
 	m_GameMode = E_GameMode::MODE_SINGLE;
 
@@ -187,8 +184,16 @@ void CGame::Uninit(void)
 void CGame::Update(void)
 {
 	CFade *pFade = CFade::GetInstance();
-	CInputManager *pInputManager = CInputManager::GetInstance();
+	CInputManager* pInputManager = CInputManager::GetInstance();
+	CInputKeyboard* pKeyboard = CInputKeyboard::GetInstance();
 	CSound* pSound = CSound::GetInstance();
+
+	// 敵を倒したスコア出す========================================
+	if (pKeyboard->GetTrigger(DIK_K))
+	{
+		//敵を倒した時のスコア生成
+		CDestroyScore::Create();
+	}
 
 	if (!m_bStop)
 	{
@@ -248,7 +253,6 @@ void CGame::ManageState(void)
 
 		// タイマーの更新
 		m_pTimer->AddSecond(-CManager::GetDeltaTime());
-		m_pTimer->Update();
 
 		break;
 	case CGame::STATE_RESULT:
