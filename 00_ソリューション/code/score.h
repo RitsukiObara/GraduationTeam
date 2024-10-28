@@ -42,7 +42,6 @@ public:
 	void SetScaleNumber(float fScale);	// 数字のスケール
 	float GetScaleNumber(void) { return m_fScaleNumber; }
 	void SetColor(D3DXCOLOR col);	// 色
-	/*D3DXCOLOR GetColor(E_Number number);*/
 
 	// 静的メンバ関数
 	static CScore* Create();	// 生成

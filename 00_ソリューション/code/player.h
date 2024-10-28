@@ -63,9 +63,14 @@ public:
 	D3DXVECTOR3 GetMove(void) { return m_move; }
 	void EnableInput(bool bEnable) { m_bEnableInput = bEnable; }	// 入力可能フラグ
 	bool IsEnableInput(void) { return m_bEnableInput; }
+	void SetGridV(int nValue) { m_nGridV = nValue; }	// グリッドの縦番号
+	int GetGridV(void) { return m_nGridV; }
+	void SetGridH(int nValue) { m_nGridH = nValue; }	// グリッドの横番号
+	int GetGridVH(void) { return m_nGridH; }
 
 	// 静的メンバ関数
-	static CPlayer* Create(void);
+	static CPlayer* Create(void);	// 生成処理
+	static vector<CPlayer*> GetInstance(void) { return s_apPlayer; }	// インスタンスの取得
 
 private:
 	// 構造体定義
@@ -126,6 +131,9 @@ private:
 	CFlowIce *m_pLandSystemFlow;	// 乗ってる流氷システム
 	S_FragMotion m_fragMotion;	// モーションフラグ
 	CInputManager *m_pInputMgr;	// 入力マネージャー
+
+	// 静的メンバ変数
+	static vector<CPlayer*> s_apPlayer;	// 格納用の配列
 };
 
 #endif

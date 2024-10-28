@@ -22,7 +22,7 @@ namespace
 const string PATH_TEXT = "data\\TEXT\\flowIce.txt";	// 流氷情報のファイルパス
 
 const float TIME_CREATE_FLOWICE = 5.0f;	// 流氷を作る時間
-const int NUM_ICE = 4;	// 適当な初期アイス数
+const int ADD_CREATE_FLOWICE = 5;	// 流氷の生成する位置の増やすグリッド数
 }
 
 //=====================================================
@@ -66,6 +66,10 @@ HRESULT CFlowIceFct::Init(void)
 	// 読込処理
 	Load();
 
+#ifdef _DEBUG
+	CreateFlowIce();
+#endif
+
 	return S_OK;
 }
 
@@ -99,34 +103,7 @@ void CFlowIceFct::Load(void)
 				int nNumH;
 				GetNumFlowIce(file, temp, &nNumV, &nNumH, pInfoFlowIce);
 
-				while (std::getline(file, temp))
-				{
-					std::istringstream iss(temp);
-					std::string key;
-					iss >> key;
-
-					for (int i = 0; i < (int)temp.length(); i++)
-					{
-						char cData = temp[i];
-
-
-					}
-
-					//if (key == "TYPE")
-					//{// 種類
-					//	int nType;
-					//	iss >> temp >> nType;
-					//	lightInfo.Type = (D3DLIGHTTYPE)nType;
-					//}
-
-					if (key == "END_SETFLOWICE")
-					{// 終了
-						if (pInfoFlowIce != nullptr)
-							m_apInfoFlowIce.push_back(pInfoFlowIce);
-
-						break;
-					}
-				}
+				m_apInfoFlowIce.push_back(pInfoFlowIce);
 			}
 
 			if (file.eof())
@@ -164,6 +141,11 @@ void CFlowIceFct::GetNumFlowIce(std::ifstream& file, string str, int *pNumV, int
 		if (str.length() == 0)
 			continue;	// 読み込んだ文字が空なら通らない
 
+		if (key == "END_SETFLOWICE")
+		{// 終了
+			break;
+		}
+
 		// 行の配列追加
 		vector<int> aIdx;
 		pInfoFlowIce->aIdx.push_back(aIdx);
@@ -192,11 +174,6 @@ void CFlowIceFct::GetNumFlowIce(std::ifstream& file, string str, int *pNumV, int
 
 		// なにかしら文字があれば行数を増やす
 		*pNumV += 1;
-
-		if (key == "END_SETFLOWICE")
-		{// 値を保存して終了
-			break;
-		}
 	}
 }
 
@@ -220,8 +197,12 @@ void CFlowIceFct::Update(void)
 	if (m_fTimerCreateFlowIce > TIME_CREATE_FLOWICE)
 	{
 		// 流氷の生成
-		//CreateFlowIce();
+		CreateFlowIce();
 
+		// 次の氷の形を決める
+		DecideNextFlowIce();
+
+		// カウントリセット
 		m_fTimerCreateFlowIce = 0.0f;
 	}
 }
@@ -242,39 +223,52 @@ void CFlowIceFct::CreateFlowIce(void)
 	if (pIceMgr == nullptr)
 		return;
 
-	// 氷を生成し、システムに追加
+	// 生成する場所をグリッドの端からずらす
 	int nNumGridV = pIceMgr->GetNumGridV();
 	int nNumGridH = pIceMgr->GetNumGridH();
+	nNumGridH += ADD_CREATE_FLOWICE;
 
 	CIceManager *pIceManager = CIceManager::GetInstance();
 
 	if (pIceManager == nullptr)
 		return;
 
-	int aV[NUM_ICE] =
-	{// 縦のグリッド番号の配列
-		3,4,5,6
-	};
-	int aH[NUM_ICE] =
-	{// 横のグリッド番号の配列
-		9,9,9,9
-	};
-	
-	for (int i = 0; i < NUM_ICE; i++)
+	S_InfoFlowIce *pInfo = m_apInfoFlowIce[m_nIdxNextIce];
+	int nRandV = universal::RandRange(nNumGridV - m_apInfoFlowIce[m_nIdxNextIce]->aIdx.size(), 0);
+
+	for (int i = 0; i < (int)pInfo->aIdx.size(); i++)
 	{
-		// 生成する場所に既に氷がある場合は、スキップ
-		if (pIceManager->GetGridIce(&aV[i], &aH[i]) != nullptr)
-			continue;
+		for (int j = 0; j < (int)pInfo->aIdx[i].size(); j++)
+		{
+			int n = pInfo->aIdx[i][j];
 
-		// 氷を生成し、流氷システムに追加
-		CIce *pIce = pIceManager->CreateIce(aV[i], aH[i]);
+			if (pInfo->aIdx[i][j] != 0)
+			{// 氷を生成するマスなら氷を生成
+				// 氷を生成し、流氷システムに追加
+				CIce *pIce = pIceManager->CreateFlowIce(nRandV + (int)pInfo->aIdx.size() - i - 1, nNumGridH + j);
 
-		if (pIce == nullptr)
-			continue;
+				if (pIce == nullptr)
+					continue;
 
-		pIce->ChangeState(new CIceStateFlow);
-		pFlowIce->AddIceToArray(pIce);
+				pIce->ChangeState(new CIceStateFlow);
+				pFlowIce->AddIceToArray(pIce);
+			}
+		}
 	}
+}
+
+//=====================================================
+// 次の流氷の形を決める
+//=====================================================
+void CFlowIceFct::DecideNextFlowIce(void)
+{
+	if (m_apInfoFlowIce.empty())
+		return;
+
+	// 配列のサイズから決める
+	int nMax = (int)m_apInfoFlowIce.size();
+
+	m_nIdxNextIce = universal::RandRange(nMax, 0);
 }
 
 //=====================================================
