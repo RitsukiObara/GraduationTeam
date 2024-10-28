@@ -48,13 +48,18 @@ const float LINE_START_TURN = D3DX_PI * 0.6f;	// 振り向きを開始するしきい値
 const float FACT_ROTATION_TURN = 0.2f;	// 振り向き回転係数
 }
 
+//*****************************************************
+// 静的メンバ変数宣言
+//*****************************************************
+vector<CPlayer*> CPlayer::s_apPlayer;	// 格納用の配列
+
 //=====================================================
 // コンストラクタ
 //=====================================================
 CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(STATE_NONE), m_pIceMoveDest(nullptr), m_bEnableInput(false), m_fTimerStartMove(0.0f),
 m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f), m_pLandSystemFlow(nullptr), m_pLandFlow(nullptr)
 {
-
+	s_apPlayer.push_back(this);
 }
 
 //=====================================================
@@ -135,6 +140,20 @@ void CPlayer::InitGridIdx(void)
 //=====================================================
 void CPlayer::Uninit(void)
 {
+	for (auto itr = s_apPlayer.begin(); itr < s_apPlayer.end(); itr++)
+	{
+		//削除対象じゃない場合
+		if (*itr != this)
+		{
+			continue;
+		}
+
+		//Vectorから削除
+		s_apPlayer.erase(itr);
+
+		break;
+	}
+
 	// 継承クラスの終了
 	CMotion::Uninit();
 }

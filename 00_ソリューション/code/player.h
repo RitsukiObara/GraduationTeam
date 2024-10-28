@@ -69,7 +69,8 @@ public:
 	int GetGridVH(void) { return m_nGridH; }
 
 	// 静的メンバ関数
-	static CPlayer* Create(void);
+	static CPlayer* Create(void);	// 生成処理
+	static vector<CPlayer*> GetInstance(void) { return s_apPlayer; }	// インスタンスの取得
 
 private:
 	// 構造体定義
@@ -130,6 +131,9 @@ private:
 	CFlowIce *m_pLandSystemFlow;	// 乗ってる流氷システム
 	S_FragMotion m_fragMotion;	// モーションフラグ
 	CInputManager *m_pInputMgr;	// 入力マネージャー
+
+	// 静的メンバ変数
+	static vector<CPlayer*> s_apPlayer;	// 格納用の配列
 };
 
 #endif
