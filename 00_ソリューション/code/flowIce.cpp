@@ -12,13 +12,14 @@
 #include "ice.h"
 #include "iceManager.h"
 #include "effect3D.h"
+#include "manager.h"
 
 //*****************************************************
 // 定数定義
 //*****************************************************
 namespace
 {
-const int NUM_ICE = 4;	// 氷の数
+const float TIME_DELETE = 20.0f;	// 氷が消えるまでの時間
 }
 
 //*****************************************************
@@ -29,7 +30,7 @@ vector<CFlowIce*> CFlowIce::s_vector;	// 格納用の配列
 //=====================================================
 // コンストラクタ
 //=====================================================
-CFlowIce::CFlowIce(int nPriority) : CObject(nPriority)
+CFlowIce::CFlowIce(int nPriority) : CObject(nPriority), m_fTimerDelete(0.0f)
 {
 	s_vector.push_back(this);
 }
@@ -71,33 +72,6 @@ HRESULT CFlowIce::Init(void)
 }
 
 //=====================================================
-// 氷の生成
-//=====================================================
-void CFlowIce::CreateIce(void)
-{
-	CIceManager *pIceManager = CIceManager::GetInstance();
-
-	if (pIceManager == nullptr)
-		return;
-
-	int aV[NUM_ICE] =
-	{// 縦のグリッド番号の配列
-		3,4,5,6
-	};
-	int aH[NUM_ICE] =
-	{// 横のグリッド番号の配列
-		9,9,9,9
-	};
-
-	for (int i = 0; i < NUM_ICE; i++)
-	{
-		CIce *pIce = pIceManager->CreateIce(aV[i], aH[i]);
-		pIce->ChangeState(new CIceStateFlow);
-		m_apIce.push_back(pIce);
-	}
-}
-
-//=====================================================
 // 氷を配列に追加
 //=====================================================
 void CFlowIce::AddIceToArray(CIce *pIce)
@@ -130,6 +104,9 @@ void CFlowIce::Update(void)
 {
 	// どれかの氷が止まっていないかのチェック
 	CheckSomeIceStop();
+
+	// 削除確認
+	CheckDelete();
 
 #ifdef _DEBUG
 	Debug();
@@ -167,6 +144,42 @@ void CFlowIce::StopAllIce(void)
 		it->ChangeState(new CIceStaeteNormal);
 
 		pIceManager->AddIce(it, it->GetPosition());
+	}
+}
+
+//=====================================================
+// 全氷の削除
+//=====================================================
+void CFlowIce::DeleteAllIce(void)
+{
+	CIceManager *pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return;
+
+	for (int i = 0; i < (int)m_apIce.size(); i++)
+	{
+		if (m_apIce[i] == nullptr)
+			continue;
+
+		pIceManager->DeleteIce(m_apIce[i]);
+		m_apIce[i]->Uninit();
+	}
+
+	m_apIce.clear();
+}
+
+//=====================================================
+// 氷削除の確認
+//=====================================================
+void CFlowIce::CheckDelete(void)
+{
+	m_fTimerDelete += CManager::GetDeltaTime();
+
+	if (m_fTimerDelete > TIME_DELETE)
+	{
+		DeleteAllIce();
+		Uninit();
 	}
 }
 

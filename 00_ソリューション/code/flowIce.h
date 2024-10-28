@@ -42,13 +42,15 @@ public:
 
 private:
 	// メンバ関数
-	void CreateIce(void);	// 氷の生成
 	void CheckSomeIceStop(void);	// どれかの氷が止まっていないかのチェック
 	void StopAllIce(void);	// 全ての氷を止める
+	void DeleteAllIce(void);	// 全氷の削除
+	void CheckDelete(void);	// 削除確認
 	void Debug(void);	// デバッグ処理
 
 	// メンバ変数
 	vector<CIce*> m_apIce;	// 氷の配列
+	float m_fTimerDelete;	// 削除タイマー
 
 	// 静的メンバ変数
 	static vector<CFlowIce*> s_vector;	// 格納用の配列
