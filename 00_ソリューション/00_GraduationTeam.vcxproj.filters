@@ -37,9 +37,6 @@
     <Filter Include="ソース ファイル\lib">
       <UniqueIdentifier>{7a9f491c-a4b4-4271-853a-7d91d2787b77}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\factory">
-      <UniqueIdentifier>{1e74ac24-c599-495a-aea3-93b967f591ce}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\camera">
       <UniqueIdentifier>{b12a6dd0-6ae1-44c1-9293-65c1c9a13847}</UniqueIdentifier>
     </Filter>
@@ -48,6 +45,9 @@
     </Filter>
     <Filter Include="ソース ファイル\gameobject">
       <UniqueIdentifier>{d584bb05-78d6-4b0a-973c-c75a90ab2df2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\factory">
+      <UniqueIdentifier>{1e74ac24-c599-495a-aea3-93b967f591ce}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -95,7 +95,7 @@ HRESULT CIceManager::Init(void)
 	CreateIce(3, 6,CIce::E_Type::TYPE_HARD);
 	CreateIce(3, 5);
 	CreateIce(3, 4);
-	CreateIce(3, 3);
+	/*CreateIce(3, 3);
 	CreateIce(4, 3);
 	CreateIce(5, 3);
 	CreateIce(5, 8);
@@ -107,10 +107,10 @@ HRESULT CIceManager::Init(void)
 	CreateIce(6, 6);
 	CreateIce(6, 7);
 	CreateIce(6, 8);
-	CreateIce(6, 9);
+	CreateIce(6, 9);*/
 
 	// 海流を初期化
-	m_dirStream = E_Stream::STREAM_UP;
+	m_dirStream = E_Stream::STREAM_LEFT;
 	m_fOceanLevel = OCEAN_FLOW_MAX;
 
 	return S_OK;
@@ -227,6 +227,34 @@ CIce *CIceManager::CreateIce(int nGridV, int nGridH, CIce::E_Type type)
 	
 	// 氷を配列にセット
 	m_aGrid[nGridV][nGridH].pIce = pIce;
+
+	return pIce;
+}
+
+//=====================================================
+// 流氷の生成
+//=====================================================
+CIce *CIceManager::CreateFlowIce(int nGridV, int nGridH, CIce::E_Type type)
+{
+	CIce *pIce = nullptr;
+
+	pIce = CIce::Create(type);
+
+	if (pIce == nullptr)
+		return nullptr;
+
+	D3DXVECTOR3 pos;
+	pos = { nGridH * WIDTH_GRID - WIDTH_GRID * m_nNumGridHorizontal * 0.5f,10.0f,nGridV * DEPTH_GRID - DEPTH_GRID * m_nNumGridVirtical * 0.5f };
+
+	// 偶数行だったらずらす
+	if (nGridV % 2 == 0)
+	{
+		pos.x += WIDTH_GRID * 0.5f;
+	}
+
+	// 氷のトランスフォーム設定
+	pIce->SetPosition(pos);
+	pIce->SetTransform(Grid::SIZE);
 
 	return pIce;
 }
@@ -586,7 +614,13 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 
 	GetIdxGridFromPosition(posIce, &nIdxV, &nIdxH);
 
-	SetIceInGrid(nIdxV, nIdxH, pIce);
+	bool bOk = SetIceInGrid(nIdxV, nIdxH, pIce);
+
+	if (!bOk)
+	{
+		DeleteIce(pIce);
+		pIce->Uninit();
+	}
 }
 
 //=====================================================
@@ -1197,32 +1231,38 @@ bool CIceManager::IsInIce(D3DXVECTOR3 pos, CIce *pIce, float fRate)
 //=====================================================
 // グリッドに氷を設定
 //=====================================================
-void CIceManager::SetIceInGrid(int nNumV, int nNumH, CIce *pIce)
+bool CIceManager::SetIceInGrid(int nNumV, int nNumH, CIce *pIce)
 {
 	if (m_aGrid.empty())
-		return;
+		return false;
 
 	if (nNumV > (int)m_aGrid.size() - 1)
 	{// 上から飛び出てた時の制限
-		return;
+		return false;
 	}
 	else if (nNumV < 0)
 	{// 下から飛び出た時の制限
-		return;
+		return false;
 	}
 
 	if (nNumH > (int)m_aGrid[nNumH].size() - 1)
 	{// 右から飛び出てた時の制限
-		return;
+		return false;
 	}
 	else if (nNumH < 0)
 	{// 左から飛び出た時の制限
-		return;
+		return false;
 	}
 
 	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
 	{
 		m_aGrid[nNumV][nNumH].pIce = pIce;
+
+		return true;
+	}
+	else
+	{
+		return false;
 	}
 }
 

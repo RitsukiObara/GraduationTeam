@@ -1,7 +1,7 @@
 //*****************************************************
 //
 // ƒI[ƒVƒƒƒ“ˆ—[ocean.cpp]
-// Author:‘ì—F‹MAá–Øˆê^
+// Author:‘ì—F‹M
 //
 //*****************************************************
 
@@ -98,16 +98,18 @@ void COcean::Uninit(void)
 //=====================================================
 void COcean::Update(void)
 {
-	float OceanFlowLevel = CIceManager::GetInstance()->GetOceanLevel();	// ŠC—¬ƒŒƒxƒ‹‚Ìæ“¾
+	float OceanFlowLevel = CIceManager::GetInstance()->GetOceanLevel();	//	ŠC—¬ƒŒƒxƒ‹‚Ìæ“¾
 
 	CMeshField::Update();
 
-	// ŠC—¬‚Ì‘¬“x‚ğİ’è
 	m_fSpeed += 0.007f * OceanFlowLevel;
+
+	//OceanRotState();
 
 	universal::LimitRot(&m_fSpeed);
 
 	CMeshField::Wave(m_fSpeed);
+
 }
 
 //=====================================================

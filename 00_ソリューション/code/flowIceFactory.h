@@ -44,11 +44,12 @@ private:
 	void Load(void);	// 読込
 	void GetNumFlowIce(std::ifstream& file, string str, int *pNumV, int *pNumH, S_InfoFlowIce* pInfoFlowIce);
 	void CreateFlowIce(void);	// 流氷の生成
+	void DecideNextFlowIce(void);	// 次の流氷の形を決める
 
 	// メンバ変数
 	float m_fTimerCreateFlowIce;	// 流氷製造タイマー
+	int m_nIdxNextIce;	// 次の氷の形の番号
 	vector<S_InfoFlowIce*> m_apInfoFlowIce;	// 流氷の情報配列
 };
 
 #endif
-

@@ -53,7 +53,8 @@ public:
 	void Uninit(void);	// 終了
 	void Update(void);	// 更新
 	void Draw(void);	// 描画
-	CIce *CreateIce(int nGridV,int nGridH, CIce::E_Type type = CIce::E_Type::TYPE_NORMAL);	// 氷の生成
+	CIce *CreateIce(int nGridV, int nGridH, CIce::E_Type type = CIce::E_Type::TYPE_NORMAL);	// 氷の生成
+	CIce *CreateFlowIce(int nGridV,int nGridH, CIce::E_Type type = CIce::E_Type::TYPE_NORMAL);	// 流氷の生成
 	void StopIce(CIce *pIce);	// 氷の停止
 	void PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos);	// 氷をつつく
 	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// 氷の追加
@@ -64,7 +65,7 @@ public:
 	void Collide(D3DXVECTOR3 *pPos, CIce *pice);	// 外に出さない判定処理
 	bool GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH,float fRate = 0.7f);	// グリッド番号を位置から取得する処理
 	bool IsInIce(D3DXVECTOR3 pos, CIce *pIce, float fRate = 0.7f);	// 氷に乗ってるかの判定
-	void SetIceInGrid(int nNumV, int nNumH, CIce *pIce);	// グリッドに氷を設定
+	bool SetIceInGrid(int nNumV, int nNumH, CIce *pIce);	// グリッドに氷を設定
 	void GetIceIndex(CIce *pIce, int *pNumV, int *pNumH);	// 氷のグリッド番号を取得
 	CIce* GetRightDownIdx(int *pNumV, int *pNumH);	// 右下の氷取得
 
