@@ -63,6 +63,10 @@ public:
 	D3DXVECTOR3 GetMove(void) { return m_move; }
 	void EnableInput(bool bEnable) { m_bEnableInput = bEnable; }	// 入力可能フラグ
 	bool IsEnableInput(void) { return m_bEnableInput; }
+	void SetGridV(int nValue) { m_nGridV = nValue; }	// グリッドの縦番号
+	int GetGridV(void) { return m_nGridV; }
+	void SetGridH(int nValue) { m_nGridH = nValue; }	// グリッドの横番号
+	int GetGridVH(void) { return m_nGridH; }
 
 	// 静的メンバ関数
 	static CPlayer* Create(void);

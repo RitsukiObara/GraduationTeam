@@ -24,7 +24,7 @@ std::vector<CEnemy*> CEnemy::s_vector = {};	// 自身のポインタ
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
-CEnemy::CEnemy(int nPriority) : m_nGridV(0), m_nGridH(0)
+CEnemy::CEnemy(int nPriority) : m_nGridV(0), m_nGridH(0),m_state(E_State::STATE_NONE)
 {
 	s_vector.push_back(this);
 }
@@ -43,8 +43,6 @@ CEnemy::~CEnemy()
 CEnemy* CEnemy::Create(int nType)
 {
 	CEnemy* pEnemy = nullptr;
-
-	pEnemy = new CEnemy;
 
 	switch (nType)
 	{
@@ -85,6 +83,9 @@ HRESULT CEnemy::Init(void)
 	// グリッド番号初期化
 	InitGridIdx();
 
+	// 状態初期化
+	m_state = E_State::STATE_STOP;
+
 	return S_OK;
 }
 
@@ -99,6 +100,8 @@ void CEnemy::InitGridIdx(void)
 		return;
 
 	pIceMgr->GetRightDownIdx(&m_nGridV, &m_nGridH);
+	m_nGridVNext = m_nGridV;
+	m_nGridHNext = m_nGridH;
 
 	D3DXVECTOR3 pos = pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH);
 	SetPosition(pos);
@@ -140,6 +143,19 @@ void CEnemy::Update(void)
 
 	// 氷に追従
 	FollowIce();
+
+	// 状態に応じた更新
+	UpdateState updateFuncs[CEnemy::E_State::STATE_MAX] =
+	{
+		nullptr,
+		&CEnemy::UpdateStop,
+		&CEnemy::UpdateMove,
+		&CEnemy::UpdateAttack,
+		&CEnemy::UpdateDrift
+	};
+
+	if (updateFuncs[m_state] != nullptr)
+		(this->*updateFuncs[m_state])();
 
 #ifdef _DEBUG
 	Debug();

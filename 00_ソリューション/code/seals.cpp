@@ -27,7 +27,7 @@ namespace
 //=====================================================
 CSeals::CSeals(int nPriority) : CEnemy()
 {
-	m_state = STATE_STOP;
+
 }
 
 //=====================================================
@@ -87,19 +87,6 @@ void CSeals::Uninit(void)
 //=====================================================
 void CSeals::Update(void)
 {
-	// 状態に応じた更新
-	UpdateState updateFuncs[CSeals::STATE::STATE_MAX] =
-	{
-		nullptr,
-		&CSeals::UpdateStop,
-		&CSeals::UpdateMove,
-		&CSeals::UpdateAttack,
-		&CSeals::UpdateDrift
-	};
-
-	if (updateFuncs[m_state] != nullptr)
-		(this->*updateFuncs[m_state])();
-
 	// 継承クラスの更新
 	CEnemy::Update();
 }
