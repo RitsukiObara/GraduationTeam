@@ -26,10 +26,6 @@
 // マクロ定義
 //*****************************************************
 #define MESHFIELD_TEX_FILE			"data\\TEXTURE\\BG\\field00.jpg"				// テクスチャファイル名
-#define MOVE_SPEED					(1.0f)										// 移動速度
-#define MESH_LENGTH					(800.0f)									// メッシュの一辺の長さ
-#define MESH_U						(254)											// 横のブロック数
-#define MESH_V						(254)											// 縦のブロック数
 #define SPLIT_TEX					(10)										// テクスチャ分割数
 #define CHENGE_LENGTH	(10000)	// 操作できる頂点までの距離
 #define ANGLE_SLIP	(0.7f)	// 坂を滑る角度
@@ -46,6 +42,9 @@ COcean* COcean::m_pOcean = nullptr;	// 自身のポインタ
 COcean::COcean()
 {
 	m_fSpeed = 0.0f;
+	m_nRandKeep = 0;
+	m_nRandNextKeep = 0;
+	m_nRandState = false;
 	m_fRot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 }
 
@@ -103,11 +102,11 @@ void COcean::Update(void)
 	float OceanFlowLevel = CIceManager::GetInstance()->GetOceanLevel();	//	海流レベルの取得
 
 	CMeshField::Update();
-	//OceanCycleTimer();
 
 	m_fSpeed += 0.007f * OceanFlowLevel;
 
 	//OceanRotState();
+	//OceanCycleTimer();
 
 	universal::LimitRot(&m_fSpeed);
 
@@ -168,21 +167,29 @@ void COcean::OceanCycleTimer(void)
 {
 	COcean* pOcean = COcean::GetInstance();
 	CIceManager* pIceManager = CIceManager::GetInstance();
-	float OceanCycleTimer = CGame::GetInstance()->GetTimeSecond();	 // 現在のタイムを取得
+	int OceanCycleTimer = CGame::GetInstance()->GetTimeSecond();	 // 現在のタイムを取得
 
-	if (OceanCycleTimer <= 111.0f &&
-		OceanCycleTimer >= 110.0f)
+	// 10の倍数の時に入る
+	if (OceanCycleTimer % 10 == 0)
 	{
-		pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);	// 海流の速度を下げる
-		pIceManager->SetDirStreamNext(pIceManager->E_Stream::STREAM_DOWN);	// 海流の向きを下にする
-		//universal::RandRange();
-	}
+		if (m_nRandState == false)
+		{
+			m_nRandState = true;
 
-	if (OceanCycleTimer <= 101.0f &&
-		OceanCycleTimer >= 100.0f)
-	{
-		pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);	// 海流の速度を下げる
-		pIceManager->SetDirStreamNext(pIceManager->E_Stream::STREAM_LEFT);	// 海流の向きを下にする
-	}
+			m_nRandKeep = m_nRandNextKeep;
+		}
 
+		// 現状と次の向きが同じとき数値をリセット
+		if (m_nRandKeep == m_nRandNextKeep)
+		{
+			m_nRandNextKeep = universal::RandRange(pIceManager->E_Stream::STREAM_MAX, pIceManager->E_Stream::STREAM_UP);
+		}
+
+		// 現状と次の向きが同じじゃないとき
+		if (m_nRandKeep != m_nRandNextKeep)
+		{
+			pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);	// 海流の速度を下げる
+			pIceManager->SetDirStreamNext((CIceManager::E_Stream)(m_nRandNextKeep));	// 海流の向きをランダムにする
+		}
+	}
 }

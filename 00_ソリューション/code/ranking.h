@@ -46,11 +46,11 @@ public:
 	void Update(void);	// 更新
 	void Draw(void);	// 描画
 	void Reset(void);	// ランキングのリセット
-	void Set(float fTime);	// ランキング設定
+	void Set(int nTime);	// ランキング設定
 	void Save(void);	// 保存
 	void Load(void);	// 読込
 
-	static void SetTime(float fTime) { s_fTime = fTime; };	// タイムのセット
+	static void SetTime(int nTime) { s_nTime = nTime; };	// タイムのセット
 
 private:
 	// メンバ関数
@@ -59,14 +59,14 @@ private:
 	// メンバ変数
 	int m_nScore;	// スコアの値
 	int m_nRankUpdate = -1;	// 更新ランクNo.
-	float m_aScore[NUM_RANK];	// ランキングスコア
+	int m_aScore[NUM_RANK];	// ランキングスコア
 	E_STATE m_state = STATE_NORMAL;	// ニューレコードの点滅状態
 	int m_nCntState;	// 状態遷移カウンタ
 	int m_nTimerTrans;	// 画面遷移カウンター
 	CTimer *m_apTimer[NUM_RANK];	// ランキングの数字
 
 	// 静的メンバ変数
-	static float s_fTime;	// タイム
+	static int s_nTime;	// タイム
 };
 
 #endif

@@ -19,6 +19,7 @@
 #include "effect3D.h"
 #include "texture.h"
 #include "iceManager.h"
+#include "ocean.h"
 
 //*****************************************************
 // ƒ}ƒNƒ’è‹`
@@ -782,6 +783,7 @@ void CMeshField::Wave(float fRot)
 
 	int nCountV, nCountU;
 
+	COcean* pOcean = COcean::GetInstance();
 	CIceManager* pIceManager = CIceManager::GetInstance();
 	CIceManager::E_Stream nOceanRot = CIceManager::GetInstance()->GetDirStream();	// ŠC—¬‚ÌŒü‚«‚ðŽæ“¾
 	CIceManager::E_Stream nOceanRotNext = CIceManager::GetInstance()->GetDirStreamNext();	// ŽŸ‚ÌŠC—¬‚ÌŒü‚«‚ðŽæ“¾
@@ -789,6 +791,8 @@ void CMeshField::Wave(float fRot)
 	// ŠC—¬‚Ì‘¬“x‚ªã‚ª‚Á‚Ä‚¢‚éó‘Ô‚ÌŽž
 	if (m_eOcean_Speed_State == OCEAN_STATE_UP)
 	{
+		pOcean->SetRandState(false);
+
 		m_fOceanSpeed += 0.3f;
 
 		if (nOceanRot != nOceanRotNext)

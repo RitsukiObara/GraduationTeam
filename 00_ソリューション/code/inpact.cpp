@@ -210,9 +210,9 @@ void CInpact::ManageLife(void)
 	SetRadius(fRadius);
 
 	// õ–½‚ğŒ¸‚ç‚·
-	float fDeltaTime = CManager::GetDeltaTime();
+	int nDeltaTime = CManager::GetDeltaTime();
 
-	m_info.fLife -= fDeltaTime;
+	m_info.fLife -= nDeltaTime;
 
 	// F‚Ìİ’è
 	float fRate = m_info.fLife / m_info.fLifeInitial;

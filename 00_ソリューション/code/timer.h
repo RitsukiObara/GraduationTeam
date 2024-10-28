@@ -42,9 +42,9 @@ public:
 	void Draw();
 
 	// 変数取得・設定関数
-	float GetSecond() { return m_fSecond; }	// 秒
-	void SetSecond(float fSecond) { m_fSecond = fSecond; }
-	void AddSecond(float fSecond) { m_fSecond += fSecond; }
+	int GetSecond() { return m_nSecond; }	// 秒
+	void SetSecond(int nSecond) { m_nSecond = nSecond; }
+	void AddSecond(int nSecond) { m_nSecond += nSecond; }
 	bool GetFlag() { return m_bStop; }	// 動作フラグ
 	void SetFlag(bool bStop) { m_bStop = bStop; }
 	void SetPosition(D3DXVECTOR3 pos) override;	// 位置
@@ -55,8 +55,8 @@ public:
 
 	// 静的メンバ関数
 	static CTimer *Create();	// 生成
-	static void SaveSecond(float fSecond);	// 時間保存
-	static float LoadSecond(void);	// 時間読込
+	static void SaveSecond(int nSecond);	// 時間保存
+	static int LoadSecond(void);	// 時間読込
 
 private:
 	// メンバ関数
@@ -64,7 +64,7 @@ private:
 	void TransformNumber();	// 数字のトランスフォーム設定
 
 	// メンバ変数
-	float m_fSecond;			// 現在の時間(秒)
+	int m_nSecond;			// 現在の時間(秒)
 	float m_fScaleNumber;	// 数字のスケール
 	bool m_bStop;				// タイマー停止のフラグ
 	vector<CNumber*> m_aNumber;	// 数字の配列

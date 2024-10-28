@@ -176,6 +176,7 @@
     <ClCompile Include="code\blurEvent.cpp" />
     <ClCompile Include="code\camera.cpp" />
     <ClCompile Include="code\cameraState.cpp" />
+    <ClCompile Include="code\nextflowice.cpp" />
     <ClCompile Include="code\UI_combo.cpp" />
     <ClCompile Include="code\debris.cpp" />
     <ClCompile Include="code\debrisspawner.cpp" />
@@ -271,6 +272,7 @@
     <ClInclude Include="code\blurEvent.h" />
     <ClInclude Include="code\camera.h" />
     <ClInclude Include="code\cameraState.h" />
+    <ClInclude Include="code\nextflowice.h" />
     <ClInclude Include="code\UI_combo.h" />
     <ClInclude Include="code\debris.h" />
     <ClInclude Include="code\debrisSpawner.h" />
