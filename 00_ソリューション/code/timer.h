@@ -56,7 +56,7 @@ public:
 	// Ã“Iƒƒ“ƒoŠÖ”
 	static CTimer *Create();	// ¶¬
 	static void SaveSecond(int nSecond);	// ŠÔ•Û‘¶
-	static float LoadSecond(void);	// ŠÔ“Ç
+	static int LoadSecond(void);	// ŠÔ“Ç
 
 private:
 	// ƒƒ“ƒoŠÖ”

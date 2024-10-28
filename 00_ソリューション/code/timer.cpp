@@ -17,10 +17,6 @@
 //*****************************************************
 namespace
 {
-const int	TIME_MIN = 0;	// 最少タイム
-const int	TIME_MAX = 60 + 59;	// 最大タイム
-const int MINUTES_LIMIT = 9;	// 分の上限値
-const int SECOND_LIMIT = 59;	// 秒の上限値
 const int MINUTES_DIGIT = 2;	// 分表示の桁数
 const int TIME_DIGIT = 2;	// それぞれの桁数
 const float DIST_NUMBER = 0.03f;	// 数字間の距離
@@ -90,7 +86,7 @@ void CTimer::SaveSecond(int fSecond)
 //=====================================================
 // 時間読込処理
 //=====================================================
-float CTimer::LoadSecond(void)
+int CTimer::LoadSecond(void)
 {
 	// ファイルを開く
 	std::ifstream file("data\\TEMP\\time.bin", std::ios_base::binary);	// ファイルストリーム
@@ -99,18 +95,18 @@ float CTimer::LoadSecond(void)
 
 		// エラーメッセージボックス
 		MessageBox(nullptr, "時間の読み込みに失敗！", "警告！", MB_ICONWARNING);
-		return 0.0f;
+		return 0;
 	}
 
 	// 引数の時間を読み込み
-	float fTime = 0.0f;
-	file.read((char*)&fTime, sizeof(float));
+	int nTime = 0;
+	file.read((char*)&nTime, sizeof(float));
 
 	// ファイルを閉じる
 	file.close();
 
 	// 読み込んだ時間を返す
-	return fTime;
+	return nTime;
 }
 
 //=====================================================
@@ -197,6 +193,11 @@ void CTimer::UpdateNumber()
 {
 	if (m_aNumber.empty())
 		return;
+
+	if (m_nSecond < 0)
+	{
+		m_nSecond = 0;
+	}
 
 	// 値の用意
 	int aValue[E_Number::NUMBER_MAX] =
