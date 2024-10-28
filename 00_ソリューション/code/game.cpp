@@ -192,7 +192,7 @@ void CGame::Update(void)
 	if (pKeyboard->GetTrigger(DIK_K))
 	{
 		//“G‚ğ“|‚µ‚½‚ÌƒXƒRƒA¶¬
-		CDestroyScore::Create();
+		CDestroyScore::Create(CEnemy::TYPE_SEALS);
 	}
 
 	if (!m_bStop)

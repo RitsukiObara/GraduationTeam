@@ -13,6 +13,7 @@
 #include "gameObject.h"
 #include "number.h"
 #include "score.h"
+#include "enemy.h"
 
 //*****************************************************
 // 前方宣言
@@ -45,12 +46,16 @@ public:
 	void Draw();
 
 	// 静的メンバ関数
-	static CDestroyScore* Create();	// 生成
+	static CDestroyScore* Create(CEnemy::TYPE type);	// 生成
 
 private:
+	void SetEnemyScore(CEnemy::TYPE type);	//敵の種類ごとのスコア
+
 	E_State m_State;	//敵を倒した時のスコア状態変数
 	int m_nCntState;	//状態管理数字
 	D3DXCOLOR m_Col;	//色管理
+	int m_nScore;		//スコア数値
+	int m_nValue;		//桁数
 };
 
 #endif
