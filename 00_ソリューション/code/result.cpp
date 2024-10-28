@@ -158,13 +158,13 @@ CResult *CResult::Create(bool bWin)
 
 			s_pResult->Create2D(bWin);
 
-			float fTime = CGame::MAX_TIME - CGame::GetInstance()->GetTimeSecond();
+			int nTime = CGame::MAX_TIME - CGame::GetInstance()->GetTimeSecond();
 			if (bWin == false)
 			{
-				fTime = 60;
+				nTime = 60;
 			}
 
-			CRanking::SetTime(fTime);
+			CRanking::SetTime(nTime);
 		}
 	}
 

@@ -17,13 +17,12 @@
 //*****************************************************
 namespace
 {
-const float	TIME_MIN = 0.0f;	// Å­ƒ^ƒCƒ€
-const float	TIME_MAX = 60.0f * 99.0f + 59.0f + 0.999f;	// Å‘åƒ^ƒCƒ€
+const int	TIME_MIN = 0;	// Å­ƒ^ƒCƒ€
+const int	TIME_MAX = 60 + 59;	// Å‘åƒ^ƒCƒ€
 const int MINUTES_LIMIT = 9;	// •ª‚ÌãŒÀ’l
 const int SECOND_LIMIT = 59;	// •b‚ÌãŒÀ’l
 const int MINUTES_DIGIT = 2;	// •ª•\¦‚ÌŒ…”
 const int TIME_DIGIT = 2;	// ‚»‚ê‚¼‚ê‚ÌŒ…”
-const float MAGNIFICATION = 100.0f;	// Š|‚¯‚é”{—¦
 const float DIST_NUMBER = 0.03f;	// ”šŠÔ‚Ì‹——£
 D3DXVECTOR2 SIZE_NORMAL_NUM = { 0.02f, 0.06f };	// ’Êí”š‚ÌƒTƒCƒY
 D3DXVECTOR2 SIZE_MINI_NUM = { 0.014f, 0.028f };	// ƒ~ƒj”š‚ÌƒTƒCƒY
@@ -36,8 +35,8 @@ const string PATH_TEX_COLON = "data\\TEXTURE\\UI\\colon.png";	// ƒRƒƒ“‚ÌƒeƒNƒXƒ
 //=====================================================
 CTimer::CTimer()
 {
-	m_fSecond = 0.0f;
-	m_fScaleNumber = 0.0f;
+	m_nSecond = 0;
+	m_fScaleNumber = 0;
 	m_bStop = false;
 }
 
@@ -69,7 +68,7 @@ CTimer* CTimer::Create(void)
 //=====================================================
 // ŠÔ•Û‘¶ˆ—
 //=====================================================
-void CTimer::SaveSecond(float fSecond)
+void CTimer::SaveSecond(int fSecond)
 {
 	// ƒtƒ@ƒCƒ‹‚ğŠJ‚­
 	std::ofstream file("data\\TEMP\\time.bin", std::ios_base::binary);	// ƒtƒ@ƒCƒ‹ƒXƒgƒŠ[ƒ€
@@ -119,7 +118,7 @@ float CTimer::LoadSecond(void)
 //=====================================================
 HRESULT CTimer::Init(void)
 {
-	m_fSecond = 0.0f;	// •b‚Ì‰Šú‰»
+	m_nSecond = 0;	// •b‚Ì‰Šú‰»
 	m_fScaleNumber = 1.0f;	// ‰ŠúƒXƒP[ƒ‹İ’è
 	m_bStop = false;	// ƒ^ƒCƒ}[’â~‚Ìƒtƒ‰ƒO
 
@@ -202,13 +201,12 @@ void CTimer::UpdateNumber()
 	// ’l‚Ì—pˆÓ
 	int aValue[E_Number::NUMBER_MAX] =
 	{
-#if 0
-		(int)m_fSecond / 60,
-		(int)m_fSecond % 60,
-		(int)(m_fSecond * MAGNIFICATION) % (int)MAGNIFICATION
+#if 1
+		(int)m_nSecond / 60,
+		(int)m_nSecond % 60,
 #else
-		(int)((DWORD)(m_fSecond * 1000.0f) / 60000),
-		(int)((DWORD)(m_fSecond * 1000.0f) / 1000 % 60),
+		(int)((DWORD)(m_nSecond * 1000) / 60000),
+		(int)((DWORD)(m_nSecond * 1000) / 1000 % 60),
 #endif
 	};
 

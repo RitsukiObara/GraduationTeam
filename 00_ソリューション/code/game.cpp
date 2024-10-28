@@ -54,6 +54,8 @@
 // マクロ定義
 //*****************************************************
 #define TRANS_TIME	(100)	// 終了までの余韻のフレーム数
+#define SPEED_TIME	(30)	// タイマーが減っていく速度
+
 namespace
 {
 const char* PATH_GAME_ROAD = "data\\MAP\\road00.bin";	// ゲームメッシュロードのパス
@@ -76,6 +78,7 @@ CGame *CGame::m_pGame = nullptr;	// 自身のポインタ
 CGame::CGame()
 {
 	m_nCntState = 0;
+	m_nTimerCnt = 0;
 	m_bStop = false;
 	m_posMid = { 0.0f,0.0f,0.0f };
 	m_pPause = nullptr;
@@ -246,13 +249,20 @@ void CGame::UpdateCamera(void)
 void CGame::ManageState(void)
 {
 	CFade *pFade = CFade::GetInstance();
+	m_nTimerCnt++;
 
 	switch (m_state)
 	{
 	case CGame::STATE_NORMAL:
 
-		// タイマーの更新
-		m_pTimer->AddSecond(-CManager::GetDeltaTime());
+		// タイマーが減っていく速度
+		if (m_nTimerCnt >= SPEED_TIME)
+		{
+			m_nTimerCnt = 0;
+
+			// タイマーの更新
+			m_pTimer->AddSecond(-1);
+		}
 
 		break;
 	case CGame::STATE_RESULT:

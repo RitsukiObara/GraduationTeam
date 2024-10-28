@@ -32,13 +32,13 @@ class CPause;
 class CGame : public CScene
 {
 public:
-	static constexpr float MAX_TIME = 120.0f;	// 最大時間
+	static constexpr int MAX_TIME = 120;	// 最大時間
 
 	enum E_State
 	{// 状態
 		STATE_NONE,		// 何もしていない状態
 		STATE_START,	// 開始状態
-		STATE_NORMAL,	// 通常状態
+		STATE_NORMAL,	// 通常状態 
 		STATE_RESULT,	// リザルト状態
 		STATE_END,		// 終了状態
 		STATE_MAX
@@ -72,7 +72,7 @@ public:
 	D3DXVECTOR3 GetPosMid(void) { return m_posMid; };	// 中心座標
 	void SetPosMid(D3DXVECTOR3 pos) { m_posMid = pos; };
 	void AddPosMid(D3DXVECTOR3 pos) { m_posMid += pos; };
-	float GetTimeSecond(void) { return m_pTimer->GetSecond(); }
+	int GetTimeSecond(void) { return m_pTimer->GetSecond(); }
 	CScore* GetScore(void) { return m_pScore; };
 
 private:
@@ -87,6 +87,7 @@ private:
 
 	// メンバ変数
 	int m_nCntState;	// 状態遷移カウンター
+	int m_nTimerCnt;	// タイマー用のカウント
 	bool m_bStop;	// 停止状態
 	vector<CLight*> m_aLight;	// ゲーム中のライト
 	CTimer* m_pTimer;		// タイマー

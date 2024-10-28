@@ -52,7 +52,7 @@ const float HEIGHT_CYLINDER = 800.0f;	// シリンダーの高さ
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-float CRanking::s_fTime = 0.0f;
+int CRanking::s_nTime = 0;
 
 //=====================================================
 // コンストラクタ
@@ -106,7 +106,7 @@ HRESULT CRanking::Init(void)
 	//int nScore = Manager::GetScore();
 
 	// 取得したスコアでランキング設定
-	Set(s_fTime);
+	Set(s_nTime);
 
 	// 保存
 	Save();
@@ -167,7 +167,7 @@ HRESULT CRanking::Init(void)
 //=====================================================
 void CRanking::Uninit(void)
 {
-	s_fTime = 0.0f;
+	s_nTime = 0;
 
 	CScene::Uninit();
 
@@ -252,7 +252,7 @@ void CRanking::Draw(void)
 //=====================================================
 // 設定処理
 //=====================================================
-void CRanking::Set(float fTime)
+void CRanking::Set(int nTime)
 {
 	// 変数宣言
 	D3DXVECTOR3 pos;
@@ -268,16 +268,16 @@ void CRanking::Set(float fTime)
 	// ソート
 	Sort();
 
-	if (fTime < m_aScore[NUM_RANK - 1])
+	if (nTime < m_aScore[NUM_RANK - 1])
 	{// 最小値を越したら代入
-		m_aScore[NUM_RANK - 1] = fTime;
+		m_aScore[NUM_RANK - 1] = nTime;
 
 		// 再ソート
 		Sort();
 
 		for (int nCnt = 0; nCnt < NUM_RANK; nCnt++)
 		{// 足した値と合致する記録を探す
-			if ((int)fTime == (int)m_aScore[nCnt])
+			if ((int)nTime == (int)m_aScore[nCnt])
 			{// ニューレコード番号を記録
 				m_nRankUpdate = nCnt;
 			}
@@ -342,7 +342,7 @@ void CRanking::Sort(void)
 		}
 
 		//要素の入れ替え
-		float nTemp = m_aScore[nCntRanking];
+		int nTemp = m_aScore[nCntRanking];
 		m_aScore[nCntRanking] = m_aScore[nTop];
 		m_aScore[nTop] = nTemp;
 	}
@@ -358,11 +358,11 @@ void CRanking::Reset(void)
 
 #if 1
 	//ランキング初期設定
-	m_aScore[0] = 45.5f;
-	m_aScore[1] = 49.3f;
-	m_aScore[2] = 50.2f;
-	m_aScore[3] = 55.6f;
-	m_aScore[4] = 59.5f;
+	m_aScore[0] = 45;
+	m_aScore[1] = 49;
+	m_aScore[2] = 50;
+	m_aScore[3] = 55;
+	m_aScore[4] = 59;
 #endif
 }
 

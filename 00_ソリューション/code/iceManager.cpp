@@ -1058,6 +1058,8 @@ void CIceManager::Debug(void)
 		pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);	// ŠC—¬‚Ì‘¬“x‚ğ‰º‚°‚é
 		m_dirStreamNext = (E_Stream)((m_dirStreamNext + E_Stream::STREAM_MAX - 1) % E_Stream::STREAM_MAX);	// Ÿ‚ÌŠC—¬‚ÌŒü‚«‚É‚·‚é
 	}
+
+	pDebugProc->Print("\nŒ»İ‚ÌŠC—¬‚ÌŒü‚«[%d]", m_dirStreamNext);
 }
 
 //=====================================================
