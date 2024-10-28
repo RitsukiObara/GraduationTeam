@@ -87,41 +87,10 @@ void CSeals::Uninit(void)
 //=====================================================
 void CSeals::Update(void)
 {
-	switch (m_State)
-	{
-	case STATE_STOP:
+	// 状態に応じた更新
 
-		 break;
 
-	case STATE_MOVE:
-
-		 break;
-
-	case STATE_ATTACK:
-
-		 break;
-
-	case STATE_DRIFT:
-
-		break;
-
-	default:
-		assert(false);
-		break;
-	}
-
-	//CIceManager* pIceManager = CIceManager::GetInstance();
-
-	/*if (pIceManager != nullptr)
-	{
-		CIce* pIce = pIceManager->GetGridObject(&m_nGridV, &m_nGridH);
-		if (pIce != nullptr)
-		{
-			D3DXVECTOR3 posObject = pIce->GetPosition();
-			SetPosition(posObject);
-		}
-	}*/
-
+	// 継承クラスの更新
 	CEnemy::Update();
 }
 

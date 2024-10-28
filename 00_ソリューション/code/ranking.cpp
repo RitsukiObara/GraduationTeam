@@ -224,7 +224,6 @@ void CRanking::Update(void)
 		{
 			m_apTimer[m_nRankUpdate]->SetColor(CTimer::E_Number::NUMBER_MINUTE, colRanking);
 			m_apTimer[m_nRankUpdate]->SetColor(CTimer::E_Number::NUMBER_SECOND, colRanking);
-			m_apTimer[m_nRankUpdate]->SetColor(CTimer::E_Number::NUMBER_MILLI , colRanking);
 		}
 	}
 

@@ -136,10 +136,6 @@ HRESULT CGame::Init(void)
 	m_pScore = CScore::Create();
 	m_pScore->SetPosition(D3DXVECTOR3(0.09f, 0.07f, 0.0f));
 
-	// //ステージリザルト表示の生成
-	//m_pStageResultUI = CStageResultUI::Create();
-	//m_pStageResultUI->SetPosition(D3DXVECTOR3(0.4f, 0.07f, 0.0f));
-
 	// モードの取得
 	m_GameMode = E_GameMode::MODE_SINGLE;
 
@@ -164,7 +160,7 @@ HRESULT CGame::Init(void)
 	CFlowIce::Create();
 
 	// 流氷ファクトリーの生成
-	//CFlowIceFct::Create();
+	CFlowIceFct::Create();
 
 	return S_OK;
 }
@@ -257,7 +253,6 @@ void CGame::ManageState(void)
 
 		// タイマーの更新
 		m_pTimer->AddSecond(-CManager::GetDeltaTime());
-		m_pTimer->Update();
 
 		break;
 	case CGame::STATE_RESULT:
