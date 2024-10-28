@@ -476,27 +476,6 @@ CIce *CPlayer::SelectIceByRot(float fRot)
 }
 
 //=====================================================
-// 目標の氷に向かって移動する処理
-//=====================================================
-void CPlayer::WalkToDestIce(CIce *pIceDest)
-{
-	if (m_pIceMoveDest == nullptr)
-		return;
-
-	// 差分ベクトルを移動量に正規化
-	D3DXVECTOR3 posPlayer = GetPosition();
-	D3DXVECTOR3 posIce = m_pIceMoveDest->GetPosition();
-
-	D3DXVECTOR3 vecDiff = posIce - posPlayer;
-	D3DXVec3Normalize(&vecDiff, &vecDiff);
-
-	D3DXVECTOR3 move = vecDiff *= SPEED_MOVE_MAX;
-
-	// 移動量を反映
-	AddPosition(move);
-}
-
-//=====================================================
 // グリッドが変わったかどうかの判定
 //=====================================================
 bool CPlayer::CheckGridChange(void)
