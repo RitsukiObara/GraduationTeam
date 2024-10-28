@@ -49,6 +49,7 @@
 #include "BG_Ice.h"
 #include "flowIceFactory.h"
 #include "destroy_score.h"
+#include "UI_combo.h"
 
 //*****************************************************
 // マクロ定義
@@ -193,6 +194,10 @@ void CGame::Update(void)
 	{
 		//敵を倒した時のスコア生成
 		CDestroyScore::Create(CEnemy::TYPE_SEALS);
+
+		//敵を倒した時のコンボUI生成
+		CUI_Combo::Create();
+
 	}
 
 	if (!m_bStop)
