@@ -98,7 +98,6 @@ private:
 	void InputPeck(void);	// 突っつきの入力
 	
 	CIce *SelectIceByRot(float fRot);	// 氷を向きで取得
-	void WalkToDestIce(CIce *pIceDest);	// 目標の氷に向かって移動する処理
 	bool CheckGridChange(void);	// グリッドが変わったかどうかの判定
 	
 	void StartFlows(void);	// 漂流開始

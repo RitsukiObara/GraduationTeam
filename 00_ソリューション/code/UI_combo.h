@@ -49,6 +49,7 @@ public:
 
 	// 静的メンバ関数
 	static CUI_Combo* Create();	// 生成
+	void SetColor(D3DXCOLOR col);	// 色
 
 private:
 	// メンバ関数
