@@ -23,7 +23,7 @@
 //*****************************************************
 namespace
 {
-const float HEIGHT_ICE = 10.0f;	// 氷の高さ
+const float HEIGHT_ICE = 100.0f;	// 氷の高さ
 }
 
 //*****************************************************
@@ -34,7 +34,8 @@ std::vector<CEnemy*> CEnemy::s_vector = {};	// 自身のポインタ
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
-CEnemy::CEnemy(int nPriority) : m_nGridV(0), m_nGridH(0),m_state(E_State::STATE_NONE), m_pIceLand(nullptr)
+CEnemy::CEnemy(int nPriority) : m_nGridV(0), m_nGridH(0),m_state(E_State::STATE_NONE), m_pIceLand(nullptr), m_bFollowIce(false),
+m_move()
 {
 	s_vector.push_back(this);
 }
@@ -50,7 +51,7 @@ CEnemy::~CEnemy()
 //=====================================================
 // 生成処理
 //=====================================================
-CEnemy* CEnemy::Create(int nType)
+CEnemy* CEnemy::Create(int nType, int nGridV, int nGridH)
 {
 	CEnemy* pEnemy = nullptr;
 
@@ -71,6 +72,11 @@ CEnemy* CEnemy::Create(int nType)
 
 	if (pEnemy != nullptr)
 	{// 敵生成
+		// グリッド初期化
+		pEnemy->SetGridV(nGridV);
+		pEnemy->SetGridH(nGridH);
+
+		// 初期化処理
 		pEnemy->Init();
 
 		CUIEnemy *pUIEnemy = CUIEnemy::GetInstance();
@@ -94,7 +100,13 @@ HRESULT CEnemy::Init(void)
 	InitGridIdx();
 
 	// 状態初期化
-	m_state = E_State::STATE_STOP;
+	m_state = E_State::STATE_APPER;
+
+	// 出現時のトランスフォーム設定
+	SetApperTransform();
+
+	// 氷追従フラグを設定
+	m_bFollowIce = false;
 
 	return S_OK;
 }
@@ -107,6 +119,9 @@ void CEnemy::InitGridIdx(void)
 	CIceManager *pIceMgr = CIceManager::GetInstance();
 
 	if (pIceMgr == nullptr)
+		return;
+
+	if (pIceMgr->GetGridIce(&m_nGridV, &m_nGridH) != nullptr)
 		return;
 
 	pIceMgr->GetRightDownIdx(&m_nGridV, &m_nGridH);
@@ -151,13 +166,14 @@ void CEnemy::Update(void)
 {
 	CMotion::Update();
 
-	// 氷に追従
-	FollowIce();
+	if(m_bFollowIce)
+		FollowIce();	// 氷に追従
 
 	// 状態に応じた更新
 	UpdateState updateFuncs[CEnemy::E_State::STATE_MAX] =
 	{
 		nullptr,
+		&CEnemy::UpdateApper,
 		&CEnemy::UpdateStop,
 		&CEnemy::UpdateMove,
 		&CEnemy::UpdateAttack,
@@ -166,6 +182,9 @@ void CEnemy::Update(void)
 
 	if (updateFuncs[m_state] != nullptr)
 		(this->*updateFuncs[m_state])();
+
+	// 移動量を位置に加算
+	AddPosition(m_move);
 
 #ifdef _DEBUG
 	Debug();
@@ -192,7 +211,17 @@ void CEnemy::FollowIce(void)
 	else
 		SetState(E_State::STATE_DRIFT);	// 漂流状態にする
 
+	pos.y += HEIGHT_ICE;
+
 	SetPosition(pos);
+}
+
+//=====================================================
+// 移動中の動き
+//=====================================================
+void CEnemy::UpdateMove(void)
+{
+
 }
 
 //=====================================================
