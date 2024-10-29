@@ -24,6 +24,8 @@
 namespace
 {
 const float HEIGHT_ICE = 100.0f;	// 氷の高さ
+const float SPPED_MOVE_INIT = 5.0f;	// 初期移動速度
+const float SPEED_ROTATION = 0.1f;	// 回転速度
 }
 
 //*****************************************************
@@ -35,7 +37,7 @@ std::vector<CEnemy*> CEnemy::s_vector = {};	// 自身のポインタ
 // 優先順位を決めるコンストラクタ
 //=====================================================
 CEnemy::CEnemy(int nPriority) : m_nGridV(0), m_nGridH(0),m_state(E_State::STATE_NONE), m_pIceLand(nullptr), m_bFollowIce(false),
-m_move()
+m_move(),m_nGridVDest(0), m_nGridHDest(0), m_fSpeedMove(0.0f)
 {
 	s_vector.push_back(this);
 }
@@ -108,6 +110,9 @@ HRESULT CEnemy::Init(void)
 	// 氷追従フラグを設定
 	m_bFollowIce = false;
 
+	// 移動速度の初期設定
+	m_fSpeedMove = SPPED_MOVE_INIT;
+
 	return S_OK;
 }
 
@@ -124,7 +129,7 @@ void CEnemy::InitGridIdx(void)
 	if (pIceMgr->GetGridIce(&m_nGridV, &m_nGridH) != nullptr)
 		return;
 
-	pIceMgr->GetRightDownIdx(&m_nGridV, &m_nGridH);
+	pIceMgr->GetLeftDownIdx(&m_nGridV, &m_nGridH);
 	m_nGridVNext = m_nGridV;
 	m_nGridHNext = m_nGridH;
 
@@ -221,7 +226,108 @@ void CEnemy::FollowIce(void)
 //=====================================================
 void CEnemy::UpdateMove(void)
 {
+	// 目標に近い氷を探す
+	SarchNearIceToDest();
 
+	// 次のグリッドに向かう処理
+	MoveToNextGrid();
+
+	// グリッドを移ったかのチェック
+	CheckChangeGrid();
+}
+
+//=====================================================
+// 目標に近い氷を探す
+//=====================================================
+void CEnemy::SarchNearIceToDest(void)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+	
+	vector<CIce*> apIce = pIceMgr->GetAroundIce(m_nGridV, m_nGridH);
+
+	// 目標位置の取得
+	D3DXVECTOR3 posDest = pIceMgr->GetGridPosition(&m_nGridVDest, &m_nGridHDest);
+
+	// 全方向の氷チェック
+	float fLengthMin = FLT_MAX;
+
+	for (auto it : apIce)
+	{
+		if (it == nullptr)
+			continue;
+
+		D3DXVECTOR3 posIce = it->GetPosition();
+		float fDiff = 0.0f;
+
+		if (universal::DistCmpFlat(posIce, posDest, fLengthMin, &fDiff))
+		{// 次のグリッドをそこに設定
+			pIceMgr->GetIceIndex(it, &m_nGridVNext, &m_nGridHNext);
+			fLengthMin = fDiff;
+		}
+	}
+}
+
+//=====================================================
+// 次のグリッドに向かって移動する
+//=====================================================
+void CEnemy::MoveToNextGrid(void)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	// 現在と次のグリッドの座標を取得
+	D3DXVECTOR3 posNext = pIceMgr->GetGridPosition(&m_nGridVNext, &m_nGridHNext);
+	D3DXVECTOR3 pos = GetPosition();
+
+	// 差分ベクトルをスピード分に正規化
+	D3DXVECTOR3 vecDiff = posNext - pos;
+	universal::VecConvertLength(&vecDiff, m_fSpeedMove);
+	SetMove(vecDiff);
+
+	// 向きを補正する
+	D3DXVECTOR3 rot = GetRotation();
+	float fRotDest = atan2f(-vecDiff.x, -vecDiff.z);
+	universal::FactingRot(&rot.y, fRotDest, SPEED_ROTATION);
+
+	SetRotation(rot);
+}
+
+//=====================================================
+// グリッドが変わったかのチェック
+//=====================================================
+void CEnemy::CheckChangeGrid(void)
+{
+	CIceManager* pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	int nIdxV = -1;
+	int nIdxH = -1;
+
+	// グリッド番号の取得
+	D3DXVECTOR3 pos = GetPosition();
+	pIceMgr->GetIdxGridFromPosition(pos, &nIdxV, &nIdxH);
+
+	if ((nIdxV == m_nGridV &&
+		nIdxH == m_nGridH) ||
+		nIdxV == -1 ||
+		nIdxH == -1)
+	{// グリッドが変わってない時は偽を返す
+		return;
+	}
+	else
+	{// グリッドが変わってたら値を保存して真を返す
+		m_nGridV = nIdxV;
+		m_nGridH = nIdxH;
+
+		return;
+	}
 }
 
 //=====================================================
@@ -293,6 +399,8 @@ void CEnemy::Debug(void)
 
 	if (pDebugProc == nullptr || pInputKeyboard == nullptr)
 		return;
+
+	pDebugProc->Print("\n目標グリッド[%d,%d]", m_nGridVDest, m_nGridHDest);
 }
 
 //=====================================================

@@ -323,9 +323,14 @@ bool CIceStaeteNormal::CheckFailGetIndex(CIce *pIce)
 
 		pIceMgr->GetIceIndex(pIce, &m_nIdxDriftV, &m_nIdxDriftH);
 
+		if (m_nIdxDriftV == 0 && m_nIdxDriftH == 0)
+		{
+			int n = 0;
+		}
+
 		if (m_nIdxDriftV == -1 ||
 			m_nIdxDriftH == -1)
-			return false;	// ‚»‚ê‚Å‚à¸”s‚µ‚½ê‡A‹U‚ğ•Ô‚·s
+			return false;	// ‚»‚ê‚Å‚à¸”s‚µ‚½ê‡A‹U‚ğ•Ô‚·
 	}
 
 	return true;

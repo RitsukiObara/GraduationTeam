@@ -609,11 +609,17 @@ bool CIceManager::CheckStandBlock(vector<CIce*> apIce, CIce *pIceStand, int nIdx
 //=====================================================
 void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 {
-	int nIdxV = 0;
-	int nIdxH = 0;
+	int nIdxV = -1;
+	int nIdxH = -1;
 	D3DXVECTOR3 posIce = pIce->GetPosition();
 
 	GetIdxGridFromPosition(posIce, &nIdxV, &nIdxH);
+
+	if (nIdxV == -1 && nIdxH == -1)
+	{
+		pIce->Uninit();
+		return;
+	}
 
 	bool bOk = SetIceInGrid(nIdxV, nIdxH, pIce);
 
@@ -1296,7 +1302,7 @@ void CIceManager::GetIceIndex(CIce *pIce, int *pNumV, int *pNumH)
 //=====================================================
 // ‰E‰º‚Ì•X‚ðŽæ“¾
 //=====================================================
-CIce* CIceManager::GetRightDownIdx(int *pNumV, int *pNumH)
+CIce* CIceManager::GetLeftDownIdx(int *pNumV, int *pNumH)
 {
 	if (pNumV == nullptr || pNumH == nullptr)
 		return nullptr;

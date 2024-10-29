@@ -67,7 +67,7 @@ public:
 	bool IsInIce(D3DXVECTOR3 pos, CIce *pIce, float fRate = 0.7f);	// 氷に乗ってるかの判定
 	bool SetIceInGrid(int nNumV, int nNumH, CIce *pIce);	// グリッドに氷を設定
 	void GetIceIndex(CIce *pIce, int *pNumV, int *pNumH);	// 氷のグリッド番号を取得
-	CIce* GetRightDownIdx(int *pNumV, int *pNumH);	// 右下の氷取得
+	CIce* GetLeftDownIdx(int *pNumV, int *pNumH);	// 右下の氷取得
 
 	// 変数取得・設定関数
 	D3DXVECTOR3 GetGridPosition(int *pNumV, int *pNumH);
