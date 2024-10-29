@@ -300,6 +300,24 @@ void CSeals::UpdateMove(void)
 
 	// プレイヤーとの判定
 	CollidePlayer();
+
+	// プレイヤーグリッドの発見
+	FindPlayerGrid();
+}
+
+//=====================================================
+// プレイヤーグリッドの発見
+//=====================================================
+void CSeals::FindPlayerGrid(void)
+{
+	if (m_pPlayerTarget == nullptr)
+		return;
+
+	int nGridV = m_pPlayerTarget->GetGridV();
+	int nGridH = m_pPlayerTarget->GetGridH();
+
+	SetGridVDest(nGridV);
+	SetGridHDest(nGridH);
 }
 
 //=====================================================
