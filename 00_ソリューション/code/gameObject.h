@@ -25,7 +25,7 @@ public:
 	virtual HRESULT Init(void) = 0;	// 初期化
 	virtual void Uninit(void) { CObject::Release(); }	// 終了
 	virtual void Update(void) = 0;	// 更新
-	virtual void Draw(void) = 0;	// 描画
+	virtual void Draw(void) {};	// 描画
 
 	// 変数取得・設定関数
 	D3DXVECTOR3 GetPosition(void) { return m_pos; }	// 位置

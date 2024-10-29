@@ -1,7 +1,7 @@
 //*****************************************************
 //
 // タイトル処理[title.cpp]
-// Author:髙山桃也
+// Author:若木一真
 //
 //*****************************************************
 
@@ -128,6 +128,7 @@ HRESULT CTitle::Init(void)
 		pArsenal->BindModel(nIdx);
 	}
 
+	CInputManager::Create();
 	CScene::Init();
 
 	return S_OK;
@@ -412,12 +413,12 @@ void CTitleMenu::Fade(void)
 
 	switch (m_menu)
 	{
-	case CTitleMenu::MENU_GAME:
+	case CTitleMenu::MENU_GAME:	// ゲーム
 
 		pFade->SetFade(CScene::MODE_GAME);
 
 		break;
-	case CTitleMenu::MENU_TRANING:
+	case CTitleMenu::MENU_OPTION:	// 設定
 
 		pFade->SetFade(CScene::MODE_TUTORIAL);
 

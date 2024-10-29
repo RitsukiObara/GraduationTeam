@@ -63,7 +63,7 @@ public:
 	void SetGridV(int nValue) { m_nGridV = nValue; }	// グリッドの縦番号
 	int GetGridV(void) { return m_nGridV; }
 	void SetGridH(int nValue) { m_nGridH = nValue; }	// グリッドの横番号
-	int GetGridVH(void) { return m_nGridH; }
+	int GetGridH(void) { return m_nGridH; }
 	void SetGridVNext(int nValue) { m_nGridVNext = nValue; }	// 次のグリッドの縦番号
 	int GetGridVNext(void) { return m_nGridVNext; }
 	void SetGridHNext(int nValue) { m_nGridHNext = nValue; }	// 次のグリッドの横番号
