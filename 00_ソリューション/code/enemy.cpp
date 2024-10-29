@@ -25,6 +25,7 @@ namespace
 {
 const float HEIGHT_ICE = 100.0f;	// •X‚Ì‚‚³
 const float SPPED_MOVE_INIT = 5.0f;	// ‰ŠúˆÚ“®‘¬“x
+const float SPEED_ROTATION = 0.1f;	// ‰ñ“]‘¬“x
 }
 
 //*****************************************************
@@ -287,6 +288,13 @@ void CEnemy::MoveToNextGrid(void)
 	D3DXVECTOR3 vecDiff = posNext - pos;
 	universal::VecConvertLength(&vecDiff, m_fSpeedMove);
 	SetMove(vecDiff);
+
+	// Œü‚«‚ğ•â³‚·‚é
+	D3DXVECTOR3 rot = GetRotation();
+	float fRotDest = atan2f(-vecDiff.x, -vecDiff.z);
+	universal::FactingRot(&rot.y, fRotDest, SPEED_ROTATION);
+
+	SetRotation(rot);
 }
 
 //=====================================================
