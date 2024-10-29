@@ -228,9 +228,32 @@ END_MOTIONSET
 #===============================
 MOTIONSET
     LOOP = 0
-    NUM_KEY = 1
+    NUM_KEY = 2
 
-    KEYSET     #---<< 0 / 1 >>
+	KEYSET     #---<< 0 / 2 >>
+        FRAME = 40
+        KEY # -----[0]----
+            POS = 0.00 -30.00 0.00
+            ROT = 1.28 0.00 0.00
+        END_KEY
+        KEY # -----[1]----
+            POS = 0.00 0.00 0.00
+            ROT = 0.00 0.00 0.73
+        END_KEY
+        KEY # -----[2]----
+            POS = 0.00 2.00 0.00
+            ROT = 0.00 0.00 -0.73
+        END_KEY
+        KEY # -----[3]----
+            POS = 0.00 0.00 0.00
+            ROT = 0.00 0.00 0.00
+        END_KEY
+        KEY # -----[4]----
+            POS = 0.00 0.00 0.00
+            ROT = 0.00 0.00 0.00
+        END_KEY
+    END_KEYSET
+    KEYSET     #---<< 1 / 2 >>
         FRAME = 10
         KEY # -----[0]----
             POS = 0.00 -30.00 0.00
