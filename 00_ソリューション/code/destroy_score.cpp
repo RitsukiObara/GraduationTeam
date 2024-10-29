@@ -14,6 +14,7 @@
 #include "inputManager.h"
 #include "debugproc.h"
 #include "game.h"
+#include "UI_combo.h"
 
 //*****************************************************
 // 定数定義
@@ -107,6 +108,7 @@ void CDestroyScore::Update(void)
 	D3DXVECTOR3 pos = GetPosition();
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
+	//敵倒した時UIの状態
 	switch (m_State)
 	{
 	case STATE_BESIDE:
@@ -161,20 +163,24 @@ void CDestroyScore::Update(void)
 
 		if (pos.x > GOAL_X)
 		{
+			//動きをゆっくり
 			move.y += SLOW_MOVE;
 
 			pos.y -= move.y;
 
 			SetPosition(pos);
 
+			//色を透明にしていく
 			m_Col.a -= THINITY_SPEED;
 
 			SetColor(m_Col);
 		}
 		if (pos.y <= GOAL_Y || m_Col.a <= THINITY_COL)
 		{
+			//スコア加算
 			CGame::GetInstance()->GetScore()->AddScore(m_nScore);
 
+			//終了
 			Uninit();
 		}
 

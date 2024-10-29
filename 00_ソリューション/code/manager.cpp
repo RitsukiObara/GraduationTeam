@@ -37,7 +37,7 @@ CEffekseer* CManager::m_pMyEffekseer = nullptr;  // エフェクシアのポインタ
 CScene *CManager::m_pScene = nullptr;	// シーンへのポインタ
 CScene::MODE CManager::m_mode = CScene::MODE_GAME;	// 現在のモード
 int CManager::m_nScore = 0;	// スコア保存用
-int CManager::m_nDeltaTime = 0;	// 前回のフレームから経過した時間
+float CManager::m_fDeltaTime = 0.0f;	// 前回のフレームから経過した時間
 CManager *CManager::m_pManager = nullptr;	// 自身のポインタ
 
 //=====================================================
