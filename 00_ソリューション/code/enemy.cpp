@@ -17,6 +17,7 @@
 #include "UI_enemy.h"
 #include "ocean.h"
 #include "destroy_score.h"
+#include "effect3D.h"
 
 //*****************************************************
 // 定数定義
@@ -25,6 +26,7 @@ namespace
 {
 const float HEIGHT_ICE = 100.0f;	// 氷の高さ
 const float SPPED_MOVE_INIT = 5.0f;	// 初期移動速度
+const float SPEED_ROTATION = 0.1f;	// 回転速度
 }
 
 //*****************************************************
@@ -287,6 +289,18 @@ void CEnemy::MoveToNextGrid(void)
 	D3DXVECTOR3 vecDiff = posNext - pos;
 	universal::VecConvertLength(&vecDiff, m_fSpeedMove);
 	SetMove(vecDiff);
+
+	// 向きを補正する
+	D3DXVECTOR3 rot = GetRotation();
+	float fRotDest = atan2f(-vecDiff.x, -vecDiff.z);
+	universal::FactingRot(&rot.y, fRotDest, SPEED_ROTATION);
+
+	SetRotation(rot);
+
+#ifdef _DEBUG
+	CEffect3D::Create(posNext, 100.0f, 5, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CEffect3D::Create(pos, 100.0f, 5, D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f));
+#endif
 }
 
 //=====================================================
@@ -392,6 +406,7 @@ void CEnemy::Debug(void)
 	if (pDebugProc == nullptr || pInputKeyboard == nullptr)
 		return;
 
+	pDebugProc->Print("\n現在グリッド[%d,%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\n目標グリッド[%d,%d]", m_nGridVDest, m_nGridHDest);
 }
 

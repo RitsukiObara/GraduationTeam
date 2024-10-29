@@ -356,5 +356,4 @@ void CUI_Combo::SetCombo(int nDigit)
 
 	// 数字のトランスフォームの設定
 	TransformNumber();
-
 }
