@@ -12,6 +12,7 @@
 #include "inputManager.h"
 #include "inputkeyboard.h"
 #include "iceManager.h"
+#include "player.h"
 #include "debugproc.h"
 
 //*****************************************************
@@ -98,7 +99,7 @@ void CSeals::Update(void)
 //=====================================================
 void CSeals::UpdateStop(void)
 {
-
+	CollidePlayer();
 }
 
 //=====================================================
@@ -106,7 +107,8 @@ void CSeals::UpdateStop(void)
 //=====================================================
 void CSeals::UpdateMove(void)
 {
-
+	// プレイヤーとの判定
+	CollidePlayer();
 }
 
 //=====================================================
@@ -123,6 +125,37 @@ void CSeals::UpdateAttack(void)
 void CSeals::UpdateDrift(void)
 {
 	CEnemy::UpdateDrift();
+}
+
+//=====================================================
+// プレイヤーとの判定
+//=====================================================
+void CSeals::CollidePlayer(void)
+{
+	// プレイヤーインスタンス取得
+	vector<CPlayer*> apPlayer = CPlayer::GetInstance();
+
+	if (apPlayer.empty())
+		return;	// 配列が空なら終了
+
+	for (auto it : apPlayer)
+	{
+		if (it == nullptr)
+			continue;
+
+		// プレイヤーのグリッド番号取得
+		int nIdxVPlayer = it->GetGridV();
+		int nIdxHPlayer = it->GetGridH();
+
+		// 自身のグリッド番号
+		int nIdxV = GetGridV();
+		int nIdxH = GetGridH();
+
+		if (nIdxV == nIdxVPlayer && nIdxH == nIdxHPlayer)
+		{// 自身のグリッド番号と縦横が一致する場合、相手のヒット処理を呼ぶ
+			it->Hit(0.0f);	// 即死なのでダメージは0
+		}
+	}
 }
 
 //=====================================================

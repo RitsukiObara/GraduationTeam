@@ -19,6 +19,7 @@
 #include "manager.h"
 #include "flowIce.h"
 #include "effect3D.h"
+#include "collision.h"
 
 //*****************************************************
 // 定数定義
@@ -753,6 +754,26 @@ void CPlayer::ManageMotion(void)
 		if(nMotion != MOTION::MOTION_NEUTRAL)
 			SetMotion(MOTION::MOTION_NEUTRAL);
 	}
+}
+
+//=====================================================
+// ヒット処理
+//=====================================================
+void CPlayer::Hit(float fDamage)
+{
+	if (m_state == STATE::STATE_DEATH ||
+		m_state == STATE::STATE_INVINCIBLE)
+		return;	// 条件によってHit処理を無効化
+
+	// 死亡状態にする
+	m_state = STATE::STATE_DEATH;
+
+	// パーティクルの発生
+	D3DXVECTOR3 pos = GetPosition();
+	CParticle::Create(pos, CParticle::TYPE::TYPE_HITENEMY);
+
+	// 操作可能フラグを折る
+	m_bEnableInput = false;
 }
 
 //=====================================================
