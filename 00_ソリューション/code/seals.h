@@ -65,6 +65,7 @@ private:
 	void CollidePlayer(void);	// プレイヤーとの判定
 	void MoveToIce(void);	// 氷に向かって移動
 	void SarchTarget(void);	// ターゲットの探索
+	void FindPlayerGrid(void);	// プレイヤーグリッドの発見
 
 	// メンバ変数
 	CPlayer *m_pPlayerTarget;	// ターゲットプレイヤー
