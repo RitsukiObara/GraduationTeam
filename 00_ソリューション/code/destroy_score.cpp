@@ -21,18 +21,26 @@
 //*****************************************************
 namespace
 {
+	const int	SCORE_MIN = 0;	// 最少スコア
+	const int	SCORE_MAX = 999999;	// 最大スコア
+	const float DIST_NUMBER = 0.01f;	// 数字間の距離
+	D3DXVECTOR2 SIZE_NORMAL_NUM = { 100.0f, 100.0f };	// 通常数字のサイズ
+	D3DXVECTOR2 SIZE_MINI_NUM = { 0.014f, 0.028f };	// ミニ数字のサイズ
+	D3DXVECTOR3 POS_INITIAL = { 0.7f,0.4f,0.0f };	// 初期位置
 	const int	WAITTIME = 60;	// 滞留時間
-	const float	GOAL_X = 0.2f;	// Xのゴール地点
-	const float	MOVE_SPEED = 0.01f;	// 移動速度
+	const float	GOAL_X = 0.5f;	// Xのゴール地点
+	const float	MOVE_SPEED = 0.1f;	// 移動速度
 	const float	VERTICAL_STOP = 0.15f;	// 縦移動の停止地点
 	const float	SLOW_MOVE = 0.001f;	// スロー速度
 	const float	THINITY_SPEED = 0.02f;	// 透明になっていく速度
 	const float	GOAL_Y = 0.1f;	// Yのゴール地点
 	const float	THINITY_COL = 0.0f;	// 透明になる
-	const int	ADD_SEALS_SCORE = 1000;	// 追加するスコア(アザラシ)
-	const int	VALUE_SEALS_SCORE = 4;	// 追加するスコアの桁数(アザラシ)
-	const float	SCORE_SCALE = 100.0f;	// スコアのスケール
-	D3DXVECTOR3	SCORE_PLACE = { 0.0f,0.0f,0.0f };	// スコアの場所
+	const int	VALUE_SCORE = 2;	// 追加するスコアの桁数(アザラシ)
+	const float	SCORE_SCALE = 1.0f;	// スコアのスケール
+	D3DXCOLOR	NORMAL_COLOR = { 1.0f,1.0f,1.0f,1.0f };	// スコアの初期色
+	D3DXVECTOR3	SCORE_PLACE = { 0.6f, 0.55f, 0.0f };	// スコアの初期位置
+	int	ADD_SEALS_SCORE = 1000;	// アザラシのスコア
+	int	VALUE_SEALS_SCORE = 4;	// アザラシの桁数
 }
 
 //=====================================================
@@ -40,11 +48,11 @@ namespace
 //=====================================================
 CDestroyScore::CDestroyScore()
 {
+	m_Col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	m_nValue = 0;
+	m_nScore = 0;
 	m_State = STATE_BESIDE;
 	m_nCntState = 0;
-	m_Col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	m_nScore = 0;
-	m_nValue = 0;
 }
 
 //=====================================================
@@ -74,10 +82,7 @@ CDestroyScore* CDestroyScore::Create(CEnemy::TYPE type)
 		pScore->SetEnemyScore(type);
 
 		//情報の設定
-		pScore->SetData(pScore->m_nValue);
-
-		//スコアの設定
-		pScore->SetScore(pScore->m_nScore);
+		pScore->SetScore(pScore->m_nValue);
 	}
 
 	return pScore;
@@ -88,7 +93,13 @@ CDestroyScore* CDestroyScore::Create(CEnemy::TYPE type)
 //=====================================================
 HRESULT CDestroyScore::Init(void)
 {
-	CScore::Init();
+	m_nScore = SCORE_MIN;	// スコアの初期化
+	m_nValue = VALUE_SCORE; //桁数の初期化
+	m_fScaleNumber = 1.0f;	// 初期スケール設定
+
+
+	// 初期位置の設定
+	SetPosition(POS_INITIAL);
 
 	return S_OK;
 }
@@ -98,7 +109,12 @@ HRESULT CDestroyScore::Init(void)
 //=====================================================
 void CDestroyScore::Uninit(void)
 {
-	CScore::Uninit();
+	if (m_aNumber3D != nullptr)
+	{
+		m_aNumber3D->Uninit();
+	}
+
+	CGameObject::Uninit();
 }
 
 //=====================================================
@@ -116,29 +132,30 @@ void CDestroyScore::Update(void)
 
 	SetPosition(pos);
 
-	//敵倒した時UIの状態
+	//コンボUIの状態
 	switch (m_State)
 	{
 	case STATE_BESIDE:
 
 		/*if (pos.x < GOAL_X)
 		{
-			move.x += MOVE_SPEED;
+			move.x = MOVE_SPEED;
 
-			pos.x += move.x;*/
+			pos.x += move.x;
 
 			SetPosition(pos);
-		/*}
+		}
 		else
 		{*/
-			m_State = STATE_VERTICAL;
-		/*}*/
+
+		m_State = STATE_VERTICAL;
+		//}
 
 		break;
 
 	case STATE_VERTICAL:
 
-		/*if (pos.x > GOAL_X)
+		/*if (pos.x >= GOAL_X)
 		{
 			move.y += MOVE_SPEED;
 
@@ -148,11 +165,10 @@ void CDestroyScore::Update(void)
 
 			if (pos.y < VERTICAL_STOP)
 			{*/
-				/*SetPosition(pos);*/
 
-				m_State = STATE_WAIT;
-			/*}*/
-		/*}*/
+		m_State = STATE_WAIT;
+		/*	}
+		}*/
 
 		break;
 
@@ -169,38 +185,86 @@ void CDestroyScore::Update(void)
 
 	case STATE_ADD:
 
-		
-			//動きをゆっくり
-			move.y += SLOW_MOVE;
+		/*if (pos.x > GOAL_Y)
+		{*/
 
-			pos.y -= move.y;
+		move.y = SLOW_MOVE;
 
-			SetPosition(pos);
+		pos.y -= move.y;
 
-			//色を透明にしていく
-			m_Col.a -= THINITY_SPEED;
+		SetPosition(pos);
 
-			SetColor(m_Col);
-		
-		if (pos.y <= GOAL_Y || m_Col.a <= THINITY_COL)
+		m_Col.a -= THINITY_SPEED;
+
+		SetColor(D3DXCOLOR(m_Col));
+
+		//}
+		if (m_Col.a <= THINITY_COL)
 		{
-			//スコア加算
 			CGame::GetInstance()->GetScore()->AddScore(m_nScore);
 
-			//終了
 			Uninit();
 		}
 
 		break;
 	}
 
-	CScore::Update();
+	UpdateNumber();
+}
+
+//=====================================================
+// 数字の更新
+//=====================================================
+void CDestroyScore::UpdateNumber()
+{
+	CInputManager* pInputManager = CInputManager::GetInstance();
+
+	if (m_aNumber3D == nullptr)
+		return;
+
+	//// 値の用意
+	//int aValue[SCORE_DIGIT] =
+	//{
+	//	(m_nScore % 1000000 / 100000),
+	//	(m_nScore % 100000 / 10000),
+	//	(m_nScore % 10000 / 1000),
+	//	(m_nScore % 1000 / 100),
+	//	(m_nScore % 100 / 10),
+	//	(m_nScore % 10),
+	//};
+
+	//std::vector<int> value;
+
+	//value.resize(m_aNumber3D->GetNumAll());
+
+	//for (int nCnt = 0; nCnt < (int)m_aNumber3D->GetNumAll(); nCnt++)
+	//{
+	//	// 値を計算
+	//	value[nCnt] = (m_nCombo % (int)(pow(10, (m_aNumber3D->GetNumAll() - (nCnt)))) / (int)(pow(10, (m_aNumber3D->GetNumAll() - (nCnt + 1)))));
+	//}
+
+	// スコアの加算========================================
+	if (pInputManager->GetTrigger(CInputManager::BUTTON_SCORE))
+	{// スコアを加算する
+
+	}
+
+	m_aNumber3D->SetValue(m_nScore, m_aNumber3D->GetNumPlace());
+
+	//D3DXVECTOR3 pos = GetPosition();
+
+#ifdef _DEBUG
+#if 1
+	CDebugProc::GetInstance()->Print("\n現在のスコア：[%d]", m_nScore);
+	//CDebugProc::GetInstance()->Print("\nスコアの位置：[%f,%f,%f]", pos.x, pos.y, pos.z);
+#endif
+#endif
 }
 
 ////=====================================================
 //// 色の設定
 ////=====================================================
-//void CScore::SetColor(E_Number number, D3DXCOLOR col)
+//void CUI_Combo::SetColor(E_Number number, D3DXCOLOR col)
 //{
 //	if (number < 0 || number > SCORE_DIGIT)
 //		return;
@@ -216,23 +280,78 @@ void CDestroyScore::Update(void)
 //	}
 //}
 //
-////=====================================================
-//// 色の取得
-////=====================================================
-//D3DXCOLOR CScore::GetColor(E_Number number)
-//{
-//	if (number < 0 || number >= SCORE_DIGIT)
-//		return D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-//
-//	return m_aNumber[number]->GetColor();
-//}
+//=====================================================
+// 色の設定
+//=====================================================
+void CDestroyScore::SetColor(D3DXCOLOR col)
+{
+	m_aNumber3D->SetColor(col);
+}
+
+//=====================================================
+// 位置の設定
+//=====================================================
+void CDestroyScore::SetPosition(D3DXVECTOR3 pos)
+{
+	CGameObject::SetPosition(pos);
+
+	// 数字のトランスフォームの設定
+	TransformNumber();
+}
+
+//=====================================================
+// 数字のスケールの設定
+//=====================================================
+void CDestroyScore::SetScaleNumber(float fScale)
+{
+	m_fScaleNumber = fScale;
+
+	// 数字のトランスフォームの設定
+	TransformNumber();
+}
 
 //=====================================================
 // 描画処理
 //=====================================================
 void CDestroyScore::Draw()
 {
-	
+
+}
+
+//=====================================================
+// 数字のトランスフォーム設定
+//=====================================================
+void CDestroyScore::TransformNumber()
+{
+	if (m_aNumber3D == nullptr)
+		return;
+
+	// 数字のサイズ
+	D3DXVECTOR2 Size = SIZE_NORMAL_NUM * m_fScaleNumber;
+
+	D3DXVECTOR3 posBase = GetPosition();
+
+	//// パラメーター設定
+	//float fWidth = aSize[nIdx].x * aDigit[nIdx] * 2 + DIST_NUMBER * m_fScaleNumber;	// サイズに応じて数字間のスペースをあける
+
+	//D3DXVECTOR3 pos = { posBase.x + fWidth * (i - 1), posBase.y, 0.0f };
+
+	// パラメーター設定
+	m_aNumber3D->SetPosition(posBase);
+	m_aNumber3D->SetSizeAll(Size.x, Size.y);
+
+}
+
+//=====================================================
+// 情報の設定
+//=====================================================
+void CDestroyScore::SetScore(int nDigit)
+{
+	m_aNumber3D = CNumber3D::Create(nDigit, 0);	// 数字の生成
+
+	// 数字のトランスフォームの設定
+	TransformNumber();
+
 }
 
 //=====================================================
