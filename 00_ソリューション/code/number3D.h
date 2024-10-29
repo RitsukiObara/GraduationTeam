@@ -42,6 +42,7 @@ public:
 	float GetWidth(void) { return 0.0f; }	// サイズ取得
 	float GetHeight(void) { return 0.0f; }	// サイズ取得
 	void SetColor(D3DXCOLOR col);
+	int GetNumPlace(void) { return m_nNumPlace; }	// 桁数取得
 
 private:
 	CPolygon3D *m_apObject[MAX_PLACE];	// 3Dポリゴンの配列

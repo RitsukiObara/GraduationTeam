@@ -254,7 +254,7 @@ void CUI_Combo::UpdateNumber()
 		
 	}
 
-	m_aNumber3D->SetValue(m_nCombo, m_aNumber3D->GetNumAll());
+	m_aNumber3D->SetValue(m_nCombo, m_aNumber3D->GetNumPlace());
 
 	//D3DXVECTOR3 pos = GetPosition();
 
