@@ -46,7 +46,7 @@ CNumber3D::~CNumber3D()
 HRESULT CNumber3D::Init(void)
 {
 	// テクスチャ番号取得
-	m_nIdxTexture = CTexture::GetInstance()->Regist("data\\TEXTURE\\UI\\number001.png");
+	m_nIdxTexture = CTexture::GetInstance()->Regist("data\\TEXTURE\\UI\\number01.png");
 
 	for (int nCount = 0; nCount < m_nNumPlace; nCount++)
 	{
