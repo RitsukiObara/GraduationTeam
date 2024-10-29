@@ -128,7 +128,7 @@ void CEnemy::InitGridIdx(void)
 	if (pIceMgr->GetGridIce(&m_nGridV, &m_nGridH) != nullptr)
 		return;
 
-	pIceMgr->GetRightDownIdx(&m_nGridV, &m_nGridH);
+	pIceMgr->GetLeftDownIdx(&m_nGridV, &m_nGridH);
 	m_nGridVNext = m_nGridV;
 	m_nGridHNext = m_nGridH;
 

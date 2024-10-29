@@ -413,6 +413,11 @@ void CGame::Debug(void)
 			pIceManager->CreateIce(2,-1);
 	}
 
+	if (pKeyboard->GetTrigger(DIK_L))
+	{// アザラシ生成
+		CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
+	}
+
 	pDebugProc->Print("\n中心座標[%f,%f,%f]", m_posMid.x, m_posMid.y, m_posMid.z);
 }
 
