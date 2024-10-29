@@ -12,7 +12,7 @@
 // インクルード
 //*****************************************************
 #include "gameObject.h"
-#include "number.h"
+#include "number3D.h"
 
 //*****************************************************
 // 前方宣言
@@ -50,6 +50,8 @@ public:
 	// 静的メンバ関数
 	static CUI_Combo* Create();	// 生成
 	void SetColor(D3DXCOLOR col);	// 色
+	void SetPosition(D3DXVECTOR3 pos) override;	// 位置
+	void SetScaleNumber(float fScale);	// 数字のスケール
 
 private:
 	// メンバ関数
@@ -58,9 +60,9 @@ private:
 
 	D3DXCOLOR m_Col;	//色管理
 	int m_nValue;		//桁数
-	int m_nCombo;			// 現在のスコア
+	int m_nCombo;			// 現在のコンボ
 	float m_fScaleNumber;	// 数字のスケール
-	vector<CNumber*> m_aNumber;	// 数字の配列
+	vector<CNumber3D*> m_aNumber3D;	// 数字の配列
 	E_State m_State;	//敵を倒した時のスコア状態変数
 	int m_nCntState;	//状態管理数字
 };

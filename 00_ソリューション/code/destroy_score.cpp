@@ -14,7 +14,6 @@
 #include "inputManager.h"
 #include "debugproc.h"
 #include "game.h"
-#include "UI_combo.h"
 
 //*****************************************************
 // 定数定義
@@ -27,11 +26,12 @@ namespace
 	const float	VERTICAL_STOP = 0.15f;	// 縦移動の停止地点
 	const float	SLOW_MOVE = 0.001f;	// スロー速度
 	const float	THINITY_SPEED = 0.02f;	// 透明になっていく速度
-	const float	GOAL_Y = 0.08f;	// Yのゴール地点
+	const float	GOAL_Y = 0.1f;	// Yのゴール地点
 	const float	THINITY_COL = 0.0f;	// 透明になる
-	const int	ADD_SEALS_SCORE = 10000;	// 追加するスコア(アザラシ)
-	const int	VALUE_SEALS_SCORE = 5;	// 追加するスコアの桁数(アザラシ)
-	const float	SCORE_SCALE = 0.8f;	// スコアのスケール
+	const int	ADD_SEALS_SCORE = 1000;	// 追加するスコア(アザラシ)
+	const int	VALUE_SEALS_SCORE = 4;	// 追加するスコアの桁数(アザラシ)
+	const float	SCORE_SCALE = 0.6f;	// スコアのスケール
+	D3DXVECTOR3	SCORE_PLACE = { 0.5f,0.6f,0.0f };	// スコアの場所
 }
 
 //=====================================================
@@ -105,7 +105,7 @@ void CDestroyScore::Uninit(void)
 //=====================================================
 void CDestroyScore::Update(void)
 {
-	D3DXVECTOR3 pos = GetPosition();
+	D3DXVECTOR3 pos = D3DXVECTOR3(SCORE_PLACE);
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 	//敵倒した時UIの状態
@@ -113,24 +113,24 @@ void CDestroyScore::Update(void)
 	{
 	case STATE_BESIDE:
 
-		if (pos.x < GOAL_X)
+		/*if (pos.x < GOAL_X)
 		{
 			move.x += MOVE_SPEED;
 
-			pos.x += move.x;
+			pos.x += move.x;*/
 
 			SetPosition(pos);
-		}
+		/*}
 		else
-		{
+		{*/
 			m_State = STATE_VERTICAL;
-		}
+		/*}*/
 
 		break;
 
 	case STATE_VERTICAL:
 
-		if (pos.x > GOAL_X)
+		/*if (pos.x > GOAL_X)
 		{
 			move.y += MOVE_SPEED;
 
@@ -139,12 +139,12 @@ void CDestroyScore::Update(void)
 			SetPosition(pos);
 
 			if (pos.y < VERTICAL_STOP)
-			{
-				SetPosition(pos);
+			{*/
+				/*SetPosition(pos);*/
 
 				m_State = STATE_WAIT;
-			}
-		}
+			/*}*/
+		/*}*/
 
 		break;
 
@@ -161,8 +161,7 @@ void CDestroyScore::Update(void)
 
 	case STATE_ADD:
 
-		if (pos.x > GOAL_X)
-		{
+		
 			//動きをゆっくり
 			move.y += SLOW_MOVE;
 
@@ -174,7 +173,7 @@ void CDestroyScore::Update(void)
 			m_Col.a -= THINITY_SPEED;
 
 			SetColor(m_Col);
-		}
+		
 		if (pos.y <= GOAL_Y || m_Col.a <= THINITY_COL)
 		{
 			//スコア加算
