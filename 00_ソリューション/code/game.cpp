@@ -265,8 +265,8 @@ void CGame::ManageState(void)
 		{
 			m_nTimerCnt = 0;
 
-			// タイマーの更新
-			m_pTimer->AddSecond(-1);
+			if(m_pTimer != nullptr)
+				m_pTimer->AddSecond(-1);	// タイマーの更新
 		}
 
 		break;

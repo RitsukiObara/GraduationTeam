@@ -327,6 +327,9 @@
     <ClCompile Include="code\nextflowice.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
+    <ClCompile Include="code\collision.cpp">
+      <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\game.h">
@@ -609,6 +612,9 @@
       <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
     <ClInclude Include="container.h">
+      <Filter>ソース ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="code\collision.h">
       <Filter>ソース ファイル\base</Filter>
     </ClInclude>
   </ItemGroup>
