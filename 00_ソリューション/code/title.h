@@ -11,12 +11,12 @@
 // インクルード
 //*****************************************************
 #include "scene.h"
-#include "motion.h"
 
 //*****************************************************
 // 前方宣言
 //*****************************************************
 class CMenu;
+class CUI;
 class CPolygon2D;
 class CMotion;
 class CTitleBehavior;
@@ -47,7 +47,6 @@ public:
 private:
 	STATE m_state;				// 状態
 	CPolygon2D* m_pLogo;		// タイトルロゴのポインタ
-	CMotion *m_pMotion;	// プレイヤーモデル
 	CTitleBehavior *m_pBehavior;	// ビヘイビア
 	float m_fTImerSmoke;	// 煙のスポーンタイマー
 };
@@ -85,6 +84,16 @@ public:
 		MENU_MAX
 	};
 
+	enum TITLE_UI
+	{
+		TITLE_UI_LEFT = 0,	// 左側
+		TITLE_UI_RIGHT,	// 右側
+		TITLE_UI_LOGO,	// ロゴ
+		TITLE_UI_ICE,	// 氷
+		TITLE_UI_PENGUIN,	// ペンギン
+		TITLE_UI_MAX
+	};
+
 	CTitleMenu();	// コンストラクタ
 	virtual ~CTitleMenu();	// デストラクタ
 	void Update(CTitle *pTItle) override;
@@ -97,6 +106,8 @@ private:
 	CPolygon2D *m_apMenu[MENU_MAX];	// メニュー項目
 	CPolygon2D *m_pCursor;	// カーソル
 	MENU m_menu;	// 選択メニュー項目
+	TITLE_UI m_Title_UI;	// タイトルUI
+	CUI* m_pBg;	// 背景２Dオブジェクト
 };
 
 #endif

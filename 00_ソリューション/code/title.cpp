@@ -21,6 +21,7 @@
 #include "polygon3D.h"
 #include "objectX.h"
 #include "skybox.h"
+#include "polygon2D.h"
 
 //*****************************************************
 // マクロ定義
@@ -55,7 +56,6 @@ CTitle::CTitle()
 {
 	m_state = STATE_NONE;
 	m_pLogo = nullptr;
-	m_pMotion = nullptr;
 	m_pBehavior = nullptr;
 	m_fTImerSmoke = 0.0f;
 }
@@ -130,6 +130,23 @@ HRESULT CTitle::Init(void)
 
 	CInputManager::Create();
 	CScene::Init();
+
+	//// 背景の生成
+	//m_pBg = CUI::Create();
+
+	//if (m_pBg != nullptr)
+	//{
+	//	m_pBg->SetPosition(D3DXVECTOR3(0.5f, 0.5f, 0.0f));
+
+	//	m_pBg->SetSize(0.5f, 0.5f);
+
+	//	m_pBg->SetCol(D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f));
+
+	//	m_pBg->SetVtx();
+	//}
+
+	//// テクスチャの設定
+	//nIdxTexture = CTexture::GetInstance()->Regist(pPath[nCntMenu]);
 
 	return S_OK;
 }
@@ -299,6 +316,15 @@ CTitleMenu::CTitleMenu()
 	{// メニューのテクスチャパス
 		"data\\TEXTURE\\UI\\menu00.png",
 		"data\\TEXTURE\\UI\\menu01.png",
+	};
+
+	const char* aTitle[TITLE_UI_MAX] =
+	{// メニューのテクスチャパス
+		"data\\TEXTURE\\TITLE\\ice_block_Left_2.png",
+		"data\\TEXTURE\\TITLE\\ice_block_Right_2.png",
+		"data\\TEXTURE\\TITLE\\title_full.png",
+		"data\\TEXTURE\\TITLE\\title_ice.png",
+		"data\\TEXTURE\\TITLE\\penguin.png",
 	};
 
 	ZeroMemory(&m_apMenu[0], sizeof(m_apMenu));
