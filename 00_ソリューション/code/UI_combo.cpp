@@ -114,12 +114,10 @@ HRESULT CUI_Combo::Init(void)
 //=====================================================
 void CUI_Combo::Uninit(void)
 {
-	for (auto it : m_aNumber3D)
+	if (m_aNumber3D != nullptr)
 	{
-		it->Uninit();
+		m_aNumber3D->Uninit();;
 	}
-
-	m_aNumber3D.clear();
 
 	CGameObject::Uninit();
 }
@@ -226,7 +224,7 @@ void CUI_Combo::UpdateNumber()
 {
 	CInputManager* pInputManager = CInputManager::GetInstance();
 
-	if (m_aNumber3D.empty())
+	if (m_aNumber3D == nullptr)
 		return;
 
 	//// 値の用意
@@ -242,12 +240,12 @@ void CUI_Combo::UpdateNumber()
 
 	std::vector<int> value;
 
-	value.resize(m_aNumber3D.size());
+	value.resize(m_aNumber3D->GetNumAll());
 
-	for (int nCnt = 0; nCnt < (int)m_aNumber3D.size(); nCnt++)
+	for (int nCnt = 0; nCnt < (int)m_aNumber3D->GetNumAll(); nCnt++)
 	{
 		// 値を計算
-		value[nCnt] = (m_nCombo % (int)(pow(10, (m_aNumber3D.size() - (nCnt)))) / (int)(pow(10, (m_aNumber3D.size() - (nCnt + 1)))));
+		value[nCnt] = (m_nCombo % (int)(pow(10, (m_aNumber3D->GetNumAll() - (nCnt)))) / (int)(pow(10, (m_aNumber3D->GetNumAll() - (nCnt + 1)))));
 	}
 
 	// スコアの加算========================================
@@ -256,9 +254,9 @@ void CUI_Combo::UpdateNumber()
 		
 	}
 
-	for (int i = 0; i < (int)m_aNumber3D.size(); i++)
+	for (int i = 0; i < (int)m_aNumber3D->GetNumAll(); i++)
 	{
-		m_aNumber3D[i]->SetValue(value[i], 1);
+		m_aNumber3D->SetValue(value[i], 1);
 	}
 
 	//D3DXVECTOR3 pos = GetPosition();
@@ -295,8 +293,7 @@ void CUI_Combo::UpdateNumber()
 //=====================================================
 void CUI_Combo::SetColor(D3DXCOLOR col)
 {
-	for (auto it : m_aNumber3D)	// 数字
-		it->SetColor(col);
+	m_aNumber3D->SetColor(col);
 }
 
 //=====================================================
@@ -334,7 +331,7 @@ void CUI_Combo::Draw()
 //=====================================================
 void CUI_Combo::TransformNumber()
 {
-	if (m_aNumber3D.empty())
+	if (m_aNumber3D == nullptr)
 		return;
 
 	// 数字のサイズ
@@ -343,9 +340,9 @@ void CUI_Combo::TransformNumber()
 	D3DXVECTOR3 posBase = GetPosition();
 
 	// 数字分、生成して設定
-	for (int i = 0; i < (int)m_aNumber3D.size(); i++)
+	for (int i = 0; i < (int)m_aNumber3D->GetNumAll(); i++)
 	{
-		if (m_aNumber3D[i] == nullptr)
+		if (m_aNumber3D == nullptr)
 			continue;
 
 		// 参照するサイズの番号
@@ -362,8 +359,8 @@ void CUI_Combo::TransformNumber()
 		// パラメーター設定
 		float fWidth = Size.x * 2 + DIST_NUMBER * m_fScaleNumber;	// サイズに応じて数字間のスペースをあける
 		D3DXVECTOR3 pos = { posBase.x + fWidth * (i - 1), posBase.y, 0.0f };
-		m_aNumber3D[i]->SetPosition(pos);
-		m_aNumber3D[i]->SetSizeAll(Size.x, Size.y);
+		m_aNumber3D->SetPosition(pos);
+		m_aNumber3D->SetSizeAll(Size.x, Size.y);
 
 		if (i == 0)	// 0以上のときしか入らない処理
 			continue;
@@ -375,14 +372,7 @@ void CUI_Combo::TransformNumber()
 //=====================================================
 void CUI_Combo::SetCombo(int nDigit)
 {
-	// 数字の配列のリサイズ
-	m_aNumber3D.resize(nDigit);
-
-	// 数字の生成
-	for (int i = 0; i < nDigit; i++)
-	{
-		m_aNumber3D[i] = CNumber3D::Create(1, 0);	// 数字の生成
-	}
+	m_aNumber3D = CNumber3D::Create(nDigit, 0);	// 数字の生成
 
 	// 数字のトランスフォームの設定
 	TransformNumber();

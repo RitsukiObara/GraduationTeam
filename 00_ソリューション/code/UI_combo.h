@@ -62,7 +62,7 @@ private:
 	int m_nValue;		//桁数
 	int m_nCombo;			// 現在のコンボ
 	float m_fScaleNumber;	// 数字のスケール
-	vector<CNumber3D*> m_aNumber3D;	// 数字の配列
+	CNumber3D* m_aNumber3D;	// 数字の配列
 	E_State m_State;	//敵を倒した時のスコア状態変数
 	int m_nCntState;	//状態管理数字
 };

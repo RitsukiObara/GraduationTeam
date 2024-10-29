@@ -14,6 +14,7 @@
 #include "inputManager.h"
 #include "debugproc.h"
 #include "game.h"
+#include "player.h"
 
 //*****************************************************
 // 定数定義
@@ -30,8 +31,8 @@ namespace
 	const float	THINITY_COL = 0.0f;	// 透明になる
 	const int	ADD_SEALS_SCORE = 1000;	// 追加するスコア(アザラシ)
 	const int	VALUE_SEALS_SCORE = 4;	// 追加するスコアの桁数(アザラシ)
-	const float	SCORE_SCALE = 0.6f;	// スコアのスケール
-	D3DXVECTOR3	SCORE_PLACE = { 0.5f,0.6f,0.0f };	// スコアの場所
+	const float	SCORE_SCALE = 100.0f;	// スコアのスケール
+	D3DXVECTOR3	SCORE_PLACE = { 0.0f,0.0f,0.0f };	// スコアの場所
 }
 
 //=====================================================
@@ -105,8 +106,15 @@ void CDestroyScore::Uninit(void)
 //=====================================================
 void CDestroyScore::Update(void)
 {
-	D3DXVECTOR3 pos = D3DXVECTOR3(SCORE_PLACE);
+	if (CPlayer::GetInstance().empty())
+	{
+		return;
+	}
+
+	D3DXVECTOR3 pos = (*CPlayer::GetInstance().begin())->GetPosition();
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	SetPosition(pos);
 
 	//敵倒した時UIの状態
 	switch (m_State)
@@ -224,7 +232,7 @@ void CDestroyScore::Update(void)
 //=====================================================
 void CDestroyScore::Draw()
 {
-	CScore::Draw();
+	
 }
 
 //=====================================================
