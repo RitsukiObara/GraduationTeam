@@ -130,7 +130,7 @@ void CPlayer::InitGridIdx(void)
 	if (pIceMgr == nullptr)
 		return;
 
-	pIceMgr->GetRightDownIdx(&m_nGridV, &m_nGridH);
+	pIceMgr->GetLeftDownIdx(&m_nGridV, &m_nGridH);
 	
 	D3DXVECTOR3 pos = pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH);
 	SetPosition(pos);

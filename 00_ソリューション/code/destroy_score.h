@@ -11,7 +11,7 @@
 // インクルード
 //*****************************************************
 #include "gameObject.h"
-#include "number.h"
+#include "number3D.h"
 #include "score.h"
 #include "enemy.h"
 
