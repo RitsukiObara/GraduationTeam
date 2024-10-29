@@ -34,7 +34,7 @@ namespace
 	D3DXVECTOR2 SIZE_MINI_NUM = { 0.014f, 0.028f };	// ミニ数字のサイズ
 	D3DXVECTOR3 POS_INITIAL = { 0.1f,0.5f,0.0f };	// 初期位置
 	const int	WAITTIME = 60;	// 滞留時間
-	const float	GOAL_X = 0.2f;	// Xのゴール地点
+	const float	GOAL_X = 0.5f;	// Xのゴール地点
 	const float	MOVE_SPEED = 0.1f;	// 移動速度
 	const float	VERTICAL_STOP = 0.15f;	// 縦移動の停止地点
 	const float	SLOW_MOVE = 0.001f;	// スロー速度
@@ -126,13 +126,14 @@ void CUI_Combo::Update(void)
 	D3DXVECTOR3 pos = GetPosition();
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	/*switch (m_State)
+	//コンボUIの状態
+	switch (m_State)
 	{
 	case STATE_BESIDE:
 
 		if (pos.x < GOAL_X)
 		{
-			move.x += MOVE_SPEED;
+			move.x = MOVE_SPEED;
 
 			pos.x += move.x;
 
@@ -147,7 +148,7 @@ void CUI_Combo::Update(void)
 
 	case STATE_VERTICAL:
 
-		if (pos.x > GOAL_X)
+		if (pos.x >= GOAL_X)
 		{
 			move.y += MOVE_SPEED;
 
@@ -178,7 +179,7 @@ void CUI_Combo::Update(void)
 
 	case STATE_ERASE:
 
-		if (pos.x > GOAL_X)
+		if (pos.x > GOAL_Y)
 		{
 			move.y += SLOW_MOVE;
 
@@ -188,14 +189,16 @@ void CUI_Combo::Update(void)
 
 			m_Col.a -= THINITY_SPEED;
 
+			SetColor(m_Col);
+
 		}
-		if (pos.y <= GOAL_Y || m_Col.a <= THINITY_COL)
+		if (m_Col.a <= THINITY_COL)
 		{
 			Uninit();
 		}
 
 		break;
-	}*/
+	}
 
 	UpdateNumber();
 }
@@ -271,16 +274,14 @@ void CUI_Combo::UpdateNumber()
 //	}
 //}
 //
-////=====================================================
-//// 色の取得
-////=====================================================
-//D3DXCOLOR CUI_Combo::GetColor(E_Number number)
-//{
-//	if (number < 0 || number >= SCORE_DIGIT)
-//		return D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-//
-//	return m_aNumber[number]->GetColor();
-//}
+//=====================================================
+// 色の設定
+//=====================================================
+void CUI_Combo::SetColor(D3DXCOLOR col)
+{
+	for (auto it : m_aNumber)	// 数字
+		it->SetColor(col);
+}
 
 //=====================================================
 // 描画処理
