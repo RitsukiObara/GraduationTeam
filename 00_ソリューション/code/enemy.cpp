@@ -17,6 +17,7 @@
 #include "UI_enemy.h"
 #include "ocean.h"
 #include "destroy_score.h"
+#include "effect3D.h"
 
 //*****************************************************
 // 定数定義
@@ -295,6 +296,11 @@ void CEnemy::MoveToNextGrid(void)
 	universal::FactingRot(&rot.y, fRotDest, SPEED_ROTATION);
 
 	SetRotation(rot);
+
+#ifdef _DEBUG
+	CEffect3D::Create(posNext, 100.0f, 5, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CEffect3D::Create(pos, 100.0f, 5, D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f));
+#endif
 }
 
 //=====================================================
@@ -400,6 +406,7 @@ void CEnemy::Debug(void)
 	if (pDebugProc == nullptr || pInputKeyboard == nullptr)
 		return;
 
+	pDebugProc->Print("\n現在グリッド[%d,%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\n目標グリッド[%d,%d]", m_nGridVDest, m_nGridHDest);
 }
 

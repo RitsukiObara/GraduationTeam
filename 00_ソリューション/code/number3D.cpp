@@ -112,7 +112,7 @@ void CNumber3D::SetValue(int nValue,int nNumPlace)
 		{
 			m_apObject[nCount]->SetVtx();
 
-			m_apObject[nCount]->SetTex(leftUp, rightDown);
+			m_apObject[nCount]->SetTex(rightDown, leftUp);
 		}
 	}
 }
