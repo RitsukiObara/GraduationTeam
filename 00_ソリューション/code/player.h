@@ -57,6 +57,7 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	void Hit(float fDamage) override;	// ヒット処理
 
 	// 取得・設定
 	void SetMove(D3DXVECTOR3 move) { m_move = move; }	// 移動量
@@ -66,7 +67,7 @@ public:
 	void SetGridV(int nValue) { m_nGridV = nValue; }	// グリッドの縦番号
 	int GetGridV(void) { return m_nGridV; }
 	void SetGridH(int nValue) { m_nGridH = nValue; }	// グリッドの横番号
-	int GetGridVH(void) { return m_nGridH; }
+	int GetGridH(void) { return m_nGridH; }
 
 	// 静的メンバ関数
 	static CPlayer* Create(void);	// 生成処理

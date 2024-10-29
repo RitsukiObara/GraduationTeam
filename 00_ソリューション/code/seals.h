@@ -48,6 +48,8 @@ private:
 		MOTION_WALK,	// •à‚«
 		MOTION_MAX
 	};
+
+	void CollidePlayer(void);	// ƒvƒŒƒCƒ„[‚Æ‚Ì”»’è
 };
 
 #endif
