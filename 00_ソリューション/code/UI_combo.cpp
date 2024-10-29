@@ -116,7 +116,7 @@ void CUI_Combo::Uninit(void)
 {
 	if (m_aNumber3D != nullptr)
 	{
-		m_aNumber3D->Uninit();;
+		m_aNumber3D->Uninit();
 	}
 
 	CGameObject::Uninit();
@@ -238,15 +238,15 @@ void CUI_Combo::UpdateNumber()
 	//	(m_nScore % 10),
 	//};
 
-	std::vector<int> value;
+	//std::vector<int> value;
 
-	value.resize(m_aNumber3D->GetNumAll());
+	//value.resize(m_aNumber3D->GetNumAll());
 
-	for (int nCnt = 0; nCnt < (int)m_aNumber3D->GetNumAll(); nCnt++)
-	{
-		// 値を計算
-		value[nCnt] = (m_nCombo % (int)(pow(10, (m_aNumber3D->GetNumAll() - (nCnt)))) / (int)(pow(10, (m_aNumber3D->GetNumAll() - (nCnt + 1)))));
-	}
+	//for (int nCnt = 0; nCnt < (int)m_aNumber3D->GetNumAll(); nCnt++)
+	//{
+	//	// 値を計算
+	//	value[nCnt] = (m_nCombo % (int)(pow(10, (m_aNumber3D->GetNumAll() - (nCnt)))) / (int)(pow(10, (m_aNumber3D->GetNumAll() - (nCnt + 1)))));
+	//}
 
 	// スコアの加算========================================
 	if (pInputManager->GetTrigger(CInputManager::BUTTON_SCORE))
@@ -254,10 +254,7 @@ void CUI_Combo::UpdateNumber()
 		
 	}
 
-	for (int i = 0; i < (int)m_aNumber3D->GetNumAll(); i++)
-	{
-		m_aNumber3D->SetValue(value[i], 1);
-	}
+	m_aNumber3D->SetValue(m_nCombo, m_aNumber3D->GetNumAll());
 
 	//D3DXVECTOR3 pos = GetPosition();
 
@@ -339,32 +336,15 @@ void CUI_Combo::TransformNumber()
 
 	D3DXVECTOR3 posBase = GetPosition();
 
-	// 数字分、生成して設定
-	for (int i = 0; i < (int)m_aNumber3D->GetNumAll(); i++)
-	{
-		if (m_aNumber3D == nullptr)
-			continue;
+	//// パラメーター設定
+	//float fWidth = aSize[nIdx].x * aDigit[nIdx] * 2 + DIST_NUMBER * m_fScaleNumber;	// サイズに応じて数字間のスペースをあける
 
-		// 参照するサイズの番号
-		int nIdx = i;
+	//D3DXVECTOR3 pos = { posBase.x + fWidth * (i - 1), posBase.y, 0.0f };
 
-		if (nIdx > 0)
-			nIdx--;	// 0番目でなければ前回のサイズを参照する
-
-		//// パラメーター設定
-		//float fWidth = aSize[nIdx].x * aDigit[nIdx] * 2 + DIST_NUMBER * m_fScaleNumber;	// サイズに応じて数字間のスペースをあける
-
-		//D3DXVECTOR3 pos = { posBase.x + fWidth * (i - 1), posBase.y, 0.0f };
-
-		// パラメーター設定
-		float fWidth = Size.x * 2 + DIST_NUMBER * m_fScaleNumber;	// サイズに応じて数字間のスペースをあける
-		D3DXVECTOR3 pos = { posBase.x + fWidth * (i - 1), posBase.y, 0.0f };
-		m_aNumber3D->SetPosition(pos);
-		m_aNumber3D->SetSizeAll(Size.x, Size.y);
-
-		if (i == 0)	// 0以上のときしか入らない処理
-			continue;
-	}
+	// パラメーター設定
+	m_aNumber3D->SetPosition(posBase);
+	m_aNumber3D->SetSizeAll(Size.x, Size.y);
+	
 }
 
 //=====================================================
