@@ -29,22 +29,22 @@ namespace
 	const int	COMBO_MIN = 1;	// 最少コンボ
 	const int	COMBO_MAX = 99;	// 最大コンボ
 	const float DIST_NUMBER = 0.01f;	// 数字間の距離
-	const D3DXVECTOR2 SIZE_NORMAL_NUM = { 60.0f, 60.0f };	// 通常数字のサイズ
+	const D3DXVECTOR2 SIZE_NORMAL_NUM = { 40.0f, 40.0f };	// 通常数字のサイズ
 	const D3DXVECTOR2 SIZE_MINI_NUM = { 0.014f, 0.028f };	// ミニ数字のサイズ
 	const D3DXVECTOR3 POS_INITIAL = { 0.0f,0.0f,0.0f };	// 初期位置
 	const int	WAITTIME = 60;	// 滞留時間
 	const float	GOAL_X = 0.5f;	// Xのゴール地点
-	const float	MOVE_SPEED = 0.1f;	// 移動速度
-	const float	VERTICAL_STOP = 0.15f;	// 縦移動の停止地点
-	const float	SLOW_MOVE = 0.001f;	// スロー速度
+	const float	MOVE_SPEED = 10.0f;	// 移動速度
+	const float	VERTICAL_STOP = 100.0f;	// 縦移動の停止地点
+	const float	SLOW_MOVE = 1.0f;	// スロー速度
 	const float	THINITY_SPEED = 0.02f;	// 透明になっていく速度
-	const float	GOAL_Y = 0.1f;	// Yのゴール地点
+	const float	GOAL_Z = 100.0f;	// Yのゴール地点
 	const float	THINITY_COL = 0.0f;	// 透明になる
 	const int	VALUE_COMBO = 2;	// 追加するスコアの桁数(アザラシ)
 	const float	COMBO_SCALE = 0.7f;	// スコアのスケール
 	const D3DXCOLOR	NORMAL_COLOR = { 1.0f,1.0f,0.0f,1.0f };	// スコアの初期色
 	const float	COMBO_POS_X = 50.0f;	// コンボのX座標
-	const float	COMBO_POS_Y = 250.0f;	// コンボのY座標
+	const float	COMBO_POS_Z = 60.0f;	// コンボのZ座標
 }
 
 //=====================================================
@@ -57,6 +57,7 @@ CUI_Combo::CUI_Combo()
 	m_nCombo = 0;
 	m_State = STATE_BESIDE;
 	m_nCntState = 0;
+	m_ShiftPos = POS_INITIAL;
 }
 
 //=====================================================
@@ -102,7 +103,8 @@ HRESULT CUI_Combo::Init(void)
 	m_nCombo = COMBO_MIN;	// スコアの初期化
 	m_nValue = VALUE_COMBO;	// 桁数の初期化
 	m_fScaleNumber = COMBO_SCALE;	// 初期スケール設定
-	m_State = STATE_WAIT;	// 状態の初期化
+	m_State = STATE_VERTICAL;	// 状態の初期化
+	m_ShiftPos = D3DXVECTOR3(0.0f, 0.0f, COMBO_POS_Z);
 
 	// 初期位置の設定
 	SetPosition(POS_INITIAL);
@@ -136,13 +138,11 @@ void CUI_Combo::Update(void)
 	D3DXVECTOR3 pos = (*CPlayer::GetInstance().begin())->GetPosition();
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	SetPosition(D3DXVECTOR3(pos.x + COMBO_POS_X,pos.y,pos.z + COMBO_POS_Y));
-
 	//コンボUIの状態
 	switch (m_State)
 	{
 	case STATE_BESIDE:
-		
+
 		/*if (pos.x < GOAL_X)
 		{
 			move.x = MOVE_SPEED;
@@ -161,20 +161,12 @@ void CUI_Combo::Update(void)
 
 	case STATE_VERTICAL:
 
-		/*if (pos.x >= GOAL_X)
+		m_ShiftPos.z += MOVE_SPEED;
+
+		if (m_ShiftPos.z >= VERTICAL_STOP)
 		{
-			move.y += MOVE_SPEED;
-
-			pos.y -= move.y;
-
-			SetPosition(pos);
-
-			if (pos.y < VERTICAL_STOP)
-			{*/
-				
-				m_State = STATE_WAIT;
-		/*	}
-		}*/
+			m_State = STATE_WAIT;
+		}
 
 		break;
 
@@ -191,20 +183,12 @@ void CUI_Combo::Update(void)
 
 	case STATE_ERASE:
 
-		/*if (pos.x > GOAL_Y)
-		{*/
-
-		/*move.y = SLOW_MOVE;
-
-		pos.y -= move.y;
-
-		SetPosition(pos);*/
+		m_ShiftPos.z += SLOW_MOVE;
 
 		m_Col.a -= THINITY_SPEED;
 
-		SetColor(D3DXCOLOR(m_Col));
+		SetColor(m_Col);
 
-		//}
 		if (m_Col.a <= THINITY_COL)
 		{
 			Uninit();
@@ -212,6 +196,8 @@ void CUI_Combo::Update(void)
 
 		break;
 	}
+
+	SetPosition(D3DXVECTOR3(pos.x + COMBO_POS_X, pos.y, pos.z + m_ShiftPos.z + COMBO_POS_Z));
 
 	UpdateNumber();
 }
