@@ -40,13 +40,6 @@ public:
 		TITLESTATE_MAX
 	};
 
-	enum MENU
-	{
-		MENU_START = 0,	// スタート
-		MENU_OPTION,	// 設定
-		MENU_MAX
-	};
-
 	enum TITLE_UI
 	{
 		TITLE_UI_LEFT = 0,	// 左側
@@ -71,17 +64,16 @@ public:
 private:
 	void Input(void);
 	void Fade(void);
-	void ManageState(void);
 	void TitleUIState(void);
 	void IceFlowState(void);
 	void FlashState(void);
+	void LogoState(void);
 
 	int nCntFlash;	// フラッシュのカウント
 	STATE m_State;				// 状態
 	TITLESTATE m_TitleState;	// タイトル状態管理
-	MENU m_Menu;	// 選択メニュー項目
 	TITLE_UI m_Title_UI;	// タイトルUI
-	CUI* m_apMenu_UI[MENU_MAX];	// メニューUI
+	CUI* m_apMenu_UI;	// メニューUI
 	CUI *m_apTitle_UI[TITLE_UI_MAX];	// タイトルUI
 	D3DXVECTOR3 m_aPosDest[TITLE_UI_MAX];	// 目標の位置
 };
