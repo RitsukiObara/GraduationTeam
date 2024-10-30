@@ -25,7 +25,7 @@
 namespace
 {
 const float HEIGHT_ICE = 100.0f;	// •X‚Ì‚‚³
-const float SPPED_MOVE_INIT = 5.0f;	// ‰ŠúˆÚ“®‘¬“x
+const float SPPED_MOVE_INIT = 1.0f;	// ‰ŠúˆÚ“®‘¬“x
 const float SPEED_ROTATION = 0.1f;	// ‰ñ“]‘¬“x
 }
 
@@ -366,7 +366,10 @@ bool CEnemy::PathFind(int nIdxV, int nIdxH, vector<CIce*>& rIceSave)
 		float fDiff = 0.0f;
 
 		if (universal::DistCmpFlat(posIce, posDest, fDistMin, &fDiff))
+		{
 			nIdxMin = i;
+			fDistMin = fDiff;
+		}
 	}
 
 	return PathFind(aV[nIdxMin], aH[nIdxMin], rIceSave);	// ’Tõ
