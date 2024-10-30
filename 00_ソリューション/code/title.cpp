@@ -46,8 +46,18 @@ namespace
 //=====================================================
 CTitle::CTitle()
 {
-	m_state = STATE_NONE;
-	m_pLogo = nullptr;
+	m_State = STATE_NONE;
+	m_TitleState = TITLESTATE_ICEFLOW;
+
+	for (int nCntMenu = 0; nCntMenu < MENU_MAX; nCntMenu++)
+	{
+		m_apMenu_UI[nCntMenu] = nullptr;
+	}
+
+	for (int nCntUI = 0; nCntUI < TITLE_UI_MAX; nCntUI++)
+	{
+		m_apTitle_UI[nCntUI] = nullptr;
+	}
 }
 
 //=====================================================
@@ -73,6 +83,7 @@ HRESULT CTitle::Init(void)
 	{// タイトルUIのテクスチャパス
 		"data\\TEXTURE\\TITLE\\ice_block_Left_2.png",
 		"data\\TEXTURE\\TITLE\\ice_block_Right_2.png",
+		"data\\TEXTURE\\TITLE\\ice_block.png",
 		"data\\TEXTURE\\TITLE\\title_full.png",
 		"data\\TEXTURE\\TITLE\\title_ice.png",
 		"data\\TEXTURE\\TITLE\\penguin.png",
@@ -121,6 +132,40 @@ HRESULT CTitle::Init(void)
 
 	int nIdxTexture;
 
+	for (int nCntMenu = 0; nCntMenu < MENU_MAX; nCntMenu++)
+	{// メニュー項目のポリゴンを生成
+
+		if (m_apMenu_UI[nCntMenu] == nullptr)
+		{
+			m_apMenu_UI[nCntMenu] = CUI::Create();
+
+			if (m_apMenu_UI[nCntMenu] != nullptr)
+			{
+				if (nCntMenu == MENU_START)
+				{//	スタートメニュー
+					// ポリゴンの設定
+					m_apMenu_UI[nCntMenu]->SetPosition(D3DXVECTOR3(-0.2f, 0.4f, 0.0f));
+					m_apMenu_UI[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
+					m_apMenu_UI[nCntMenu]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
+				}
+
+				if (nCntMenu == MENU_OPTION)
+				{//	オプションメニュー
+					// ポリゴンの設定
+					m_apMenu_UI[nCntMenu]->SetPosition(D3DXVECTOR3(1.2f, 0.35f, 0.0f));
+					m_apMenu_UI[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
+					m_apMenu_UI[nCntMenu]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
+				}
+
+				// テクスチャの設定
+				nIdxTexture = CTexture::GetInstance()->Regist(aTitle[nCntMenu]);
+
+				m_apMenu_UI[nCntMenu]->SetIdxTexture(nIdxTexture);
+				m_apMenu_UI[nCntMenu]->SetVtx();
+			}
+		}
+	}
+
 	for (int nCntUI = 0; nCntUI < TITLE_UI_MAX; nCntUI++)
 	{// メニュー項目のポリゴンを生成
 		if (m_apTitle_UI[nCntUI] == nullptr)
@@ -134,7 +179,7 @@ HRESULT CTitle::Init(void)
 					// ポリゴンの設定
 					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(-0.2f, 0.4f, 0.0f));
 					m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH, MENU_HEIGHT);
-					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
+					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
 					m_aPosDest[nCntUI].x = 0.35f;
 				}
@@ -144,40 +189,47 @@ HRESULT CTitle::Init(void)
 					// ポリゴンの設定
 					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(1.2f, 0.35f, 0.0f));
 					m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH, MENU_HEIGHT);
-					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
+					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
 					m_aPosDest[nCntUI].x = 0.65f;
 				}
 
-				//if (nCntUI == TITLE_UI_LOGO)
-				//{//	タイトルに戻る
-				//	// ポリゴンの設定
-				//	m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.5f, 0.4f, 0.0f));
-				//	m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH + 0.2f, MENU_HEIGHT - 0.1f);
-				//	m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
-				//	//m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
-				//	//m_aPosDest[nCntUI].x = 0.25f;
-				//}
+				if (nCntUI == TITLE_UI_ICEBLOCK)
+				{//	氷ブロック合体
+					// ポリゴンの設定
+					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.5f, -0.25f, 0.0f));
+					m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH + 0.1f, MENU_HEIGHT + 0.1f);
+					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
+				}
 
-				//if (nCntUI == TITLE_UI_ICE)
-				//{//	ポーズ
-				//	// ポリゴンの設定
-				//	m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(2.5f, 0.12f, 0.0f));
-				//	m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH + 0.1f, MENU_HEIGHT - 0.05f);
-				//	m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-				//	//m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
-				//	//m_aPosDest[nCntUI].x = 0.5f;
-				//}
 
-				//if (nCntUI == TITLE_UI_PENGUIN)
-				//{//	ポーズ
-				//	// ポリゴンの設定
-				//	m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(2.5f, 0.12f, 0.0f));
-				//	m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH + 0.1f, MENU_HEIGHT - 0.05f);
-				//	m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-				//	//m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
-				//	//m_aPosDest[nCntUI].x = 0.5f;
-				//}
+				if (nCntUI == TITLE_UI_LOGO)
+				{//	タイトルに戻る
+					// ポリゴンの設定
+					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.5f, -0.3f, 0.0f));
+					m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH + 0.2f, MENU_HEIGHT - 0.1f);
+					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
+				}
+
+				if (nCntUI == TITLE_UI_ICE)
+				{//	ポーズ
+					// ポリゴンの設定
+					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.8f, -0.2f, 0.0f));
+					m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH - 0.1f, MENU_HEIGHT - 0.1f);
+					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
+				}
+
+				if (nCntUI == TITLE_UI_PENGUIN)
+				{//	ポーズ
+					// ポリゴンの設定
+					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.25f, -0.15f, 0.0f));
+					m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH - 0.1f, MENU_HEIGHT - 0.05f);
+					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
+				}
 
 				// テクスチャの設定
 				nIdxTexture = CTexture::GetInstance()->Regist(aTitle[nCntUI]);
@@ -199,8 +251,6 @@ HRESULT CTitle::Init(void)
 //=====================================================
 void CTitle::Uninit(void)
 {
-	Object::DeleteObject((CObject**)&m_pLogo);
-
 	for (int nCnt = 0; nCnt < MENU_MAX; nCnt++)
 	{// メニュー項目の破棄
 		if (m_apMenu_UI[nCnt] != nullptr)
@@ -235,29 +285,32 @@ void CTitle::Update(void)
 	// シーンの更新
 	CScene::Update();
 
+	// 入力
+	Input();
+
 	// 状態管理
 	ManageState();
 
-	// 入力
-	Input();
+	// タイトルUIの状態管理
+	TitleUIState();
 
 	// 色の管理
 	for (int i = 0; i < MENU_MAX; i++)
 	{
-		if (m_apTitle_UI[i] != nullptr)
+		if (m_apMenu_UI[i] != nullptr)
 		{
 			D3DXCOLOR colDest = COL_INITIAL_MENU;
 
-			if (i == m_menu)
+			if (i == m_Menu)
 			{
 				colDest = COL_CURRENT_MENU;
 			}
 
-			D3DXCOLOR col = m_apTitle_UI[i]->GetCol();
+			D3DXCOLOR col = m_apMenu_UI[i]->GetCol();
 
 			col += (colDest - col) * 0.3f;
 
-			m_apTitle_UI[i]->SetCol(col);
+			m_apMenu_UI[i]->SetCol(col);
 		}
 	}
 }
@@ -285,13 +338,13 @@ void CTitle::Input(void)
 	{
 		Sound::Play(CSound::LABEL_SE_PAUSE_ARROW);
 
-		m_menu = (MENU)((m_menu + MENU_MAX - 1) % MENU_MAX);
+		m_Menu = (MENU)((m_Menu + MENU_MAX - 1) % MENU_MAX);
 	}
 	else if (pInput->GetTrigger(CInputManager::BUTTON_AXIS_DOWN))
 	{
 		Sound::Play(CSound::LABEL_SE_PAUSE_ARROW);
 
-		m_menu = (MENU)((m_menu + 1) % MENU_MAX);
+		m_Menu = (MENU)((m_Menu + 1) % MENU_MAX);
 	}
 
 	if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))
@@ -313,9 +366,9 @@ void CTitle::Fade(void)
 	if (pFade->GetState() != CFade::FADE_NONE)
 		return;
 
-	switch (m_menu)
+	switch (m_Menu)
 	{
-	case CTitle::MENU_GAME:	// ゲーム
+	case CTitle::MENU_START:	// スタート
 
 		pFade->SetFade(CScene::MODE_GAME);
 
@@ -331,11 +384,11 @@ void CTitle::Fade(void)
 }
 
 //====================================================
-// 状態管理
+// メニューUI状態管理
 //====================================================
 void CTitle::ManageState(void)
 {
-	if (m_state != STATE_OUT)
+	if (m_State != STATE_OUT)
 	{
 		Input();
 	}
@@ -344,25 +397,25 @@ void CTitle::ManageState(void)
 	int nEnd = 0;
 
 	// ポリゴンを目標位置に向かわせる
-	for (int nCntMenu = 0; nCntMenu < TITLE_UI_MAX; nCntMenu++)
+	for (int nCntUI = 0; nCntUI < MENU_MAX; nCntUI++)
 	{
-		if (m_apTitle_UI[nCntMenu] != nullptr)
+		if (m_apMenu_UI[nCntUI] != nullptr)
 		{
-			D3DXVECTOR3 pos = m_apTitle_UI[nCntMenu]->GetPosition();
+			D3DXVECTOR3 pos = m_apMenu_UI[nCntUI]->GetPosition();
 			D3DXVECTOR3 posOld = pos;
-			D3DXVECTOR3 vecDiff = m_aPosDest[nCntMenu] - pos;
+			D3DXVECTOR3 vecDiff = m_aPosDest[nCntUI] - pos;
 			float fDiffOld = vecDiff.x;
 
 			vecDiff *= MOVE_FACT;
 			vecDiff += pos;
 
-			m_apTitle_UI[nCntMenu]->SetPosition(vecDiff);
-			m_apTitle_UI[nCntMenu]->SetVtx();
+			m_apMenu_UI[nCntUI]->SetPosition(vecDiff);
+			m_apMenu_UI[nCntUI]->SetVtx();
 
-			float fDiff = m_aPosDest[nCntMenu].x - vecDiff.x;
+			float fDiff = m_aPosDest[nCntUI].x - vecDiff.x;
 
 			if (fDiff * fDiff < LINE_UNINIT * LINE_UNINIT &&
-				m_state == STATE_OUT)
+				m_State == STATE_OUT)
 			{// 終了のライン
 				nEnd++;
 			}
@@ -370,34 +423,42 @@ void CTitle::ManageState(void)
 	}
 
 	if (nEnd == TITLE_UI_MAX &&
-		m_state == STATE_OUT)
+		m_State == STATE_OUT)
 	{
 		Uninit();
 	}
 }
 
 //====================================================
-// UIの状態管理
+// タイトルUIの状態管理
 //====================================================
 void CTitle::TitleUIState(void)
 {
 	// ポリゴンを目標位置に向かわせる
-	for (int nCntMenu = 0; nCntMenu < TITLE_UI_MAX; nCntMenu++)
+	for (int nCntUI = 0; nCntUI < TITLE_UI_MAX; nCntUI++)
 	{
-		if (m_apTitle_UI[nCntMenu] != nullptr)
+		if (m_apTitle_UI[nCntUI] != nullptr)
 		{
-			D3DXVECTOR3 pos = m_apTitle_UI[nCntMenu]->GetPosition();
+			D3DXVECTOR3 pos = m_apTitle_UI[nCntUI]->GetPosition();
 			D3DXVECTOR3 posOld = pos;
-			D3DXVECTOR3 vecDiff = m_aPosDest[nCntMenu] - pos;
+			D3DXVECTOR3 vecDiff = m_aPosDest[nCntUI] - pos;
 			float fDiffOld = vecDiff.x;
 
 			vecDiff *= MOVE_FACT;
 			vecDiff += pos;
 
-			m_apTitle_UI[nCntMenu]->SetPosition(vecDiff);
-			m_apTitle_UI[nCntMenu]->SetVtx();
+			m_apTitle_UI[nCntUI]->SetPosition(vecDiff);
+			m_apTitle_UI[nCntUI]->SetVtx();
 
-			float fDiff = m_aPosDest[nCntMenu].x - vecDiff.x;
+			float fDiff = m_aPosDest[nCntUI].x - vecDiff.x;
 		}
 	}
+}
+
+//====================================================
+// 氷が流れてくる状態
+//====================================================
+void CTitle::IceFlowState(void)
+{
+
 }
