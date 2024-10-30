@@ -95,19 +95,23 @@ HRESULT CIceManager::Init(void)
 	CreateIce(3, 6,CIce::E_Type::TYPE_HARD);
 	CreateIce(3, 5);
 	CreateIce(3, 4);
-	/*CreateIce(3, 3);
-	CreateIce(4, 3);
-	CreateIce(5, 3);
-	CreateIce(5, 8);
-	CreateIce(5, 7);
-	CreateIce(5, 6);
-	CreateIce(5, 5);
-	CreateIce(5, 4);
+	CreateIce(4, 4);
 	CreateIce(4, 6);
-	CreateIce(6, 6);
-	CreateIce(6, 7);
+	CreateIce(4, 5);
+	CreateIce(5, 5);
+	CreateIce(6, 5);
+	CreateIce(6, 4);
+	CreateIce(6, 3);
+	CreateIce(7, 3);
+	CreateIce(7, 4);
+	CreateIce(7, 5);
+	CreateIce(7, 6);
+	CreateIce(7, 7);
+	CreateIce(7, 8);
 	CreateIce(6, 8);
-	CreateIce(6, 9);*/
+	CreateIce(5, 8);
+	CreateIce(4, 8);
+	CreateIce(4, 7);
 
 	// äCó¨Çèâä˙âª
 	m_dirStream = E_Stream::STREAM_LEFT;

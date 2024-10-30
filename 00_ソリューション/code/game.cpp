@@ -199,7 +199,7 @@ void CGame::Update(void)
 		CDestroyScore::Create(CEnemy::TYPE_SEALS);
 
 		//敵を倒した時のコンボUI生成
-		CUI_Combo::Create();
+		CUI_Combo::GetInstance()->AddCombo(1);
 
 	}
 
@@ -227,6 +227,11 @@ void CGame::Update(void)
 
 	// ポーズの更新
 	UpdatePause();
+
+	if (pKeyboard->GetTrigger(DIK_L))
+	{// アザラシ生成
+		CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
+	}
 
 #ifdef _DEBUG
 	Debug();
@@ -411,11 +416,6 @@ void CGame::Debug(void)
 
 		if (pIceManager != nullptr)
 			pIceManager->CreateIce(2,-1);
-	}
-
-	if (pKeyboard->GetTrigger(DIK_L))
-	{// アザラシ生成
-		CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
 	}
 
 	pDebugProc->Print("\n中心座標[%f,%f,%f]", m_posMid.x, m_posMid.y, m_posMid.z);
