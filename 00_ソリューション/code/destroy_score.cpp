@@ -17,6 +17,10 @@
 #include "player.h"
 
 //*****************************************************
+// Ã“Iƒƒ“ƒo•Ï”éŒ¾
+//*****************************************************
+
+//*****************************************************
 // ’è”’è‹`
 //*****************************************************
 namespace
@@ -68,12 +72,8 @@ CDestroyScore::~CDestroyScore()
 //=====================================================
 CDestroyScore* CDestroyScore::Create(CEnemy::TYPE type)
 {
-	CDestroyScore* pScore = nullptr;
+		CDestroyScore* pScore = new CDestroyScore;
 
-	pScore = new CDestroyScore;
-
-	if (pScore != nullptr)
-	{// ‰Šú‰»
 		pScore->Init();
 
 		pScore->SetScaleNumber(SCORE_SCALE);
@@ -83,7 +83,6 @@ CDestroyScore* CDestroyScore::Create(CEnemy::TYPE type)
 
 		//î•ñ‚ÌÝ’è
 		pScore->SetScore(pScore->m_nValue);
-	}
 
 	return pScore;
 }

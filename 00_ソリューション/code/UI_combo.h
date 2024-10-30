@@ -46,15 +46,17 @@ public:
 	void Update();
 	void Draw();
 	void SetCombo(int nDigit = 6);
+	void AddCombo(int nCombo);
 
 	// 静的メンバ関数
-	static CUI_Combo* Create();	// 生成
 	void SetColor(D3DXCOLOR col);	// 色
 	void SetPosition(D3DXVECTOR3 pos) override;	// 位置
 	void SetScaleNumber(float fScale);	// 数字のスケール
+	static CUI_Combo* GetInstance(void);	// インスタンスの取得
 
 private:
 	// メンバ関数
+	static CUI_Combo* Create();	// 生成
 	void UpdateNumber();	// 数字の更新
 	void TransformNumber();	// 数字のトランスフォーム設定
 
@@ -66,6 +68,8 @@ private:
 	E_State m_State;	//敵を倒した時のスコア状態変数
 	int m_nCntState;	//状態管理数字
 	D3DXVECTOR3 m_ShiftPos;	//ずらす位置
+
+	static CUI_Combo* s_pCombo;	// 格納用の配列
 };
 
 #endif
