@@ -23,7 +23,7 @@ class CUI;
 //*****************************************************
 // クラスの定義
 //*****************************************************
-class CDestroyScore : public CScore
+class CDestroyScore : public CGameObject
 {
 public:
 	// 列挙型定義
@@ -47,15 +47,24 @@ public:
 
 	// 静的メンバ関数
 	static CDestroyScore* Create(CEnemy::TYPE type);	// 生成
+	void SetEnemyScore(CEnemy::TYPE type);	//敵の種類ごとのスコア
+	void SetScore(int nDigit = 6);
+	void SetColor(D3DXCOLOR col);	// 色
+	void SetPosition(D3DXVECTOR3 pos) override;	// 位置
+	void SetScaleNumber(float fScale);	// 数字のスケール
 
 private:
-	void SetEnemyScore(CEnemy::TYPE type);	//敵の種類ごとのスコア
+	// メンバ関数
+	void UpdateNumber();	// 数字の更新
+	void TransformNumber();	// 数字のトランスフォーム設定
 
+	D3DXCOLOR m_Col;	//色管理
+	int m_nValue;		//桁数
+	int m_nScore;			// 現在のコンボ
+	float m_fScaleNumber;	// 数字のスケール
+	CNumber3D* m_aNumber3D;	// 数字の配列
 	E_State m_State;	//敵を倒した時のスコア状態変数
 	int m_nCntState;	//状態管理数字
-	D3DXCOLOR m_Col;	//色管理
-	int m_nScore;		//スコア数値
-	int m_nValue;		//桁数
 };
 
 #endif
