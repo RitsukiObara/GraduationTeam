@@ -85,6 +85,8 @@ bool DistCmp(D3DXVECTOR3 posOwn, D3DXVECTOR3 posTarget, float fLengthMax, float 
 bool DistCmpFlat(D3DXVECTOR3 posOwn, D3DXVECTOR3 posTarget, float fLengthMax, float *fDiff);
 D3DXVECTOR3 CollideOBBToPlane(D3DXVECTOR3* posOBB, D3DXVECTOR3 vecAxial, D3DXVECTOR3 posPlane, D3DXVECTOR3 vecNorPlane);
 bool IsInFanTargetYFlat(D3DXVECTOR3 posOwn, D3DXVECTOR3 posTarget, float fRot, float fRange);
+template <typename T>
+bool FindFromVector(const std::vector<T>& vec, T pValue){ return std::find(vec.begin(), vec.end(), pValue) != vec.end(); }
 
 //======================================
 // •âŠ®Œn
