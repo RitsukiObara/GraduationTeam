@@ -26,12 +26,12 @@
 //*****************************************************
 namespace
 {
-	const int	COMBO_MIN = 0;	// 最少スコア
-	const int	COMBO_MAX = 99;	// 最大スコア
+	const int	COMBO_MIN = 1;	// 最少コンボ
+	const int	COMBO_MAX = 99;	// 最大コンボ
 	const float DIST_NUMBER = 0.01f;	// 数字間の距離
-	D3DXVECTOR2 SIZE_NORMAL_NUM = { 100.0f, 100.0f };	// 通常数字のサイズ
-	D3DXVECTOR2 SIZE_MINI_NUM = { 0.014f, 0.028f };	// ミニ数字のサイズ
-	D3DXVECTOR3 POS_INITIAL = { 0.7f,0.4f,0.0f };	// 初期位置
+	const D3DXVECTOR2 SIZE_NORMAL_NUM = { 60.0f, 60.0f };	// 通常数字のサイズ
+	const D3DXVECTOR2 SIZE_MINI_NUM = { 0.014f, 0.028f };	// ミニ数字のサイズ
+	const D3DXVECTOR3 POS_INITIAL = { 0.0f,0.0f,0.0f };	// 初期位置
 	const int	WAITTIME = 60;	// 滞留時間
 	const float	GOAL_X = 0.5f;	// Xのゴール地点
 	const float	MOVE_SPEED = 0.1f;	// 移動速度
@@ -42,8 +42,9 @@ namespace
 	const float	THINITY_COL = 0.0f;	// 透明になる
 	const int	VALUE_COMBO = 2;	// 追加するスコアの桁数(アザラシ)
 	const float	COMBO_SCALE = 0.7f;	// スコアのスケール
-	D3DXCOLOR	NORMAL_COLOR = { 1.0f,1.0f,0.0f,1.0f };	// スコアの初期色
-	D3DXVECTOR3	COMBO_PLACE = { 0.6f, 0.55f, 0.0f };	// スコアの初期位置
+	const D3DXCOLOR	NORMAL_COLOR = { 1.0f,1.0f,0.0f,1.0f };	// スコアの初期色
+	const float	COMBO_POS_X = 50.0f;	// コンボのX座標
+	const float	COMBO_POS_Y = 250.0f;	// コンボのY座標
 }
 
 //=====================================================
@@ -51,7 +52,7 @@ namespace
 //=====================================================
 CUI_Combo::CUI_Combo()
 {
-	m_Col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	m_Col = NORMAL_COLOR;
 	m_nValue = 0;
 	m_nCombo = 0;
 	m_State = STATE_BESIDE;
@@ -99,9 +100,9 @@ CUI_Combo* CUI_Combo::Create()
 HRESULT CUI_Combo::Init(void)
 {
 	m_nCombo = COMBO_MIN;	// スコアの初期化
-	m_nValue = VALUE_COMBO; //桁数の初期化
-	m_fScaleNumber = 1.0f;	// 初期スケール設定
-
+	m_nValue = VALUE_COMBO;	// 桁数の初期化
+	m_fScaleNumber = COMBO_SCALE;	// 初期スケール設定
+	m_State = STATE_WAIT;	// 状態の初期化
 
 	// 初期位置の設定
 	SetPosition(POS_INITIAL);
@@ -135,9 +136,7 @@ void CUI_Combo::Update(void)
 	D3DXVECTOR3 pos = (*CPlayer::GetInstance().begin())->GetPosition();
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	SetPosition(pos);
-
-	m_nCombo = 1;
+	SetPosition(D3DXVECTOR3(pos.x + COMBO_POS_X,pos.y,pos.z + COMBO_POS_Y));
 
 	//コンボUIの状態
 	switch (m_State)
@@ -195,15 +194,15 @@ void CUI_Combo::Update(void)
 		/*if (pos.x > GOAL_Y)
 		{*/
 
-		move.y = SLOW_MOVE;
+		/*move.y = SLOW_MOVE;
 
 		pos.y -= move.y;
 
-		SetPosition(pos);
+		SetPosition(pos);*/
 
 		m_Col.a -= THINITY_SPEED;
 
-		SetColor(D3DXCOLOR(1.0f,1.0f,0.0f,m_Col.a));
+		SetColor(D3DXCOLOR(m_Col));
 
 		//}
 		if (m_Col.a <= THINITY_COL)
@@ -260,7 +259,7 @@ void CUI_Combo::UpdateNumber()
 
 #ifdef _DEBUG
 #if 1
-	CDebugProc::GetInstance()->Print("\n現在のスコア：[%d]", m_nCombo);
+	CDebugProc::GetInstance()->Print("\n現在のコンボ：[%d]", m_nCombo);
 	//CDebugProc::GetInstance()->Print("\nスコアの位置：[%f,%f,%f]", pos.x, pos.y, pos.z);
 #endif
 #endif
