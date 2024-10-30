@@ -23,9 +23,9 @@ namespace
 	const int	SCORE_MAX = 999999;	// 最大スコア
 	const int SCORE_LIMIT = 9;	// スコアの上限値
 	const float DIST_NUMBER = 0.01f;	// 数字間の距離
-	D3DXVECTOR2 SIZE_NORMAL_NUM = { 0.02f, 0.06f };	// 通常数字のサイズ
-	D3DXVECTOR2 SIZE_MINI_NUM = { 0.014f, 0.028f };	// ミニ数字のサイズ
-	D3DXVECTOR3 POS_INITIAL = { 0.01f,0.5f,0.0f };	// 初期位置
+	const D3DXVECTOR2 SIZE_NORMAL_NUM = { 0.02f, 0.06f };	// 通常数字のサイズ
+	const D3DXVECTOR2 SIZE_MINI_NUM = { 0.014f, 0.028f };	// ミニ数字のサイズ
+	const D3DXVECTOR3 POS_INITIAL = { 0.01f,0.5f,0.0f };	// 初期位置
 }
 
 //=====================================================
