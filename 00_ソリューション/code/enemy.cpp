@@ -255,20 +255,97 @@ void CEnemy::SarchNearIceToDest(void)
 	// 全方向の氷チェック
 	float fLengthMin = FLT_MAX;
 
-	for (auto it : apIce)
+	int aV[CIceManager::DIRECTION_MAX] = {};
+	int aH[CIceManager::DIRECTION_MAX] = {};
+
+	// 周辺のグリッド番号の計算
+	Grid::CalcAroundGrids(m_nGridV, m_nGridH, aV, aH);
+
+	// 探索フラグ用の氷の配列
+	vector<CIce*> apIceSave[CIceManager::DIRECTION_MAX];
+
+	// 現在立っている氷の取得
+	CIce *pIceStand = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
+
+	// 一番コストの低い隣り合う氷をチェック
+	for (int i = 0; i < CIceManager::DIRECTION_MAX; i++)
 	{
-		if (it == nullptr)
+		if (apIce[i] == nullptr)
 			continue;
 
-		D3DXVECTOR3 posIce = it->GetPosition();
-		float fDiff = 0.0f;
+		// 立っている氷を追加しておく
+		apIceSave[i].push_back(pIceStand);
 
-		if (universal::DistCmpFlat(posIce, posDest, fLengthMin, &fDiff))
-		{// 次のグリッドをそこに設定
-			pIceMgr->GetIceIndex(it, &m_nGridVNext, &m_nGridHNext);
-			fLengthMin = fDiff;
+		// 経路の探索
+		if (PathFind(aV[i], aH[i], apIceSave[i]))
+		{// 経路が行き詰りだったら配列をクリア
+			apIceSave[i].clear();
 		}
 	}
+
+
+}
+
+//=====================================================
+// 探索の再帰関数
+//=====================================================
+bool CEnemy::PathFind(int nIdxV, int nIdxH, vector<CIce*>& rIceSave)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return false;
+
+	// 周辺グリッドの計算
+	vector<CIce*> apIce(CIceManager::DIRECTION_MAX);
+	int aV[CIceManager::DIRECTION_MAX] = {};
+	int aH[CIceManager::DIRECTION_MAX] = {};
+
+	// 周辺のグリッド番号の計算
+	Grid::CalcAroundGrids(nIdxV, nIdxH, aV, aH);
+
+	// 探索済み配列に入れる
+	CIce *pIceFind = pIceMgr->GetGridIce(&nIdxV, &nIdxH);
+
+	if (pIceFind == nullptr)
+		return false;
+
+	rIceSave.push_back(pIceFind);
+
+	// 目標に到着していたら真を返す
+	if (nIdxV == m_nGridVDest && nIdxH == m_nGridHDest)
+		return true;
+
+	// グリッド番号が範囲外にいってないかのチェック
+	int nNumV = pIceMgr->GetNumGridV();
+	int nNumH = pIceMgr->GetNumGridH();
+
+	for (int i = 0; i < CIceManager::DIRECTION_MAX; i++)
+	{
+		int nV = aV[i];
+		int nH = aH[i];
+
+		if (!universal::LimitValueInt(&nV, nNumV - 1, 0) &&
+			!universal::LimitValueInt(&nH, nNumH - 1, 0))
+		{// 指定した番号がグリッドを越えていない場合のみ保存
+			apIce[i] = pIceMgr->GetGridIce(&aV[i], &aH[i]);
+		}
+	}
+
+	for (int i = 0; i < CIceManager::DIRECTION_MAX; i++)
+	{
+		if (apIce[i] == nullptr)
+			continue;	// 情報がないなら無視
+
+		if (universal::FindFromVector(rIceSave, apIce[i]))
+			continue;	// 探索済みなら無視
+
+		// 探索
+		PathFind(aV[i], aH[i], rIceSave);
+	}
+
+	// ここまで通ったら行き詰まりのルート、偽を返す
+	return false;
 }
 
 //=====================================================

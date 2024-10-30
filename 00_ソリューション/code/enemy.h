@@ -100,6 +100,7 @@ private:
 	void InitGridIdx(void);	// グリッド番号の初期化
 	virtual void SetApperTransform(void) = 0;	// 出現時のトランスフォーム設定
 	void SarchNearIceToDest(void);	// 目標に近い氷を探す
+	bool PathFind(int nIdxV, int nIdxH, vector<CIce*>& apIce);	// 探索の再帰関数
 	void MoveToNextGrid(void);	// 次のグリッドに向かって移動する
 	void CheckChangeGrid(void);	// グリッドが変わったかの確認
 	void Debug(void);	// デバッグ処理
