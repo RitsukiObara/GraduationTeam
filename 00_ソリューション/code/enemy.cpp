@@ -25,7 +25,7 @@
 namespace
 {
 const float HEIGHT_ICE = 100.0f;	// 氷の高さ
-const float SPPED_MOVE_INIT = 5.0f;	// 初期移動速度
+const float SPPED_MOVE_INIT = 1.0f;	// 初期移動速度
 const float SPEED_ROTATION = 0.1f;	// 回転速度
 }
 
@@ -353,6 +353,7 @@ bool CEnemy::PathFind(int nIdxV, int nIdxH, vector<CIce*>& rIceSave)
 	D3DXVECTOR3 posDest = pIceMgr->GetGridPosition(&m_nGridVDest, &m_nGridHDest);
 	float fDistMin = FLT_MAX;
 
+	int nIdxMin = 0;
 	for (int i = 0; i < CIceManager::DIRECTION_MAX; i++)
 	{
 		if (apIce[i] == nullptr)
@@ -366,12 +367,12 @@ bool CEnemy::PathFind(int nIdxV, int nIdxH, vector<CIce*>& rIceSave)
 
 		if (universal::DistCmpFlat(posIce, posDest, fDistMin, &fDiff))
 		{
-			if (PathFind(aV[i], aH[i], rIceSave))
-			{// 真が帰ってきたら真を返す
-				return true;
-			}
+			nIdxMin = i;
+			fDistMin = fDiff;
 		}
 	}
+
+	return PathFind(aV[nIdxMin], aH[nIdxMin], rIceSave);	// 探索
 
 	// ここまで通ったら行き詰まりのルート、偽を返す
 	return false;
@@ -402,7 +403,7 @@ void CEnemy::MoveToNextGrid(void)
 	universal::FactingRot(&rot.y, fRotDest, SPEED_ROTATION);
 
 	SetRotation(rot);
-
+	
 #ifdef _DEBUG
 	CEffect3D::Create(posNext, 100.0f, 5, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	CEffect3D::Create(pos, 100.0f, 5, D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f));
@@ -419,24 +420,18 @@ void CEnemy::CheckChangeGrid(void)
 	if (pIceMgr == nullptr)
 		return;
 
-	int nIdxV = -1;
-	int nIdxH = -1;
-
 	// グリッド番号の取得
 	D3DXVECTOR3 pos = GetPosition();
-	pIceMgr->GetIdxGridFromPosition(pos, &nIdxV, &nIdxH);
-
-	if ((nIdxV == m_nGridV &&
-		nIdxH == m_nGridH) ||
-		nIdxV == -1 ||
-		nIdxH == -1)
+	CIce *pIce = pIceMgr->GetGridIce(&m_nGridVNext, &m_nGridHNext);
+	
+	if (!pIceMgr->IsInIce(pos, pIce))
 	{// グリッドが変わってない時は偽を返す
 		return;
 	}
 	else
 	{// グリッドが変わってたら値を保存して真を返す
-		m_nGridV = nIdxV;
-		m_nGridH = nIdxH;
+		m_nGridV = m_nGridVNext;
+		m_nGridH = m_nGridHNext;
 
 		return;
 	}
@@ -447,17 +442,17 @@ void CEnemy::CheckChangeGrid(void)
 //=====================================================
 void CEnemy::UpdateDrift(void)
 {
-	CIceManager *pIceManager = CIceManager::GetInstance();
+	CIceManager *pIceMgr = CIceManager::GetInstance();
 
-	if (pIceManager == nullptr)
+	if (pIceMgr == nullptr)
 		return;
 
 	// 海流のベクトル取得
-	CIceManager::E_Stream dir = pIceManager->GetDirStream();
+	CIceManager::E_Stream dir = pIceMgr->GetDirStream();
 	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[dir];
 
 	// 流れる速度に正規化して位置を加算
-	float fSpeedFlow = pIceManager->GetOceanLevel();
+	float fSpeedFlow = pIceMgr->GetOceanLevel();
 	D3DXVec3Normalize(&vecStream, &vecStream);
 	vecStream *= fSpeedFlow;
 	AddPosition(vecStream);
@@ -477,6 +472,14 @@ void CEnemy::UpdateDrift(void)
 	pos.y = pOcean->GetHeight(pos, &move) + HEIGHT_ICE;
 
 	SetPosition(pos);
+
+	// グリッドが合ったら止まる
+	pIceMgr->GetIdxGridFromPosition(pos, &m_nGridV, &m_nGridH);
+
+	CIce *pIce = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
+
+	if (pIce != nullptr)
+		SetState(CEnemy::E_State::STATE_MOVE);
 }
 
 //=====================================================
@@ -513,7 +516,10 @@ void CEnemy::Debug(void)
 		return;
 
 	pDebugProc->Print("\n現在グリッド[%d,%d]", m_nGridV, m_nGridH);
+	pDebugProc->Print("\n次のグリッド[%d,%d]", m_nGridVNext, m_nGridHNext);
 	pDebugProc->Print("\n目標グリッド[%d,%d]", m_nGridVDest, m_nGridHDest);
+
+	pDebugProc->Print("\n現在の状態[%d]", m_state);
 }
 
 //=====================================================

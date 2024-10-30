@@ -1219,6 +1219,9 @@ bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH
 //=====================================================
 bool CIceManager::IsInIce(D3DXVECTOR3 pos, CIce *pIce, float fRate)
 {
+	if (pIce == nullptr)
+		return false;
+
 	// ‹——£‚ÌŒvŽZ
 	D3DXVECTOR3 posIce = pIce->GetPosition();
 
