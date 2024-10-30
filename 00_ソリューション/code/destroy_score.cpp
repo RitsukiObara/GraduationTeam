@@ -22,11 +22,9 @@
 namespace
 {
 	const int	SCORE_MIN = 0;	// 最少スコア
-	const int	SCORE_MAX = 999999;	// 最大スコア
 	const float DIST_NUMBER = 0.01f;	// 数字間の距離
-	D3DXVECTOR2 SIZE_NORMAL_NUM = { 100.0f, 100.0f };	// 通常数字のサイズ
-	D3DXVECTOR2 SIZE_MINI_NUM = { 0.014f, 0.028f };	// ミニ数字のサイズ
-	D3DXVECTOR3 POS_INITIAL = { 0.7f,0.4f,0.0f };	// 初期位置
+	const D3DXVECTOR2 SIZE_NORMAL_NUM = { 50.0f, 50.0f };	// 通常数字のサイズ
+	const D3DXVECTOR3 POS_INITIAL = { 0.0f,0.0f,0.0f };	// 初期位置
 	const int	WAITTIME = 60;	// 滞留時間
 	const float	GOAL_X = 0.5f;	// Xのゴール地点
 	const float	MOVE_SPEED = 0.1f;	// 移動速度
@@ -37,10 +35,11 @@ namespace
 	const float	THINITY_COL = 0.0f;	// 透明になる
 	const int	VALUE_SCORE = 2;	// 追加するスコアの桁数(アザラシ)
 	const float	SCORE_SCALE = 1.0f;	// スコアのスケール
-	D3DXCOLOR	NORMAL_COLOR = { 1.0f,1.0f,1.0f,1.0f };	// スコアの初期色
-	D3DXVECTOR3	SCORE_PLACE = { 0.6f, 0.55f, 0.0f };	// スコアの初期位置
-	int	ADD_SEALS_SCORE = 1000;	// アザラシのスコア
-	int	VALUE_SEALS_SCORE = 4;	// アザラシの桁数
+	const D3DXCOLOR	NORMAL_COLOR = { 1.0f,1.0f,1.0f,1.0f };	// スコアの初期色
+	const int	ADD_SEALS_SCORE = 1000;	// アザラシのスコア
+	const int	VALUE_SEALS_SCORE = 4;	// アザラシの桁数
+	const float	SCORE_POS_X = 200.0f;	// スコアのX座標
+	const float	SCORE_POS_Y = 150.0f;	// スコアのY座標
 }
 
 //=====================================================
@@ -48,7 +47,7 @@ namespace
 //=====================================================
 CDestroyScore::CDestroyScore()
 {
-	m_Col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	m_Col = NORMAL_COLOR;
 	m_nValue = 0;
 	m_nScore = 0;
 	m_State = STATE_BESIDE;
@@ -95,7 +94,8 @@ HRESULT CDestroyScore::Init(void)
 {
 	m_nScore = SCORE_MIN;	// スコアの初期化
 	m_nValue = VALUE_SCORE; //桁数の初期化
-	m_fScaleNumber = 1.0f;	// 初期スケール設定
+	m_fScaleNumber = SCORE_SCALE;	// 初期スケール設定
+	m_State = STATE_WAIT;	//状態の初期化
 
 
 	// 初期位置の設定
@@ -130,7 +130,7 @@ void CDestroyScore::Update(void)
 	D3DXVECTOR3 pos = (*CPlayer::GetInstance().begin())->GetPosition();
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	SetPosition(pos);
+	SetPosition(D3DXVECTOR3(pos.x - SCORE_POS_X,pos.y,pos.z + SCORE_POS_Y));
 
 	//コンボUIの状態
 	switch (m_State)
@@ -188,11 +188,11 @@ void CDestroyScore::Update(void)
 		/*if (pos.x > GOAL_Y)
 		{*/
 
-		move.y = SLOW_MOVE;
+		/*move.y = SLOW_MOVE;
 
 		pos.y -= move.y;
 
-		SetPosition(pos);
+		SetPosition(pos);*/
 
 		m_Col.a -= THINITY_SPEED;
 
