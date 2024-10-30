@@ -25,7 +25,7 @@
 namespace
 {
 const float HEIGHT_ICE = 100.0f;	// •X‚Ì‚‚³
-const float SPPED_MOVE_INIT = 1.0f;	// ‰ŠúˆÚ“®‘¬“x
+const float SPPED_MOVE_INIT = 1.6f;	// ‰ŠúˆÚ“®‘¬“x
 const float SPEED_ROTATION = 0.1f;	// ‰ñ“]‘¬“x
 }
 
@@ -220,6 +220,14 @@ void CEnemy::FollowIce(void)
 	pos.y += HEIGHT_ICE;
 
 	SetPosition(pos);
+}
+
+//=====================================================
+// ’â~’†‚Ì“®‚«
+//=====================================================
+void CEnemy::UpdateStop(void)
+{
+	SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 }
 
 //=====================================================

@@ -65,6 +65,7 @@ private:
 	CNumber3D* m_aNumber3D;	// 数字の配列
 	E_State m_State;	//敵を倒した時のスコア状態変数
 	int m_nCntState;	//状態管理数字
+	D3DXVECTOR3 m_ShiftPos;	//ずらす位置
 };
 
 #endif

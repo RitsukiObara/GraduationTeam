@@ -39,7 +39,7 @@ public:
 		MOTION_MAX
 	};
 	// プレイヤー状態
-	enum STATE
+	enum E_State
 	{
 		STATE_NONE = 0,	// 何でもない状態
 		STATE_NORMAL,	// 通常
@@ -68,6 +68,8 @@ public:
 	int GetGridV(void) { return m_nGridV; }
 	void SetGridH(int nValue) { m_nGridH = nValue; }	// グリッドの横番号
 	int GetGridH(void) { return m_nGridH; }
+	void SetState(E_State state) { m_state = state; }	// 状態
+	E_State GetState(void) { return m_state; }
 
 	// 静的メンバ関数
 	static CPlayer* Create(void);	// 生成処理
@@ -125,7 +127,7 @@ private:
 	float m_fRotTurn;	// 振り返る角度
 	D3DXVECTOR3 m_move;	// 移動量
 	float m_fTimerStartMove;	// 移動の立ち上がりのタイマー
-	STATE m_state;		// プレイヤー状態
+	E_State m_state;		// プレイヤー状態
 	CIce *m_pIceMoveDest;	// 移動目標の氷
 	CIce *m_pLandFlow;	// 漂流時に乗ってる氷のポインタ
 	CFlowIce *m_pLandSystemFlow;	// 乗ってる流氷システム

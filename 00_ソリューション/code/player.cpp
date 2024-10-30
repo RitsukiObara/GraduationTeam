@@ -216,7 +216,7 @@ void CPlayer::MoveAnalog(void)
 	// アナログ移動入力
 	InputMoveAnalog();
 
-	if(m_state != STATE::STATE_INVINCIBLE && m_state != STATE::STATE_FLOW)	// 無敵時は行わない
+	if(m_state != E_State::STATE_INVINCIBLE && m_state != E_State::STATE_FLOW)	// 無敵時は行わない
 		CollideIce();	// 氷との判定
 }
 
@@ -493,7 +493,7 @@ bool CPlayer::CheckGridChange(void)
 	D3DXVECTOR3 pos = GetPosition();
 	pIceMgr->GetIdxGridFromPosition(pos, &nIdxV, &nIdxH, RATE_CHANGE_GRID);
 
-	if (m_state != STATE::STATE_INVINCIBLE &&
+	if (m_state != E_State::STATE_INVINCIBLE &&
 		pIceMgr->GetGridIce(&nIdxV, &nIdxH) == nullptr)
 	{// 無敵状態でない場合、氷がないグリッドの上に行っても番号を変えない
 		// 漂流を開始
@@ -528,7 +528,7 @@ void CPlayer::StartFlows(void)
 {
 	if (FindFlowIce())
 	{// 漂流する氷が見つかれば、漂流状態へ移行
-		m_state = STATE::STATE_FLOW;
+		m_state = E_State::STATE_FLOW;
 	}
 }
 
@@ -647,7 +647,7 @@ void CPlayer::LimitInSideFlowIce(void)
 //=====================================================
 void CPlayer::EndFlows(void)
 {
-	m_state = STATE::STATE_NORMAL;
+	m_state = E_State::STATE_NORMAL;
 	m_pLandSystemFlow = nullptr;
 }
 
@@ -761,12 +761,12 @@ void CPlayer::ManageMotion(void)
 //=====================================================
 void CPlayer::Hit(float fDamage)
 {
-	if (m_state == STATE::STATE_DEATH ||
-		m_state == STATE::STATE_INVINCIBLE)
+	if (m_state == E_State::STATE_DEATH ||
+		m_state == E_State::STATE_INVINCIBLE)
 		return;	// 条件によってHit処理を無効化
 
 	// 死亡状態にする
-	m_state = STATE::STATE_DEATH;
+	m_state = E_State::STATE_DEATH;
 
 	// パーティクルの発生
 	D3DXVECTOR3 pos = GetPosition();

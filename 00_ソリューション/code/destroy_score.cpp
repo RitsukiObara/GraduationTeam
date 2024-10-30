@@ -23,23 +23,23 @@ namespace
 {
 	const int	SCORE_MIN = 0;	// 最少スコア
 	const float DIST_NUMBER = 0.01f;	// 数字間の距離
-	const D3DXVECTOR2 SIZE_NORMAL_NUM = { 50.0f, 50.0f };	// 通常数字のサイズ
+	const D3DXVECTOR2 SIZE_NORMAL_NUM = { 30.0f, 30.0f };	// 通常数字のサイズ
 	const D3DXVECTOR3 POS_INITIAL = { 0.0f,0.0f,0.0f };	// 初期位置
 	const int	WAITTIME = 60;	// 滞留時間
 	const float	GOAL_X = 0.5f;	// Xのゴール地点
-	const float	MOVE_SPEED = 0.1f;	// 移動速度
-	const float	VERTICAL_STOP = 0.15f;	// 縦移動の停止地点
-	const float	SLOW_MOVE = 0.001f;	// スロー速度
+	const float	MOVE_SPEED = 10.0f;	// 移動速度
+	const float	VERTICAL_STOP = 100.0f;	// 縦移動の停止地点
+	const float	SLOW_MOVE = 1.0f;	// スロー速度
 	const float	THINITY_SPEED = 0.02f;	// 透明になっていく速度
-	const float	GOAL_Y = 0.1f;	// Yのゴール地点
+	const float	GOAL_Z = 100.0f;	// Yのゴール地点
 	const float	THINITY_COL = 0.0f;	// 透明になる
 	const int	VALUE_SCORE = 2;	// 追加するスコアの桁数(アザラシ)
 	const float	SCORE_SCALE = 1.0f;	// スコアのスケール
 	const D3DXCOLOR	NORMAL_COLOR = { 1.0f,1.0f,1.0f,1.0f };	// スコアの初期色
 	const int	ADD_SEALS_SCORE = 1000;	// アザラシのスコア
 	const int	VALUE_SEALS_SCORE = 4;	// アザラシの桁数
-	const float	SCORE_POS_X = 200.0f;	// スコアのX座標
-	const float	SCORE_POS_Y = 150.0f;	// スコアのY座標
+	const float	SCORE_POS_X = 150.0f;	// スコアのX座標
+	const float	SCORE_POS_Z = 50.0f;	// スコアのZ座標
 }
 
 //=====================================================
@@ -52,6 +52,7 @@ CDestroyScore::CDestroyScore()
 	m_nScore = 0;
 	m_State = STATE_BESIDE;
 	m_nCntState = 0;
+	m_ShiftPos = POS_INITIAL;
 }
 
 //=====================================================
@@ -95,7 +96,8 @@ HRESULT CDestroyScore::Init(void)
 	m_nScore = SCORE_MIN;	// スコアの初期化
 	m_nValue = VALUE_SCORE; //桁数の初期化
 	m_fScaleNumber = SCORE_SCALE;	// 初期スケール設定
-	m_State = STATE_WAIT;	//状態の初期化
+	m_State = STATE_VERTICAL;	//状態の初期化
+	m_ShiftPos = D3DXVECTOR3(0.0f, 0.0f, SCORE_POS_Z);
 
 
 	// 初期位置の設定
@@ -130,8 +132,6 @@ void CDestroyScore::Update(void)
 	D3DXVECTOR3 pos = (*CPlayer::GetInstance().begin())->GetPosition();
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	SetPosition(D3DXVECTOR3(pos.x - SCORE_POS_X,pos.y,pos.z + SCORE_POS_Y));
-
 	//コンボUIの状態
 	switch (m_State)
 	{
@@ -155,20 +155,12 @@ void CDestroyScore::Update(void)
 
 	case STATE_VERTICAL:
 
-		/*if (pos.x >= GOAL_X)
+		m_ShiftPos.z += MOVE_SPEED;
+
+		if (m_ShiftPos.z >= VERTICAL_STOP)
 		{
-			move.y += MOVE_SPEED;
-
-			pos.y -= move.y;
-
-			SetPosition(pos);
-
-			if (pos.y < VERTICAL_STOP)
-			{*/
-
-		m_State = STATE_WAIT;
-		/*	}
-		}*/
+			m_State = STATE_WAIT;
+		}
 
 		break;
 
@@ -185,20 +177,12 @@ void CDestroyScore::Update(void)
 
 	case STATE_ADD:
 
-		/*if (pos.x > GOAL_Y)
-		{*/
-
-		/*move.y = SLOW_MOVE;
-
-		pos.y -= move.y;
-
-		SetPosition(pos);*/
+		m_ShiftPos.z += SLOW_MOVE;
 
 		m_Col.a -= THINITY_SPEED;
 
 		SetColor(D3DXCOLOR(m_Col));
 
-		//}
 		if (m_Col.a <= THINITY_COL)
 		{
 			CGame::GetInstance()->GetScore()->AddScore(m_nScore);
@@ -208,6 +192,8 @@ void CDestroyScore::Update(void)
 
 		break;
 	}
+
+	SetPosition(D3DXVECTOR3(pos.x - SCORE_POS_X, pos.y, pos.z + m_ShiftPos.z));
 
 	UpdateNumber();
 }
