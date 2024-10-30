@@ -256,6 +256,8 @@ void CSeals::UpdateStop(void)
 
 	// 一番近いプレイヤーをターゲットにする
 	SarchTarget();
+
+	CEnemy::UpdateStop();
 }
 
 //=====================================================
@@ -278,6 +280,9 @@ void CSeals::SarchTarget(void)
 		D3DXVECTOR3 posPlayer = it->GetPosition();
 
 		float fDiff = 0.0f;
+
+		if (it->GetState() == CPlayer::E_State::STATE_DEATH)
+			continue;
 
 		if (universal::DistCmpFlat(pos, posPlayer, fLengthMin, &fDiff))
 		{// 最小距離より近かったら保存
@@ -378,6 +383,9 @@ void CSeals::CollidePlayer(void)
 		if (nIdxV == nIdxVPlayer && nIdxH == nIdxHPlayer)
 		{// 自身のグリッド番号と縦横が一致する場合、相手のヒット処理を呼ぶ
 			it->Hit(0.0f);	// 即死なのでダメージは0
+			// 停止して目標のリセット
+			SetState(CEnemy::E_State::STATE_STOP);
+			m_pPlayerTarget = nullptr;	
 		}
 	}
 }

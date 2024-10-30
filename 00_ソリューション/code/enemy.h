@@ -57,7 +57,7 @@ public:
 
 	virtual void UpdateApper(void) = 0;		// 出現状態の更新
 
-	virtual void UpdateStop(void) = 0;		// 停止状態の更新
+	virtual void UpdateStop(void);		// 停止状態の更新
 
 	virtual void UpdateMove(void);		// 移動状態の更新
 
