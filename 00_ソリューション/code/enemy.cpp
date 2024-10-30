@@ -442,17 +442,17 @@ void CEnemy::CheckChangeGrid(void)
 //=====================================================
 void CEnemy::UpdateDrift(void)
 {
-	CIceManager *pIceManager = CIceManager::GetInstance();
+	CIceManager *pIceMgr = CIceManager::GetInstance();
 
-	if (pIceManager == nullptr)
+	if (pIceMgr == nullptr)
 		return;
 
 	// ŠC—¬‚ÌƒxƒNƒgƒ‹Žæ“¾
-	CIceManager::E_Stream dir = pIceManager->GetDirStream();
+	CIceManager::E_Stream dir = pIceMgr->GetDirStream();
 	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[dir];
 
 	// —¬‚ê‚é‘¬“x‚É³‹K‰»‚µ‚ÄˆÊ’u‚ð‰ÁŽZ
-	float fSpeedFlow = pIceManager->GetOceanLevel();
+	float fSpeedFlow = pIceMgr->GetOceanLevel();
 	D3DXVec3Normalize(&vecStream, &vecStream);
 	vecStream *= fSpeedFlow;
 	AddPosition(vecStream);
@@ -472,6 +472,14 @@ void CEnemy::UpdateDrift(void)
 	pos.y = pOcean->GetHeight(pos, &move) + HEIGHT_ICE;
 
 	SetPosition(pos);
+
+	// ƒOƒŠƒbƒh‚ª‡‚Á‚½‚çŽ~‚Ü‚é
+	pIceMgr->GetIdxGridFromPosition(pos, &m_nGridV, &m_nGridH);
+
+	CIce *pIce = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
+
+	if (pIce != nullptr)
+		SetState(CEnemy::E_State::STATE_MOVE);
 }
 
 //=====================================================
