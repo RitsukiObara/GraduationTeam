@@ -55,6 +55,7 @@ public:
 		TITLE_UI_LOGO,	// ロゴ
 		TITLE_UI_ICE,	// 氷
 		TITLE_UI_PENGUIN,	// ペンギン
+		TITLE_UI_FLASH,	// フラッシュ
 		TITLE_UI_MAX
 	};
 
@@ -73,7 +74,9 @@ private:
 	void ManageState(void);
 	void TitleUIState(void);
 	void IceFlowState(void);
+	void FlashState(void);
 
+	int nCntFlash;	// フラッシュのカウント
 	STATE m_State;				// 状態
 	TITLESTATE m_TitleState;	// タイトル状態管理
 	MENU m_Menu;	// 選択メニュー項目
