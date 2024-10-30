@@ -256,6 +256,8 @@ void CSeals::UpdateStop(void)
 
 	// 一番近いプレイヤーをターゲットにする
 	SarchTarget();
+
+	CEnemy::UpdateStop();
 }
 
 //=====================================================
