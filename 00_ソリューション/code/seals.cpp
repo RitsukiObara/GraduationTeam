@@ -295,14 +295,14 @@ void CSeals::SarchTarget(void)
 //=====================================================
 void CSeals::UpdateMove(void)
 {
+	// プレイヤーグリッドの発見
+	FindPlayerGrid();
+
 	// 継承クラスの更新
 	CEnemy::UpdateMove();
 
 	// プレイヤーとの判定
 	CollidePlayer();
-
-	// プレイヤーグリッドの発見
-	FindPlayerGrid();
 }
 
 //=====================================================

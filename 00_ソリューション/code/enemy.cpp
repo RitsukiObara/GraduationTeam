@@ -267,7 +267,10 @@ void CEnemy::SarchNearIceToDest(void)
 	// 現在立っている氷の取得
 	CIce *pIceStand = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
 
+	CIce *pIceNext = nullptr;
+
 	// 一番コストの低い隣り合う氷をチェック
+	size_t sizeMin = UINT_MAX;	// 最小コストの用意
 	for (int i = 0; i < CIceManager::DIRECTION_MAX; i++)
 	{
 		if (apIce[i] == nullptr)
@@ -277,13 +280,28 @@ void CEnemy::SarchNearIceToDest(void)
 		apIceSave[i].push_back(pIceStand);
 
 		// 経路の探索
-		if (PathFind(aV[i], aH[i], apIceSave[i]))
+		bool bFindPath = PathFind(aV[i], aH[i], apIceSave[i]);
+
+		if (!bFindPath)
 		{// 経路が行き詰りだったら配列をクリア
 			apIceSave[i].clear();
 		}
+		else
+		{// 到着したら、コストを比較する
+			if (sizeMin <= apIceSave[i].size())
+				continue;
+
+			// コストが最も小さかったら保存
+			sizeMin = apIceSave[i].size();
+
+			pIceNext = apIceSave[i][1];
+		}
 	}
 
-
+	if (pIceNext != nullptr)
+	{// 次の氷が発見できたらその番号を次の番号にする
+		pIceMgr->GetIceIndex(pIceNext, &m_nGridVNext, &m_nGridHNext);
+	}
 }
 
 //=====================================================
@@ -332,6 +350,9 @@ bool CEnemy::PathFind(int nIdxV, int nIdxH, vector<CIce*>& rIceSave)
 		}
 	}
 
+	D3DXVECTOR3 posDest = pIceMgr->GetGridPosition(&m_nGridVDest, &m_nGridHDest);
+	float fDistMin = FLT_MAX;
+
 	for (int i = 0; i < CIceManager::DIRECTION_MAX; i++)
 	{
 		if (apIce[i] == nullptr)
@@ -340,8 +361,16 @@ bool CEnemy::PathFind(int nIdxV, int nIdxH, vector<CIce*>& rIceSave)
 		if (universal::FindFromVector(rIceSave, apIce[i]))
 			continue;	// 探索済みなら無視
 
-		// 探索
-		PathFind(aV[i], aH[i], rIceSave);
+		D3DXVECTOR3 posIce = apIce[i]->GetPosition();
+		float fDiff = 0.0f;
+
+		if (universal::DistCmpFlat(posIce, posDest, fDistMin, &fDiff))
+		{
+			if (PathFind(aV[i], aH[i], rIceSave))
+			{// 真が帰ってきたら真を返す
+				return true;
+			}
+		}
 	}
 
 	// ここまで通ったら行き詰まりのルート、偽を返す
