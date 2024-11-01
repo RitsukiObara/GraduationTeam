@@ -47,13 +47,13 @@ CHARACTERSET
     PARTSSET
         INDEX = 3
         PARENT = 0
-        POS = -7.2 -24.6 120.0
+        POS = -7.2 -10.1 55.4
         ROT = 0.0 0.0 0.0
     END_PARTSSET
     PARTSSET
         INDEX = 4
         PARENT = 0
-        POS = 7.0 -24.6 120.0
+        POS = 7.0 -10.1 55.7
         ROT = 0.0 0.0 0.0
     END_PARTSSET
 END_CHARACTERSET

@@ -611,10 +611,10 @@
     <ClInclude Include="code\nextflowice.h">
       <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
-    <ClInclude Include="container.h">
+    <ClInclude Include="code\collision.h">
       <Filter>ソース ファイル\base</Filter>
     </ClInclude>
-    <ClInclude Include="code\collision.h">
+    <ClInclude Include="code\container.h">
       <Filter>ソース ファイル\base</Filter>
     </ClInclude>
   </ItemGroup>

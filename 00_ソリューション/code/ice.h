@@ -167,7 +167,6 @@ public:
 	void Update(CIce *pIce) override;	// 更新
 
 private:
-
 	// 関数ポインタ型の定義
 	typedef bool (CIceStateFlow::*DirectionFunc)(CIce *pIce,int nIdxV,int nIdxH);
 

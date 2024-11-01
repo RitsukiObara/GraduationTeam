@@ -47,13 +47,13 @@ CHARACTERSET
     PARTSSET
         INDEX = 3
         PARENT = 0
-        POS = -7.2 -24.6 120.0
+        POS = -7.2 -10.1 55.4
         ROT = 0.0 0.0 0.0
     END_PARTSSET
     PARTSSET
         INDEX = 4
         PARENT = 0
-        POS = 7.0 -24.6 120.0
+        POS = 7.0 -10.1 55.7
         ROT = 0.0 0.0 0.0
     END_PARTSSET
 END_CHARACTERSET
@@ -228,32 +228,9 @@ END_MOTIONSET
 #===============================
 MOTIONSET
     LOOP = 0
-    NUM_KEY = 2
+    NUM_KEY = 1
 
-	KEYSET     #---<< 0 / 2 >>
-        FRAME = 40
-        KEY # -----[0]----
-            POS = 0.00 -30.00 0.00
-            ROT = 1.28 0.00 0.00
-        END_KEY
-        KEY # -----[1]----
-            POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 0.73
-        END_KEY
-        KEY # -----[2]----
-            POS = 0.00 2.00 0.00
-            ROT = 0.00 0.00 -0.73
-        END_KEY
-        KEY # -----[3]----
-            POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 0.00
-        END_KEY
-        KEY # -----[4]----
-            POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 0.00
-        END_KEY
-    END_KEYSET
-    KEYSET     #---<< 1 / 2 >>
+    KEYSET     #---<< 0 / 1 >>
         FRAME = 10
         KEY # -----[0]----
             POS = 0.00 -30.00 0.00
