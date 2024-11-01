@@ -45,7 +45,7 @@ namespace
 	const float	COMBO_SCALE = 0.7f;	// スコアのスケール
 	const D3DXCOLOR	NORMAL_COLOR = { 1.0f,1.0f,0.0f,1.0f };	// スコアの初期色
 	const float	COMBO_POS_X = 50.0f;	// コンボのX座標
-	const float	COMBO_POS_Z = 60.0f;	// コンボのZ座標
+	const float	COMBO_POS_Z = 70.0f;	// コンボのZ座標
 }
 
 //=====================================================
@@ -175,6 +175,8 @@ void CUI_Combo::Update(void)
 
 		m_nCntState++;
 
+		m_Col = NORMAL_COLOR;
+
 		if (m_nCntState >= WAITTIME)
 		{
 			m_State = STATE_ERASE;
@@ -188,15 +190,17 @@ void CUI_Combo::Update(void)
 
 		m_Col.a -= THINITY_SPEED;
 
-		SetColor(m_Col);
-
 		if (m_Col.a <= THINITY_COL)
 		{
 			Uninit();
+
+			return;
 		}
 
 		break;
 	}
+
+	SetColor(m_Col);
 
 	SetPosition(D3DXVECTOR3(pos.x + COMBO_POS_X, pos.y, pos.z + m_ShiftPos.z + COMBO_POS_Z));
 
@@ -347,9 +351,13 @@ void CUI_Combo::SetCombo(int nDigit)
 //=====================================================
 // コンボの増加
 //=====================================================
-void CUI_Combo::AddCombo(int nCombo)
+void CUI_Combo::AddCombo(void)
 {
-	m_nCombo += nCombo;
+	m_nCombo++;
+
+	m_State = STATE_WAIT;
+
+	m_nCntState = 0;
 }
 
 //=====================================================

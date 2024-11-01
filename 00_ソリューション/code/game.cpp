@@ -196,11 +196,10 @@ void CGame::Update(void)
 	if (pKeyboard->GetTrigger(DIK_K))
 	{
 		//“G‚ð“|‚µ‚½Žž‚ÌƒXƒRƒA¶¬
-		CDestroyScore::Create(CEnemy::TYPE_SEALS);
+		CDestroyScore::GetInstance()->AddDestroyScore(CEnemy::TYPE_SEALS);
 
 		//“G‚ð“|‚µ‚½Žž‚ÌƒRƒ“ƒ{UI¶¬
-		CUI_Combo::GetInstance()->AddCombo(1);
-
+		CUI_Combo::GetInstance()->AddCombo();
 	}
 
 	if (!m_bStop)

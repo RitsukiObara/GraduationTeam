@@ -19,6 +19,7 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
+CDestroyScore* CDestroyScore::s_pDestroyScore;	// 格納用の配列
 
 //*****************************************************
 // 定数定義
@@ -37,11 +38,10 @@ namespace
 	const float	THINITY_SPEED = 0.02f;	// 透明になっていく速度
 	const float	GOAL_Z = 100.0f;	// Yのゴール地点
 	const float	THINITY_COL = 0.0f;	// 透明になる
-	const int	VALUE_SCORE = 2;	// 追加するスコアの桁数(アザラシ)
 	const float	SCORE_SCALE = 1.0f;	// スコアのスケール
 	const D3DXCOLOR	NORMAL_COLOR = { 1.0f,1.0f,1.0f,1.0f };	// スコアの初期色
 	const int	ADD_SEALS_SCORE = 1000;	// アザラシのスコア
-	const int	VALUE_SEALS_SCORE = 4;	// アザラシの桁数
+	const int	VALUE_SEALS_SCORE = 5;	// アザラシの桁数
 	const float	SCORE_POS_X = 150.0f;	// スコアのX座標
 	const float	SCORE_POS_Z = 50.0f;	// スコアのZ座標
 }
@@ -57,6 +57,7 @@ CDestroyScore::CDestroyScore()
 	m_State = STATE_BESIDE;
 	m_nCntState = 0;
 	m_ShiftPos = POS_INITIAL;
+	m_nAddScore = 0;
 }
 
 //=====================================================
@@ -70,21 +71,23 @@ CDestroyScore::~CDestroyScore()
 //=====================================================
 // 生成処理
 //=====================================================
-CDestroyScore* CDestroyScore::Create(CEnemy::TYPE type)
+CDestroyScore* CDestroyScore::Create()
 {
-		CDestroyScore* pScore = new CDestroyScore;
+	if (s_pDestroyScore == nullptr)
+	{
+		s_pDestroyScore = new CDestroyScore;
 
-		pScore->Init();
+		s_pDestroyScore->Init();
 
-		pScore->SetScaleNumber(SCORE_SCALE);
-
-		//敵ごとのスコアの設定
-		pScore->SetEnemyScore(type);
+		s_pDestroyScore->SetScaleNumber(SCORE_SCALE);
 
 		//情報の設定
-		pScore->SetScore(pScore->m_nValue);
+		s_pDestroyScore->SetScore(s_pDestroyScore->m_nValue);
 
-	return pScore;
+		s_pDestroyScore->SetColor(NORMAL_COLOR);
+	}
+	
+	return s_pDestroyScore;
 }
 
 //=====================================================
@@ -93,7 +96,7 @@ CDestroyScore* CDestroyScore::Create(CEnemy::TYPE type)
 HRESULT CDestroyScore::Init(void)
 {
 	m_nScore = SCORE_MIN;	// スコアの初期化
-	m_nValue = VALUE_SCORE; //桁数の初期化
+	m_nValue = VALUE_SEALS_SCORE; //桁数の初期化
 	m_fScaleNumber = SCORE_SCALE;	// 初期スケール設定
 	m_State = STATE_VERTICAL;	//状態の初期化
 	m_ShiftPos = D3DXVECTOR3(0.0f, 0.0f, SCORE_POS_Z);
@@ -116,6 +119,8 @@ void CDestroyScore::Uninit(void)
 	}
 
 	CGameObject::Uninit();
+
+	s_pDestroyScore = nullptr;
 }
 
 //=====================================================
@@ -180,17 +185,19 @@ void CDestroyScore::Update(void)
 
 		m_Col.a -= THINITY_SPEED;
 
-		SetColor(D3DXCOLOR(m_Col));
-
 		if (m_Col.a <= THINITY_COL)
 		{
 			CGame::GetInstance()->GetScore()->AddScore(m_nScore);
 
 			Uninit();
+
+			return;
 		}
 
 		break;
 	}
+
+	SetColor(D3DXCOLOR(m_Col));
 
 	SetPosition(D3DXVECTOR3(pos.x - SCORE_POS_X, pos.y, pos.z + m_ShiftPos.z));
 
@@ -348,12 +355,36 @@ void CDestroyScore::SetEnemyScore(CEnemy::TYPE type)
 	{
 	case CEnemy::TYPE_SEALS:
 
-		m_nScore = ADD_SEALS_SCORE;
-		m_nValue = VALUE_SEALS_SCORE;
+		m_nAddScore = ADD_SEALS_SCORE;
 
 		break;
 
 	default:
 		break;
 	}
+}
+
+//=====================================================
+// 敵を倒した時のスコア増加
+//=====================================================
+void CDestroyScore::AddDestroyScore(CEnemy::TYPE type)
+{
+	//敵ごとのスコアの設定
+	SetEnemyScore(type);
+
+	m_nScore += m_nAddScore;
+
+	m_State = STATE_WAIT;
+
+	m_nCntState = 0;
+}
+
+//=====================================================
+// 敵を倒した時のスコアインスタンス取得
+//=====================================================
+CDestroyScore* CDestroyScore::GetInstance()
+{
+	Create();
+
+	return s_pDestroyScore;
 }
