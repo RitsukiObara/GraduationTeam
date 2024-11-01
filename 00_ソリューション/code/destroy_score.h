@@ -47,7 +47,7 @@ public:
 	void AddDestroyScore(CEnemy::TYPE type);
 
 	// 静的メンバ関数
-	static CDestroyScore* GetInstance();	// インスタンスの取得
+	static CDestroyScore* GetInstance(void);	// インスタンスの取得
 	void SetEnemyScore(CEnemy::TYPE type);	//敵の種類ごとのスコア
 	void SetScore(int nDigit = 6);
 	void SetColor(D3DXCOLOR col);	// 色

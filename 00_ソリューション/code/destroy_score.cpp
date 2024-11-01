@@ -15,7 +15,7 @@
 #include "debugproc.h"
 #include "game.h"
 #include "player.h"
-
+#include "UI_combo.h"
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
@@ -135,6 +135,7 @@ void CDestroyScore::Update(void)
 
 	D3DXVECTOR3 pos = (*CPlayer::GetInstance().begin())->GetPosition();
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	int nCombo = CUI_Combo::GetInstance()->GetCombo();
 
 	//コンボUIの状態
 	switch (m_State)
@@ -172,6 +173,8 @@ void CDestroyScore::Update(void)
 
 		m_nCntState++;
 
+		m_Col = NORMAL_COLOR;
+
 		if (m_nCntState >= WAITTIME)
 		{
 			m_State = STATE_ADD;
@@ -187,6 +190,10 @@ void CDestroyScore::Update(void)
 
 		if (m_Col.a <= THINITY_COL)
 		{
+			//コンボ倍率とのスコア計算
+			m_nScore = m_nScore * nCombo;
+
+			//スコアを加算
 			CGame::GetInstance()->GetScore()->AddScore(m_nScore);
 
 			Uninit();
