@@ -447,6 +447,9 @@ void CEnemy::CheckChangeGrid(void)
 		m_nGridV = m_nGridVNext;
 		m_nGridH = m_nGridHNext;
 
+		if (m_nGridV == m_nGridVDest && m_nGridH == m_nGridHDest)
+			AliveDestGrid();	// –Ú“I’n‚É‚Â‚¢‚½ˆ—
+
 		return;
 	}
 }

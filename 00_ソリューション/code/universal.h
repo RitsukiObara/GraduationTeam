@@ -87,6 +87,8 @@ D3DXVECTOR3 CollideOBBToPlane(D3DXVECTOR3* posOBB, D3DXVECTOR3 vecAxial, D3DXVEC
 bool IsInFanTargetYFlat(D3DXVECTOR3 posOwn, D3DXVECTOR3 posTarget, float fRot, float fRange);
 template <typename T>
 bool FindFromVector(const std::vector<T>& vec, T pValue){ return std::find(vec.begin(), vec.end(), pValue) != vec.end(); }
+template <typename T, typename F>
+void RemoveIfFromVector(std::vector<T>& vec, F function) { vec.erase(std::remove_if(vec.begin(), vec.end(), function), vec.end()); }
 
 //======================================
 // •âŠ®Œn

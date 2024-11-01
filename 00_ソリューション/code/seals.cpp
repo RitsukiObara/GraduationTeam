@@ -28,6 +28,8 @@ const float WIDTH_APPER = -340.0f;	// 出現時の横のずれ
 const float POW_APPER_JUMP = 45.0f;	// 出現時のジャンプ力
 const float APPER_GRAVITY = -0.98f;	// 出現時の重力
 const float FACT_MOVE_APPER = 0.04f;	// 出現時の移動係数
+
+const float RANGE_FIND_PLAYER = 1000.0f;	// プレイヤー発見範囲
 }
 
 //=====================================================
@@ -254,10 +256,12 @@ void CSeals::UpdateStop(void)
 	// プレイヤーとの判定
 	CollidePlayer();
 
-	// 一番近いプレイヤーをターゲットにする
-	SarchTarget();
+	// 散歩先の初期設定
+	DecideNextStrollGrid();
 
 	CEnemy::UpdateStop();
+
+	SetState(E_State::STATE_MOVE);
 }
 
 //=====================================================
@@ -271,9 +275,11 @@ void CSeals::SarchTarget(void)
 	if (apPlayer.empty())
 		return;	// 配列が空なら終了
 
-	float fLengthMin = FLT_MAX;
+	float fLengthMin = RANGE_FIND_PLAYER;
 
 	D3DXVECTOR3 pos = GetPosition();
+
+	CPlayer *pPlayer = nullptr;	// 発見したプレイヤー
 
 	for (auto it : apPlayer)
 	{
@@ -286,10 +292,12 @@ void CSeals::SarchTarget(void)
 
 		if (universal::DistCmpFlat(pos, posPlayer, fLengthMin, &fDiff))
 		{// 最小距離より近かったら保存
-			m_pPlayerTarget = it;
+			pPlayer = it;
 			fLengthMin = fDiff;
 		}
 	}
+
+	m_pPlayerTarget = pPlayer;
 
 	if (m_pPlayerTarget != nullptr)	// ターゲットが見つかったら移動状態に移行
 	{
@@ -304,14 +312,22 @@ void CSeals::SarchTarget(void)
 //=====================================================
 void CSeals::UpdateMove(void)
 {
-	// プレイヤーグリッドの発見
-	FindPlayerGrid();
-
-	// 継承クラスの更新
-	CEnemy::UpdateMove();
+	if (m_pPlayerTarget == nullptr)
+	{// プレイヤー未発見時の処理
+		// ターゲットの探索
+		SarchTarget();
+	}
+	else
+	{// プレイヤー発見時はプレイヤーを追いかける
+		// プレイヤーグリッドの発見
+		FindPlayerGrid();
+	}
 
 	// プレイヤーとの判定
 	CollidePlayer();
+
+	// 継承クラスの更新
+	CEnemy::UpdateMove();
 }
 
 //=====================================================
@@ -327,6 +343,53 @@ void CSeals::FindPlayerGrid(void)
 
 	SetGridVDest(nGridV);
 	SetGridHDest(nGridH);
+}
+
+//=====================================================
+// 目標グリッドに到着したときの処理
+//=====================================================
+void CSeals::AliveDestGrid(void)
+{
+	if (m_pPlayerTarget == nullptr)
+	{// プレイヤー未発見時は次の散歩先を探す
+		DecideNextStrollGrid();
+	}
+}
+
+//=====================================================
+// 次の散歩先を探す処理
+//=====================================================
+void CSeals::DecideNextStrollGrid(void)
+{
+	vector<CIce*> apIce = CIce::GetInstance();
+
+	if (apIce.empty())
+		return;
+
+	// 止まってない氷を除外
+	universal::RemoveIfFromVector(apIce, [](CIce* ice) { return ice != nullptr && !ice->IsStop(); });
+
+	// サイズからランダムで氷を指定
+	int nRand = universal::RandRange((int)apIce.size() - 1, 0);
+
+	CIce *pIce = apIce[nRand];
+
+	if (pIce == nullptr)
+		return;	// もし選んだ氷がなかったら処理を終了
+
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	// 選んだ氷のグリッド番号取得
+	int nIdxV = 0;
+	int nIdxH = 0;
+	pIceMgr->GetIceIndex(pIce, &nIdxV, &nIdxH);
+
+	// 目標のグリッドに設定
+	SetGridVDest(nIdxV);
+	SetGridHDest(nIdxH);
 }
 
 //=====================================================
@@ -358,6 +421,21 @@ void CSeals::ManageMotion(void)
 		if (bFinish)	// 終わり次第滞空モーションへ移行
 			SetMotion(E_Motion::MOTION_STAYJUMP);
 	}
+
+	// 移動状態のモーション管理
+	if (GetState() == CEnemy::E_State::STATE_MOVE)
+	{
+		if (m_pPlayerTarget == nullptr)
+		{// ゆっくり歩き
+			if (nMotion != E_Motion::MOTION_NEUTRAL)
+				SetMotion(E_Motion::MOTION_NEUTRAL);
+		}
+		else
+		{// 早歩き
+			if (nMotion != E_Motion::MOTION_WALK)
+				SetMotion(E_Motion::MOTION_WALK);
+		}
+	}
 }
 
 //=====================================================
@@ -374,6 +452,9 @@ void CSeals::CollidePlayer(void)
 	for (auto it : apPlayer)
 	{
 		if (it == nullptr)
+			continue;
+
+		if (it->GetState() == CPlayer::E_State::STATE_DEATH)
 			continue;
 
 		// プレイヤーのグリッド番号取得

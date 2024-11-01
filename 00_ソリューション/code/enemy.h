@@ -103,6 +103,7 @@ private:
 	bool PathFind(int nIdxV, int nIdxH, vector<CIce*>& apIce);	// 探索の再帰関数
 	void MoveToNextGrid(void);	// 次のグリッドに向かって移動する
 	void CheckChangeGrid(void);	// グリッドが変わったかの確認
+	virtual void AliveDestGrid(void) {};	// 目的地に着いた時の仮想関数
 	void Debug(void);	// デバッグ処理
 
 	// メンバ変数
