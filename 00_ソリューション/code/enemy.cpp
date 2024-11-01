@@ -287,6 +287,9 @@ void CEnemy::SarchNearIceToDest(void)
 		if (enemy::IsEnemyOnIce(aV[i], aH[i]))
 			continue;
 
+		if (apIce[i]->IsPeck())
+			continue;
+
 		// —§‚Á‚Ä‚¢‚é•X‚ð’Ç‰Á‚µ‚Ä‚¨‚­
 		apIceSave[i].push_back(pIceStand);
 
@@ -375,6 +378,9 @@ bool CEnemy::PathFind(int nIdxV, int nIdxH, vector<CIce*>& rIceSave)
 
 		if (enemy::IsEnemyOnIce(aV[i], aH[i]))
 			continue;	// ‘¼‚Ì“G‚ªæ‚Á‚Ä‚½‚ç–³Ž‹
+
+		if (apIce[i]->IsPeck())
+			continue;	// ‚Â‚Á‚Â‚¢‚½‚â‚Â‚È‚ç–³Ž‹
 
 		D3DXVECTOR3 posIce = apIce[i]->GetPosition();
 		float fDiff = 0.0f;

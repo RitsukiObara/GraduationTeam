@@ -37,7 +37,7 @@ const float RANGE_SELECT_ICE = D3DX_PI * 2 / 6;	// 氷を選択するときの角度の範囲
 const float RATE_CHANGE_GRID = 0.6f;	// 次のグリッドに移る判定の割合
 
 const float TIME_MAX_SPEED = 1.0f;	// 最大速度に達するまでにかかる時間
-const float SPEED_MOVE_MAX = 6.5f;	// 最大移動速度
+const float SPEED_MOVE_MAX = 2.5f;	// 最大移動速度
 
 const float LINE_STOP_TURN = 0.2f;	// 振り向きを停止するしきい値
 const float LINE_START_TURN = D3DX_PI * 0.6f;	// 振り向きを開始するしきい値
