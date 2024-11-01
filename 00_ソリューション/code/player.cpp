@@ -27,15 +27,10 @@
 namespace
 {
 const std::string PATH_BODY = "data\\MOTION\\motionPenguin.txt";	// ボディのパス
-const int MOVE_FRAME = 25;	// 移動にかかるフレーム数
 
 const float RATE_DECREASE_MOVE = 0.5f;	// 移動減衰の割合
 const float LINE_FACT_ROT = 0.3f;	// 向きを補正するまでの入力しきい値
 const float FACT_ROTATION = 0.1f;	// 回転係数
-const float DEFAULT_WEIGHT = 5.0f;	// 仮の重さ
-const float POSDEST_NEAREQUAL = 0.01f;	// 大体目標位置に着いたとする距離
-
-const float LINE_JUDGE_MOVE = 50.0f;	// 移動に移ったと判断するライン
 
 const float LINE_INPUT_MOVE = 0.3f;	// 移動するまでのスティック入力のしきい値
 const float RANGE_SELECT_ICE = D3DX_PI * 2 / 6;	// 氷を選択するときの角度の範囲

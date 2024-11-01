@@ -66,6 +66,8 @@ private:
 	void MoveToIce(void);	// 氷に向かって移動
 	void SarchTarget(void);	// ターゲットの探索
 	void FindPlayerGrid(void);	// プレイヤーグリッドの発見
+	void AliveDestGrid(void) override;	// グリッドに到着したときの処理
+	void DecideNextStrollGrid(void);	// 次の散歩先を決める
 
 	// メンバ変数
 	CPlayer *m_pPlayerTarget;	// ターゲットプレイヤー
