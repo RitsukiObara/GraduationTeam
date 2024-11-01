@@ -491,6 +491,7 @@ void CEnemy::UpdateDrift(void)
 	D3DXVECTOR3 pos = GetPosition();
 
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	SetMove(move);
 
 	pos.y = pOcean->GetHeight(pos, &move) + HEIGHT_ICE;
 
