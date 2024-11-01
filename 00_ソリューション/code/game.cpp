@@ -199,7 +199,7 @@ void CGame::Update(void)
 		CDestroyScore::Create(CEnemy::TYPE_SEALS);
 
 		//“G‚ð“|‚µ‚½Žž‚ÌƒRƒ“ƒ{UI¶¬
-		CUI_Combo::Create();
+		CUI_Combo::GetInstance()->AddCombo(1);
 
 	}
 

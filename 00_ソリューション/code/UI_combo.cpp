@@ -20,13 +20,14 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
+CUI_Combo* CUI_Combo::s_pCombo;	// 格納用の配列
 
 //*****************************************************
 // 定数定義
 //*****************************************************
 namespace
 {
-	const int	COMBO_MIN = 1;	// 最少コンボ
+	const int	COMBO_MIN = 0;	// 最少コンボ
 	const int	COMBO_MAX = 99;	// 最大コンボ
 	const float DIST_NUMBER = 0.01f;	// 数字間の距離
 	const D3DXVECTOR2 SIZE_NORMAL_NUM = { 40.0f, 40.0f };	// 通常数字のサイズ
@@ -73,26 +74,24 @@ CUI_Combo::~CUI_Combo()
 //=====================================================
 CUI_Combo* CUI_Combo::Create()
 {
-	CUI_Combo* pCombo = nullptr;
+	if (s_pCombo == nullptr)
+	{
+		s_pCombo = new CUI_Combo;
 
-	pCombo = new CUI_Combo;
+		s_pCombo->Init();
 
-	if (pCombo != nullptr)
-	{// 初期化
-		pCombo->Init();
-
-		pCombo->SetScaleNumber(COMBO_SCALE);
+		s_pCombo->SetScaleNumber(COMBO_SCALE);
 
 		//情報の設定
-		pCombo->SetCombo(VALUE_COMBO);
+		s_pCombo->SetCombo(VALUE_COMBO);
 
-		pCombo->SetColor(NORMAL_COLOR);
+		s_pCombo->SetColor(NORMAL_COLOR);
 
 		////スコアの設定
 		//pScore->SetScore(pScore->m_nScore);
 	}
 
-	return pCombo;
+	return s_pCombo;
 }
 
 //=====================================================
@@ -123,6 +122,8 @@ void CUI_Combo::Uninit(void)
 	}
 
 	CGameObject::Uninit();
+
+	s_pCombo = nullptr;
 }
 
 //=====================================================
@@ -341,4 +342,22 @@ void CUI_Combo::SetCombo(int nDigit)
 
 	// 数字のトランスフォームの設定
 	TransformNumber();
+}
+
+//=====================================================
+// コンボの増加
+//=====================================================
+void CUI_Combo::AddCombo(int nCombo)
+{
+	m_nCombo += nCombo;
+}
+
+//=====================================================
+// コンボのインスタンス取得
+//=====================================================
+CUI_Combo* CUI_Combo::GetInstance()
+{
+	Create();
+
+	return s_pCombo;
 }
