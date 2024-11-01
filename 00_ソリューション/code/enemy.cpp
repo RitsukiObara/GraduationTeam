@@ -284,6 +284,9 @@ void CEnemy::SarchNearIceToDest(void)
 		if (apIce[i] == nullptr)
 			continue;
 
+		if (enemy::IsEnemyOnIce(aV[i], aH[i]))
+			continue;
+
 		// —§‚Á‚Ä‚¢‚é•X‚ð’Ç‰Á‚µ‚Ä‚¨‚­
 		apIceSave[i].push_back(pIceStand);
 
@@ -370,6 +373,9 @@ bool CEnemy::PathFind(int nIdxV, int nIdxH, vector<CIce*>& rIceSave)
 		if (universal::FindFromVector(rIceSave, apIce[i]))
 			continue;	// ’TõÏ‚Ý‚È‚ç–³Ž‹
 
+		if (enemy::IsEnemyOnIce(aV[i], aH[i]))
+			continue;	// ‘¼‚Ì“G‚ªæ‚Á‚Ä‚½‚ç–³Ž‹
+
 		D3DXVECTOR3 posIce = apIce[i]->GetPosition();
 		float fDiff = 0.0f;
 
@@ -413,8 +419,8 @@ void CEnemy::MoveToNextGrid(void)
 	SetRotation(rot);
 	
 #ifdef _DEBUG
-	CEffect3D::Create(posNext, 100.0f, 5, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	CEffect3D::Create(pos, 100.0f, 5, D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f));
+	//CEffect3D::Create(posNext, 100.0f, 5, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	//CEffect3D::Create(pos, 100.0f, 5, D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f));
 #endif
 }
 

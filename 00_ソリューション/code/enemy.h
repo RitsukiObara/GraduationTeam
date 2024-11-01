@@ -93,7 +93,7 @@ public:
 
 	// 静的メンバ関数
 	static CEnemy* Create(int nType,int nGridV = 0, int nGridH = 0);	// 生成処理
-	static std::vector<CEnemy*> GetArray(void) { return s_vector; }	// 配列の取得
+	static std::vector<CEnemy*> GetInstance(void) { return s_vector; }	// 配列の取得
 
 private:
 	// メンバ関数
@@ -122,5 +122,26 @@ private:
 	// 静的メンバ変数
 	static std::vector<CEnemy*> s_vector;	// 自身のポインタ
 };
+
+namespace enemy
+{
+inline bool IsEnemyOnIce(int nIdxV, int nIdxH)
+{
+	vector<CEnemy*> aEnemy = CEnemy::GetInstance();
+
+	for (auto it : aEnemy)
+	{
+		int nIdxVEnemy = it->GetGridV();
+		int nIdxHEnemy = it->GetGridH();
+
+		if (nIdxVEnemy == nIdxV && nIdxHEnemy == nIdxH)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+}
 
 #endif

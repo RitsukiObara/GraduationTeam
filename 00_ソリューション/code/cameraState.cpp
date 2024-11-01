@@ -28,8 +28,8 @@ const float FACT_CORRECT_CONTOROLLL = 0.9f;	// 操作時の位置補正係数
 
 const float LENGTH_FOLLOW = 412.0f;	// 追従時のカメラ距離
 const float ANGLE_FOLLOW = 0.73f;	// 追従時のカメラ角度
-const D3DXVECTOR3 POSR_GAME = { 0.0f,0.0f,00.0f };	// ゲーム中の注視点位置
-const D3DXVECTOR3 POSV_GAME = { 0.0f,1044.0f,-581.0f };	// ゲーム中の視点位置
+const D3DXVECTOR3 POSR_GAME = { 0.0f,0.0f,-200.0f };	// ゲーム中の注視点位置
+const D3DXVECTOR3 POSV_GAME = { 0.0f,1044.0f,-681.0f };	// ゲーム中の視点位置
 }
 
 //***********************************************************************************

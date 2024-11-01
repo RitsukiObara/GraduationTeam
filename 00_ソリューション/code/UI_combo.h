@@ -46,7 +46,7 @@ public:
 	void Update();
 	void Draw();
 	void SetCombo(int nDigit = 6);
-	void AddCombo(int nCombo);
+	void AddCombo(void);
 
 	// Ã“Iƒƒ“ƒoŠÖ”
 	void SetColor(D3DXCOLOR col);	// F

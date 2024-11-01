@@ -274,6 +274,7 @@
     <ClInclude Include="code\camera.h" />
     <ClInclude Include="code\cameraState.h" />
     <ClInclude Include="code\collision.h" />
+    <ClInclude Include="code\container.h" />
     <ClInclude Include="code\nextflowice.h" />
     <ClInclude Include="code\UI_combo.h" />
     <ClInclude Include="code\debris.h" />
@@ -356,7 +357,6 @@
     <ClInclude Include="code\UIManager.h" />
     <ClInclude Include="code\UI_enemy.h" />
     <ClInclude Include="code\universal.h" />
-    <ClInclude Include="container.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
