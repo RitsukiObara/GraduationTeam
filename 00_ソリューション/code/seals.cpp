@@ -292,7 +292,11 @@ void CSeals::SarchTarget(void)
 	}
 
 	if (m_pPlayerTarget != nullptr)	// ターゲットが見つかったら移動状態に移行
+	{
 		SetState(CEnemy::E_State::STATE_MOVE);
+
+		SetMotion(E_Motion::MOTION_WALK);
+	}
 }
 
 //=====================================================
