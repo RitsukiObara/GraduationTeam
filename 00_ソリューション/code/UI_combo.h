@@ -46,10 +46,11 @@ public:
 	void Update();
 	void Draw();
 	void SetCombo(int nDigit = 6);
-	void AddCombo(int nCombo);
+	void AddCombo(void);
 
 	// 静的メンバ関数
 	void SetColor(D3DXCOLOR col);	// 色
+	int GetCombo(void) { return m_nCombo; }
 	void SetPosition(D3DXVECTOR3 pos) override;	// 位置
 	void SetScaleNumber(float fScale);	// 数字のスケール
 	static CUI_Combo* GetInstance(void);	// インスタンスの取得
