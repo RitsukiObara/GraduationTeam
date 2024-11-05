@@ -27,8 +27,6 @@
 //*****************************************************
 // マクロ定義
 //*****************************************************
-#define MENU_WIDTH	(0.2f)	// 項目の幅
-#define MENU_HEIGHT	(0.2f)	// 項目の高さ
 #define MOVE_FACT	(0.01f)	// 移動速度
 #define LINE_UNINIT	(0.2f)	// 終了するまでのしきい値
 
@@ -39,6 +37,17 @@ namespace
 {
 	const D3DXCOLOR COL_INITIAL_MENU = { 0.4f,0.4f,0.4f,1.0f };	// メニュー項目の初期色
 	const D3DXCOLOR COL_CURRENT_MENU = { 1.0f,1.0f,1.0f,1.0f };	// メニュー項目の選択色
+	const D3DXVECTOR2 UI_SIZE[CTitle::TITLE_UI_MAX] = 
+	{
+		D3DXVECTOR2 (0.2f,0.2f),
+		D3DXVECTOR2 (0.2f,0.2f),
+		D3DXVECTOR2 (0.3f,0.3f),
+		D3DXVECTOR2 (0.1f,0.1f),
+		D3DXVECTOR2 (0.1f,0.15f),
+		D3DXVECTOR2 (0.08f,0.15f),
+		D3DXVECTOR2 (0.4f,0.1f),
+		D3DXVECTOR2 (0.5f,0.5f),
+	};
 }
 
 //=====================================================
@@ -85,6 +94,7 @@ HRESULT CTitle::Init(void)
 		"data\\TEXTURE\\TITLE\\ice_block.png",
 		"data\\TEXTURE\\TITLE\\title_ice.png",
 		"data\\TEXTURE\\TITLE\\penguin.png",
+		"data\\TEXTURE\\TITLE\\turuhasi.png",
 		"data\\TEXTURE\\TITLE\\title_full.png",
 		"data\\TEXTURE\\TITLE\\pengui.png",
 	};
@@ -141,8 +151,8 @@ HRESULT CTitle::Init(void)
 		{
 			{//	スタートメニュー
 				// ポリゴンの設定
-				m_apMenu_UI->SetPosition(D3DXVECTOR3(0.5f, 0.8f, 0.0f));
-				m_apMenu_UI->SetSize(MENU_WIDTH, MENU_HEIGHT);
+				m_apMenu_UI->SetPosition(D3DXVECTOR3(0.5f, 0.75f, 0.0f));
+				m_apMenu_UI->SetSize(0.2f, 0.15f);
 				m_apMenu_UI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 			}
 
@@ -166,7 +176,6 @@ HRESULT CTitle::Init(void)
 				{//	左からくる氷
 					// ポリゴンの設定
 					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(-0.2f, 0.4f, 0.0f));
-					m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH, MENU_HEIGHT);
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
 					m_aPosDest[nCntUI].x = 0.35f;
@@ -176,7 +185,6 @@ HRESULT CTitle::Init(void)
 				{//	右からくる氷
 					// ポリゴンの設定
 					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(1.2f, 0.36f, 0.0f));
-					m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH, MENU_HEIGHT);
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
 					m_aPosDest[nCntUI].x = 0.6f;
@@ -186,44 +194,47 @@ HRESULT CTitle::Init(void)
 				{//	氷ブロック合体
 					// ポリゴンの設定
 					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.5f, 0.28f, 0.0f));
-					m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH + 0.1f, MENU_HEIGHT + 0.1f);
-					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
-					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
-				}
-
-
-				if (nCntUI == TITLE_UI_LOGO)
-				{//	タイトルに戻る
-					// ポリゴンの設定
-					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.48f, 0.33f, 0.0f));
-					m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH + 0.2f, MENU_HEIGHT - 0.1f);
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
 				}
 
 				if (nCntUI == TITLE_UI_ICE)
-				{//	ポーズ
+				{//	氷
 					// ポリゴンの設定
 					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.8f, 0.23f, 0.0f));
-					m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH - 0.1f, MENU_HEIGHT - 0.1f);
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
 				}
 
 				if (nCntUI == TITLE_UI_PENGUIN)
-				{//	ポーズ
+				{//	ペンギン
 					// ポリゴンの設定
 					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.25f, 0.18f, 0.0f));
-					m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH - 0.1f, MENU_HEIGHT - 0.05f);
+					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
+					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
+				}
+
+				if (nCntUI == TITLE_UI_PICKAXE)
+				{//	つるはし
+					// ポリゴンの設定
+					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.72f, 0.68f, 0.0f));
+					m_apTitle_UI[nCntUI]->SetRotation(D3DXVECTOR3(0.0f, 0.0f, -0.5f));
+					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
+					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
+				}
+
+				if (nCntUI == TITLE_UI_LOGO)
+				{//	タイトルロゴ
+					// ポリゴンの設定
+					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.48f, 0.33f, 0.0f));
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
 				}
 
 				if (nCntUI == TITLE_UI_FLASH)
-				{//	ポーズ
+				{//	フラッシュ
 					// ポリゴンの設定
 					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.5f, 0.5f, 0.0f));
-					m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH + 0.3f, MENU_HEIGHT + 0.3f);
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
 				}
@@ -231,6 +242,7 @@ HRESULT CTitle::Init(void)
 				// テクスチャの設定
 				nIdxTexture = CTexture::GetInstance()->Regist(aTitle[nCntUI]);
 
+				m_apTitle_UI[nCntUI]->SetSize(UI_SIZE[nCntUI].x, UI_SIZE[nCntUI].y);
 				m_apTitle_UI[nCntUI]->SetIdxTexture(nIdxTexture);
 				m_apTitle_UI[nCntUI]->SetVtx();
 			}
@@ -419,31 +431,35 @@ void CTitle::LogoState(void)
 
 		m_apMenu_UI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f + nCntAlpha * 0.005f));
 		m_apTitle_UI[TITLE_UI_ICEBLOCK]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f + nCntAlpha * 0.005f));
-		m_apTitle_UI[TITLE_UI_LOGO]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f + nCntAlpha * 0.005f));
 		m_apTitle_UI[TITLE_UI_ICE]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f + nCntAlpha * 0.005f));
 		m_apTitle_UI[TITLE_UI_PENGUIN]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f + nCntAlpha * 0.005f));
+		m_apTitle_UI[TITLE_UI_PICKAXE]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		m_apTitle_UI[TITLE_UI_LOGO]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f + nCntAlpha * 0.005f));
 
 		for (int nCntUI = 0; nCntUI < TITLE_UI_MAX; nCntUI++)
 		{
-			// ポリゴンをカウントごとに動かす
-			if (nCntMove > 30 && nCntMove < 100)
+			if (nCntUI != TITLE_UI_PICKAXE)
 			{
-				m_aPosDest[nCntUI].y += 0.001f;
-			}
+				// ポリゴンをカウントごとに動かす
+				if (nCntMove > 30 && nCntMove < 100)
+				{
+					m_aPosDest[nCntUI].y += 0.001f;
+				}
 
-			else if (nCntMove > 100 && nCntMove < 240)
-			{
-				m_aPosDest[nCntUI].y -= 0.001f;
-			}
+				else if (nCntMove > 100 && nCntMove < 240)
+				{
+					m_aPosDest[nCntUI].y -= 0.001f;
+				}
 
-			else if (nCntMove > 240 && nCntMove < 380)
-			{
-				m_aPosDest[nCntUI].y += 0.001f;
-			}
+				else if (nCntMove > 240 && nCntMove < 380)
+				{
+					m_aPosDest[nCntUI].y += 0.001f;
+				}
 
-			else if (nCntMove > 380)
-			{
-				nCntMove = 100;
+				else if (nCntMove > 380)
+				{
+					nCntMove = 100;
+				}
 			}
 		}
 	}

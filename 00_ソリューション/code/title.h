@@ -47,6 +47,7 @@ public:
 		TITLE_UI_ICEBLOCK,	// 氷ブロック合体
 		TITLE_UI_ICE,	// 氷
 		TITLE_UI_PENGUIN,	// ペンギン
+		TITLE_UI_PICKAXE,	// つるはし
 		TITLE_UI_LOGO,	// ロゴ
 		TITLE_UI_FLASH,	// フラッシュ
 		TITLE_UI_MAX
