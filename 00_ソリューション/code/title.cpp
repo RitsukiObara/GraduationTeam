@@ -44,8 +44,8 @@ namespace
 		D3DXVECTOR3(0.5f, 0.28f,0.0f),
 		D3DXVECTOR3(0.8f, 0.23f,0.0f),
 		D3DXVECTOR3(0.25f, 0.18f,0.0f),
-		D3DXVECTOR3(0.72f, 0.68f,0.0f),
 		D3DXVECTOR3(0.48f, 0.33f,0.0f),
+		D3DXVECTOR3(0.72f, 0.68f,0.0f),
 		D3DXVECTOR3(0.5f, 0.5f,0.0f),
 	};
 	const D3DXVECTOR2 UI_SIZE[CTitle::TITLE_UI_MAX] =  // UIの初期サイズ
@@ -55,8 +55,8 @@ namespace
 		D3DXVECTOR2 (0.3f,0.3f),
 		D3DXVECTOR2 (0.1f,0.1f),
 		D3DXVECTOR2 (0.1f,0.15f),
+		D3DXVECTOR2(0.4f,0.1f),
 		D3DXVECTOR2 (0.08f,0.15f),
-		D3DXVECTOR2 (0.4f,0.1f),
 		D3DXVECTOR2 (0.5f,0.5f),
 	};
 }
@@ -72,6 +72,7 @@ CTitle::CTitle()
 	m_Title_UI = TITLE_UI_LEFT;
 	m_apMenu_UI = nullptr;
 	m_bFade = false;
+	m_bMove = false;
 
 	for (int nCntUI = 0; nCntUI < TITLE_UI_MAX; nCntUI++)
 	{
@@ -173,6 +174,8 @@ HRESULT CTitle::Init(void)
 			m_apMenu_UI->SetVtx();
 		}
 	}
+
+	Camera::ChangeState(new CCameraStateTitle);
 
 	for (int nCntUI = 0; nCntUI < TITLE_UI_MAX; nCntUI++)
 	{// メニュー項目のポリゴンを生成
@@ -420,7 +423,7 @@ void CTitle::IceFlowState(void)
 		m_apTitle_UI[TITLE_UI_LEFT]->SetAlpha(0.0f);	// 透明度調整
 		m_apTitle_UI[TITLE_UI_RIGHT]->SetAlpha(0.0f);
 		m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(1.0f);
-		m_TitleState = TITLESTATE_LOGO;	// 状態をロゴ状態にする
+		m_TitleState = TITLESTATE_LOGO;
 	}
 
 	m_apTitle_UI[TITLE_UI_LEFT]->SetPosition(pos_left);
@@ -442,12 +445,30 @@ void CTitle::LogoState(void)
 	{
 		D3DXVECTOR3 pos = m_apTitle_UI[nCntUI]->GetPosition();
 
-		pos.y += 0.003f;
-
 		// ポリゴンを動かす
-		if (pos.y > 0.3f)
+		if (m_nCntMove > 0 && m_nCntMove < 40)
 		{
-			pos.y -= 0.004f;
+			m_bMove = false;
+		}
+
+		if (m_nCntMove > 40 && m_nCntMove < 80)
+		{
+			m_bMove = true;
+		}
+
+		if (m_nCntMove > 80)
+		{
+			m_nCntMove = 0;
+		}
+
+		if (m_bMove == false)
+		{
+			pos.y += 0.0005f;
+		}
+
+		if (m_bMove == true)
+		{
+			pos.y -= 0.0005f;
 		}
 
 		m_apTitle_UI[nCntUI]->SetPosition(pos);

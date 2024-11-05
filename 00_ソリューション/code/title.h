@@ -72,6 +72,7 @@ private:
 	int m_nCntMove;	// UIの移動カウント
 	int m_nCntFade;	// カウントの状態
 	bool m_bFade; // フェイド
+	bool m_bMove; // 移動
 	STATE m_State;				// 状態
 	TITLESTATE m_TitleState;	// タイトル状態管理
 	TITLE_UI m_Title_UI;	// タイトルUI
