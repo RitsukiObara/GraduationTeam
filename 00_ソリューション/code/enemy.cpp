@@ -287,6 +287,9 @@ void CEnemy::SarchNearIceToDest(void)
 		if (enemy::IsEnemyOnIce(aV[i], aH[i]))
 			continue;
 
+		if (apIce[i]->IsPeck())
+			continue;
+
 		// —§‚Á‚Ä‚¢‚é•X‚ð’Ç‰Á‚µ‚Ä‚¨‚­
 		apIceSave[i].push_back(pIceStand);
 
@@ -376,6 +379,9 @@ bool CEnemy::PathFind(int nIdxV, int nIdxH, vector<CIce*>& rIceSave)
 		if (enemy::IsEnemyOnIce(aV[i], aH[i]))
 			continue;	// ‘¼‚Ì“G‚ªæ‚Á‚Ä‚½‚ç–³Ž‹
 
+		if (apIce[i]->IsPeck())
+			continue;	// ‚Â‚Á‚Â‚¢‚½‚â‚Â‚È‚ç–³Ž‹
+
 		D3DXVECTOR3 posIce = apIce[i]->GetPosition();
 		float fDiff = 0.0f;
 
@@ -447,6 +453,9 @@ void CEnemy::CheckChangeGrid(void)
 		m_nGridV = m_nGridVNext;
 		m_nGridH = m_nGridHNext;
 
+		if (m_nGridV == m_nGridVDest && m_nGridH == m_nGridHDest)
+			AliveDestGrid();	// –Ú“I’n‚É‚Â‚¢‚½ˆ—
+
 		return;
 	}
 }
@@ -482,6 +491,7 @@ void CEnemy::UpdateDrift(void)
 	D3DXVECTOR3 pos = GetPosition();
 
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	SetMove(move);
 
 	pos.y = pOcean->GetHeight(pos, &move) + HEIGHT_ICE;
 
