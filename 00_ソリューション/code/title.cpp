@@ -175,6 +175,8 @@ HRESULT CTitle::Init(void)
 		}
 	}
 
+	Camera::ChangeState(new CCameraStateTitle);
+
 	for (int nCntUI = 0; nCntUI < TITLE_UI_MAX; nCntUI++)
 	{// ƒƒjƒ…[€–Ú‚Ìƒ|ƒŠƒSƒ“‚ð¶¬
 		if (m_apTitle_UI[nCntUI] == nullptr)
