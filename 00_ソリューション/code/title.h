@@ -45,9 +45,9 @@ public:
 		TITLE_UI_LEFT = 0,	// 左側
 		TITLE_UI_RIGHT,	// 右側
 		TITLE_UI_ICEBLOCK,	// 氷ブロック合体
-		TITLE_UI_LOGO,	// ロゴ
 		TITLE_UI_ICE,	// 氷
 		TITLE_UI_PENGUIN,	// ペンギン
+		TITLE_UI_LOGO,	// ロゴ
 		TITLE_UI_FLASH,	// フラッシュ
 		TITLE_UI_MAX
 	};
@@ -70,6 +70,8 @@ private:
 	void LogoState(void);
 
 	int nCntFlash;	// フラッシュのカウント
+	int nCntAlpha;	// アルファ値のカウント
+	int nCntMove;	// ロゴの動きのカウント
 	STATE m_State;				// 状態
 	TITLESTATE m_TitleState;	// タイトル状態管理
 	TITLE_UI m_Title_UI;	// タイトルUI

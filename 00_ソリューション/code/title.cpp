@@ -47,6 +47,8 @@ namespace
 CTitle::CTitle()
 {
 	nCntFlash = 0;
+	nCntAlpha = 0;
+	nCntMove = 0;
 	m_State = STATE_NONE;
 	m_TitleState = TITLESTATE_ICEFLOW;
 	m_Title_UI = TITLE_UI_LEFT;
@@ -73,7 +75,7 @@ HRESULT CTitle::Init(void)
 {
 	const char* aPath =
 	{// メニューのテクスチャパス
-		"data\\TEXTURE\\UI\\menu00.png",
+		"data\\TEXTURE\\TITLE\\Start.png",
 	};
 
 	const char* aTitle[TITLE_UI_MAX] =
@@ -81,9 +83,9 @@ HRESULT CTitle::Init(void)
 		"data\\TEXTURE\\TITLE\\ice_block_Left_2.png",
 		"data\\TEXTURE\\TITLE\\ice_block_Right_2.png",
 		"data\\TEXTURE\\TITLE\\ice_block.png",
-		"data\\TEXTURE\\TITLE\\title_full.png",
 		"data\\TEXTURE\\TITLE\\title_ice.png",
 		"data\\TEXTURE\\TITLE\\penguin.png",
+		"data\\TEXTURE\\TITLE\\title_full.png",
 		"data\\TEXTURE\\TITLE\\pengui.png",
 	};
 
@@ -183,7 +185,7 @@ HRESULT CTitle::Init(void)
 				if (nCntUI == TITLE_UI_ICEBLOCK)
 				{//	氷ブロック合体
 					// ポリゴンの設定
-					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.5f, 0.25f, 0.0f));
+					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.5f, 0.28f, 0.0f));
 					m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH + 0.1f, MENU_HEIGHT + 0.1f);
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
@@ -193,7 +195,7 @@ HRESULT CTitle::Init(void)
 				if (nCntUI == TITLE_UI_LOGO)
 				{//	タイトルに戻る
 					// ポリゴンの設定
-					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.5f, 0.3f, 0.0f));
+					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.48f, 0.33f, 0.0f));
 					m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH + 0.2f, MENU_HEIGHT - 0.1f);
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
@@ -202,7 +204,7 @@ HRESULT CTitle::Init(void)
 				if (nCntUI == TITLE_UI_ICE)
 				{//	ポーズ
 					// ポリゴンの設定
-					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.8f, 0.2f, 0.0f));
+					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.8f, 0.23f, 0.0f));
 					m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH - 0.1f, MENU_HEIGHT - 0.1f);
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
@@ -211,7 +213,7 @@ HRESULT CTitle::Init(void)
 				if (nCntUI == TITLE_UI_PENGUIN)
 				{//	ポーズ
 					// ポリゴンの設定
-					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.25f, 0.15f, 0.0f));
+					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.25f, 0.18f, 0.0f));
 					m_apTitle_UI[nCntUI]->SetSize(MENU_WIDTH - 0.1f, MENU_HEIGHT - 0.05f);
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
@@ -387,7 +389,8 @@ void CTitle::IceFlowState(void)
 void CTitle::FlashState(void)
 {
 	// 画面にフラッシュが入る状態になった時
-	if (m_TitleState == TITLESTATE_FLASH)
+	if (m_TitleState == TITLESTATE_FLASH ||
+		m_TitleState == TITLESTATE_LOGO)
 	{
 		nCntFlash++;
 
@@ -396,9 +399,8 @@ void CTitle::FlashState(void)
 
 		D3DXCOLOR col = m_apTitle_UI[TITLE_UI_FLASH]->GetCol();
 
-		if (col.a < 0.4f)
+		if (col.a < 0.5f)
 		{
-			m_apTitle_UI[TITLE_UI_FLASH]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 			m_TitleState = TITLESTATE_LOGO;
 		}
 	}
@@ -412,10 +414,37 @@ void CTitle::LogoState(void)
 	// 画面にフラッシュが入る状態になった時
 	if (m_TitleState == TITLESTATE_LOGO)
 	{
-		m_apMenu_UI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-		m_apTitle_UI[TITLE_UI_ICEBLOCK]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-		m_apTitle_UI[TITLE_UI_LOGO]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-		m_apTitle_UI[TITLE_UI_ICE]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-		m_apTitle_UI[TITLE_UI_PENGUIN]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		nCntAlpha++;
+		nCntMove++;
+
+		m_apMenu_UI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f + nCntAlpha * 0.005f));
+		m_apTitle_UI[TITLE_UI_ICEBLOCK]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f + nCntAlpha * 0.005f));
+		m_apTitle_UI[TITLE_UI_LOGO]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f + nCntAlpha * 0.005f));
+		m_apTitle_UI[TITLE_UI_ICE]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f + nCntAlpha * 0.005f));
+		m_apTitle_UI[TITLE_UI_PENGUIN]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f + nCntAlpha * 0.005f));
+
+		for (int nCntUI = 0; nCntUI < TITLE_UI_MAX; nCntUI++)
+		{
+			// ポリゴンをカウントごとに動かす
+			if (nCntMove > 30 && nCntMove < 100)
+			{
+				m_aPosDest[nCntUI].y += 0.001f;
+			}
+
+			else if (nCntMove > 100 && nCntMove < 240)
+			{
+				m_aPosDest[nCntUI].y -= 0.001f;
+			}
+
+			else if (nCntMove > 240 && nCntMove < 380)
+			{
+				m_aPosDest[nCntUI].y += 0.001f;
+			}
+
+			else if (nCntMove > 380)
+			{
+				nCntMove = 100;
+			}
+		}
 	}
 }
