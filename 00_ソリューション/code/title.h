@@ -37,6 +37,7 @@ public:
 		TITLESTATE_ICEFLOW = 0,	// 氷が流れてくる状態
 		TITLESTATE_FLASH,		// 画面にフラッシュが入る
 		TITLESTATE_LOGO,		// ロゴをだす状態
+		TITLESTATE_PICKAXE,		// つるはし状態
 		TITLESTATE_MAX
 	};
 
@@ -67,12 +68,12 @@ private:
 	void Fade(void);
 	void TitleUIState(void);
 	void IceFlowState(void);
-	void FlashState(void);
 	void LogoState(void);
 
-	int nCntFlash;	// フラッシュのカウント
-	int nCntAlpha;	// アルファ値のカウント
-	int nCntMove;	// ロゴの動きのカウント
+	int m_nCntState;	// カウントの状態
+	int m_nCntMove;	// UIの移動カウント
+	int m_nCntFade;	// カウントの状態
+	bool m_bFade; // フェイド
 	STATE m_State;				// 状態
 	TITLESTATE m_TitleState;	// タイトル状態管理
 	TITLE_UI m_Title_UI;	// タイトルUI
