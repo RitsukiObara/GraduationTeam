@@ -104,8 +104,8 @@ HRESULT CTitle::Init(void)
 		"data\\TEXTURE\\TITLE\\ice_block.png",
 		"data\\TEXTURE\\TITLE\\title_ice.png",
 		"data\\TEXTURE\\TITLE\\penguin.png",
-		"data\\TEXTURE\\TITLE\\turuhasi.png",
 		"data\\TEXTURE\\TITLE\\title_full.png",
+		"data\\TEXTURE\\TITLE\\turuhasi.png",
 		"data\\TEXTURE\\TITLE\\pengui.png",
 	};
 
@@ -218,7 +218,7 @@ HRESULT CTitle::Init(void)
 
 				if (nCntUI == TITLE_UI_PICKAXE)
 				{//	つるはし
-					m_apTitle_UI[nCntUI]->SetRotation(D3DXVECTOR3(0.0f, 0.0f, -0.5f));
+					m_apTitle_UI[nCntUI]->SetRotation(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
 				}
@@ -285,20 +285,38 @@ void CTitle::Uninit(void)
 //=====================================================
 void CTitle::Update(void)
 {
+	switch (m_TitleState)
+	{
+	case CTitle::TITLESTATE_ICEFLOW:
+
+		// 氷が流れてくる状態管理
+		IceFlowState();
+
+		break;
+	case CTitle::TITLESTATE_LOGO:
+
+		// ロゴをだす処理
+		LogoState();
+
+		break;
+	case CTitle::TITLESTATE_PICKAXE:
+
+
+		break;
+	default:
+		break;
+	}
+
 	// シーンの更新
 	CScene::Update();
 
 	// 入力
 	Input();
 
-	// タイトルUIの状態管理
-	TitleUIState();
-
-	// 氷が流れてくる状態管理
-	IceFlowState();
-
-	// ロゴをだす処理
-	LogoState();
+	for (int nCntUI = 0; nCntUI < TITLE_UI_MAX; nCntUI++)
+	{
+		m_apTitle_UI[nCntUI]->SetVtx();
+	}
 }
 
 //=====================================================
@@ -337,9 +355,9 @@ void CTitle::Input(void)
 	{
 		rot.z += 0.07f;	// つるはしの向きを傾ける
 
-		if (rot.z > 0.0f)
+		if (rot.z > 0.5f)
 		{
-			rot.z = 0.0f;
+			rot.z = 0.5f;
 
 			m_apMenu_UI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));	// スタートロゴの透明度を0にする
 		}
@@ -376,32 +394,6 @@ void CTitle::Fade(void)
 }
 
 //====================================================
-// タイトルUIの状態管理
-//====================================================
-void CTitle::TitleUIState(void)
-{
-	// ポリゴンを目標位置に向かわせる
-	for (int nCntUI = 0; nCntUI < TITLE_UI_MAX; nCntUI++)
-	{
-		if (m_apTitle_UI[nCntUI] != nullptr)
-		{
-			D3DXVECTOR3 pos = m_apTitle_UI[nCntUI]->GetPosition();
-			D3DXVECTOR3 posOld = pos;
-			D3DXVECTOR3 vecDiff = m_aPosDest[nCntUI] - pos;
-			float fDiffOld = vecDiff.x;
-
-			vecDiff *= MOVE_FACT;
-			vecDiff += pos;
-
-			m_apTitle_UI[nCntUI]->SetPosition(vecDiff);
-			m_apTitle_UI[nCntUI]->SetVtx();
-
-			float fDiff = m_aPosDest[nCntUI].x - vecDiff.x;
-		}
-	}
-}
-
-//====================================================
 // 氷が流れてくる状態処理
 //====================================================
 void CTitle::IceFlowState(void)
@@ -412,20 +404,27 @@ void CTitle::IceFlowState(void)
 		return;
 
 	// 氷が流れてくる状態の時
-	if (m_TitleState == TITLESTATE_ICEFLOW)
-	{
-		D3DXVECTOR3 pos = m_apTitle_UI[TITLE_UI_LEFT]->GetPosition();
+	D3DXVECTOR3 pos_left = m_apTitle_UI[TITLE_UI_LEFT]->GetPosition();
+	D3DXVECTOR3 pos_right = m_apTitle_UI[TITLE_UI_RIGHT]->GetPosition();
 
-		// 目的の位置に現在の位置が近い時
-		if (m_aPosDest[TITLE_UI_LEFT].x - 0.01f < pos.x ||
-			pInput->GetTrigger(CInputManager::BUTTON_ENTER))
-		{
-			m_apTitle_UI[TITLE_UI_LEFT]->SetCol(D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f));
-			m_apTitle_UI[TITLE_UI_RIGHT]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
-			m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(1.0f);
-			m_TitleState = TITLESTATE_LOGO;
-		}
+	pos_left.x += 0.003f;
+	pos_right.x -= 0.003f;
+
+	// 目的の位置に現在の位置が近い時
+	if (m_aPosDest[TITLE_UI_LEFT].x + 0.01f < pos_left.x ||
+		pInput->GetTrigger(CInputManager::BUTTON_ENTER))
+	{
+		pos_left = m_aPosDest[TITLE_UI_LEFT];	// 現在の位置に目標の位置を入れる
+		pos_right = m_aPosDest[TITLE_UI_RIGHT];
+
+		m_apTitle_UI[TITLE_UI_LEFT]->SetAlpha(0.0f);	// 透明度調整
+		m_apTitle_UI[TITLE_UI_RIGHT]->SetAlpha(0.0f);
+		m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(1.0f);
+		m_TitleState = TITLESTATE_LOGO;	// 状態をロゴ状態にする
 	}
+
+	m_apTitle_UI[TITLE_UI_LEFT]->SetPosition(pos_left);
+	m_apTitle_UI[TITLE_UI_RIGHT]->SetPosition(pos_right);
 }
 
 //====================================================
@@ -434,50 +433,35 @@ void CTitle::IceFlowState(void)
 void CTitle::LogoState(void)
 {
 	// 画面にフラッシュが入る状態になった時
-	if (m_TitleState == TITLESTATE_LOGO)
+	m_nCntMove++;
+
+	float fAlpha = m_apTitle_UI[TITLE_UI_FLASH]->GetAlpha();
+	fAlpha -= 0.004f;
+
+	for (int nCntUI = TITLE_UI_ICEBLOCK; nCntUI < TITLE_UI_PICKAXE; nCntUI++)
 	{
-		m_nCntMove++;
+		D3DXVECTOR3 pos = m_apTitle_UI[nCntUI]->GetPosition();
 
-		float fAlpha = m_apTitle_UI[TITLE_UI_FLASH]->GetAlpha();
-		fAlpha -= 0.004f;
+		pos.y += 0.003f;
 
-		// フラッシュの位置と透明度調整
-		m_apTitle_UI[TITLE_UI_FLASH]->SetPosition(D3DXVECTOR3(0.5f, 0.5f, 0.0f));		
-		m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(fAlpha);
-
-		// UIの透明度調整
-		m_apMenu_UI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-		m_apTitle_UI[TITLE_UI_ICEBLOCK]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-		m_apTitle_UI[TITLE_UI_ICE]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-		m_apTitle_UI[TITLE_UI_PENGUIN]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-		m_apTitle_UI[TITLE_UI_PICKAXE]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-		m_apTitle_UI[TITLE_UI_LOGO]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-
-		for (int nCntUI = 0; nCntUI < TITLE_UI_MAX; nCntUI++)
+		// ポリゴンを動かす
+		if (pos.y > 0.3f)
 		{
-			if (nCntUI != TITLE_UI_PICKAXE)
-			{
-				// ポリゴンをカウントごとに動かす
-				if (m_nCntMove > 30 && m_nCntMove < 100)
-				{
-					m_aPosDest[nCntUI].y += 0.001f;
-				}
-
-				else if (m_nCntMove > 100 && m_nCntMove < 240)
-				{
-					m_aPosDest[nCntUI].y -= 0.001f;
-				}
-
-				else if (m_nCntMove > 240 && m_nCntMove < 380)
-				{
-					m_aPosDest[nCntUI].y += 0.001f;
-				}
-
-				else if (m_nCntMove > 380)
-				{
-					m_nCntMove = 100;
-				}
-			}
+			pos.y -= 0.004f;
 		}
+
+		m_apTitle_UI[nCntUI]->SetPosition(pos);
 	}
+
+	// フラッシュの位置と透明度調整
+	m_apTitle_UI[TITLE_UI_FLASH]->SetPosition(D3DXVECTOR3(0.5f, 0.5f, 0.0f));		
+	m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(fAlpha);
+
+	// UIの透明度調整
+	m_apMenu_UI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_apTitle_UI[TITLE_UI_ICEBLOCK]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_apTitle_UI[TITLE_UI_ICE]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_apTitle_UI[TITLE_UI_PENGUIN]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_apTitle_UI[TITLE_UI_PICKAXE]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_apTitle_UI[TITLE_UI_LOGO]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 }
