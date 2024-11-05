@@ -35,7 +35,6 @@ public:
 	enum TITLESTATE
 	{
 		TITLESTATE_ICEFLOW = 0,	// 氷が流れてくる状態
-		TITLESTATE_FLASH,		// 画面にフラッシュが入る
 		TITLESTATE_LOGO,		// ロゴをだす状態
 		TITLESTATE_PICKAXE,		// つるはし状態
 		TITLESTATE_MAX
@@ -48,8 +47,8 @@ public:
 		TITLE_UI_ICEBLOCK,	// 氷ブロック合体
 		TITLE_UI_ICE,	// 氷
 		TITLE_UI_PENGUIN,	// ペンギン
-		TITLE_UI_PICKAXE,	// つるはし
 		TITLE_UI_LOGO,	// ロゴ
+		TITLE_UI_PICKAXE,	// つるはし
 		TITLE_UI_FLASH,	// フラッシュ
 		TITLE_UI_MAX
 	};
@@ -66,7 +65,6 @@ public:
 private:
 	void Input(void);
 	void Fade(void);
-	void TitleUIState(void);
 	void IceFlowState(void);
 	void LogoState(void);
 
