@@ -37,7 +37,18 @@ namespace
 {
 	const D3DXCOLOR COL_INITIAL_MENU = { 0.4f,0.4f,0.4f,1.0f };	// メニュー項目の初期色
 	const D3DXCOLOR COL_CURRENT_MENU = { 1.0f,1.0f,1.0f,1.0f };	// メニュー項目の選択色
-	const D3DXVECTOR2 UI_SIZE[CTitle::TITLE_UI_MAX] = 
+	const D3DXVECTOR3 UI_POS[CTitle::TITLE_UI_MAX] =  // UIの初期位置
+	{
+		D3DXVECTOR3(-0.2f, 0.4f,0.0f),
+		D3DXVECTOR3(1.2f, 0.36f,0.0f),
+		D3DXVECTOR3(0.5f, 0.28f,0.0f),
+		D3DXVECTOR3(0.8f, 0.23f,0.0f),
+		D3DXVECTOR3(0.25f, 0.18f,0.0f),
+		D3DXVECTOR3(0.72f, 0.68f,0.0f),
+		D3DXVECTOR3(0.48f, 0.33f,0.0f),
+		D3DXVECTOR3(0.5f, 0.5f,0.0f),
+	};
+	const D3DXVECTOR2 UI_SIZE[CTitle::TITLE_UI_MAX] =  // UIの初期サイズ
 	{
 		D3DXVECTOR2 (0.2f,0.2f),
 		D3DXVECTOR2 (0.2f,0.2f),
@@ -55,13 +66,12 @@ namespace
 //=====================================================
 CTitle::CTitle()
 {
-	nCntFlash = 0;
-	nCntAlpha = 0;
-	nCntMove = 0;
+	m_nCntState = 0;
 	m_State = STATE_NONE;
 	m_TitleState = TITLESTATE_ICEFLOW;
 	m_Title_UI = TITLE_UI_LEFT;
 	m_apMenu_UI = nullptr;
+	m_bFade = false;
 
 	for (int nCntUI = 0; nCntUI < TITLE_UI_MAX; nCntUI++)
 	{
@@ -172,10 +182,10 @@ HRESULT CTitle::Init(void)
 
 			if (m_apTitle_UI[nCntUI] != nullptr)
 			{
+				m_apTitle_UI[nCntUI]->SetPosition(UI_POS[nCntUI]);
+
 				if (nCntUI == TITLE_UI_LEFT)
 				{//	左からくる氷
-					// ポリゴンの設定
-					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(-0.2f, 0.4f, 0.0f));
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
 					m_aPosDest[nCntUI].x = 0.35f;
@@ -183,8 +193,6 @@ HRESULT CTitle::Init(void)
 
 				if (nCntUI == TITLE_UI_RIGHT)
 				{//	右からくる氷
-					// ポリゴンの設定
-					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(1.2f, 0.36f, 0.0f));
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
 					m_aPosDest[nCntUI].x = 0.6f;
@@ -192,32 +200,24 @@ HRESULT CTitle::Init(void)
 
 				if (nCntUI == TITLE_UI_ICEBLOCK)
 				{//	氷ブロック合体
-					// ポリゴンの設定
-					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.5f, 0.28f, 0.0f));
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
 				}
 
 				if (nCntUI == TITLE_UI_ICE)
 				{//	氷
-					// ポリゴンの設定
-					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.8f, 0.23f, 0.0f));
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
 				}
 
 				if (nCntUI == TITLE_UI_PENGUIN)
 				{//	ペンギン
-					// ポリゴンの設定
-					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.25f, 0.18f, 0.0f));
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
 				}
 
 				if (nCntUI == TITLE_UI_PICKAXE)
 				{//	つるはし
-					// ポリゴンの設定
-					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.72f, 0.68f, 0.0f));
 					m_apTitle_UI[nCntUI]->SetRotation(D3DXVECTOR3(0.0f, 0.0f, -0.5f));
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
@@ -225,16 +225,12 @@ HRESULT CTitle::Init(void)
 
 				if (nCntUI == TITLE_UI_LOGO)
 				{//	タイトルロゴ
-					// ポリゴンの設定
-					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.48f, 0.33f, 0.0f));
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
 				}
 
 				if (nCntUI == TITLE_UI_FLASH)
 				{//	フラッシュ
-					// ポリゴンの設定
-					m_apTitle_UI[nCntUI]->SetPosition(D3DXVECTOR3(0.5f, 0.5f, 0.0f));
 					m_apTitle_UI[nCntUI]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 					m_aPosDest[nCntUI] = m_apTitle_UI[nCntUI]->GetPosition();
 				}
@@ -301,9 +297,6 @@ void CTitle::Update(void)
 	// 氷が流れてくる状態管理
 	IceFlowState();
 
-	// 画面にフラッシュが入る状態管理
-	FlashState();
-
 	// ロゴをだす処理
 	LogoState();
 }
@@ -326,9 +319,43 @@ void CTitle::Input(void)
 	if (pInput == nullptr)
 		return;
 
-	if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))
-	{// フェード処理
-		Fade();
+	D3DXVECTOR3 rot = m_apTitle_UI[TITLE_UI_PICKAXE]->GetRotation();
+
+	if (m_TitleState == TITLESTATE_LOGO)
+	{
+		if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))	// ENTER押したとき
+		{
+			m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(0.0f);	// 透明度を0にする
+
+			m_bFade = true;
+			m_nCntState = 0;
+			m_TitleState = TITLESTATE_PICKAXE;
+		}
+	}
+
+	if (m_TitleState == TITLESTATE_PICKAXE)
+	{
+		rot.z += 0.07f;	// つるはしの向きを傾ける
+
+		if (rot.z > 0.0f)
+		{
+			rot.z = 0.0f;
+
+			m_apMenu_UI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));	// スタートロゴの透明度を0にする
+		}
+
+		m_apTitle_UI[TITLE_UI_PICKAXE]->SetRotation(rot);
+
+		if (m_bFade == true)
+		{
+			m_nCntState++;
+
+			if (m_nCntState > 70)
+			{
+				// フェード処理
+				Fade();
+			}
+		}
 	}
 }
 
@@ -379,40 +406,23 @@ void CTitle::TitleUIState(void)
 //====================================================
 void CTitle::IceFlowState(void)
 {
+	CInputManager* pInput = CInputManager::GetInstance();
+
+	if (pInput == nullptr)
+		return;
+
 	// 氷が流れてくる状態の時
 	if (m_TitleState == TITLESTATE_ICEFLOW)
 	{
 		D3DXVECTOR3 pos = m_apTitle_UI[TITLE_UI_LEFT]->GetPosition();
 
 		// 目的の位置に現在の位置が近い時
-		if (m_aPosDest[TITLE_UI_LEFT].x - 0.01f < pos.x)
+		if (m_aPosDest[TITLE_UI_LEFT].x - 0.01f < pos.x ||
+			pInput->GetTrigger(CInputManager::BUTTON_ENTER))
 		{
 			m_apTitle_UI[TITLE_UI_LEFT]->SetCol(D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f));
 			m_apTitle_UI[TITLE_UI_RIGHT]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
-
-			m_TitleState = TITLESTATE_FLASH;
-		}
-	}
-}
-
-//====================================================
-// 画面にフラッシュを入れる処理
-//====================================================
-void CTitle::FlashState(void)
-{
-	// 画面にフラッシュが入る状態になった時
-	if (m_TitleState == TITLESTATE_FLASH ||
-		m_TitleState == TITLESTATE_LOGO)
-	{
-		nCntFlash++;
-
-		m_apTitle_UI[TITLE_UI_FLASH]->SetPosition(D3DXVECTOR3(0.5f, 0.5f, 0.0f));
-		m_apTitle_UI[TITLE_UI_FLASH]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f - nCntFlash * 0.005f));
-
-		D3DXCOLOR col = m_apTitle_UI[TITLE_UI_FLASH]->GetCol();
-
-		if (col.a < 0.5f)
-		{
+			m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(1.0f);
 			m_TitleState = TITLESTATE_LOGO;
 		}
 	}
@@ -426,39 +436,46 @@ void CTitle::LogoState(void)
 	// 画面にフラッシュが入る状態になった時
 	if (m_TitleState == TITLESTATE_LOGO)
 	{
-		nCntAlpha++;
-		nCntMove++;
+		m_nCntMove++;
 
-		m_apMenu_UI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f + nCntAlpha * 0.005f));
-		m_apTitle_UI[TITLE_UI_ICEBLOCK]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f + nCntAlpha * 0.005f));
-		m_apTitle_UI[TITLE_UI_ICE]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f + nCntAlpha * 0.005f));
-		m_apTitle_UI[TITLE_UI_PENGUIN]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f + nCntAlpha * 0.005f));
+		float fAlpha = m_apTitle_UI[TITLE_UI_FLASH]->GetAlpha();
+		fAlpha -= 0.004f;
+
+		// フラッシュの位置と透明度調整
+		m_apTitle_UI[TITLE_UI_FLASH]->SetPosition(D3DXVECTOR3(0.5f, 0.5f, 0.0f));		
+		m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(fAlpha);
+
+		// UIの透明度調整
+		m_apMenu_UI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		m_apTitle_UI[TITLE_UI_ICEBLOCK]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		m_apTitle_UI[TITLE_UI_ICE]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		m_apTitle_UI[TITLE_UI_PENGUIN]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		m_apTitle_UI[TITLE_UI_PICKAXE]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-		m_apTitle_UI[TITLE_UI_LOGO]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f + nCntAlpha * 0.005f));
+		m_apTitle_UI[TITLE_UI_LOGO]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
 		for (int nCntUI = 0; nCntUI < TITLE_UI_MAX; nCntUI++)
 		{
 			if (nCntUI != TITLE_UI_PICKAXE)
 			{
 				// ポリゴンをカウントごとに動かす
-				if (nCntMove > 30 && nCntMove < 100)
+				if (m_nCntMove > 30 && m_nCntMove < 100)
 				{
 					m_aPosDest[nCntUI].y += 0.001f;
 				}
 
-				else if (nCntMove > 100 && nCntMove < 240)
+				else if (m_nCntMove > 100 && m_nCntMove < 240)
 				{
 					m_aPosDest[nCntUI].y -= 0.001f;
 				}
 
-				else if (nCntMove > 240 && nCntMove < 380)
+				else if (m_nCntMove > 240 && m_nCntMove < 380)
 				{
 					m_aPosDest[nCntUI].y += 0.001f;
 				}
 
-				else if (nCntMove > 380)
+				else if (m_nCntMove > 380)
 				{
-					nCntMove = 100;
+					m_nCntMove = 100;
 				}
 			}
 		}
