@@ -16,10 +16,10 @@ NUM_MODEL = 6
 #------------------------------------------------------------------------------
 MODEL_FILENAME = data/MODEL/enemy/Whitebear/00_Body.x		# [0]体
 MODEL_FILENAME = data/MODEL/enemy/Whitebear/01_Head.x		# [1]頭
-MODEL_FILENAME = data/MODEL/enemy/Whitebear/02_Front_Leg.x	# [2]前足
-MODEL_FILENAME = data/MODEL/enemy/Whitebear/02_Front_Leg.x	# [3]前足
-MODEL_FILENAME = data/MODEL/enemy/Whitebear/03_Back_Leg.x	# [4]後ろ足
-MODEL_FILENAME = data/MODEL/enemy/Whitebear/03_Back_Leg.x	# [5]後ろ足
+MODEL_FILENAME = data/MODEL/enemy/Whitebear/02_Front_Leg.x	# [2]右前足
+MODEL_FILENAME = data/MODEL/enemy/Whitebear/02_Front_Leg.x	# [3]左前足
+MODEL_FILENAME = data/MODEL/enemy/Whitebear/03_Back_Leg.x	# [4]右後ろ足
+MODEL_FILENAME = data/MODEL/enemy/Whitebear/03_Back_Leg.x	# [5]左後ろ足
 
 #------------------------------------------------------------------------------
 # キャラクター情報
@@ -30,42 +30,37 @@ CHARACTERSET
     PARTSSET
         INDEX = 0
         PARENT = -1
-        POS = 0.0 0.0 0.0
+        POS = 0.0 59.8 0.0
         ROT = 0.0 0.0 0.0
     END_PARTSSET
-    
     PARTSSET
         INDEX = 1
         PARENT = 0
-        POS = 0.0 0.0 0.0
+        POS = -110.8 30.2 0.0
         ROT = 0.0 0.0 0.0
     END_PARTSSET
-    
     PARTSSET
         INDEX = 2
         PARENT = 0
-        POS = 0.0 0.0 0.0
+        POS = -88.6 -10.8 25.8
         ROT = 0.0 0.0 0.0
     END_PARTSSET
-    
     PARTSSET
         INDEX = 3
         PARENT = 0
-        POS = 0.0 0.0 0.0
+        POS = -88.6 -10.8 -25.8
         ROT = 0.0 0.0 0.0
     END_PARTSSET
-    
     PARTSSET
         INDEX = 4
         PARENT = 0
-        POS = 0.0 0.0 0.0
+        POS = -12.0 -6.6 29.6
         ROT = 0.0 0.0 0.0
     END_PARTSSET
-    
     PARTSSET
         INDEX = 5
         PARENT = 0
-        POS = 0.0 0.0 0.0
+        POS = -12.0 -6.6 -29.6
         ROT = 0.0 0.0 0.0
     END_PARTSSET
 END_CHARACTERSET
