@@ -14,10 +14,10 @@
 #include "iceManager.h"
 #include "debugproc.h"
 #include "seals.h"
-#include "UI_enemy.h"
 #include "ocean.h"
 #include "destroy_score.h"
 #include "effect3D.h"
+#include "manager.h"
 
 //*****************************************************
 // 定数定義
@@ -27,6 +27,7 @@ namespace
 const float HEIGHT_ICE = 100.0f;	// 氷の高さ
 const float SPPED_MOVE_INIT = 1.6f;	// 初期移動速度
 const float SPEED_ROTATION = 0.1f;	// 回転速度
+const float TIME_DEATH_IN_DRIFT = 10.0f;	// 漂流して死ぬまでの時間
 }
 
 //*****************************************************
@@ -38,7 +39,7 @@ std::vector<CEnemy*> CEnemy::s_vector = {};	// 自身のポインタ
 // 優先順位を決めるコンストラクタ
 //=====================================================
 CEnemy::CEnemy(int nPriority) : m_nGridV(0), m_nGridH(0),m_state(E_State::STATE_NONE), m_pIceLand(nullptr), m_bFollowIce(false),
-m_move(),m_nGridVDest(0), m_nGridHDest(0), m_fSpeedMove(0.0f)
+m_move(),m_nGridVDest(0), m_nGridHDest(0), m_fSpeedMove(0.0f), m_fTimerDeath(0.0f)
 {
 	s_vector.push_back(this);
 }
@@ -81,11 +82,6 @@ CEnemy* CEnemy::Create(int nType, int nGridV, int nGridH)
 
 		// 初期化処理
 		pEnemy->Init();
-
-		CUIEnemy *pUIEnemy = CUIEnemy::GetInstance();
-
-		if (pUIEnemy != nullptr)
-			pUIEnemy->AddEnemy();
 	}
 
 	return pEnemy;
@@ -143,11 +139,6 @@ void CEnemy::InitGridIdx(void)
 //=====================================================
 void CEnemy::Uninit(void)
 {
-	CUIEnemy *pUIEnemy = CUIEnemy::GetInstance();
-
-	if (pUIEnemy != nullptr)
-		pUIEnemy->DeleteEnemy();
-
 	for (auto itr = s_vector.begin(); itr < s_vector.end(); itr++ )
 	{
 		//削除対象じゃない場合
@@ -483,9 +474,7 @@ void CEnemy::UpdateDrift(void)
 	COcean *pOcean = COcean::GetInstance();
 
 	if (pOcean == nullptr)
-	{
 		return;
-	}
 
 	// 海と一緒に氷を動かす処理
 	D3DXVECTOR3 pos = GetPosition();
@@ -504,6 +493,28 @@ void CEnemy::UpdateDrift(void)
 
 	if (pIce != nullptr)
 		SetState(CEnemy::E_State::STATE_MOVE);
+
+	// 漂流中の死
+	DriftDeath();
+}
+
+//=====================================================
+// 漂流中の死
+//=====================================================
+void CEnemy::DriftDeath(void)
+{
+	m_fTimerDeath += CManager::GetDeltaTime();
+
+	if (m_fTimerDeath > TIME_DEATH_IN_DRIFT)
+		Death();	// 一定時間経過したら死亡時の処理に入る
+}
+
+//=====================================================
+// 死亡時の処理
+//=====================================================
+void CEnemy::Death(void)
+{
+	Uninit();
 }
 
 //=====================================================

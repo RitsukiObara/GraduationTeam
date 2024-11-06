@@ -15,6 +15,7 @@
 #include "player.h"
 #include "particle.h"
 #include "debugproc.h"
+#include "UI_enemy.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -83,6 +84,12 @@ HRESULT CSeals::Init(void)
 
 	// ƒ|[ƒY‰Šú‰»
 	InitPose(0);
+
+	// “GUI‚Ì“G”‚ð‰ÁŽZ
+	CUIEnemy *pUIEnemy = CUIEnemy::GetInstance();
+
+	if (pUIEnemy != nullptr)
+		pUIEnemy->AddEnemy();
 
 	return S_OK;
 }
@@ -390,6 +397,18 @@ void CSeals::DecideNextStrollGrid(void)
 	// –Ú•W‚ÌƒOƒŠƒbƒh‚ÉÝ’è
 	SetGridVDest(nIdxV);
 	SetGridHDest(nIdxH);
+}
+
+//=====================================================
+// Ž€–SŽž‚Ìˆ—
+//=====================================================
+void CSeals::Death(void)
+{
+	// “GUI‚Ì“G”‚ðŒ¸ŽZ
+	CUIEnemy *pUIEnemy = CUIEnemy::GetInstance();
+
+	if (pUIEnemy != nullptr)
+		pUIEnemy->DeleteEnemy();
 }
 
 //=====================================================
