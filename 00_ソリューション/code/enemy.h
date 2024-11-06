@@ -54,6 +54,7 @@ public:
 	void Draw(void);	// 描画
 	void TranslateByGrid(int nIdxV,int nIdxH);	// グリッドによる移動
 	void FollowIce(void);	// 氷に追従
+	virtual void Death(void);	// 死亡時の処理
 
 	virtual void UpdateApper(void) = 0;		// 出現状態の更新
 
@@ -104,6 +105,7 @@ private:
 	void MoveToNextGrid(void);	// 次のグリッドに向かって移動する
 	void CheckChangeGrid(void);	// グリッドが変わったかの確認
 	virtual void AliveDestGrid(void) {};	// 目的地に着いた時の仮想関数
+	void DriftDeath(void);	// 漂流中の死亡関数
 	void Debug(void);	// デバッグ処理
 
 	// メンバ変数
@@ -114,6 +116,7 @@ private:
 	int m_nGridVDest;	// 目標のグリッドの縦番号
 	int m_nGridHDest;	// 目標のグリッドの横番号
 
+	float m_fTimerDeath;	// 死亡までのタイマー
 	float m_fSpeedMove;	// 移動速度
 	bool m_bFollowIce;	// 氷追従フラグ
 	E_State m_state;	// 状態
