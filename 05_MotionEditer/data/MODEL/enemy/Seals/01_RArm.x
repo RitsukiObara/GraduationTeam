@@ -675,7 +675,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Documents\\モデル\\全部\\おばら\\階層構\造モデル\\アザラシ\\data\\TEXTURE\\Seals_UV.jpg";
+    "data\\TEXTURE\\enemy\\Seals_UV.jpg";
    }
   }
  }
