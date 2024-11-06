@@ -8,20 +8,6 @@
 #define _MAIN_H_
 
 //*****************************************************
-// インクルード
-//*****************************************************
-#include <windows.h>
-#include <d3dx9.h>
-#include "imgui.h"
-#include "backends/imgui_impl_win32.h"
-#include "backends/imgui_impl_dx9.h"
-#define DIRECTINPUT_VERSION (0x0800)						//ビルド時の警告対処用マクロ
-#include "dinput.h"
-#include "xaudio2.h"
-#include "universal.h"
-#include <assert.h>
-
-//*****************************************************
 // ライブラリ
 //*****************************************************
 #pragma comment(lib,"d3d9.lib")
@@ -39,6 +25,7 @@
 #define FVF_VERTEX_3D			(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1)		//頂点フォーマット設定
 #define CLASS_NAME				"WindowClass"					// ウィンドウクラスの名前
 #define WINDOW_NAME				"MotionEditor"				// ウィンドウの名前(キャプション)
+#include "universal.h"
 
 //*****************************************************
 // 構造体定義

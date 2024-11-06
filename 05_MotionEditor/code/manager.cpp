@@ -25,7 +25,6 @@
 #include "motion.h"
 #include "particle.h"
 #include "skybox.h"
-#include <stdio.h>
 
 //*****************************************************
 // Ã“Iƒƒ“ƒo•Ï”éŒ¾
