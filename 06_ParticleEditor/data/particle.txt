@@ -6,17 +6,17 @@
 #====================================================================
 SCRIPT
 
-    LIFE_PARTICLE = 10
-    NUM_EFFECT = 10
+    LIFE_PARTICLE = 2
+    NUM_EFFECT = 1
     LIFE_EFFECT = 30
-    RADIUS_EFFECT = 0.30
-    SPEED_EFFECT = 0.51
-    GRAVITY = 0.00
-    DECREASE = -0.01
-    RANGEROT = 0.94
+    RADIUS_EFFECT = 25.15
+    SPEED_EFFECT = 11.16
+    GRAVITY = 0.71
+    DECREASE = -0.00
+    RANGEROT = 1.50
     IS_ADD = 1
     IS_ROT = 1
     IS_TURN = 0
-    COLOR = 1.01 1.01 1.01 1.00
+    COLOR = 1.00 1.01 0.00 1.00
 
 END_SCRIPT
