@@ -409,6 +409,8 @@ void CSeals::Death(void)
 
 	if (pUIEnemy != nullptr)
 		pUIEnemy->DeleteEnemy();
+
+	CEnemy::Death();
 }
 
 //=====================================================

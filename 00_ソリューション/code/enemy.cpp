@@ -16,6 +16,7 @@
 #include "seals.h"
 #include "ocean.h"
 #include "destroy_score.h"
+#include "UI_combo.h"
 #include "effect3D.h"
 #include "manager.h"
 
@@ -27,7 +28,7 @@ namespace
 const float HEIGHT_ICE = 100.0f;	// 氷の高さ
 const float SPPED_MOVE_INIT = 1.6f;	// 初期移動速度
 const float SPEED_ROTATION = 0.1f;	// 回転速度
-const float TIME_DEATH_IN_DRIFT = 10.0f;	// 漂流して死ぬまでの時間
+const float TIME_DEATH_IN_DRIFT = 6.0f;	// 漂流して死ぬまでの時間
 }
 
 //*****************************************************
@@ -514,6 +515,17 @@ void CEnemy::DriftDeath(void)
 //=====================================================
 void CEnemy::Death(void)
 {
+	// コンボ、撃破時のスコア加算
+	CDestroyScore *pDestroyScore = CDestroyScore::GetInstance();
+	CUI_Combo *pUICombo = CUI_Combo::GetInstance();
+
+	if (pDestroyScore != nullptr && pUICombo != nullptr)
+	{
+		pDestroyScore->AddDestroyScore(CEnemy::TYPE_SEALS);
+		pUICombo->AddCombo();
+	}
+
+	// 終了処理を呼ぶ
 	Uninit();
 }
 
