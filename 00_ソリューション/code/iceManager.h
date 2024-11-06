@@ -68,6 +68,7 @@ public:
 	bool SetIceInGrid(int nNumV, int nNumH, CIce *pIce);	// グリッドに氷を設定
 	void GetIceIndex(CIce *pIce, int *pNumV, int *pNumH);	// 氷のグリッド番号を取得
 	CIce* GetLeftDownIdx(int *pNumV, int *pNumH);	// 右下の氷取得
+	void DisableFind(void);	// 探索フラグの無効化
 
 	// 変数取得・設定関数
 	D3DXVECTOR3 GetGridPosition(int *pNumV, int *pNumH);
@@ -107,7 +108,6 @@ private:
 	void SetGridPos(void);	// グリッドの位置を計算
 	void ManageStateIce(void);	// 氷の状態管理
 	bool JudgeBetweenPeck(int nNumV, int nNumH);	// つっついた氷に挟まれてる判定
-	void DisableFind(void);	// 探索フラグの無効化
 	void DisableFromHardIce(int nNumV, int nNumH,vector<CIce*> apIce);	// 硬い氷から信号を出して、破壊信号を解除
 	void DisableFromPlayer(int nNumV, int nNumH, CIce *pIcePeck,vector<CIce*> apIce);	// プレイヤーから信号を出して、破壊信号を解除
 	void DisableBreak(int nNumV, int nNumH);	// 氷の破壊を解除

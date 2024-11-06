@@ -31,6 +31,9 @@ const float APPER_GRAVITY = -0.98f;	// 出現時の重力
 const float FACT_MOVE_APPER = 0.04f;	// 出現時の移動係数
 
 const float RANGE_FIND_PLAYER = 1000.0f;	// プレイヤー発見範囲
+
+const float SPEED_ONESTEP = 2.7f;	// 一歩のスピード
+const float FACT_DECMOVE = 0.9f;	// 移動減衰係数
 }
 
 //=====================================================
@@ -90,6 +93,9 @@ HRESULT CSeals::Init(void)
 
 	if (pUIEnemy != nullptr)
 		pUIEnemy->AddEnemy();
+
+	// スピードを0に設定
+	SetSpeedMove(0.0f);
 
 	return S_OK;
 }
@@ -152,6 +158,9 @@ void CSeals::Update(void)
 {
 	// 継承クラスの更新
 	CEnemy::Update();
+
+	// 移動量の減衰
+	Decreasemove();
 
 	// モーションの管理
 	ManageMotion();
@@ -253,6 +262,18 @@ void CSeals::MoveToIce(void)
 	posMove.y = pos.y;
 
 	SetPosition(posMove);
+}
+
+//=====================================================
+// 移動量の減衰
+//=====================================================
+void CSeals::Decreasemove(void)
+{
+	float fSpeed = GetSpeedMove();
+
+	fSpeed *= FACT_DECMOVE;
+
+	SetSpeedMove(fSpeed);
 }
 
 //=====================================================
@@ -493,6 +514,23 @@ void CSeals::CollidePlayer(void)
 			SetState(CEnemy::E_State::STATE_STOP);
 			m_pPlayerTarget = nullptr;	
 		}
+	}
+}
+
+//=====================================================
+// モーションイベント
+//=====================================================
+void CSeals::Event(EVENT_INFO* pEventInfo)
+{
+	int nMotion = GetMotion();
+
+	if (nMotion == CSeals::E_Motion::MOTION_WALK)
+	{// 歩きの時、イベント発生でスピードを出す
+		float fSpeed = GetSpeedMove();
+
+		fSpeed += SPEED_ONESTEP;
+
+		SetSpeedMove(fSpeed);
 	}
 }
 

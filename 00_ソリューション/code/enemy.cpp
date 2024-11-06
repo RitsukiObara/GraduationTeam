@@ -385,9 +385,6 @@ bool CEnemy::PathFind(int nIdxV, int nIdxH, vector<CIce*>& rIceSave)
 	}
 
 	return PathFind(aV[nIdxMin], aH[nIdxMin], rIceSave);	// 探索
-
-	// ここまで通ったら行き詰まりのルート、偽を返す
-	return false;
 }
 
 //=====================================================
@@ -436,7 +433,7 @@ void CEnemy::CheckChangeGrid(void)
 	D3DXVECTOR3 pos = GetPosition();
 	CIce *pIce = pIceMgr->GetGridIce(&m_nGridVNext, &m_nGridHNext);
 	
-	if (!pIceMgr->IsInIce(pos, pIce))
+	if (!pIceMgr->IsInIce(pos, pIce,0.1f))
 	{// グリッドが変わってない時は偽を返す
 		return;
 	}
