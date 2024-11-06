@@ -13,6 +13,9 @@
 #include "inputkeyboard.h"
 #include "object.h"
 #include "renderer.h"
+#include <imgui.h>
+#include <imgui_impl_dx9.h>
+#include <imgui_impl_win32.h>
 
 //*****************************************************
 // マクロ定義
@@ -98,7 +101,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 		pManager->Init(hInstance, hWnd, TRUE);
 	}
 
-#ifdef _DEBUG
     // Imguiの初期化
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -114,7 +116,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
     ImGui_ImplDX9_Init(pDevice);
     ImGui_ImplWin32_Init(hWnd);
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-#endif
 
 	//分解能を設定
 	timeBeginPeriod(1);
@@ -166,13 +167,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 
 				if (pManager != NULL)
 				{
-#ifdef _DEBUG
                     RECT rect;
                     GetClientRect(hWnd, &rect);
                     float width = static_cast<float>(rect.right - rect.left);
                     float height = static_cast<float>(rect.bottom - rect.top);
                     io.DisplaySize = ImVec2(width, height);
-#endif
+
                     ImGui_ImplDX9_NewFrame();
                     ImGui::NewFrame();
 

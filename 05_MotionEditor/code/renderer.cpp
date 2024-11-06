@@ -13,6 +13,8 @@
 #include "debugproc.h"
 #include "object.h"
 #include <stdio.h>
+#include <imgui.h>
+#include <imgui_impl_dx9.h>
 
 //*****************************************************
 // Ã“Iƒƒ“ƒo•Ï”éŒ¾

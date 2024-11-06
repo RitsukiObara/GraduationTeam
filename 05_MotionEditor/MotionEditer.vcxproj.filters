@@ -75,27 +75,6 @@
     <ClCompile Include="code\universal.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="code\imgui.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="code\imgui_demo.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="code\imgui_draw.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="code\imgui_tables.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="code\imgui_widgets.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="code\backends\imgui_impl_win32.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="code\backends\imgui_impl_dx9.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="code\skybox.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -112,6 +91,24 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="code\manipulater.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="code\imgui.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="code\imgui_draw.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="code\imgui_tables.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="code\imgui_widgets.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="code\backends\imgui_impl_dx9.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="code\backends\imgui_impl_win32.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -213,6 +210,9 @@
       <Filter>ソース ファイル</Filter>
     </ClInclude>
     <ClInclude Include="code\effect3D.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="code\imconfig.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
   </ItemGroup>

@@ -23,6 +23,7 @@
 #include "object3D.h"
 #include "texture.h"
 #include "manipulater.h"
+#include <imgui.h>
 
 //*****************************************************
 // マクロ定義
@@ -264,6 +265,12 @@ void CMotion::Input(void)
 
         if (ImGui::TreeNode("Key"))
         {
+            if (ImGui::SliderInt("keySelect", &m_nKey, 0, m_aMotionInfo[m_motionType].nNumKey))
+            {
+                // ポーズ初期設定
+                SetPose();
+            }
+
             // キーの増減============================================
             if (ImGui::InputInt("NumKey", &m_nNumKey))
             {
