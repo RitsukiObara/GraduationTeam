@@ -344,12 +344,6 @@ void CIceManager::StopIce(CIce *pIce)
 //=====================================================
 void CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos)
 {
-	if (m_aGrid[nNumV][nNumH].pIce != nullptr)
-	{
-		// 今いる氷を見つけられないようにする
-		m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
-	}
-
 	CIce *pIceStand = m_aGrid[nNumV][nNumH].pIce;
 	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
 
@@ -418,12 +412,6 @@ void CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos)
 			DisableFromHardIce(i, j);
 		}
 	}
-
-	// 探索フラグの無効化
-	DisableFind();
-
-	// プレイヤーから壊さないブロックの流れを出す
-	DisableFromPlayer(nNumV, nNumH, pIcePeck, apIce);
 
 	// 探索フラグの無効化
 	DisableFind();
@@ -1088,6 +1076,10 @@ void CIceManager::BreakPeck(int nNumV, int nNumH)
 			nNumPeck++;
 			DeleteIce(apIce[i]);
 			apIce[i]->EnableSink(true);
+
+			// 沈みパーティクルの発生
+			D3DXVECTOR3 posIce = apIce[i]->GetPosition();
+			CParticle::Create(posIce, CParticle::TYPE::TYPE_BUBBLE_SINK);
 		}
 	}
 

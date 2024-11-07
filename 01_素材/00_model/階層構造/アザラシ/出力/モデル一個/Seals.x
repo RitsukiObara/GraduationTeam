@@ -3802,7 +3802,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "data\\TEXTURE\\Seals_UV.jpg";
+    "data\\TEXTURE\\enemy\\Seals_UV.jpg";
    }
   }
  }

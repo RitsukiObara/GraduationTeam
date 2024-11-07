@@ -470,6 +470,11 @@ void CSeals::ManageMotion(void)
 		if (nMotion != E_Motion::MOTION_TURN || bFinish)
 			SetMotion(E_Motion::MOTION_TURN);
 	}
+	else if (!IsEnableMove())
+	{// 移動不可の時は待機モーション
+		if (nMotion != E_Motion::MOTION_NEUTRAL)
+			SetMotion(E_Motion::MOTION_NEUTRAL);
+	}
 	else if (GetState() == CEnemy::E_State::STATE_MOVE)
 	{
 		if (m_pPlayerTarget == nullptr)
