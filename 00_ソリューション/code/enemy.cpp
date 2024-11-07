@@ -27,12 +27,14 @@ namespace
 {
 const float HEIGHT_ICE = 100.0f;	// 氷の高さ
 const float SPPED_MOVE_INIT = 1.6f;	// 初期移動速度
-const float SPEED_ROTATION = 0.1f;	// 回転速度
+const float SPEED_ROTATION = 0.05f;	// 回転速度
 const float TIME_DEATH_IN_DRIFT = 6.0f;	// 漂流して死ぬまでの時間
 
 const float LINE_STOP_TURN = 0.2f;	// 振り向きを停止するしきい値
 const float LINE_START_TURN = D3DX_PI * 0.6f;	// 振り向きを開始するしきい値
 const float FACT_ROTATION_TURN = 0.07f;	// 振り向き回転係数
+
+const float LINE_ENABLE_MOVE = 0.1f;	// 移動開始できる角度のしきい値
 }
 
 //*****************************************************
@@ -44,7 +46,7 @@ std::vector<CEnemy*> CEnemy::s_vector = {};	// 自身のポインタ
 // 優先順位を決めるコンストラクタ
 //=====================================================
 CEnemy::CEnemy(int nPriority) : m_nGridV(0), m_nGridH(0),m_state(E_State::STATE_NONE), m_pIceLand(nullptr), m_bFollowIce(false),
-m_move(),m_nGridVDest(0), m_nGridHDest(0), m_fSpeedMove(0.0f), m_fTimerDeath(0.0f), m_bTurn(false)
+m_move(),m_nGridVDest(0), m_nGridHDest(0), m_fSpeedMove(0.0f), m_fTimerDeath(0.0f), m_bTurn(false), m_bEnableMove(false)
 {
 	s_vector.push_back(this);
 }
@@ -109,8 +111,9 @@ HRESULT CEnemy::Init(void)
 	// 出現時のトランスフォーム設定
 	SetApperTransform();
 
-	// 氷追従フラグを設定
+	// フラグを設定
 	m_bFollowIce = false;
+	m_bEnableMove = true;
 
 	// 移動速度の初期設定
 	m_fSpeedMove = SPPED_MOVE_INIT;
@@ -479,8 +482,6 @@ void CEnemy::MoveToNextGrid(void)
 
 	// 差分ベクトルをスピード分に正規化
 	D3DXVECTOR3 vecDiff = posNext - pos;
-	universal::VecConvertLength(&vecDiff, m_fSpeedMove);
-	SetMove(vecDiff);
 
 	// 向きを補正する
 	D3DXVECTOR3 rot = GetRotation();
@@ -488,11 +489,61 @@ void CEnemy::MoveToNextGrid(void)
 	universal::FactingRot(&rot.y, fRotDest, SPEED_ROTATION);
 
 	SetRotation(rot);
+
+	// 移動可能判定
+	JudgeCanMove();
+
+	if (!m_bEnableMove)
+		return;
+
+	// 差分ベクトルをスピード分に正規化
+	universal::VecConvertLength(&vecDiff, m_fSpeedMove);
+	SetMove(vecDiff);
 	
 #ifdef _DEBUG
 	//CEffect3D::Create(posNext, 100.0f, 5, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	//CEffect3D::Create(pos, 100.0f, 5, D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f));
 #endif
+}
+
+//=====================================================
+// 移動できるかの判定
+//=====================================================
+void CEnemy::JudgeCanMove(void)
+{
+	// 次に向かう氷の位置の取得
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	CIce *pIceNext = pIceMgr->GetGridIce(&m_nGridVNext, &m_nGridHNext);
+
+	if (pIceNext == nullptr)
+		return;
+
+	// 位置取得
+	D3DXVECTOR3 posNext = pIceNext->GetPosition();
+	D3DXVECTOR3 vecDiff = posNext - GetPosition();
+
+	// 差分角度を作成
+	float fAngleDest = atan2f(-vecDiff.x, -vecDiff.z);
+
+	// 差分角度が一定以下になったら移動できる
+	D3DXVECTOR3 rot = GetRotation();
+	float fRotDiff = fAngleDest - rot.y;
+
+	universal::LimitRot(&fRotDiff);
+
+	if (LINE_ENABLE_MOVE * LINE_ENABLE_MOVE > fRotDiff * fRotDiff)
+	{
+		m_bEnableMove = true;	// 目的の向きを向いたので移動可能
+		return;
+	}
+
+	// ここまで通ったら移動しない
+	SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	m_bEnableMove = false;
 }
 
 //=====================================================

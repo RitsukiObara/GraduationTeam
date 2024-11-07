@@ -542,7 +542,7 @@ bool CPlayer::FindFlowIce(void)
 			D3DXVECTOR3 posPlayer = GetPosition();
 			D3DXVECTOR3 posIce = itIce->GetPosition();
 
-			if (pIceMgr->IsInIce(posPlayer, itIce, 0.7f))
+			if (pIceMgr->IsInIce(posPlayer, itIce, 1.0f))
 			{// どれかに乗っていたら現在のシステムを保存して関数を終了
 				m_pLandSystemFlow = itSystem;
 
@@ -756,6 +756,7 @@ void CPlayer::Hit(float fDamage)
 	// パーティクルの発生
 	D3DXVECTOR3 pos = GetPosition();
 	CParticle::Create(pos, CParticle::TYPE::TYPE_HITENEMY);
+	CParticle::Create(pos, CParticle::TYPE::TYPE_STAR_HIT);
 
 	// 操作可能フラグを折る
 	m_bEnableInput = false;

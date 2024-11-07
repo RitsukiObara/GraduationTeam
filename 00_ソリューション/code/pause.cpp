@@ -315,8 +315,6 @@ void CPause::ManageBg(void)
 //====================================================
 void CPause::Input(void)
 {
-	CInputKeyboard *pKeyboard = CInputKeyboard::GetInstance();
-	CInputJoypad *pJoypad = CInputJoypad::GetInstance();
 	CInputManager *pInputManager = CInputManager::GetInstance();
 	CSound* pSound = CSound::GetInstance();
 	CFade *pFade = CFade::GetInstance();
