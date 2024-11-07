@@ -173,6 +173,9 @@ void CIceManager::Update(void)
 	Debug();
 #endif
 
+	// 無効な停止氷の検出
+	SearchInvailStopIce();
+
 	// 氷の状態管理
 	ManageStateIce();
 }
@@ -199,6 +202,65 @@ void CIceManager::ManageStateIce(void)
 			m_aGrid[i][j].pIce->EnableBreak(false);
 			m_aGrid[i][j].pIce->EnableCanFind(true);
 			m_aGrid[i][j].pIce->EnableAliveStandIce(false);
+		}
+	}
+}
+
+//=====================================================
+// 無効な停止氷の検出
+//=====================================================
+void CIceManager::SearchInvailStopIce(void)
+{
+	vector<CIce*> apIce;	// 無効な停止氷の配列
+
+	// 繋がってない氷の検出
+	SearchNotConnectIce(apIce);
+
+	for (auto it : apIce)	// 氷を流す設定にする
+		it->ChangeState(new CIceStateFlow);
+}
+
+//=====================================================
+// 繋がってない氷の検出
+//=====================================================
+void CIceManager::SearchNotConnectIce(vector<CIce*> &rpIce)
+{
+	// 探索フラグの無効化
+	DisableFind();
+
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			if (m_aGrid[i][j].pIce == nullptr)
+				continue;
+
+			if (m_aGrid[i][j].pIce->IsCanPeck())
+				continue;
+
+			// 探索フラグの無効化
+			DisableFind();
+
+			// 壊れないブロックが行う信号解除
+			DisableFromHardIce(i, j,false);
+		}
+	}
+
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			if (m_aGrid[i][j].pIce == nullptr)
+				continue;
+
+			if (!m_aGrid[i][j].pIce->IsCanFind())
+				continue;
+
+			if (m_aGrid[i][j].pIce->IsPeck())
+				continue;
+
+			// 探索済みでない氷を追加
+			rpIce.push_back(m_aGrid[i][j].pIce);
 		}
 	}
 }
@@ -353,7 +415,7 @@ void CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos)
 			DisableFind();
 
 			// 壊れないブロックが行う信号解除
-			DisableFromHardIce(i, j, apIce);
+			DisableFromHardIce(i, j);
 		}
 	}
 
@@ -514,16 +576,6 @@ void CIceManager::LimitInIce(D3DXVECTOR3 *pPos, int nNumV, int nNumH)
 	D3DXVECTOR3 posIce = m_aGrid[nNumV][nNumH].pIce->GetPosition();
 
 	pPos->y = posIce.y;
-
-	//if (pPos->x >= posIce.x + WIDTH_GRID * 0.5f)
-	//	pPos->x = posIce.x + WIDTH_GRID * 0.5f;	// 右側の補正
-	//else if (pPos->x <= posIce.x - WIDTH_GRID * 0.5f)
-	//	pPos->x = posIce.x - WIDTH_GRID * 0.5f;	// 左側の補正
-
-	//if (pPos->z >= posIce.z + DEPTH_GRID * 0.5f)
-	//	pPos->z = posIce.z + DEPTH_GRID * 0.5f;	// 奥側の補正
-	//else if (pPos->z <= posIce.z - DEPTH_GRID * 0.5f)
-	//	pPos->z = posIce.z - DEPTH_GRID * 0.5f;	// 手前側の補正
 }
 
 //=====================================================
@@ -637,7 +689,7 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 //=====================================================
 // 硬い氷から信号を出して、破壊信号を解除
 //=====================================================
-void CIceManager::DisableFromHardIce(int nNumV, int nNumH, vector<CIce*> apIce)
+void CIceManager::DisableFromHardIce(int nNumV, int nNumH, bool bPeck)
 {
 	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
 		return;
@@ -658,6 +710,8 @@ void CIceManager::DisableFromHardIce(int nNumV, int nNumH, vector<CIce*> apIce)
 	int aH[DIRECTION_MAX] = {};
 
 	Grid::CalcAroundGrids(nNumV, nNumH, aV, aH);
+
+	vector<CIce*> apIce(DIRECTION_MAX);
 
 	// 氷のポインタの保存
 	for (int i = 0; i < DIRECTION_MAX; i++)
@@ -680,8 +734,11 @@ void CIceManager::DisableFromHardIce(int nNumV, int nNumH, vector<CIce*> apIce)
 		if (!apIce[i]->IsCanFind())
 			continue;
 
-		if (apIce[i]->IsPeck())
-			continue;
+		if (bPeck)
+		{// つっつきブロックを含めるかどうか
+			if (apIce[i]->IsPeck())
+				continue;
+		}
 
 		DisableBreak(aV[i], aH[i]);
 	}

@@ -107,8 +107,10 @@ private:
 	// メンバ関数
 	void SetGridPos(void);	// グリッドの位置を計算
 	void ManageStateIce(void);	// 氷の状態管理
+	void SearchInvailStopIce(void);	// 無効な停止氷の検出
+	void SearchNotConnectIce(vector<CIce*> &rpIce);	// 繋がってない氷の検出
 	bool JudgeBetweenPeck(int nNumV, int nNumH);	// つっついた氷に挟まれてる判定
-	void DisableFromHardIce(int nNumV, int nNumH,vector<CIce*> apIce);	// 硬い氷から信号を出して、破壊信号を解除
+	void DisableFromHardIce(int nNumV, int nNumH,bool bPeck = true);	// 硬い氷から信号を出して、破壊信号を解除
 	void DisableFromPlayer(int nNumV, int nNumH, CIce *pIcePeck,vector<CIce*> apIce);	// プレイヤーから信号を出して、破壊信号を解除
 	void DisableBreak(int nNumV, int nNumH);	// 氷の破壊を解除
 	void SummarizeIce(int nNumV, int nNumH);	// 氷をまとめる処理
