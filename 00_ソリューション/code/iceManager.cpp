@@ -1076,6 +1076,10 @@ void CIceManager::BreakPeck(int nNumV, int nNumH)
 			nNumPeck++;
 			DeleteIce(apIce[i]);
 			apIce[i]->EnableSink(true);
+
+			// 沈みパーティクルの発生
+			D3DXVECTOR3 posIce = apIce[i]->GetPosition();
+			CParticle::Create(posIce, CParticle::TYPE::TYPE_BUBBLE_SINK);
 		}
 	}
 
