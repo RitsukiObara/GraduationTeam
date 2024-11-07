@@ -11,6 +11,7 @@
 #include "selectmode.h"
 #include "object.h"
 #include "inputManager.h"
+#include "inputkeyboard.h"
 #include "manager.h"
 #include "fade.h"
 #include "texture.h"
@@ -33,6 +34,35 @@
 //*****************************************************
 namespace
 {
+	namespace selectUI
+	{
+		const char* PATH[CSelectMode::MODE_MAX] =
+		{
+			"data\\TEXTURE\\UI\\single_mode.png",
+			"data\\TEXTURE\\UI\\party_mode.png",
+			//"data\\TEXTURE\\UI\\tutorial00.jpg"
+		};
+		const float WIDTH[CSelectMode::MODE_MAX] =
+		{
+			0.14f,
+			0.14f,
+			//0.5f
+		};
+		const float HEIGHT[CSelectMode::MODE_MAX] =
+		{
+			0.25f,
+			0.25f,
+			//0.5f
+		};
+		const D3DXVECTOR3 POS[CSelectMode::MODE_MAX] =
+		{
+			D3DXVECTOR3(0.395f, 0.38f, 0.0f),
+			D3DXVECTOR3(0.605f, 0.62f, 0.0f),
+			//D3DXVECTOR3(0.5f, 0.5f, 0.0f)
+		};
+		const float NOSELECT_ALPHA = 0.35f;	// 選択されていないときの不透明度
+	}
+
 	namespace manual
 	{
 		const char* PATH = "data\\TEXTURE\\UI\\tutorial00.jpg";	// パス
@@ -82,15 +112,29 @@ HRESULT CSelectMode::Init(void)
 	}
 
 	// 説明の生成
-	m_pManual = CUI::Create();
-	if (m_pManual != nullptr)
+	//m_pManual = CUI::Create();
+	//if (m_pManual != nullptr)
+	//{
+	//	// 説明の設定
+	//	m_pManual->SetIdxTexture(CTexture::GetInstance()->Regist(manual::PATH));	// テクスチャ割当
+	//	m_pManual->SetPosition(manual::POS);				// 位置
+	//	m_pManual->SetSize(manual::WIDTH, manual::HEIGHT);	// 大きさ
+	//	m_pManual->SetVtx();	// 頂点反映
+	//}
+
+	for (int cnt = 0; cnt < MODE_MAX; cnt++)
 	{
-		// 説明の設定
-		m_pManual->SetIdxTexture(CTexture::GetInstance()->Regist(manual::PATH));	// テクスチャ割当
-		m_pManual->SetPosition(manual::POS);				// 位置
-		m_pManual->SetSize(manual::WIDTH, manual::HEIGHT);	// 大きさ
-		m_pManual->SetVtx();	// 頂点反映
+		m_apModeUI[cnt] = CUI::Create();
+		if (m_apModeUI[cnt] != nullptr)
+		{
+			// 設定
+			m_apModeUI[cnt]->SetIdxTexture(CTexture::GetInstance()->Regist(selectUI::PATH[cnt]));	// テクスチャ割当
+			m_apModeUI[cnt]->SetPosition(selectUI::POS[cnt]);				// 位置
+			m_apModeUI[cnt]->SetSize(selectUI::WIDTH[cnt], selectUI::HEIGHT[cnt]);	// 大きさ
+			m_apModeUI[cnt]->SetVtx();	// 頂点反映
+		}
 	}
+	ChangeSelectMode(0);	// 何も選択しない（透明度設定のみする）
 
 	// BGMの再生
 	CSound* pSound = CSound::GetInstance();
@@ -105,6 +149,13 @@ HRESULT CSelectMode::Init(void)
 //=====================================================
 void CSelectMode::Uninit(void)
 {
+	for (int cnt = 0; cnt < MODE_MAX; cnt++)
+	{
+		if (m_apModeUI[cnt] != nullptr)
+		{
+			Object::DeleteObject((CObject**)&m_apModeUI[cnt]);
+		}
+	}
 	Object::DeleteObject((CObject**)&m_pManual);
 
 	// シーンの終了
@@ -119,13 +170,30 @@ void CSelectMode::Uninit(void)
 //=====================================================
 void CSelectMode::Update(void)
 {
-	CInputManager* pInput = CInputManager::GetInstance();	// 入力マネージャー情報
-	assert(pInput != nullptr);
+	CInputKeyboard* pKeyboard = CInputKeyboard::GetInstance();
+	assert(pKeyboard != nullptr);
 
 	CSound* pSound = CSound::GetInstance();	// サウンド情報
 	assert(pSound != nullptr);
 
-	if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))
+	// モードの移動
+	if (pKeyboard->GetTrigger(DIK_A))
+	{
+		ChangeSelectMode(-1);	// モード前にずらす
+
+		// サウンドの再生
+		pSound->Play(CSound::LABEL_SE_PAUSE_ENTER00);
+	}
+	else if (pKeyboard->GetTrigger(DIK_D))
+	{
+		ChangeSelectMode(1);	// モード先にずらす
+
+		// サウンドの再生
+		pSound->Play(CSound::LABEL_SE_PAUSE_ENTER00);
+	}
+
+	// モード選択完了
+	if (pKeyboard->GetTrigger(DIK_RETURN))
 	{
 		// フェード中の場合抜ける
 		CFade* pFade = CFade::GetInstance();
@@ -133,7 +201,7 @@ void CSelectMode::Update(void)
 		if (pFade->GetState() != CFade::FADE_NONE) { assert(false); return; }
 
 		// タイトルに遷移する
-		pFade->SetFade(CScene::MODE_TITLE);
+		pFade->SetFade(CScene::MODE_GAME);
 
 		// サウンドの再生
 		pSound->Play(CSound::LABEL_SE_PAUSE_ENTER00);
@@ -155,7 +223,26 @@ void CSelectMode::Draw(void)
 //=====================================================
 // 終了操作の点滅更新処理
 //=====================================================
-void CSelectMode::UpdateBlinkUI(void)
+void CSelectMode::ChangeSelectMode(int move)
 {
+	// 値移動
+	m_selectMode = (MODE)((m_selectMode + move + MODE_MAX) % MODE_MAX);
 
+	// 選択しているモード不透明/それ以外半透明
+	for (int cnt = 0; cnt < MODE_MAX; cnt++)
+	{
+		if (m_apModeUI[cnt] != nullptr)
+		{
+			// 設定
+			if (cnt == m_selectMode)
+			{// 選択しているモード
+				m_apModeUI[cnt]->SetAlpha(1.0f);
+			}
+			else
+			{// それ以外半透明
+				m_apModeUI[cnt]->SetAlpha(selectUI::NOSELECT_ALPHA);
+			}
+			m_apModeUI[cnt]->SetVtx();	// 頂点反映
+		}
+	}
 }

@@ -28,7 +28,7 @@ public:
 	{
 		MODE_SINGLE = 0,
 		MODE_PARTY,
-		MODE_OPTION,
+		//MODE_OPTION,
 		MODE_MAX
 	};
 
@@ -42,7 +42,7 @@ public:
 	
 private:
 	// メンバ関数
-	void UpdateBlinkUI(void);	// 終了操作の点滅更新
+	void ChangeSelectMode(int move);	// モード移動処理
 
 	// メンバ変数
 	CUI *m_apModeUI[MODE_MAX];	// モードUI
