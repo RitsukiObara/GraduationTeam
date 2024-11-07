@@ -874,5 +874,68 @@ MOTIONSET
         END_KEY
     END_KEYSET
 END_MOTIONSET
+
+#===============================
+# [9]番目のモーション(ガッツポーズ)
+#===============================
+MOTIONSET
+    LOOP = 0
+    NUM_KEY = 2
+
+ 		KEYSET     #---<< 0 / 2 >>
+        FRAME = 20
+        KEY # -----[0]----
+            POS = 0.00 9.50 0.00
+            ROT = 0.00 0.00 -0.40
+        END_KEY
+        KEY # -----[1]----
+            POS = 0.00 0.00 0.00
+            ROT = 0.00 0.00 0.00
+        END_KEY
+        KEY # -----[2]----
+            POS = 0.00 0.00 0.00
+            ROT = 0.00 0.00 0.00
+        END_KEY
+        KEY # -----[3]----
+            POS = 0.00 0.00 0.00
+            ROT = 0.00 0.00 0.00
+        END_KEY
+        KEY # -----[4]----
+            POS = 0.00 0.00 0.00
+            ROT = 0.72 0.57 0.00
+        END_KEY
+        KEY # -----[5]----
+            POS = 0.00 0.00 0.00
+            ROT = -0.04 0.00 0.36
+        END_KEY
+    END_KEYSET
+    KEYSET     #---<< 1 / 2 >>
+        FRAME = 20
+        KEY # -----[0]----
+            POS = 0.00 9.50 0.00
+            ROT = 0.00 0.00 -0.40
+        END_KEY
+        KEY # -----[1]----
+            POS = 0.00 0.00 0.00
+            ROT = 0.00 0.00 0.00
+        END_KEY
+        KEY # -----[2]----
+            POS = 0.00 0.00 0.00
+            ROT = 0.00 0.27 -1.45
+        END_KEY
+        KEY # -----[3]----
+            POS = 0.00 0.00 0.00
+            ROT = 0.00 0.00 0.00
+        END_KEY
+        KEY # -----[4]----
+            POS = 0.00 0.00 0.00
+            ROT = 0.72 0.57 0.00
+        END_KEY
+        KEY # -----[5]----
+            POS = 0.00 0.00 0.00
+            ROT = -0.04 0.00 0.36
+        END_KEY
+    END_KEYSET
+END_MOTIONSET
 END_SCRIPT
 
