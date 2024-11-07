@@ -32,7 +32,7 @@ const float TIME_DEATH_IN_DRIFT = 6.0f;	// •Y—¬‚µ‚Ä€‚Ê‚Ü‚Å‚ÌŠÔ
 
 const float LINE_STOP_TURN = 0.2f;	// U‚èŒü‚«‚ğ’â~‚·‚é‚µ‚«‚¢’l
 const float LINE_START_TURN = D3DX_PI * 0.6f;	// U‚èŒü‚«‚ğŠJn‚·‚é‚µ‚«‚¢’l
-const float FACT_ROTATION_TURN = 0.2f;	// U‚èŒü‚«‰ñ“]ŒW”
+const float FACT_ROTATION_TURN = 0.02f;	// U‚èŒü‚«‰ñ“]ŒW”
 }
 
 //*****************************************************
@@ -418,7 +418,7 @@ void CEnemy::JudgeTurn(void)
 	D3DXVECTOR3 vecDiff = posNext - GetPosition();
 
 	// ·•ªŠp“x‚ğì¬
-	float fAngleDest = atan2f(vecDiff.x, vecDiff.z);
+	float fAngleDest = atan2f(-vecDiff.x, -vecDiff.z);
 	D3DXVECTOR3 rot = GetRotation();
 
 	// Œü‚«‚Ì”»’è
