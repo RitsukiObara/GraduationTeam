@@ -10,13 +10,14 @@
 //*****************************************************
 #include "iceHard.h"
 #include "fan3D.h"
+#include "texture.h"
 
 //*****************************************************
 // 定数定義
 //*****************************************************
 namespace
 {
-
+const string PATH_TEX = "data\\TEXTURE\\MATERIAL\\ice000.jpg";	// テクスチャパス
 }
 
 //*****************************************************
@@ -51,7 +52,8 @@ HRESULT CIceHard::Init(void)
 	if (pFan3D == nullptr)
 		return E_FAIL;
 
-	pFan3D->SetCol(D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+	int nIdxTexture = Texture::GetIdx(&PATH_TEX[0]);
+	pFan3D->SetIdxTexture(nIdxTexture);
 
 	return S_OK;
 }
