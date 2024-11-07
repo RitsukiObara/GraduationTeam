@@ -325,6 +325,16 @@ void CMotion::SetMotion(int nMotionType)
 		m_nFrame = 10;
 	}
 
+	// イベントのリセット
+	if (m_aMotionInfo[m_motionType].pEvent != nullptr &&
+		m_aMotionInfo[m_motionType].nNumEvent > 0)
+	{
+		for (int nCntEvent = 0; nCntEvent < m_aMotionInfo[m_motionType].nNumEvent; nCntEvent++)
+		{
+			m_aMotionInfo[m_motionType].pEvent[nCntEvent].fTimer = m_aMotionInfo[m_motionType].pEvent[nCntEvent].fNumFrame;
+		}
+	}
+
 	// モーション情報の設定
 	m_motionType = nMotionType;
 	m_nKey = -1;

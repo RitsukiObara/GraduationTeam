@@ -425,7 +425,7 @@ void CIceStaeteBreak::Uninit(CIce *pIce)
 void CIceStaeteBreak::Update(CIce *pIce)
 {
 	// •X‚ÌC•œ‚ÌXV
-	//UpdateRepair(pIce);
+	UpdateRepair(pIce);
 
 	// •X‚Ì’Ç]
 	FollowIce(pIce);
