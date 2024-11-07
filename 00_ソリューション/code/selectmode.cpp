@@ -56,8 +56,8 @@ namespace
 		};
 		const D3DXVECTOR3 POS[CSelectMode::MODE_MAX] =
 		{
-			D3DXVECTOR3(0.3f, 0.5f, 0.0f),
-			D3DXVECTOR3(0.7f, 0.5f, 0.0f),
+			D3DXVECTOR3(0.395f, 0.38f, 0.0f),
+			D3DXVECTOR3(0.605f, 0.62f, 0.0f),
 			//D3DXVECTOR3(0.5f, 0.5f, 0.0f)
 		};
 		const float NOSELECT_ALPHA = 0.35f;	// ‘I‘ð‚³‚ê‚Ä‚¢‚È‚¢‚Æ‚«‚Ì•s“§–¾“x
