@@ -41,6 +41,15 @@ public:
 		TYPE_HARD,	// 硬い氷
 		TYPE_MAX
 	};
+	enum E_TypeShake
+	{// 揺れの種類
+		SHAKE_NONE = 0,	// 何もしていない状態
+		SHAKE_SINK_NORMAL,	// 通常の沈み
+		SHAKE_SINK_BIG,	// 大きな沈み
+		SHAKE_RETURN,	// 通常戻り
+		SHAKE_RETURN_BIG,	// 大きな戻り
+		SHAKE_MAX
+	};
 
 	CIce(int nPriority = 2);	// コンストラクタ
 	~CIce();	// デストラクタ
@@ -65,15 +74,15 @@ public:
 	bool IsBreak(void) { return m_bBreak; }
 	void EnablePeck(bool bPeck) { m_bPeck = bPeck; }	// 突っつかれたフラグ
 	bool IsPeck(void) { return m_bPeck; }
-	void EnableAliveStandIce(bool bPeck) { m_bAliveStandBlock = bPeck; }	// 立っている氷に辿り着いたフラグ
-	bool IsAliveStandIce(void) { return m_bAliveStandBlock; }
 	void EnableSink(bool bSink) { m_bSink = bSink; }	// 沈むフラグ
 	bool IsSink(void) { return m_bSink; }
 	void EnableStop(bool bStop) { m_bStop = bStop; }	// 止まるフラグ
 	bool IsStop(void) { return m_bStop; }
 	CFan3D *GetFan3D(void) { return m_pUp; }	// 上側の扇ポリゴン取得
+	void SetShake(E_TypeShake shake) { m_shake = shake; }	// 揺れ
+	E_TypeShake GetShake(void) { return m_shake; }
 
-	// 静的メンバ関数W
+	// 静的メンバ関数
 	static CIce *Create(E_Type type = E_Type::TYPE_NORMAL, E_State state = E_State::STATE_FLOWS);	// 生成処理
 	static int GetNumAll(void) { return s_nNumAll; }	// 総数取得
 	static std::vector<CIce*> GetInstance(void) { return m_Vector; }
@@ -81,15 +90,20 @@ public:
 private:
 	// メンバ関数
 	void FollowWave(void);	// 波に追従する処理
+	void SearchOnThis(void);	// 自身に乗ってるものの検出
+	void Shake(void);	// 揺れの処理
 
 	// メンバ変数
 	E_State m_state;	// 状態
 	bool m_bCanFind;	// 探索できるフラグ
 	bool m_bBreak;	// 壊れるフラグ
 	bool m_bPeck;	// 突っつかれたフラグ
-	bool m_bAliveStandBlock;	// 立っているブロックに到達したフラグ
 	bool m_bSink;	// 沈むフラグ
 	bool m_bStop;	// 停止しているかどうか
+	float m_fHeightFromOcean;	// 海からの高さ
+	float m_fHeightDestFromOcean;	// 海からの高さ
+	E_TypeShake m_shake;	// 揺れのタイプ
+	float m_fTimerReturnShake;	// 揺れから戻るタイマー
 	CFan3D *m_pUp;	// 上側に貼る扇ポリゴン
 	CMeshCylinder *m_pSide;	// サイドのシリンダー
 	CIceState *m_pState;	// ステイトのポインタ

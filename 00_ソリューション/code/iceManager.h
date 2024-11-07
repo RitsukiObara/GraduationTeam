@@ -116,9 +116,7 @@ private:
 	void SummarizeIce(int nNumV, int nNumH);	// •X‚ğ‚Ü‚Æ‚ß‚éˆ—
 	void SaveFlowIce(int nNumV, int nNumH, CFlowIce *pFlowIce);	// —¬•X‚É‚Ü‚Æ‚ß‚éˆ—
 	void BreakIce(void);	// •X‚Ì”j‰ó
-	bool CheckStandBlock(vector<CIce*> apIce, CIce *pIce,int nIdx);
 	bool CheckCorner(int nNumV, int nNumH);	// Šp‚ÌŠm”F
-	bool CheckCommon(vector<CIce*> apIce, vector<CIce*> apIceLast,CIce* pIceStand, int nNumV, int nNumH,bool bBreakLast);
 	void BreakPeck(int nNumV, int nNumH);	// “Ë‚Á‚Â‚¢‚½•X‚ğ’¾‚ß‚é
 	void LimitInIce(D3DXVECTOR3 *pPos, int nNumV, int nNumH);	// •X“à‚Éû‚ß‚éˆ—
 	void Debug(void);	// ƒfƒoƒbƒOˆ—

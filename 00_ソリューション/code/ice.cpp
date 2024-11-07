@@ -21,6 +21,8 @@
 #include "particle.h"
 #include "model.h"
 #include "effect3D.h"
+#include "enemy.h"
+#include "player.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -40,7 +42,12 @@ const string PATH_ICE_DEBRIS = "data\\MODEL\\block\\Drift_ice_piece.x";	// ”j•Ğ•
 const float SPEED_SINK = 5.0f;	// ’¾‚Ş‘¬“x
 const float HEIGHT_DELETE = -100.0f;	// íœ‚·‚é‚Ü‚Å‚Ì‚‚³
 
+const float HEIGHT_DEFAULT_FROM_OCEAN = 50.0f;	// ŠC‚©‚ç‚ÌƒfƒtƒHƒ‹ƒg‚Ì‚‚³
+const float HEIGHT_NORMALSINK_FROM_OCEAN = 10.0f;	// ŠC‚©‚ç‚Ì’Êí’¾‚Ş‚‚³
+
 const float LINE_STOP_ICE = 1.0f;	// •X‚ª~‚Ü‚é‚µ‚«‚¢’l
+
+const float SPEED_SHAKE_SINK_NORMAL = 0.1f;	// ’Êí‚Ì—h‚ê‚Ì’¾‚Ş‘¬“x
 }
 
 //*****************************************************
@@ -52,8 +59,9 @@ std::vector<CIce*> CIce::m_Vector = {};	// ©g‚Ìƒ|ƒCƒ“ƒ^
 //=====================================================
 // ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 //=====================================================
-CIce::CIce(int nPriority) : CGameObject(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false), m_bPeck(false), m_bAliveStandBlock(false),
-m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false), m_bStop(nullptr)
+CIce::CIce(int nPriority) : CGameObject(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false), m_bPeck(false),
+m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false), m_bStop(nullptr), m_fHeightFromOcean(0.0f), m_shake(E_TypeShake::SHAKE_NONE),
+m_fHeightDestFromOcean(0.0f)
 {
 	s_nNumAll++;
 	m_Vector.push_back(this);
@@ -112,7 +120,12 @@ HRESULT CIce::Init(void)
 	// ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚Ì‰Šúİ’è
 	SetTransform(SIZE_INIT);
 
+	// ƒXƒeƒCƒg‰Šú‰»
 	ChangeState(new CIceStaeteNormal);
+
+	// ‰Šú‚ÌŠC‚©‚ç‚Ì‚‚³
+	m_fHeightFromOcean = HEIGHT_DEFAULT_FROM_OCEAN;
+	m_fHeightDestFromOcean = HEIGHT_DEFAULT_FROM_OCEAN;
 
 	return S_OK;
 }
@@ -187,12 +200,19 @@ void CIce::Uninit(void)
 // XVˆ—
 //=====================================================
 void CIce::Update(void)
-{	
+{
 	if (!IsSink())	// ’¾‚Şƒtƒ‰ƒO‚ª‚½‚Á‚Ä‚¢‚È‚¢‚Æ‚«‚Ì‚İs‚¤
 		FollowWave();	// ”g‚É’Ç]‚·‚éˆ—
 
+	// ƒXƒeƒCƒg‚ÌXV
 	if (m_pState != nullptr)
 		m_pState->Update(this);
+
+	// ã‚Éæ‚Á‚Ä‚é•¨‚ÌŒŸo
+	SearchOnThis();
+
+	// —h‚ê‚Ìˆ—
+	Shake();
 }
 
 //=====================================================
@@ -212,7 +232,7 @@ void CIce::FollowWave(void)
 
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	pos.y = pOcean->GetHeight(pos, &move) + HEIGHT_ICE;
+	pos.y = pOcean->GetHeight(pos, &move) + m_fHeightFromOcean;
 
 	if (m_pUp != nullptr)
 	{
@@ -224,6 +244,53 @@ void CIce::FollowWave(void)
 	}
 
 	SetPosition(pos);
+}
+
+//=====================================================
+// ©g‚Éæ‚Á‚Ä‚é‚à‚Ì‚ÌŒŸo
+//=====================================================
+void CIce::SearchOnThis(void)
+{
+	if (!IsCanPeck())
+		return;
+
+	vector<CGameObject*> apObject;
+
+	// “G‚Ì’Ç‰Á
+	vector<CEnemy*> aEnemy = CEnemy::GetInstance();
+
+	for (CEnemy* enemy : aEnemy)
+		apObject.push_back((CGameObject*)enemy);
+
+	// ƒvƒŒƒCƒ„[‚Ì’Ç‰Á
+	vector<CPlayer*> aPlayer = CPlayer::GetInstance();
+
+	for (CPlayer* player : aPlayer)
+		apObject.push_back((CGameObject*)player);
+
+	// ã‚É‚Ç‚ê‚©‚ªæ‚Á‚Ä‚½‚ç’¾‚Ş
+	for (CGameObject* object : apObject)
+	{
+		D3DXVECTOR3 posObject = object->GetPosition();
+		D3DXVECTOR3 pos = GetPosition();
+
+		if (universal::DistCmpFlat(pos,posObject, SIZE_INIT,nullptr))
+		{// ‰½‚©‚ªæ‚Á‚Ä‚é‚Ì‚Å’¾‚Ş
+			m_fHeightDestFromOcean = HEIGHT_NORMALSINK_FROM_OCEAN;
+
+			return;
+		}
+	}
+
+	m_fHeightDestFromOcean = HEIGHT_DEFAULT_FROM_OCEAN;
+}
+
+//=====================================================
+// —h‚ê‚Ìˆ—
+//=====================================================
+void CIce::Shake(void)
+{
+	m_fHeightFromOcean += (m_fHeightDestFromOcean - m_fHeightFromOcean) * SPEED_SHAKE_SINK_NORMAL;
 }
 
 //=====================================================

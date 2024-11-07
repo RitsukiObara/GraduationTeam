@@ -201,7 +201,6 @@ void CIceManager::ManageStateIce(void)
 
 			m_aGrid[i][j].pIce->EnableBreak(false);
 			m_aGrid[i][j].pIce->EnableCanFind(true);
-			m_aGrid[i][j].pIce->EnableAliveStandIce(false);
 		}
 	}
 }
@@ -630,25 +629,6 @@ bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand, vecto
 }
 
 //=====================================================
-// 立っているブロックの確認
-//=====================================================
-bool CIceManager::CheckStandBlock(vector<CIce*> apIce, CIce *pIceStand, int nIdx)
-{
-	for (int i = 0; i < DIRECTION_MAX; i++)
-	{
-		if (apIce[i] == nullptr)
-			continue;
-
-		if ((apIce[i] == pIceStand || apIce[i]->IsAliveStandIce()) && nIdx != 1)
-		{
-			return true;
-		}
-	}
-
-	return false;
-}
-
-//=====================================================
 // 氷の追加
 //=====================================================
 void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
@@ -1009,49 +989,6 @@ bool CIceManager::CheckCorner(int nNumV, int nNumH)
 	//CEffect3D::Create(m_aGrid[nNumV][nNumH].pos, 300.0f, 60, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
 
 	return true;
-}
-
-//=====================================================
-// 共通氷の確認
-//=====================================================
-bool CIceManager::CheckCommon(vector<CIce*> apIce, vector<CIce*> apIceLast, CIce* pIceStand, int nNumV, int nNumH,bool bBreakLast)
-{
-	bool bBreak = true;
-
-	for (int i = 0; i < (int)apIceLast.size(); i++)
-	{// 前の氷と共通の氷を見ているかのチェックを行う
-		if (apIceLast[i] == nullptr)
-			continue;
-
-		for (int j = 0; j < (int)apIce.size(); j++)
-		{
-			if (apIce[j] == nullptr)
-				continue;
-
-			if (apIce[j] != apIceLast[i])
-				continue;	// 同じポインタかどうか
-
-			if (apIce[j] == pIceStand)
-			{// 立っているブロックに当たったら強制的に信号を途絶
-				m_aGrid[nNumV][nNumH].pIce->EnableAliveStandIce(true);
-
-				return false;
-			}
-
-			// 一つでも壊れないブロックがあったら破壊しない判定
-			if (!apIceLast[i]->IsPeck() && !apIceLast[i]->IsBreak())
-				bBreak = false;
-		}
-	}
-
-#ifdef _DEBUG
-	if (!bBreak)
-	{
-		//CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
-	}
-#endif
-
-	return bBreak;
 }
 
 //=====================================================
