@@ -27,7 +27,7 @@
 //*****************************************************
 namespace
 {
-const string PATH_TEX = "data\\TEXTURE\\UI\\ice.png";	// テクスチャパス
+const string PATH_TEX = "data\\TEXTURE\\MATERIAL\\ice001.jpg";	// テクスチャパス
 const float SIZE_INIT = 100.0f;	// 初期サイズ
 const float HEIGHT_ICE = 50.0f;	// 氷の高さ
 const int NUM_CORNER = 6;	// 角の数
@@ -129,12 +129,17 @@ void CIce::CreateMesh(void)
 		if (m_pUp != nullptr)
 		{
 			m_pUp->SetRotation(ROT_UP_INIT);
-			m_pUp->SetCol(D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
+			int nIdxTexture = Texture::GetIdx(&PATH_TEX[0]);
+			m_pUp->SetIdxTexture(nIdxTexture);
 		}
 	}
 
 	if (m_pSide == nullptr)
+	{
 		m_pSide = CMeshCylinder::Create(NUM_CORNER);
+		int nIdxTexture = Texture::GetIdx(&PATH_TEX[0]);
+		m_pSide->SetIdxTexture(nIdxTexture);
+	}
 
 	SetTransform(Grid::SIZE);
 }
@@ -425,7 +430,7 @@ void CIceStaeteBreak::Uninit(CIce *pIce)
 void CIceStaeteBreak::Update(CIce *pIce)
 {
 	// 氷の修復の更新
-	//UpdateRepair(pIce);
+	UpdateRepair(pIce);
 
 	// 氷の追従
 	FollowIce(pIce);

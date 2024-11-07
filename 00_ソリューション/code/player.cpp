@@ -224,16 +224,9 @@ void CPlayer::InputMoveAnalog(void)
 	{// 振り返ってる判定の入力
 		// 振り返りの無効化
 		DisableTurn();
-
-#ifdef _DEBUG
-		CDebugProc::GetInstance()->Print("\n振り返ってるよ！！！！！！！！！！！！！！");
-#endif
 	}
 	else
 	{// 通常の前進状態
-#ifdef _DEBUG
-		CDebugProc::GetInstance()->Print("\n振り返ってない");
-#endif
 		// 前進処理
 		Forward();
 
@@ -402,12 +395,9 @@ void CPlayer::JudgeTurn(void)
 
 	if (LINE_START_TURN * LINE_START_TURN < fRotDiff * fRotDiff)
 	{
-#if 0
-		m_fRotTurn = fAngleInput;
-#else 
+		// 現在の向きと正反対を目標の向きに設定
 		m_fRotTurn = rot.y + D3DX_PI;
 		universal::LimitRot(&m_fRotTurn);
-#endif
 
 		m_bTurn = true;	// しきい値を越えていたら振り返る判定
 	}
@@ -552,7 +542,7 @@ bool CPlayer::FindFlowIce(void)
 			D3DXVECTOR3 posPlayer = GetPosition();
 			D3DXVECTOR3 posIce = itIce->GetPosition();
 
-			if (pIceMgr->IsInIce(posPlayer, itIce, 0.7f))
+			if (pIceMgr->IsInIce(posPlayer, itIce, 1.0f))
 			{// どれかに乗っていたら現在のシステムを保存して関数を終了
 				m_pLandSystemFlow = itSystem;
 
@@ -784,6 +774,7 @@ void CPlayer::Debug(void)
 	if (pDebugProc == nullptr || pInputKeyboard == nullptr || pJoypad == nullptr)
 		return;
 
+	pDebugProc->Print("\nプレイヤー情報==========================");
 	pDebugProc->Print("\n縦[%d]横[%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\n位置[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
 

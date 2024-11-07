@@ -1098,6 +1098,10 @@ float PlusMin(float fData1, float fData2)
 int RandRange(int nMax, int nMin)
 {
 	int nRange = nMax - nMin;
+
+	if (nRange == 0)
+		return 0;
+
 	int nRand = rand() % nRange + nMin;
 
 	return nRand;

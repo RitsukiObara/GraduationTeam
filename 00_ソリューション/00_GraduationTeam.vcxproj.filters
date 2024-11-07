@@ -204,9 +204,6 @@
     <ClCompile Include="code\myLib.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
-    <ClCompile Include="code\MyEffekseer.cpp">
-      <Filter>ソース ファイル\lib</Filter>
-    </ClCompile>
     <ClCompile Include="code\meshCube.cpp">
       <Filter>ソース ファイル\mesh</Filter>
     </ClCompile>
@@ -329,6 +326,9 @@
     </ClCompile>
     <ClCompile Include="code\collision.cpp">
       <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="code\selectmode.cpp">
+      <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -488,9 +488,6 @@
     <ClInclude Include="code\imstb_truetype.h">
       <Filter>ソース ファイル\imgui</Filter>
     </ClInclude>
-    <ClInclude Include="code\MyEffekseer.h">
-      <Filter>ソース ファイル\lib</Filter>
-    </ClInclude>
     <ClInclude Include="code\meshCube.h">
       <Filter>ソース ファイル\mesh</Filter>
     </ClInclude>
@@ -616,6 +613,9 @@
     </ClInclude>
     <ClInclude Include="code\container.h">
       <Filter>ソース ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="code\selectmode.h">
+      <Filter>ソース ファイル\scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

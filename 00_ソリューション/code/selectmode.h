@@ -1,53 +1,54 @@
 //*****************************************************
 //
-// シーン処理[scene.h]
-// Author:髙山桃也
+// モード選択処理[selectmode.h]
+// Author:石原颯馬
 //
 //*****************************************************
-#ifndef _SCENE_H_
-#define _SCENE_H_
+#ifndef _SELECTMODE_H_
+#define _SELECTMODE_H_
 
 //*****************************************************
 // インクルード
 //*****************************************************
 #include "main.h"
+#include "scene.h"
 
 //*****************************************************
 // 前方宣言
 //*****************************************************
-class CPlayer;
-class CMeshField;
+class CUI;
 
 //*****************************************************
 // クラスの定義
 //*****************************************************
-class CScene
+class CSelectMode : public CScene
 {
 public:
 	enum MODE
 	{
-		MODE_LOGO = 0,
-		MODE_TITLE,
-		MODE_SELECTMODE,
-		MODE_TUTORIAL,
-		MODE_GAME,
-		MODE_RANKING,
+		MODE_SINGLE = 0,
+		MODE_PARTY,
+		//MODE_OPTION,
 		MODE_MAX
 	};
 
-	CScene();	// コンストラクタ
-	~CScene();	// デストラクタ
+	CSelectMode();	// コンストラクタ
+	~CSelectMode();	// デストラクタ
 
 	virtual HRESULT Init(void);
 	virtual void Uninit(void);
-	virtual void Update();
-	virtual void Draw();
-	static CScene *Create(MODE mode);
-	int GetTimer(void) { return m_nTimerTrans; }
-	void SetTimer(int nTime) { m_nTimerTrans = nTime; }
-
+	virtual void Update(void);
+	virtual void Draw(void);
+	
 private:
-	int m_nTimerTrans;	// 遷移タイマー
+	// メンバ関数
+	void ChangeSelectMode(int move);	// モード移動処理
+
+	// メンバ変数
+	CUI *m_apModeUI[MODE_MAX];	// モードUI
+	CUI *m_pManual;				// 説明情報
+	float m_fCurTime;			// 現在の待機時間
+	MODE m_selectMode;			// 選択しているモード
 };
 
 #endif

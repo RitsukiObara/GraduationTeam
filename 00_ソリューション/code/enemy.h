@@ -55,6 +55,7 @@ public:
 	void TranslateByGrid(int nIdxV,int nIdxH);	// グリッドによる移動
 	void FollowIce(void);	// 氷に追従
 	virtual void Death(void);	// 死亡時の処理
+	void DisableTurn(void);	// 振り返りの無効化
 
 	virtual void UpdateApper(void) = 0;		// 出現状態の更新
 
@@ -87,6 +88,13 @@ public:
 
 	void EnableFollowIce(bool bValue) { m_bFollowIce = bValue; }	// 氷追従フラグ
 	bool IsFollowIce(void) { return m_bFollowIce; }
+
+	void EnableTurn(bool bValue) { m_bTurn = bValue; }	// 振り向きモーション
+	bool IsTurn(void) { return m_bTurn; }
+
+	void EnableMove(bool bValue) { m_bEnableMove = bValue; }	// 移動可能フラグ
+	bool IsEnableMove(void) { return m_bEnableMove; }
+
 	void SetState(E_State state) { m_state = state; }	// 状態
 	E_State GetState(void) { return m_state; }
 	void SetMove(D3DXVECTOR3 move) { m_move = move; }	// 移動量
@@ -103,6 +111,8 @@ private:
 	void SarchNearIceToDest(void);	// 目標に近い氷を探す
 	bool PathFind(int nIdxV, int nIdxH, vector<CIce*>& apIce);	// 探索の再帰関数
 	void MoveToNextGrid(void);	// 次のグリッドに向かって移動する
+	void JudgeTurn(void);	// 反転するかの判定
+	void JudgeCanMove(void);	// 移動できるかの判断
 	void CheckChangeGrid(void);	// グリッドが変わったかの確認
 	virtual void AliveDestGrid(void) {};	// 目的地に着いた時の仮想関数
 	void DriftDeath(void);	// 漂流中の死亡関数
@@ -116,6 +126,9 @@ private:
 	int m_nGridVDest;	// 目標のグリッドの縦番号
 	int m_nGridHDest;	// 目標のグリッドの横番号
 
+	bool m_bEnableMove;	// 移動可能フラグ
+	bool m_bTurn;	// 振り向きのフラグ
+	float m_fRotTurn;	// 振り向き角度
 	float m_fTimerDeath;	// 死亡までのタイマー
 	float m_fSpeedMove;	// 移動速度
 	bool m_bFollowIce;	// 氷追従フラグ

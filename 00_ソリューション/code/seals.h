@@ -57,6 +57,8 @@ private:
 		MOTION_STARTJUMP,	// ジャンプ開始
 		MOTION_STAYJUMP,	// ジャンプ中
 		MOTION_LANDING,		// 着地
+		MOTION_SWIM,		// 泳ぎ
+		MOTION_TURN,		// 方向転換
 		MOTION_MAX
 	};
 
