@@ -21,11 +21,19 @@ class CUI;
 //*****************************************************
 // クラスの定義
 //*****************************************************
-class CTutorial : public CScene
+class CSelectMode : public CScene
 {
 public:
-	CTutorial();	// コンストラクタ
-	~CTutorial();	// デストラクタ
+	enum MODE
+	{
+		MODE_SINGLE = 0,
+		MODE_PARTY,
+		MODE_OPTION,
+		MODE_MAX
+	};
+
+	CSelectMode();	// コンストラクタ
+	~CSelectMode();	// デストラクタ
 
 	virtual HRESULT Init(void);
 	virtual void Uninit(void);
@@ -37,8 +45,10 @@ private:
 	void UpdateBlinkUI(void);	// 終了操作の点滅更新
 
 	// メンバ変数
-	CUI *m_pManual;			// 説明情報
-	float m_fCurTime;		// 現在の待機時間
+	CUI *m_apModeUI[MODE_MAX];	// モードUI
+	CUI *m_pManual;				// 説明情報
+	float m_fCurTime;			// 現在の待機時間
+	MODE m_selectMode;			// 選択しているモード
 };
 
 #endif
