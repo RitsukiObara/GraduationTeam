@@ -327,6 +327,9 @@
     <ClCompile Include="code\collision.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
+    <ClCompile Include="code\selectmode.cpp">
+      <Filter>ソース ファイル\scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\game.h">
@@ -610,6 +613,9 @@
     </ClInclude>
     <ClInclude Include="code\container.h">
       <Filter>ソース ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="code\selectmode.h">
+      <Filter>ソース ファイル\scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

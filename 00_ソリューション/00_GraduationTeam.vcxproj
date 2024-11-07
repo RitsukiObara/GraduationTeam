@@ -178,6 +178,7 @@
     <ClCompile Include="code\cameraState.cpp" />
     <ClCompile Include="code\collision.cpp" />
     <ClCompile Include="code\nextflowice.cpp" />
+    <ClCompile Include="code\selectmode.cpp" />
     <ClCompile Include="code\UI_combo.cpp" />
     <ClCompile Include="code\debris.cpp" />
     <ClCompile Include="code\debrisspawner.cpp" />
@@ -275,6 +276,7 @@
     <ClInclude Include="code\collision.h" />
     <ClInclude Include="code\container.h" />
     <ClInclude Include="code\nextflowice.h" />
+    <ClInclude Include="code\selectmode.h" />
     <ClInclude Include="code\UI_combo.h" />
     <ClInclude Include="code\debris.h" />
     <ClInclude Include="code\debrisSpawner.h" />
