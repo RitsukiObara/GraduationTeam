@@ -32,7 +32,7 @@ const float FACT_MOVE_APPER = 0.04f;	// 出現時の移動係数
 
 const float RANGE_FIND_PLAYER = 1000.0f;	// プレイヤー発見範囲
 
-const float SPEED_ONESTEP = 2.7f;	// 一歩のスピード
+const float SPEED_ONESTEP = 1.7f;	// 一歩のスピード
 const float FACT_DECMOVE = 0.9f;	// 移動減衰係数
 }
 
@@ -465,7 +465,12 @@ void CSeals::ManageMotion(void)
 	}
 
 	// 移動状態のモーション管理
-	if (GetState() == CEnemy::E_State::STATE_MOVE)
+	if (IsTurn())
+	{// 振り向きモーション
+		if (nMotion != E_Motion::MOTION_TURN || bFinish)
+			SetMotion(E_Motion::MOTION_TURN);
+	}
+	else if (GetState() == CEnemy::E_State::STATE_MOVE)
 	{
 		if (m_pPlayerTarget == nullptr)
 		{// ゆっくり歩き
@@ -531,6 +536,12 @@ void CSeals::Event(EVENT_INFO* pEventInfo)
 		fSpeed += SPEED_ONESTEP;
 
 		SetSpeedMove(fSpeed);
+	}
+
+	if (nMotion == E_Motion::MOTION_TURN)
+	{// 方向転換時、跳ねるタイミングのみ回転させる
+		// 振り向きの無効化
+		DisableTurn();
 	}
 }
 

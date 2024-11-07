@@ -32,7 +32,7 @@ const float TIME_DEATH_IN_DRIFT = 6.0f;	// •Y—¬‚µ‚ÄŽ€‚Ê‚Ü‚Å‚ÌŽžŠÔ
 
 const float LINE_STOP_TURN = 0.2f;	// U‚èŒü‚«‚ð’âŽ~‚·‚é‚µ‚«‚¢’l
 const float LINE_START_TURN = D3DX_PI * 0.6f;	// U‚èŒü‚«‚ðŠJŽn‚·‚é‚µ‚«‚¢’l
-const float FACT_ROTATION_TURN = 0.02f;	// U‚èŒü‚«‰ñ“]ŒW”
+const float FACT_ROTATION_TURN = 0.07f;	// U‚èŒü‚«‰ñ“]ŒW”
 }
 
 //*****************************************************
@@ -237,9 +237,6 @@ void CEnemy::UpdateMove(void)
 	// U‚èŒü‚«‚ÌŒŸo
 	JudgeTurn();
 
-	// U‚èŒü‚«‚Ì–³Œø‰»
-	DisableTurn();
-
 	// ŽŸ‚ÌƒOƒŠƒbƒh‚ÉŒü‚©‚¤ˆ—
 	MoveToNextGrid();
 
@@ -432,6 +429,10 @@ void CEnemy::JudgeTurn(void)
 		universal::LimitRot(&m_fRotTurn);
 
 		m_bTurn = true;	// ‚µ‚«‚¢’l‚ð‰z‚¦‚Ä‚¢‚½‚çU‚è•Ô‚é”»’è
+
+		// ˆÚ“®—Ê‚ðƒŠƒZƒbƒg
+		m_fSpeedMove = 0.0f;
+		SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	}
 }
 
@@ -452,6 +453,8 @@ void CEnemy::DisableTurn(void)
 	float fRotDiff = m_fRotTurn - rot.y;
 
 	universal::LimitRot(&fRotDiff);
+
+	bool bFinishMotion = IsFinish();
 
 	if (LINE_STOP_TURN * LINE_STOP_TURN > fRotDiff * fRotDiff)
 		m_bTurn = false;
@@ -558,7 +561,7 @@ void CEnemy::UpdateDrift(void)
 	SetPosition(pos);
 
 	// ƒOƒŠƒbƒh‚ª‡‚Á‚½‚çŽ~‚Ü‚é
-	pIceMgr->GetIdxGridFromPosition(pos, &m_nGridV, &m_nGridH);
+	pIceMgr->GetIdxGridFromPosition(pos, &m_nGridV, &m_nGridH,1.0f);
 
 	CIce *pIce = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
 

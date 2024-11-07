@@ -65,9 +65,6 @@ CFlowIce *CFlowIce::Create(void)
 //=====================================================
 HRESULT CFlowIce::Init(void)
 {
-	// ïXÇÃê∂ê¨
-	//CreateIce();
-
 	return S_OK;
 }
 
