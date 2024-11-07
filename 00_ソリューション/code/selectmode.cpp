@@ -1,14 +1,14 @@
 //*****************************************************
 //
-// チュートリアル処理[tutorial.cpp]
-// Author:髙山桃也
+// モード選択処理[selectmode.cpp]
+// Author:石原颯馬
 //
 //*****************************************************
 
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "tutorial.h"
+#include "selectmode.h"
 #include "object.h"
 #include "inputManager.h"
 #include "manager.h"
@@ -53,16 +53,18 @@ namespace
 //=====================================================
 // コンストラクタ
 //=====================================================
-CTutorial::CTutorial()
+CSelectMode::CSelectMode()
 {
 	m_pManual = nullptr;
 	m_fCurTime = 0.0f;
+	m_selectMode = MODE_SINGLE;
+	for (int cnt = 0; cnt < MODE_MAX; cnt++) { m_apModeUI[cnt] = nullptr; }
 }
 
 //=====================================================
 // デストラクタ
 //=====================================================
-CTutorial::~CTutorial()
+CSelectMode::~CSelectMode()
 {
 
 }
@@ -70,7 +72,7 @@ CTutorial::~CTutorial()
 //=====================================================
 // 初期化処理
 //=====================================================
-HRESULT CTutorial::Init(void)
+HRESULT CSelectMode::Init(void)
 {
 	// シーンの初期化
 	if (FAILED(CScene::Init()))
@@ -101,7 +103,7 @@ HRESULT CTutorial::Init(void)
 //=====================================================
 // 終了処理
 //=====================================================
-void CTutorial::Uninit(void)
+void CSelectMode::Uninit(void)
 {
 	Object::DeleteObject((CObject**)&m_pManual);
 
@@ -115,7 +117,7 @@ void CTutorial::Uninit(void)
 //=====================================================
 // 更新処理
 //=====================================================
-void CTutorial::Update(void)
+void CSelectMode::Update(void)
 {
 	CInputManager* pInput = CInputManager::GetInstance();	// 入力マネージャー情報
 	assert(pInput != nullptr);
@@ -144,7 +146,7 @@ void CTutorial::Update(void)
 //=====================================================
 // 描画処理
 //=====================================================
-void CTutorial::Draw(void)
+void CSelectMode::Draw(void)
 {
 	// シーンの描画
 	CScene::Draw();
@@ -153,7 +155,7 @@ void CTutorial::Draw(void)
 //=====================================================
 // 終了操作の点滅更新処理
 //=====================================================
-void CTutorial::UpdateBlinkUI(void)
+void CSelectMode::UpdateBlinkUI(void)
 {
 
 }
