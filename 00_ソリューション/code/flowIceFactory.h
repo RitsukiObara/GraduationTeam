@@ -44,6 +44,7 @@ private:
 	void Load(void);	// 読込
 	void GetNumFlowIce(std::ifstream& file, string str, int *pNumV, int *pNumH, S_InfoFlowIce* pInfoFlowIce);
 	void CreateFlowIce(void);	// 流氷の生成
+	void DecideDefaultGridSpawnIce(int &nGridV, int &nGridH);	// グリッドのスポーングリッドのデフォルト決定
 	void DecideNextFlowIce(void);	// 次の流氷の形を決める
 
 	// メンバ変数

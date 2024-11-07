@@ -226,7 +226,9 @@ void CFlowIceFct::CreateFlowIce(void)
 	// 生成する場所をグリッドの端からずらす
 	int nNumGridV = pIceMgr->GetNumGridV();
 	int nNumGridH = pIceMgr->GetNumGridH();
-	nNumGridH += ADD_CREATE_FLOWICE;
+
+	// 生成デフォルト位置の設定
+	DecideDefaultGridSpawnIce(nNumGridV, nNumGridH);
 
 	CIceManager *pIceManager = CIceManager::GetInstance();
 
@@ -234,18 +236,15 @@ void CFlowIceFct::CreateFlowIce(void)
 		return;
 
 	S_InfoFlowIce *pInfo = m_apInfoFlowIce[m_nIdxNextIce];
-	int nRandV = universal::RandRange(nNumGridV - m_apInfoFlowIce[m_nIdxNextIce]->aIdx.size(), 0);
 
 	for (int i = 0; i < (int)pInfo->aIdx.size(); i++)
 	{
 		for (int j = 0; j < (int)pInfo->aIdx[i].size(); j++)
 		{
-			int n = pInfo->aIdx[i][j];
-
 			if (pInfo->aIdx[i][j] != 0)
 			{// 氷を生成するマスなら氷を生成
 				// 氷を生成し、流氷システムに追加
-				CIce *pIce = pIceManager->CreateFlowIce(nRandV + (int)pInfo->aIdx.size() - i - 1, nNumGridH + j);
+				CIce *pIce = pIceManager->CreateFlowIce(nNumGridV + (int)pInfo->aIdx.size() - i - 1, nNumGridH + j);
 
 				if (pIce == nullptr)
 					continue;
@@ -254,6 +253,54 @@ void CFlowIceFct::CreateFlowIce(void)
 				pFlowIce->AddIceToArray(pIce);
 			}
 		}
+	}
+}
+
+//=====================================================
+// グリッドのスポーングリッドのデフォルト決定
+//=====================================================
+void CFlowIceFct::DecideDefaultGridSpawnIce(int &nGridV, int &nGridH)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	CIceManager::E_Stream dirStream = pIceMgr->GetDirStream();
+
+	int nMaxV = m_apInfoFlowIce[m_nIdxNextIce]->aIdx.size();
+	int nMaxH = 0;
+
+	for (size_t i = 0; i < nMaxV; i++)
+	{// 横の最大数
+		int nSizeH = m_apInfoFlowIce[m_nIdxNextIce]->aIdx[i].size();
+
+		if (nMaxH < nSizeH)
+			nMaxH = nSizeH;
+	}
+
+	switch (dirStream)
+	{
+	case CIceManager::E_Stream::STREAM_UP:
+		nGridV = 0;
+		nGridV -= ADD_CREATE_FLOWICE + nMaxV;
+		nGridH = universal::RandRange(nGridH - nMaxH, 0);
+		break;
+	case CIceManager::E_Stream::STREAM_RIGHT:
+		nGridH = 0;
+		nGridH -= ADD_CREATE_FLOWICE + nMaxH;
+		nGridV = universal::RandRange(nGridV - nMaxV, 0);
+		break;
+	case CIceManager::E_Stream::STREAM_DOWN:
+		nGridV += ADD_CREATE_FLOWICE;
+		nGridH = universal::RandRange(nGridH - nMaxH, 0);
+		break;
+	case CIceManager::E_Stream::STREAM_LEFT:
+		nGridH += ADD_CREATE_FLOWICE;
+		nGridV = universal::RandRange(nGridV - nMaxV, 0);
+		break;
+	default:
+		break;
 	}
 }
 
