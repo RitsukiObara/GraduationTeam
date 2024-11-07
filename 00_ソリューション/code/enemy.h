@@ -103,6 +103,8 @@ private:
 	void SarchNearIceToDest(void);	// 目標に近い氷を探す
 	bool PathFind(int nIdxV, int nIdxH, vector<CIce*>& apIce);	// 探索の再帰関数
 	void MoveToNextGrid(void);	// 次のグリッドに向かって移動する
+	void JudgeTurn(void);	// 反転するかの判定
+	void DisableTurn(void);	// 振り返りの無効化
 	void CheckChangeGrid(void);	// グリッドが変わったかの確認
 	virtual void AliveDestGrid(void) {};	// 目的地に着いた時の仮想関数
 	void DriftDeath(void);	// 漂流中の死亡関数
@@ -116,6 +118,8 @@ private:
 	int m_nGridVDest;	// 目標のグリッドの縦番号
 	int m_nGridHDest;	// 目標のグリッドの横番号
 
+	bool m_bTurn;	// 振り向きのフラグ
+	float m_fRotTurn;	// 振り向き角度
 	float m_fTimerDeath;	// 死亡までのタイマー
 	float m_fSpeedMove;	// 移動速度
 	bool m_bFollowIce;	// 氷追従フラグ

@@ -26,7 +26,6 @@
 #include "fade.h"
 #include "inputManager.h"
 #include "debrisSpawner.h"
-#include "MyEffekseer.h"
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -87,15 +86,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 				return E_FAIL;
 			}
 		}
-	}
-
-	if (m_pMyEffekseer == nullptr)
-	{// エフェクシア生成
-
-		m_pMyEffekseer = new CEffekseer;
-
-		// 初期化
-		m_pMyEffekseer->Init();
 	}
 
 	// テクスチャ管理の生成
@@ -163,14 +153,6 @@ void CManager::Uninit(void)
 	if (pDebugProc != nullptr)
 	{
 		pDebugProc->Uninit();
-	}
-
-	if (m_pMyEffekseer != nullptr)
-	{// エフェクシアの終了・破棄
-		m_pMyEffekseer->Uninit();
-
-		delete m_pMyEffekseer;
-		m_pMyEffekseer = nullptr;
 	}
 
 	if (m_pCamera != nullptr)
