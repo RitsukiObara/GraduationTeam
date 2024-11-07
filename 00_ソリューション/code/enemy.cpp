@@ -420,6 +420,40 @@ void CEnemy::MoveToNextGrid(void)
 }
 
 //=====================================================
+// 振り向きの検出
+//=====================================================
+void CEnemy::JudgeTurn(void)
+{
+	//// 差分角度を作成
+	//float fAngleInput = m_pInputMgr->GetAngleMove();
+	//D3DXVECTOR3 rot = GetRotation();
+
+	//// 目標方向の設定
+	//CInputManager::S_Axis axis = m_pInputMgr->GetAxis();
+	//D3DXVECTOR3 axisMove = axis.axisMove;
+
+	//// 軸を正規化
+	//float fLengthAxis = D3DXVec3Length(&axisMove);
+
+	//// 一定以上入力していなければ通らない
+	//if (fLengthAxis <= LINE_FACT_ROT)
+	//	return;
+
+	//// 向きの判定
+	//float fRotDiff = fAngleInput - rot.y;
+	//universal::LimitRot(&fRotDiff);
+
+	//if (LINE_START_TURN * LINE_START_TURN < fRotDiff * fRotDiff)
+	//{
+	//	// 現在の向きと正反対を目標の向きに設定
+	//	m_fRotTurn = rot.y + D3DX_PI;
+	//	universal::LimitRot(&m_fRotTurn);
+
+	//	m_bTurn = true;	// しきい値を越えていたら振り返る判定
+	//}
+}
+
+//=====================================================
 // グリッドが変わったかのチェック
 //=====================================================
 void CEnemy::CheckChangeGrid(void)

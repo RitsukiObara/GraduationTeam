@@ -101,7 +101,7 @@
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
       <PrecompiledHeaderFile>precompile.h</PrecompiledHeaderFile>
-      <ForcedIncludeFiles>precompile.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>precompile.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -197,7 +197,6 @@
     <ClCompile Include="code\iceManager.cpp" />
     <ClCompile Include="code\logo.cpp" />
     <ClCompile Include="code\meshCube.cpp" />
-    <ClCompile Include="code\MyEffekseer.cpp" />
     <ClCompile Include="code\fade.cpp" />
     <ClCompile Include="code\fan.cpp" />
     <ClCompile Include="code\fan2D.cpp" />
@@ -296,7 +295,6 @@
     <ClInclude Include="code\iceManager.h" />
     <ClInclude Include="code\logo.h" />
     <ClInclude Include="code\meshCube.h" />
-    <ClInclude Include="code\MyEffekseer.h" />
     <ClInclude Include="code\fade.h" />
     <ClInclude Include="code\fan.h" />
     <ClInclude Include="code\fan2D.h" />
