@@ -224,16 +224,9 @@ void CPlayer::InputMoveAnalog(void)
 	{// 振り返ってる判定の入力
 		// 振り返りの無効化
 		DisableTurn();
-
-#ifdef _DEBUG
-		CDebugProc::GetInstance()->Print("\n振り返ってるよ！！！！！！！！！！！！！！");
-#endif
 	}
 	else
 	{// 通常の前進状態
-#ifdef _DEBUG
-		CDebugProc::GetInstance()->Print("\n振り返ってない");
-#endif
 		// 前進処理
 		Forward();
 
@@ -781,6 +774,7 @@ void CPlayer::Debug(void)
 	if (pDebugProc == nullptr || pInputKeyboard == nullptr || pJoypad == nullptr)
 		return;
 
+	pDebugProc->Print("\nプレイヤー情報==========================");
 	pDebugProc->Print("\n縦[%d]横[%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\n位置[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
 
