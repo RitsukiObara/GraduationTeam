@@ -204,9 +204,6 @@
     <ClCompile Include="code\myLib.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
-    <ClCompile Include="code\MyEffekseer.cpp">
-      <Filter>ソース ファイル\lib</Filter>
-    </ClCompile>
     <ClCompile Include="code\meshCube.cpp">
       <Filter>ソース ファイル\mesh</Filter>
     </ClCompile>
@@ -487,9 +484,6 @@
     </ClInclude>
     <ClInclude Include="code\imstb_truetype.h">
       <Filter>ソース ファイル\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="code\MyEffekseer.h">
-      <Filter>ソース ファイル\lib</Filter>
     </ClInclude>
     <ClInclude Include="code\meshCube.h">
       <Filter>ソース ファイル\mesh</Filter>
