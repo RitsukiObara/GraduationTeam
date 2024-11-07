@@ -203,6 +203,7 @@ void CCamera::SetCamera(void)
 
 #ifdef _DEBUG
 #if 1
+	CDebugProc::GetInstance()->Print("\nカメラ情報==========================");
 	CDebugProc::GetInstance()->Print("\n視点の位置：[%f,%f,%f]", m_camera.posV.x, m_camera.posV.y, m_camera.posV.z);
 	CDebugProc::GetInstance()->Print("\n注視点の位置：[%f,%f,%f]", m_camera.posR.x, m_camera.posR.y, m_camera.posR.z);
 #endif

@@ -231,7 +231,8 @@ void CParticle::Load(void)
 		while (true)
 		{
 			// ï∂éöì«Ç›çûÇ›
-			(void)fscanf(pFile, "%s", &cTemp[0]);
+			if (fscanf(pFile, "%s", &cTemp[0]) == EOF)
+				break;
 
 			if (strcmp(cTemp, "PARTICLESET") == 0)
 			{// ì«çûäJén

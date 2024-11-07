@@ -428,7 +428,7 @@ void CEnemy::JudgeTurn(void)
 	if (LINE_START_TURN * LINE_START_TURN < fRotDiff * fRotDiff)
 	{
 		// 現在の向きと正反対を目標の向きに設定
-		m_fRotTurn = rot.y + D3DX_PI;
+		m_fRotTurn = fAngleDest;
 		universal::LimitRot(&m_fRotTurn);
 
 		m_bTurn = true;	// しきい値を越えていたら振り返る判定
@@ -440,6 +440,9 @@ void CEnemy::JudgeTurn(void)
 //=====================================================
 void CEnemy::DisableTurn(void)
 {
+	if (!m_bTurn)
+		return;
+
 	// 目標の向きに補正する
 	D3DXVECTOR3 rot = GetRotation();
 	universal::FactingRot(&rot.y, m_fRotTurn, FACT_ROTATION_TURN);
@@ -629,9 +632,13 @@ void CEnemy::Debug(void)
 	if (pDebugProc == nullptr || pInputKeyboard == nullptr)
 		return;
 
+	pDebugProc->Print("\n敵情報==========================");
 	pDebugProc->Print("\n現在グリッド[%d,%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\n次のグリッド[%d,%d]", m_nGridVNext, m_nGridHNext);
 	pDebugProc->Print("\n目標グリッド[%d,%d]", m_nGridVDest, m_nGridHDest);
+
+	pDebugProc->Print("\n今の向き目標の向き[%f,%f]", GetRotation().y, m_fRotTurn);
+	pDebugProc->Print("\n振り向き[%d]", m_bTurn);
 
 	pDebugProc->Print("\n現在の状態[%d]", m_state);
 }

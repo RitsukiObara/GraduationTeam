@@ -167,5 +167,6 @@ PARTICLESET		#10 ダメージ受けた時(★エフェクト)
     IS_ROT = 1
     IS_TURN = 0
     COLOR = 1.00 1.01 0.00 1.00
+END_PARTICLESET
 
 END_SCRIPT

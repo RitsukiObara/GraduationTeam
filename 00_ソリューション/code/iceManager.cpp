@@ -1081,6 +1081,7 @@ void CIceManager::Debug(void)
 	if (pDebugProc == nullptr)
 		return;
 
+	pDebugProc->Print("\n•X‚Ìî•ñ=====================");
 	pDebugProc->Print("\n•X‚Ì‘”[%d]", CIce::GetNumAll());
 
 	CInputKeyboard *pKeyboard = CInputKeyboard::GetInstance();
