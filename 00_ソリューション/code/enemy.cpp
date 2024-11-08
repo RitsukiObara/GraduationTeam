@@ -628,10 +628,10 @@ void CEnemy::UpdateDrift(void)
 //=====================================================
 void CEnemy::DriftDeath(void)
 {
-	m_fTimerDeath += CManager::GetDeltaTime();
+	D3DXVECTOR3 pos = GetPosition();
 
-	if (m_fTimerDeath > TIME_DEATH_IN_DRIFT)
-		Death();	// ˆê’èŽžŠÔŒo‰ß‚µ‚½‚çŽ€–SŽž‚Ìˆ—‚É“ü‚é
+	if (!universal::IsInScreen(pos, nullptr))
+		Death();	// ‰æ–ÊŠO‚Éo‚½‚çŽ€–SŽž‚Ìˆ—‚É“ü‚é
 }
 
 //=====================================================

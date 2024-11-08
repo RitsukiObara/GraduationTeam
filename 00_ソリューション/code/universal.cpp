@@ -974,7 +974,7 @@ bool CubeCrossProduct(D3DXVECTOR3 vtx1, D3DXVECTOR3 vtx2, D3DXVECTOR3 vtx3, D3DX
 //========================================
 // ‰æ–Ê“à”»’è
 //========================================
-bool IsInScreen(const D3DXVECTOR3 pos, D3DXMATRIX mtx, D3DXVECTOR3 *pPos)
+bool IsInScreen(const D3DXVECTOR3 pos, D3DXVECTOR3 *pPos)
 {
 	CRenderer *pRenderer = CRenderer::GetInstance();
 
@@ -993,6 +993,9 @@ bool IsInScreen(const D3DXVECTOR3 pos, D3DXMATRIX mtx, D3DXVECTOR3 *pPos)
 
 	D3DXMATRIX viewMatrix;
 	pDevice->GetTransform(D3DTS_VIEW, &viewMatrix);
+
+	D3DXMATRIX mtx;
+	D3DXMatrixIdentity(&mtx);
 
 	D3DXVECTOR3 screenPosition;
 	D3DXVec3Project(&screenPosition, &pos, &viewport, &projectionMatrix, &viewMatrix, D3DXMatrixIdentity(&mtx));

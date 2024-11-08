@@ -19,7 +19,7 @@
 //*****************************************************
 namespace
 {
-const float TIME_DELETE = 20.0f;	// •X‚ªÁ‚¦‚é‚Ü‚Å‚ÌŠÔ
+const float TIME_DELETE = 9.0f;	// •X‚ªÁ‚¦‚é‚Ü‚Å‚ÌŠÔ
 }
 
 //*****************************************************
@@ -171,10 +171,27 @@ void CFlowIce::DeleteAllIce(void)
 //=====================================================
 void CFlowIce::CheckDelete(void)
 {
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
 	m_fTimerDelete += CManager::GetDeltaTime();
 
 	if (m_fTimerDelete > TIME_DELETE)
 	{
+		for (int i = 0; i < (int)m_apIce.size(); i++)
+		{
+			if (m_apIce[i] == nullptr)
+				continue;
+
+			// ‰æ–Ê“à”»’è
+			D3DXVECTOR3 pos = m_apIce[i]->GetPosition();
+			if (universal::IsInScreen(pos, nullptr))
+				return;	// ‚Ç‚ê‚©ˆê‚Â‚Å‚à‰æ–Ê“à‚É‚ ‚ê‚ÎŠÖ”‚ğI—¹
+		}
+
+		// ‚±‚±‚Ü‚Å’Ê‚Á‚½‚ç•X‚ğíœ
 		DeleteAllIce();
 		Uninit();
 	}
