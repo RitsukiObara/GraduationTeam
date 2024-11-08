@@ -271,7 +271,7 @@ void CFlowIceFct::DecideDefaultGridSpawnIce(int &nGridV, int &nGridH)
 	int nMaxV = m_apInfoFlowIce[m_nIdxNextIce]->aIdx.size();
 	int nMaxH = 0;
 
-	for (size_t i = 0; i < nMaxV; i++)
+	for (int i = 0; i < nMaxV; i++)
 	{// ‰¡‚ÌÅ‘å”
 		int nSizeH = m_apInfoFlowIce[m_nIdxNextIce]->aIdx[i].size();
 

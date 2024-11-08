@@ -34,6 +34,8 @@ const float RANGE_FIND_PLAYER = 1000.0f;	// プレイヤー発見範囲
 
 const float SPEED_ONESTEP = 1.7f;	// 一歩のスピード
 const float FACT_DECMOVE = 0.9f;	// 移動減衰係数
+
+const float RADIUS_HIT = 150.0f;	// ヒット判定の半径
 }
 
 //=====================================================
@@ -509,15 +511,10 @@ void CSeals::CollidePlayer(void)
 		if (it->GetState() == CPlayer::E_State::STATE_DEATH)
 			continue;
 
-		// プレイヤーのグリッド番号取得
-		int nIdxVPlayer = it->GetGridV();
-		int nIdxHPlayer = it->GetGridH();
+		D3DXVECTOR3 posPlayer = it->GetPosition();
+		D3DXVECTOR3 pos = GetPosition();
 
-		// 自身のグリッド番号
-		int nIdxV = GetGridV();
-		int nIdxH = GetGridH();
-
-		if (nIdxV == nIdxVPlayer && nIdxH == nIdxHPlayer)
+		if (universal::DistCmpFlat(pos, posPlayer,RADIUS_HIT,nullptr))
 		{// 自身のグリッド番号と縦横が一致する場合、相手のヒット処理を呼ぶ
 			it->Hit(0.0f);	// 即死なのでダメージは0
 			// 停止して目標のリセット

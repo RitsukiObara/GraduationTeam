@@ -476,7 +476,8 @@ bool CPlayer::CheckGridChange(void)
 
 	// グリッド番号の取得
 	D3DXVECTOR3 pos = GetPosition();
-	pIceMgr->GetIdxGridFromPosition(pos, &nIdxV, &nIdxH, RATE_CHANGE_GRID);
+	if (!pIceMgr->GetIdxGridFromPosition(pos, &nIdxV, &nIdxH, RATE_CHANGE_GRID))
+		return false;	// グリッド番号取得失敗で偽を返す
 
 	if (m_state != E_State::STATE_INVINCIBLE &&
 		pIceMgr->GetGridIce(&nIdxV, &nIdxH) == nullptr)

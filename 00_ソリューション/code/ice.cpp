@@ -661,8 +661,8 @@ void CIceStateFlow::UpdateDriftIce(CIce *pIce)
 void CIceStateFlow::CollideIce(CIce *pIce)
 {
 	// 今いるグリッドの取得
-	int nIdxV = 0;
-	int nIdxH = 0;
+	int nIdxV = -1;
+	int nIdxH = -1;
 
 	CIceManager *pIceManager = CIceManager::GetInstance();
 
@@ -695,24 +695,20 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 
 #ifdef _DEBUG
 	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nIdxDriftV, &m_nIdxDriftH);
-	CEffect3D::Create(posGrid, 100.0f, 5, D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f));
+	CEffect3D::Create(posIce, 100.0f, 5, D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+
+	if (nIdxV > 0 && nIdxH > 0)
+		CEffect3D::Create(posGrid, 100.0f, 5, D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f));
+	else
+		int n = 0;
 #endif
 
 	if (m_bDrift)
 	{
-		if (nIdxH == 0 && nIdxV == 0)
-		{
-			int n = 0;
-		}
-
 		// グリッドに氷情報を保存
 		pIceManager->SetIceInGrid(nIdxV, nIdxH, pIce);
 		pIce->ChangeState(new CIceStaeteNormal);
 	}
-
-#ifdef _DEBUG
-	CEffect3D::Create(posIce, 100.0f, 5, D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
-#endif
 }
 
 //=====================================================
