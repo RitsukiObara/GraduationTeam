@@ -431,6 +431,39 @@ void CIceStaeteNormal::MoveToGrid(CIce *pIce)
 
 	// 氷の位置に移動量を加算
 	pIce->AddPosition(vecDiff);
+
+	// 上のオブジェクトを動かす
+	MoveObjectOnIce(vecDiff,pIce);
+}
+
+//=====================================================
+// 上のオブジェクトを動かす
+//=====================================================
+void CIceStaeteNormal::MoveObjectOnIce(D3DXVECTOR3 vecMove,CIce *pIce)
+{
+	vector<CGameObject*> apObject;
+
+	// 敵の追加
+	vector<CEnemy*> aEnemy = CEnemy::GetInstance();
+
+	for (CEnemy* enemy : aEnemy)
+		apObject.push_back((CGameObject*)enemy);
+
+	// プレイヤーの追加
+	vector<CPlayer*> aPlayer = CPlayer::GetInstance();
+
+	for (CPlayer* player : aPlayer)
+		apObject.push_back((CGameObject*)player);
+
+	// 上にどれかが乗ってたら動かす
+	for (CGameObject* object : apObject)
+	{
+		D3DXVECTOR3 posObject = object->GetPosition();
+		D3DXVECTOR3 pos = pIce->GetPosition();
+
+		if (universal::DistCmpFlat(pos, posObject, SIZE_INIT, nullptr))
+			object->AddPosition(vecMove); // 何かが乗ってるので動かす
+	}
 }
 
 //*******************************************************************************

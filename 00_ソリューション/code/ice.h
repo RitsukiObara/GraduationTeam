@@ -141,6 +141,7 @@ private:
 	// メンバ関数
 	bool CheckFailGetIndex(CIce *pIce);	// 番号取得に失敗しているかの確認
 	void MoveToGrid(CIce *pIce);	// グリッドの位置に向かって移動する処理
+	void MoveObjectOnIce(D3DXVECTOR3 vecMove, CIce *pIce);	// 乗ってるオブジェクトを動かす
 
 	// メンバ変数
 	int m_nIdxDriftV;	// 漂着してるグリッドの縦番号

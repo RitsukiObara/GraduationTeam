@@ -612,7 +612,7 @@ void CEnemy::UpdateDrift(void)
 	SetPosition(pos);
 
 	// ƒOƒŠƒbƒh‚ª‡‚Á‚½‚çŽ~‚Ü‚é
-	pIceMgr->GetIdxGridFromPosition(pos, &m_nGridV, &m_nGridH,1.0f);
+	pIceMgr->GetIdxGridFromPosition(pos, &m_nGridV, &m_nGridH,1.5f);
 
 	CIce *pIce = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
 
