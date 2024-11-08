@@ -32,6 +32,7 @@ public:
 		TYPE_BUBBLE_SINK,	// 沈むときの泡
 		TYPE_ENTER_MAP,	// マップに入ったときのエフェクト
 		TYPE_STAR_HIT,	// ヒット時の星パーティクル
+		TYPE_STICK_ICE,	// 氷がくっつく時のパーティクル
 		TYPE_MAX
 	}TYPE;
 

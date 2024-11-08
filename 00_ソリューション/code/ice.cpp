@@ -691,10 +691,12 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 	CIceManager::E_Stream stream = pIceManager->GetDirStream();
 	
 	// 漂着する氷があったら、フラグを立てて漂着グリッド番号を保存
-	m_bDrift = (this->*directionFuncs[stream])(pIce, m_nIdxDriftV, m_nIdxDriftH);
+	vector<CIce*> apIceHit;
+	m_bDrift = (this->*directionFuncs[stream])(pIce, m_nIdxDriftV, m_nIdxDriftH, apIceHit);
 
 #ifdef _DEBUG
 	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nIdxDriftV, &m_nIdxDriftH);
+
 	CEffect3D::Create(posIce, 100.0f, 5, D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
 
 	if (nIdxV > 0 && nIdxH > 0)
@@ -706,7 +708,24 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 	if (m_bDrift)
 	{
 		// グリッドに氷情報を保存
-		pIceManager->SetIceInGrid(nIdxV, nIdxH, pIce);
+		if (pIceManager->SetIceInGrid(nIdxV, nIdxH, pIce))
+		{
+			for (CIce* pIce : apIceHit)
+			{
+				if (pIce == nullptr)
+					continue;
+
+				// パーティクルを発生
+				D3DXVECTOR3 pos = pIce->GetPosition();
+				D3DXVECTOR3 posHitIce = pIce->GetPosition();
+				D3DXVECTOR3 vecDIff = posHitIce - pos;
+
+				pos += vecDIff * 0.5f;
+
+				CParticle::Create(pos, CParticle::TYPE::TYPE_STICK_ICE);
+			}
+		}
+
 		pIce->ChangeState(new CIceStaeteNormal);
 	}
 }
@@ -714,7 +733,7 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 //=====================================================
 // 上方向の確認
 //=====================================================
-bool CIceStateFlow::CheckUp(CIce *pIce, int nIdxV, int nIdxH)
+bool CIceStateFlow::CheckUp(CIce *pIce, int nIdxV, int nIdxH, vector<CIce*> &rpHitIce)
 {
 	CIceManager *pIceManager = CIceManager::GetInstance();
 
@@ -730,6 +749,9 @@ bool CIceStateFlow::CheckUp(CIce *pIce, int nIdxV, int nIdxH)
 	if (apIce[CIceManager::DIRECTION_LEFTUP] != nullptr ||
 		apIce[CIceManager::DIRECTION_RIGHTUP] != nullptr)
 	{
+		rpHitIce.push_back(apIce[CIceManager::DIRECTION_LEFTUP]);
+		rpHitIce.push_back(apIce[CIceManager::DIRECTION_RIGHTUP]);
+
 		bDrift = true;
 	}
 
@@ -739,7 +761,7 @@ bool CIceStateFlow::CheckUp(CIce *pIce, int nIdxV, int nIdxH)
 //=====================================================
 // 右方向の確認
 //=====================================================
-bool CIceStateFlow::CheckRight(CIce *pIce, int nIdxV, int nIdxH)
+bool CIceStateFlow::CheckRight(CIce *pIce, int nIdxV, int nIdxH, vector<CIce*> &rpHitIce)
 {
 	CIceManager *pIceManager = CIceManager::GetInstance();
 
@@ -756,6 +778,10 @@ bool CIceStateFlow::CheckRight(CIce *pIce, int nIdxV, int nIdxH)
 		apIce[CIceManager::DIRECTION_RIGHT] != nullptr ||
 		apIce[CIceManager::DIRECTION_RIGHTDOWN] != nullptr)
 	{
+		rpHitIce.push_back(apIce[CIceManager::DIRECTION_RIGHTUP]);
+		rpHitIce.push_back(apIce[CIceManager::DIRECTION_RIGHT]);
+		rpHitIce.push_back(apIce[CIceManager::DIRECTION_RIGHTDOWN]);
+
 		bDrift = true;
 	}
 
@@ -765,7 +791,7 @@ bool CIceStateFlow::CheckRight(CIce *pIce, int nIdxV, int nIdxH)
 //=====================================================
 // 下方向の確認
 //=====================================================
-bool CIceStateFlow::CheckDown(CIce *pIce, int nIdxV, int nIdxH)
+bool CIceStateFlow::CheckDown(CIce *pIce, int nIdxV, int nIdxH, vector<CIce*> &rpHitIce)
 {
 	CIceManager *pIceManager = CIceManager::GetInstance();
 
@@ -781,6 +807,9 @@ bool CIceStateFlow::CheckDown(CIce *pIce, int nIdxV, int nIdxH)
 	if (apIce[CIceManager::DIRECTION_RIGHTDOWN] != nullptr ||
 		apIce[CIceManager::DIRECTION_LEFTDOWN] != nullptr)
 	{
+		rpHitIce.push_back(apIce[CIceManager::DIRECTION_RIGHTDOWN]);
+		rpHitIce.push_back(apIce[CIceManager::DIRECTION_LEFTDOWN]);
+
 		bDrift = true;
 	}
 
@@ -790,7 +819,7 @@ bool CIceStateFlow::CheckDown(CIce *pIce, int nIdxV, int nIdxH)
 //=====================================================
 // 左方向の確認
 //=====================================================
-bool CIceStateFlow::CheckLeft(CIce *pIce, int nIdxV, int nIdxH)
+bool CIceStateFlow::CheckLeft(CIce *pIce, int nIdxV, int nIdxH, vector<CIce*> &rpHitIce)
 {
 	CIceManager *pIceManager = CIceManager::GetInstance();
 
@@ -807,6 +836,10 @@ bool CIceStateFlow::CheckLeft(CIce *pIce, int nIdxV, int nIdxH)
 		apIce[CIceManager::DIRECTION_LEFT] != nullptr ||
 		apIce[CIceManager::DIRECTION_LEFTDOWN] != nullptr)
 	{
+		rpHitIce.push_back(apIce[CIceManager::DIRECTION_LEFTUP]);
+		rpHitIce.push_back(apIce[CIceManager::DIRECTION_LEFT]);
+		rpHitIce.push_back(apIce[CIceManager::DIRECTION_LEFTDOWN]);
+
 		bDrift = true;
 	}
 
