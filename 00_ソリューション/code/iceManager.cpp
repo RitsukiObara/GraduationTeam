@@ -178,6 +178,9 @@ void CIceManager::Update(void)
 
 	// 氷の状態管理
 	ManageStateIce();
+
+	if (m_aGrid[0][0].pIce != nullptr)
+		int n = 0;
 }
 
 //=====================================================
@@ -669,10 +672,6 @@ void CIceManager::DisableFromHardIce(int nNumV, int nNumH, bool bPeck)
 	m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
 	m_aGrid[nNumV][nNumH].pIce->EnableBreak(false);
 
-#ifdef _DEBUG
-	//CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-#endif
-
 	// 周辺グリッドの計算
 	int aV[DIRECTION_MAX] = {};
 	int aH[DIRECTION_MAX] = {};
@@ -1059,6 +1058,8 @@ void CIceManager::Debug(void)
 					col = { 0.0f,1.0f,0.0f,1.0f };
 				}
 			}
+
+			CEffect3D::Create(m_aGrid[i][j].pos, 50.0f, 6, col);
 		}
 	}
 
