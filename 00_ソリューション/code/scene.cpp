@@ -13,6 +13,7 @@
 #include "logo.h"
 #include "title.h"
 #include "selectmode.h"
+#include "selectStage.h"
 #include "tutorial.h"
 #include "ranking.h"
 #include "manager.h"
@@ -130,6 +131,11 @@ CScene *CScene::Create(MODE mode)
 	case CScene::MODE_SELECTMODE:
 
 		pScene = new CSelectMode;
+
+		break;
+	case CScene::MODE_SELECTSTAGE:
+
+		pScene = new CSelectStage;
 
 		break;
 	case CScene::MODE_TUTORIAL:
