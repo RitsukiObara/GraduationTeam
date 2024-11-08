@@ -106,7 +106,7 @@ void COcean::Update(void)
 	m_fSpeed += 0.007f * OceanFlowLevel;
 
 	//OceanRotState();
-	//OceanCycleTimer();
+	OceanCycleTimer();
 
 	universal::LimitRot(&m_fSpeed);
 
