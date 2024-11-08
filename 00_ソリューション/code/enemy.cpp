@@ -12,6 +12,7 @@
 #include "inputManager.h"
 #include "inputkeyboard.h"
 #include "iceManager.h"
+#include "flowIce.h"
 #include "debugproc.h"
 #include "seals.h"
 #include "ocean.h"
@@ -46,7 +47,7 @@ std::vector<CEnemy*> CEnemy::s_vector = {};	// 自身のポインタ
 // 優先順位を決めるコンストラクタ
 //=====================================================
 CEnemy::CEnemy(int nPriority) : m_nGridV(0), m_nGridH(0),m_state(E_State::STATE_NONE), m_pIceLand(nullptr), m_bFollowIce(false),
-m_move(),m_nGridVDest(0), m_nGridHDest(0), m_fSpeedMove(0.0f), m_fTimerDeath(0.0f), m_bTurn(false), m_bEnableMove(false)
+m_move(),m_nGridVDest(0), m_nGridHDest(0), m_fSpeedMove(0.0f), m_fTimerDeath(0.0f), m_bTurn(false), m_bEnableMove(false), m_pLandSystemFlow(nullptr)
 {
 	s_vector.push_back(this);
 }
@@ -191,6 +192,9 @@ void CEnemy::Update(void)
 	// 移動量を位置に加算
 	AddPosition(m_move);
 
+	// 漂流開始の判定
+	StartFlows();
+
 #ifdef _DEBUG
 	Debug();
 #endif
@@ -213,8 +217,6 @@ void CEnemy::FollowIce(void)
 	
 	if (pIceStand != nullptr)
 		pos.y = pIceStand->GetPosition().y;	// 高さを合わせる
-	else
-		SetState(E_State::STATE_DRIFT);	// 漂流状態にする
 
 	pos.y += HEIGHT_ICE;
 
@@ -632,6 +634,93 @@ void CEnemy::DriftDeath(void)
 
 	if (!universal::IsInScreen(pos, nullptr))
 		Death();	// 画面外に出たら死亡時の処理に入る
+}
+
+//=====================================================
+// 漂流の開始
+//=====================================================
+void CEnemy::StartFlows(void)
+{
+	if (FindFlowIce())
+	{// 漂流する氷が見つかれば、漂流状態へ移行
+		m_state = E_State::STATE_DRIFT;
+	}
+}
+
+//=====================================================
+// 漂流する氷の検出
+//=====================================================
+bool CEnemy::FindFlowIce(void)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return false;
+
+	vector<CFlowIce*> apSystemFlow = CFlowIce::GetInstance();
+
+	for (auto itSystem : apSystemFlow)
+	{
+		if (itSystem == nullptr)
+			continue;
+
+		// 流氷システムが所持する氷の取得
+		vector<CIce*> apIce = itSystem->GetIce();
+
+		for (auto itIce : apIce)
+		{
+			D3DXVECTOR3 posPlayer = GetPosition();
+			D3DXVECTOR3 posIce = itIce->GetPosition();
+
+			if (pIceMgr->IsInIce(posPlayer, itIce, 1.0f))
+			{// どれかに乗っていたら現在のシステムを保存して関数を終了
+				m_pLandSystemFlow = itSystem;
+
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+//=====================================================
+// 漂流中の処理
+//=====================================================
+void CEnemy::StayFlow(void)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	if (m_pLandSystemFlow == nullptr)
+		return;
+
+	if (m_pLandSystemFlow->IsDeath())
+	{
+		// 漂流の終了
+		EndFlows();
+	}
+
+	// 海流のベクトル取得
+	CIceManager::E_Stream dir = pIceMgr->GetDirStream();
+	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[dir];
+
+	// 流れる速度に正規化して位置を加算
+	float fSpeedFlow = pIceMgr->GetOceanLevel();
+	D3DXVec3Normalize(&vecStream, &vecStream);
+	vecStream *= fSpeedFlow;
+	AddPosition(vecStream);
+}
+
+//=====================================================
+// 漂流の終了
+//=====================================================
+void CEnemy::EndFlows(void)
+{
+	m_state = E_State::STATE_STOP;
+	m_pLandSystemFlow = nullptr;
 }
 
 //=====================================================

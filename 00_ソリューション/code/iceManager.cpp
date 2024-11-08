@@ -1059,7 +1059,7 @@ void CIceManager::Debug(void)
 				}
 			}
 
-			CEffect3D::Create(m_aGrid[i][j].pos, 50.0f, 6, col);
+			//CEffect3D::Create(m_aGrid[i][j].pos, 50.0f, 6, col);
 		}
 	}
 
@@ -1197,9 +1197,6 @@ bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH
 			{// •X‚ÌƒTƒCƒY•ª‚Ì”¼Œa‚æ‚è¬‚³‚©‚Á‚½‚çæ‚Á‚Ä‚é”»’è
 				*pIdxV = i;
 				*pIdxH = j;
-
-				if (i == 0 && j == 0)
-					int n = 0;
 
 				return true;
 			}

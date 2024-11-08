@@ -17,6 +17,7 @@
 //*****************************************************
 class CPolygon3D;
 class CIce;
+class CFlowIce;
 
 //*****************************************************
 // クラスの定義
@@ -118,6 +119,11 @@ private:
 	void DriftDeath(void);	// 漂流中の死亡関数
 	void Debug(void);	// デバッグ処理
 
+	void StartFlows(void);	// 漂流開始
+	bool FindFlowIce(void);	// 漂流する氷の検出
+	void StayFlow(void);	// 漂流中の処理
+	void EndFlows(void);	// 漂流終了
+
 	// メンバ変数
 	int m_nGridV;	// 今いるグリッドの縦番号
 	int m_nGridH;	// 今いるグリッドの横番号
@@ -134,6 +140,7 @@ private:
 	bool m_bFollowIce;	// 氷追従フラグ
 	E_State m_state;	// 状態
 	CIce *m_pIceLand;	// 乗っている氷
+	CFlowIce *m_pLandSystemFlow;	// 乗ってる流氷システム
 	D3DXVECTOR3 m_move;	// 移動量
 	
 	// 静的メンバ変数

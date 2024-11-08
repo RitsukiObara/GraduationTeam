@@ -206,7 +206,7 @@ void CFlowIce::Debug(void)
 	{
 		D3DXVECTOR3 posIce = it->GetPosition();
 
-		CEffect3D::Create(posIce, 50.0f, 5, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+		//CEffect3D::Create(posIce, 50.0f, 5, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 	}
 }
 
