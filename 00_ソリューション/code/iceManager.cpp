@@ -1198,6 +1198,9 @@ bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH
 				*pIdxV = i;
 				*pIdxH = j;
 
+				if (i == 0 && j == 0)
+					int n = 0;
+
 				return true;
 			}
 		}
