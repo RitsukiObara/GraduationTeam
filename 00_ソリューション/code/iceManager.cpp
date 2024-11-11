@@ -344,7 +344,7 @@ void CIceManager::StopIce(CIce *pIce)
 //=====================================================
 // •X‚ð‚Â‚Â‚­
 //=====================================================
-void CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos)
+bool CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos)
 {
 	CIce *pIceStand = m_aGrid[nNumV][nNumH].pIce;
 	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
@@ -376,7 +376,7 @@ void CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos)
 
 	// “Ë‚Á‚Â‚¯‚é•X‚©‚Ìƒ`ƒFƒbƒN
 	if (!CanPeck(pIcePeck, nNumBreakV, nNumBreakH))
-		return;
+		return false;
 
 	// •X‚ð“Ë‚Á‚Â‚¢‚½”»’è‚É‚·‚é
 	if (pIcePeck)
@@ -417,6 +417,8 @@ void CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos)
 
 	// •X‚ª‰ó‚ê‚éƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚½‚ç•X‚ð‰ó‚·
 	BreakIce();
+
+	return true;
 }
 
 //=====================================================

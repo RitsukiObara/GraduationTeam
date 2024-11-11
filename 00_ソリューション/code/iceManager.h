@@ -56,7 +56,7 @@ public:
 	CIce *CreateIce(int nGridV, int nGridH, CIce::E_Type type = CIce::E_Type::TYPE_NORMAL);	// •X‚Ì¶¬
 	CIce *CreateFlowIce(int nGridV,int nGridH, CIce::E_Type type = CIce::E_Type::TYPE_NORMAL);	// —¬•X‚Ì¶¬
 	void StopIce(CIce *pIce);	// •X‚Ì’â~
-	void PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos);	// •X‚ğ‚Â‚Â‚­
+	bool PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos);	// •X‚ğ‚Â‚Â‚­
 	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// •X‚Ì’Ç‰Á
 	bool FindIce(int nNumV, int nNumH, int nIdx,CIce *pIceStand,vector<CIce*> apIceLast,bool bBreak);	// ƒAƒCƒX‚Ì”­Œ©
 	vector<CIce*> GetAroundIce(int nNumV, int nNumH);	// ü•Ó‚Ì•X‚ğæ“¾
