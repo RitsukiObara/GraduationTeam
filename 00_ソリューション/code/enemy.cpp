@@ -36,6 +36,8 @@ const float LINE_START_TURN = D3DX_PI * 0.6f;	// 振り向きを開始するしきい値
 const float FACT_ROTATION_TURN = 0.07f;	// 振り向き回転係数
 
 const float LINE_ENABLE_MOVE = 0.1f;	// 移動開始できる角度のしきい値
+
+const float RATE_STOP_FLOW_ICE_RADIUS = 2.0f;	// 漂流停止する際に検出する氷の半径の割合
 }
 
 //*****************************************************
@@ -217,6 +219,8 @@ void CEnemy::FollowIce(void)
 	
 	if (pIceStand != nullptr)
 		pos.y = pIceStand->GetPosition().y;	// 高さを合わせる
+	else
+		return;
 
 	pos.y += HEIGHT_ICE;
 
@@ -583,43 +587,8 @@ void CEnemy::CheckChangeGrid(void)
 //=====================================================
 void CEnemy::UpdateDrift(void)
 {
-	CIceManager *pIceMgr = CIceManager::GetInstance();
-
-	if (pIceMgr == nullptr)
-		return;
-
-	// 海流のベクトル取得
-	CIceManager::E_Stream dir = pIceMgr->GetDirStream();
-	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[dir];
-
-	// 流れる速度に正規化して位置を加算
-	float fSpeedFlow = pIceMgr->GetOceanLevel();
-	D3DXVec3Normalize(&vecStream, &vecStream);
-	vecStream *= fSpeedFlow;
-	AddPosition(vecStream);
-
-	COcean *pOcean = COcean::GetInstance();
-
-	if (pOcean == nullptr)
-		return;
-
-	// 海と一緒に氷を動かす処理
-	D3DXVECTOR3 pos = GetPosition();
-
-	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	SetMove(move);
-
-	pos.y = pOcean->GetHeight(pos, &move) + HEIGHT_ICE;
-
-	SetPosition(pos);
-
-	// グリッドが合ったら止まる
-	pIceMgr->GetIdxGridFromPosition(pos, &m_nGridV, &m_nGridH,1.5f);
-
-	CIce *pIce = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
-
-	if (pIce != nullptr)
-		SetState(CEnemy::E_State::STATE_MOVE);
+	// 漂流中の処理
+	StayFlow();
 
 	// 漂流中の死
 	DriftDeath();
@@ -644,6 +613,7 @@ void CEnemy::StartFlows(void)
 	if (FindFlowIce())
 	{// 漂流する氷が見つかれば、漂流状態へ移行
 		m_state = E_State::STATE_DRIFT;
+		SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	}
 }
 
@@ -672,7 +642,7 @@ bool CEnemy::FindFlowIce(void)
 			D3DXVECTOR3 posPlayer = GetPosition();
 			D3DXVECTOR3 posIce = itIce->GetPosition();
 
-			if (pIceMgr->IsInIce(posPlayer, itIce, 1.0f))
+			if (pIceMgr->IsInIce(posPlayer, itIce, RATE_STOP_FLOW_ICE_RADIUS))
 			{// どれかに乗っていたら現在のシステムを保存して関数を終了
 				m_pLandSystemFlow = itSystem;
 
@@ -694,13 +664,17 @@ void CEnemy::StayFlow(void)
 	if (pIceMgr == nullptr)
 		return;
 
-	if (m_pLandSystemFlow == nullptr)
-		return;
-
-	if (m_pLandSystemFlow->IsDeath())
-	{
-		// 漂流の終了
-		EndFlows();
+	if (m_pLandSystemFlow != nullptr)
+	{// 流氷システムを検出出来た場合の処理
+		if (m_pLandSystemFlow->IsDeath())
+		{
+			// 漂流の終了
+			EndFlows();
+		}
+	}
+	else
+	{// 流氷システムが検出できない場合の処理
+		JudgeEndFlow();
 	}
 
 	// 海流のベクトル取得
@@ -715,12 +689,42 @@ void CEnemy::StayFlow(void)
 }
 
 //=====================================================
+// 漂流終了の判定
+//=====================================================
+void CEnemy::JudgeEndFlow(void)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	// グリッドが合ったら止まる
+	D3DXVECTOR3 pos = GetPosition();
+	pIceMgr->GetIdxGridFromPosition(pos, &m_nGridV, &m_nGridH, RATE_STOP_FLOW_ICE_RADIUS);
+
+	CIce *pIce = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
+
+	if (pIce != nullptr)
+		EndFlows();	// 漂流の終了
+}
+
+//=====================================================
 // 漂流の終了
 //=====================================================
 void CEnemy::EndFlows(void)
 {
 	m_state = E_State::STATE_STOP;
 	m_pLandSystemFlow = nullptr;
+
+	// 止まった先でのグリッド検出
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+	if (pIceMgr == nullptr)
+		return;
+
+	D3DXVECTOR3 pos = GetPosition();
+	pIceMgr->GetIdxGridFromPosition(pos, &m_nGridV, &m_nGridH, RATE_STOP_FLOW_ICE_RADIUS);
+
+	CIce *pIce = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
 }
 
 //=====================================================
@@ -776,12 +780,16 @@ void CEnemy::Debug(void)
 		return;
 
 	pDebugProc->Print("\n敵情報==========================");
+	pDebugProc->Print("\n位置[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
+	pDebugProc->Print("\n移動量[%f,%f,%f]", GetMove().x, GetMove().y, GetMove().z);
 	pDebugProc->Print("\n現在グリッド[%d,%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\n次のグリッド[%d,%d]", m_nGridVNext, m_nGridHNext);
 	pDebugProc->Print("\n目標グリッド[%d,%d]", m_nGridVDest, m_nGridHDest);
 
 	pDebugProc->Print("\n今の向き目標の向き[%f,%f]", GetRotation().y, m_fRotTurn);
 	pDebugProc->Print("\n振り向き[%d]", m_bTurn);
+
+	pDebugProc->Print("\n流氷システムある[%d]", m_pLandSystemFlow != nullptr);
 
 	pDebugProc->Print("\n現在の状態[%d]", m_state);
 }
