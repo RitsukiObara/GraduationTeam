@@ -30,6 +30,10 @@ const float LENGTH_FOLLOW = 412.0f;	// 追従時のカメラ距離
 const float ANGLE_FOLLOW = 0.73f;	// 追従時のカメラ角度
 const D3DXVECTOR3 POSR_GAME = { 0.0f,0.0f,-200.0f };	// ゲーム中の注視点位置
 const D3DXVECTOR3 POSV_GAME = { 0.0f,1544.0f,-681.0f };	// ゲーム中の視点位置
+
+const D3DXVECTOR3 POSR_DEFAULT_SELECTSTAGE = { 0.0f,0.0f,-200.0f };	// ステージセレクト中のデフォルト注視点位置
+const D3DXVECTOR3 POSV_DEFAULT_SELECTSTAGE = { 0.0f,1544.0f,-681.0f };	// ステージセレクト中のデフォルト視点位置
+
 }
 
 //***********************************************************************************
@@ -159,4 +163,30 @@ void CCameraStateTitle::Update(CCamera* pCamera)
 	CDebugProc::GetInstance()->Print("\n注視点[%f, %f, %f]", pInfoCamera->posR.x, pInfoCamera->posR.y, pInfoCamera->posR.z);
 	CDebugProc::GetInstance()->Print("\nカメラ距離[%f]", pInfoCamera->fLength);
 	CDebugProc::GetInstance()->Print("\n角度  [%f, %f, %f]", pInfoCamera->rot.x, pInfoCamera->rot.y, pInfoCamera->rot.z);
+}
+
+//**************************************************************************
+// ステージセレクト
+//**************************************************************************
+//=====================================================
+// 初期化
+//=====================================================
+void CCameraStateSelectStage::Init(CCamera* pCamera)
+{
+	if (pCamera == nullptr)
+		return;
+
+	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+
+	// カメラ視点、注視点位置初期化
+	pInfoCamera->posR = POSR_DEFAULT_SELECTSTAGE;
+	pInfoCamera->posV = POSV_DEFAULT_SELECTSTAGE;
+}
+
+//=====================================================
+// 更新
+//=====================================================
+void CCameraStateSelectStage::Update(CCamera* pCamera)
+{
+
 }

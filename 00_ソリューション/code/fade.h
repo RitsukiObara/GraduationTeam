@@ -43,7 +43,7 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	void SetFade(CScene::MODE modeNext,bool bTrans = true);
+	virtual void SetFade(CScene::MODE modeNext,bool bTrans = true);
 	FADE GetState(void);
 	void SetColor(D3DXCOLOR col) { m_col = col; }
 	static CFade *GetInstance(void) { return m_pFade; }
