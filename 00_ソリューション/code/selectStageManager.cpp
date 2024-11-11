@@ -19,6 +19,8 @@
 #include "fade.h"
 #include "collision.h"
 #include "manager.h"
+#include "particle.h"
+#include "ocean.h"
 
 //*****************************************************
 // マクロ定義
@@ -37,6 +39,8 @@ const float TIME_ENTER = 2.0f;	// エンターにかかる時間
 
 const float SPEED_SCALING_PENGUIN = 0.05f;	// ペンギンのスケーリング速度
 const float SPEED_MOVE_ENTER = 0.01f;	// エンター時の移動速度
+
+const float SPEED_PARTICLE = 22.0f;	// パーティクルの速度
 }
 
 //*****************************************************
@@ -88,6 +92,9 @@ HRESULT CSelectStageManager::Init(void)
 
 	// ペンギンの生成
 	m_pPenguin = CSelectStagePenguin::Create();
+
+	// 海の生成
+	COcean::Create();
 
 	return S_OK;
 }
@@ -199,6 +206,14 @@ void CSelectStageManager::SetStage(void)
 
 		// 状態の初期設定
 		pInfoStage->state = E_StateStage::STATE_NORMAL;
+
+		if (pInfoStage != *(m_aInfoStage.end() - 1))
+		{// パーティクル位置の生成
+			CGameObject *pObject = new CGameObject;
+
+			m_aParticlePos.push_back(pObject);
+			pObject->SetPosition(pInfoStage->pos);
+		}
 	}
 }
 
@@ -237,6 +252,9 @@ void CSelectStageManager::Select(void)
 
 		// スケーリング処理
 		Scaling(pInfoStage);
+
+		// パーティクルを出す
+		SetParticle(i);
 
 		if (pInfoStage->pCollision == nullptr)
 			continue;
@@ -291,6 +309,44 @@ void CSelectStageManager::Scaling(S_InfoStage *pInfoStage)
 	fScale += (fScaleDest - fScale) * SPEED_SCALING_STAGE;
 
 	pModel->SetScale(fScale);
+}
+
+//=====================================================
+// パーティクルの発生
+//=====================================================
+void CSelectStageManager::SetParticle(int nIdx)
+{
+	if (nIdx >= (int)m_aInfoStage.size() - 1)
+		return;
+
+	// 差分ベクトルを移動速度に正規化
+	D3DXVECTOR3 pos = m_aInfoStage[nIdx]->pos;
+	D3DXVECTOR3 posNext = m_aInfoStage[nIdx + 1]->pos;
+
+	D3DXVECTOR3 vecDiff = posNext - pos;
+
+	D3DXVECTOR3 move = vecDiff;
+	universal::VecConvertLength(&move, SPEED_PARTICLE);
+
+	// 移動量を反映
+	m_aParticlePos[nIdx]->AddPosition(move);
+
+	// パーティクルを発生
+	D3DXVECTOR3 posParticle = m_aParticlePos[nIdx]->GetPosition();
+	CParticle::Create(posParticle, CParticle::TYPE::TYPE_STAR_HIT);
+
+	// 次の位置に一定以上近づいたら元の位置に戻す
+	if (universal::DistCmpFlat(posParticle, posNext, RADIUS_COLLISION_PUSHOUT * RATE_SELECT_COLLISION, nullptr))
+	{
+		D3DXVECTOR3 posBack = pos;
+		D3DXVECTOR3 vecLength = vecDiff;
+
+		universal::VecConvertLength(&vecLength, RADIUS_COLLISION_PUSHOUT * RATE_SELECT_COLLISION);
+
+		posBack += vecLength;
+
+		m_aParticlePos[nIdx]->SetPosition(posBack);
+	}
 }
 
 //=====================================================

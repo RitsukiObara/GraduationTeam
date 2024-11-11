@@ -19,6 +19,7 @@
 class CCollisionSphere;
 class CObjectX;
 class CSelectStagePenguin;
+class CGameObject;
 
 //*****************************************************
 // クラスの定義
@@ -68,6 +69,7 @@ private:
 	void SetStage(void);	// ステージの設置
 	void Select(void);	// 選択処理
 	void Scaling(S_InfoStage *pInfoStage);	// スケーリング処理
+	void SetParticle(int nIdx);	// パーティクルの発生
 
 	void StartEnter(void);	// エンター開始
 	void StayEnter(void);	// エンター中の処理
@@ -81,6 +83,7 @@ private:
 	bool m_bEnter;	// エンターしたフラグ
 	float m_fTimerFade;	// フェードまでのタイマー
 	int m_nIdxSelect;	// 選んだステージ番号
+	vector<CGameObject*> m_aParticlePos;	// パーティクルの位置用オブジェクト
 
 	// 静的メンバ変数
 };
