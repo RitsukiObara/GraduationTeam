@@ -71,6 +71,7 @@ public:
 	D3DXVECTOR3 GetPosAbove(void) { return m_posAbove; }
 	void SetPosAbove(D3DXVECTOR3 posAbove) { m_posAbove = posAbove; }
 	void SkipToDest(void);	// 目標位置までカメラの視点注視点を動かす
+	CCameraState *GetState(void) { return m_pState; }	// ステイトの取得
 
 private:
 	Camera m_camera;	// 構造体の情報
@@ -82,6 +83,9 @@ namespace Camera
 {
 // 行動の切り替え
 void ChangeState(CCameraState *pBehavior);
+
+// ステイトの取得
+CCameraState *GetState(void);
 
 // ロールの調整
 void ControlRoll(float fDist, float fFact);

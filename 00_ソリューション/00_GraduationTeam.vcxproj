@@ -183,6 +183,7 @@
     <ClCompile Include="code\selectmode.cpp" />
     <ClCompile Include="code\selectStage.cpp" />
     <ClCompile Include="code\selectStageManager.cpp" />
+    <ClCompile Include="code\selectStagePenguin.cpp" />
     <ClCompile Include="code\UI_combo.cpp" />
     <ClCompile Include="code\debris.cpp" />
     <ClCompile Include="code\debrisspawner.cpp" />
@@ -285,6 +286,7 @@
     <ClInclude Include="code\selectmode.h" />
     <ClInclude Include="code\selectStage.h" />
     <ClInclude Include="code\selectStageManager.h" />
+    <ClInclude Include="code\selectStagePenguin.h" />
     <ClInclude Include="code\UI_combo.h" />
     <ClInclude Include="code\debris.h" />
     <ClInclude Include="code\debrisSpawner.h" />

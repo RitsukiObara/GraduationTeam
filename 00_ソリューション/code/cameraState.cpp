@@ -31,9 +31,8 @@ const float ANGLE_FOLLOW = 0.73f;	// 追従時のカメラ角度
 const D3DXVECTOR3 POSR_GAME = { 0.0f,0.0f,-200.0f };	// ゲーム中の注視点位置
 const D3DXVECTOR3 POSV_GAME = { 0.0f,1544.0f,-681.0f };	// ゲーム中の視点位置
 
-const D3DXVECTOR3 POSR_DEFAULT_SELECTSTAGE = { 0.0f,0.0f,-200.0f };	// ステージセレクト中のデフォルト注視点位置
-const D3DXVECTOR3 POSV_DEFAULT_SELECTSTAGE = { 0.0f,1544.0f,-681.0f };	// ステージセレクト中のデフォルト視点位置
-
+const D3DXVECTOR3 POSR_DEFAULT_SELECTSTAGE = { 0.0f,0.0f,-400.0f };	// ステージセレクト中のデフォルト注視点位置
+const D3DXVECTOR3 POSV_DEFAULT_SELECTSTAGE = { 0.0f,2244.0f,-2001.0f };	// ステージセレクト中のデフォルト視点位置
 }
 
 //***********************************************************************************

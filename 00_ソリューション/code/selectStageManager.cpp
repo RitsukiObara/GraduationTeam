@@ -10,15 +10,20 @@
 //*****************************************************
 #include "selectStageManager.h"
 #include "skybox.h"
+#include "selectStagePenguin.h"
 #include "camera.h"
 #include "cameraState.h"
+#include "inputManager.h"
+#include "debugproc.h"
+#include "inputkeyboard.h"
+#include "fade.h"
 
 //*****************************************************
 // マクロ定義
 //*****************************************************
 namespace
 {
-
+const string PATH_TEXT = "data\\TEXT\\selectStage.txt";	// テキストパス
 }
 
 //*****************************************************
@@ -62,6 +67,15 @@ HRESULT CSelectStageManager::Init(void)
 	// カメラのステイト設定
 	Camera::ChangeState(new CCameraStateSelectStage);
 
+	// 読込
+	Load();
+
+	// ステージの設置
+	SetStage();
+
+	// ペンギンの生成
+	CSelectStagePenguin::Create();
+
 	return S_OK;
 }
 
@@ -70,7 +84,94 @@ HRESULT CSelectStageManager::Init(void)
 //=====================================================
 void CSelectStageManager::Load(void)
 {
+	std::ifstream file(PATH_TEXT);
 
+	if (file.is_open())
+	{
+		std::string temp;
+
+		while (std::getline(file, temp))
+		{// 読み込むものがなくなるまで読込
+			std::istringstream iss(temp);
+			std::string key;
+			iss >> key;
+
+			if (key == "SETSTAGE")
+			{// ステージ情報読込開始
+				// ステージ情報の生成
+				S_InfoStage *pInfoStage = new S_InfoStage;
+
+				if (pInfoStage == nullptr)
+					continue;
+
+				LoadStage(file, temp, pInfoStage);
+
+				m_aInfoStage.push_back(pInfoStage);
+			}
+
+			if (file.eof())
+			{// 読み込み終了
+				break;
+			}
+		}
+
+		file.close();
+	}
+	else
+	{
+		assert(("ファイルが開けませんでした", false));
+	}
+}
+
+//=====================================================
+// ステージの読込
+//=====================================================
+void CSelectStageManager::LoadStage(std::ifstream& file, string str, S_InfoStage *pInfoStage)
+{
+	if (pInfoStage == nullptr)
+		return;
+
+	while (std::getline(file, str))
+	{// 読込開始
+		std::istringstream iss(str);
+		std::string key;
+		iss >> key;
+
+		if (key == "END_SETSTAGE")
+		{// 終了
+			break;
+		}
+
+		if (key == "MODEL")
+		{// パス
+			iss >> str >> pInfoStage->pathModel;
+		}
+
+		if (key == "POS")
+		{// 位置
+			iss >> str >> pInfoStage->pos.x >> pInfoStage->pos.y >> pInfoStage->pos.z;
+		}
+	}
+}
+
+//=====================================================
+// ステージの設置
+//=====================================================
+void CSelectStageManager::SetStage(void)
+{
+	if (m_aInfoStage.empty())
+		return;
+
+	for (S_InfoStage *pInfoStage : m_aInfoStage)
+	{
+		// ステージのXモデルの設置
+		CObjectX *pObjectX = CObjectX::Create();
+
+		int nIdxModel = CModel::Load(&pInfoStage->pathModel[0]);
+		pObjectX->BindModel(nIdxModel);
+
+		pObjectX->SetPosition(pInfoStage->pos);
+	}
 }
 
 //=====================================================
@@ -87,6 +188,29 @@ void CSelectStageManager::Uninit(void)
 void CSelectStageManager::Update(void)
 {
 
+#ifdef _DEBUG
+	Debug();
+#endif
+}
+
+//=====================================================
+// デバッグ処理
+//=====================================================
+void CSelectStageManager::Debug(void)
+{
+	CDebugProc* pDebugProc = CDebugProc::GetInstance();
+	CInputKeyboard* pKeyboard = CInputKeyboard::GetInstance();
+
+	if (pDebugProc == nullptr || pKeyboard == nullptr)
+		return;
+
+	CFade *pFade = CFade::GetInstance();
+
+	if (pFade == nullptr)
+		return;
+
+	if (pKeyboard->GetTrigger(DIK_1))
+		pFade->SetFade(CScene::MODE::MODE_GAME);
 }
 
 //=====================================================
