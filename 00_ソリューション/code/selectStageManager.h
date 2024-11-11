@@ -31,6 +31,7 @@ public:
 	void Uninit(void) override;
 	void Update(void) override;
 	void Draw(void) override;
+	void Load(void);	// “Ç‚İ‚İˆ—
 
 	// Ã“Iƒƒ“ƒoŠÖ”
 	static CSelectStageManager *Create(void);	// ¶¬ˆ—

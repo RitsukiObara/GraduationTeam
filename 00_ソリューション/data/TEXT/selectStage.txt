@@ -5,8 +5,9 @@
 #
 #====================================================================
 
-SETSTAGE
-	MODEL = data\\MODEL\\
+SETSTAGE	#0 第一ステージ
+	MODEL = data\\MODEL\\object\\Stage_Obj000.x
+	POS = 0.0 0.0 0.0
 END_SETSTAGE
 
 END_SCRIPT

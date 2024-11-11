@@ -37,7 +37,7 @@ const float FACT_ROTATION_TURN = 0.07f;	// U‚èŒü‚«‰ñ“]ŒW”
 
 const float LINE_ENABLE_MOVE = 0.1f;	// ˆÚ“®ŠJŽn‚Å‚«‚éŠp“x‚Ì‚µ‚«‚¢’l
 
-const float RATE_STOP_FLOW_ICE_RADIUS = 2.0f;	// •Y—¬’âŽ~‚·‚éÛ‚ÉŒŸo‚·‚é•X‚Ì”¼Œa‚ÌŠ„‡
+const float RATE_STOP_FLOW_ICE_RADIUS = 1.0f;	// •Y—¬’âŽ~‚·‚éÛ‚ÉŒŸo‚·‚é•X‚Ì”¼Œa‚ÌŠ„‡
 }
 
 //*****************************************************
