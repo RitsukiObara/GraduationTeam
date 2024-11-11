@@ -295,36 +295,41 @@ void CPlayer::Forward(void)
 
 	float fSpeed = SPEED_MOVE_MAX;
 
-	if (LINE_INPUT_MOVE < fLengthAxis)
-	{// 移動軸操作がしきい値を越えていたら、移動速度の立ち上がりを開始
-		m_fTimerStartMove += CManager::GetDeltaTime();
+	// 突っつきモーション中は行わない
+	int nMotion = GetMotion();
+	if (nMotion != MOTION_PECK)
+	{
+		if (LINE_INPUT_MOVE < fLengthAxis)
+		{// 移動軸操作がしきい値を越えていたら、移動速度の立ち上がりを開始
+			m_fTimerStartMove += CManager::GetDeltaTime();
 
-		m_fragMotion.bWalk = true;
+			m_fragMotion.bWalk = true;
+		}
+		else
+		{// 減速
+			m_fTimerStartMove = 0.0f;
+
+			m_fragMotion.bWalk = false;
+		}
+
+		// 値の補正
+		universal::LimitValuefloat(&m_fTimerStartMove, TIME_MAX_SPEED, 0.0f);
+
+		// イージングで補正
+		fSpeed *= easing::EaseOutQuart(m_fTimerStartMove / TIME_MAX_SPEED);
+
+		// 移動速度の設定
+		D3DXVECTOR3 move = GetMove();
+
+		// 向いている方向にベクトルを伸ばす
+		vecMove -= {sinf(rot.y) * fSpeed, 0.0f, cosf(rot.y) * fSpeed};
+		move += vecMove;
+
+		SetMove(move);
+
+		// 移動量の反映
+		AddPosition(move);
 	}
-	else
-	{// 減速
-		m_fTimerStartMove = 0.0f;
-
-		m_fragMotion.bWalk = false;
-	}
-
-	// 値の補正
-	universal::LimitValuefloat(&m_fTimerStartMove, TIME_MAX_SPEED, 0.0f);
-
-	// イージングで補正
-	fSpeed *= easing::EaseOutQuart(m_fTimerStartMove / TIME_MAX_SPEED);
-
-	// 移動速度の設定
-	D3DXVECTOR3 move = GetMove();
-
-	// 向いている方向にベクトルを伸ばす
-	vecMove -= {sinf(rot.y) * fSpeed, 0.0f, cosf(rot.y) * fSpeed};
-	move += vecMove;
-
-	SetMove(move);
-
-	// 移動量の反映
-	AddPosition(move);
 }
 
 //=====================================================
@@ -346,6 +351,11 @@ void CPlayer::DecreaseMove(void)
 void CPlayer::FactingRot(void)
 {
 	if (m_pInputMgr == nullptr)
+		return;
+
+	// 突っつきモーション中は行わない
+	int nMotion = GetMotion();
+	if (nMotion == MOTION_PECK)
 		return;
 
 	// 目標方向の設定
@@ -372,6 +382,11 @@ void CPlayer::FactingRot(void)
 void CPlayer::JudgeTurn(void)
 {
 	if (m_pInputMgr == nullptr)
+		return;
+
+	// 突っつきモーション中は行わない
+	int nMotion = GetMotion();
+	if (nMotion == MOTION_PECK)
 		return;
 
 	// 差分角度を作成
@@ -659,7 +674,8 @@ void CPlayer::InputPeck(void)
 		rot.y += D3DX_PI;
 		universal::LimitRot(&rot.y);
 
-		pIceManager->PeckIce(m_nGridV, m_nGridH, rot.y, pos);
+		if (pIceManager->PeckIce(m_nGridV, m_nGridH, rot.y, pos))
+			SetMotion(MOTION::MOTION_PECK);
 	}
 }
 
@@ -728,9 +744,13 @@ void CPlayer::EndJump(void)
 void CPlayer::ManageMotion(void)
 {
 	int nMotion = GetMotion();
-	bool bFinifh = IsFinish();
+	bool bFinish = IsFinish();
 
-	if (m_fragMotion.bWalk)
+	if (nMotion == MOTION_PECK && !bFinish)
+	{
+
+	}
+	else if (m_fragMotion.bWalk)
 	{// 歩きモーションフラグ有効
 		if (nMotion != MOTION::MOTION_WALK)
 			SetMotion(MOTION::MOTION_WALK);
@@ -740,6 +760,14 @@ void CPlayer::ManageMotion(void)
 		if(nMotion != MOTION::MOTION_NEUTRAL)
 			SetMotion(MOTION::MOTION_NEUTRAL);
 	}
+}
+
+//=====================================================
+// モーションイベント
+//=====================================================
+void CPlayer::Event(EVENT_INFO* pEventInfo)
+{
+
 }
 
 //=====================================================

@@ -441,7 +441,17 @@ END_MOTIONSET
 MOTIONSET
     LOOP = 0
     NUM_KEY = 3
+	NUM_EVENT = 1
 
+    EVENTSET
+        KEY = 0
+        FRAME = 6
+        NUM_FRAME = 1.0
+        RADIUS = 20.500000
+        PARENT = 0
+        POS = 0.000000 0.0 0.0
+    END_EVENTSET
+    
     KEYSET     #---<< 0 / 3 >>
         FRAME = 10
         KEY # -----[0]----
