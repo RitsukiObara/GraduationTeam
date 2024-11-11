@@ -22,9 +22,9 @@ public:
 	~CGameObject() {};	// デストラクタ
 
 	// メンバ関数
-	virtual HRESULT Init(void) = 0;	// 初期化
+	virtual HRESULT Init(void) { return S_OK; }	// 初期化
 	virtual void Uninit(void) { CObject::Release(); }	// 終了
-	virtual void Update(void) = 0;	// 更新
+	virtual void Update(void) {};	// 更新
 	virtual void Draw(void) {};	// 描画
 
 	// 変数取得・設定関数

@@ -785,6 +785,10 @@ void CMeshField::Wave(float fRot)
 
 	COcean* pOcean = COcean::GetInstance();
 	CIceManager* pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return;
+
 	CIceManager::E_Stream nOceanRot = CIceManager::GetInstance()->GetDirStream();	// ŠC—¬‚ÌŒü‚«‚ðŽæ“¾
 	CIceManager::E_Stream nOceanRotNext = CIceManager::GetInstance()->GetDirStreamNext();	// ŽŸ‚ÌŠC—¬‚ÌŒü‚«‚ðŽæ“¾
 

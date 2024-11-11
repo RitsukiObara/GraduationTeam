@@ -99,7 +99,12 @@ void COcean::Uninit(void)
 //=====================================================
 void COcean::Update(void)
 {
-	float OceanFlowLevel = CIceManager::GetInstance()->GetOceanLevel();	//	海流レベルの取得
+	float OceanFlowLevel = 0.0f;
+
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if(pIceMgr != nullptr)
+		OceanFlowLevel = pIceMgr->GetOceanLevel();	//	海流レベルの取得
 
 	CMeshField::Update();
 
@@ -111,7 +116,6 @@ void COcean::Update(void)
 	universal::LimitRot(&m_fSpeed);
 
 	CMeshField::Wave(m_fSpeed);
-
 }
 
 //=====================================================
@@ -133,7 +137,12 @@ void COcean::Draw(void)
 //====================================================
 void COcean::OceanRotState(void)
 {
-	int OceanFlowKeep = CIceManager::GetInstance()->GetDirStream();
+	CIceManager* pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return;
+
+	int OceanFlowKeep = pIceManager->GetDirStream();
 	m_fRot = CMeshField::GetRotation();
 
 	//	矢印が海流の向きに流れる処理
@@ -167,7 +176,13 @@ void COcean::OceanCycleTimer(void)
 {
 	COcean* pOcean = COcean::GetInstance();
 	CIceManager* pIceManager = CIceManager::GetInstance();
-	int OceanCycleTimer = CGame::GetInstance()->GetTimeSecond();	 // 現在のタイムを取得
+
+	CGame *pGame = CGame::GetInstance();
+
+	if (pOcean == nullptr || pIceManager == nullptr || pGame == nullptr)
+		return;
+
+	int OceanCycleTimer = pGame->GetTimeSecond();	 // 現在のタイムを取得
 
 	// 10の倍数の時に入る
 	if (OceanCycleTimer % 10 == 0)
