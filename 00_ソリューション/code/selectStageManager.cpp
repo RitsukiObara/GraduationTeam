@@ -10,8 +10,13 @@
 //*****************************************************
 #include "selectStageManager.h"
 #include "skybox.h"
+#include "selectStagePenguin.h"
 #include "camera.h"
 #include "cameraState.h"
+#include "inputManager.h"
+#include "debugproc.h"
+#include "inputkeyboard.h"
+#include "fade.h"
 
 //*****************************************************
 // マクロ定義
@@ -67,6 +72,9 @@ HRESULT CSelectStageManager::Init(void)
 
 	// ステージの設置
 	SetStage();
+
+	// ペンギンの生成
+	CSelectStagePenguin::Create();
 
 	return S_OK;
 }
@@ -180,6 +188,29 @@ void CSelectStageManager::Uninit(void)
 void CSelectStageManager::Update(void)
 {
 
+#ifdef _DEBUG
+	Debug();
+#endif
+}
+
+//=====================================================
+// デバッグ処理
+//=====================================================
+void CSelectStageManager::Debug(void)
+{
+	CDebugProc* pDebugProc = CDebugProc::GetInstance();
+	CInputKeyboard* pKeyboard = CInputKeyboard::GetInstance();
+
+	if (pDebugProc == nullptr || pKeyboard == nullptr)
+		return;
+
+	CFade *pFade = CFade::GetInstance();
+
+	if (pFade == nullptr)
+		return;
+
+	if (pKeyboard->GetTrigger(DIK_1))
+		pFade->SetFade(CScene::MODE::MODE_GAME);
 }
 
 //=====================================================
