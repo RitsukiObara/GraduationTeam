@@ -26,6 +26,7 @@
 #include "fade.h"
 #include "inputManager.h"
 #include "debrisSpawner.h"
+#include "cameraState.h"
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -161,6 +162,12 @@ void CManager::Uninit(void)
 
 		delete m_pCamera;
 		m_pCamera = nullptr;
+
+		if (m_pCameraStateLast != nullptr)
+		{
+			delete m_pCameraStateLast;
+			m_pCameraStateLast = nullptr;
+		}
 	}
 
 	// テクスチャの終了・破棄
@@ -293,4 +300,22 @@ void CManager::SetMode(CScene::MODE mode)
 
 	// モード設定
 	m_mode = mode;
+}
+
+//=====================================================
+// デバッグカメラ切り替え
+//=====================================================
+void CManager::ToggleDebugCamera(void)
+{
+	m_bDebugCamera = m_bDebugCamera ? false : true;
+
+	if (m_bDebugCamera)
+	{
+		m_pCameraStateLast = Camera::GetState();
+		Camera::ChangeState(new CMoveControl);
+	}
+	else
+	{
+		Camera::ChangeState(m_pCameraStateLast);
+	}
 }
