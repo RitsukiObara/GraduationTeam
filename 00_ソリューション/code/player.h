@@ -36,6 +36,11 @@ public:
 		MOTION_LANDING,
 		MOTION_PECK,
 		MOTION_FLOW,
+		MOTION_VICTORY,
+		MOTION_FAIL,
+		MOTION_GUTS,
+		MOTION_NECKSHAKE,
+		MOTION_UNYO,
 		MOTION_MAX
 	};
 	// プレイヤー状態
@@ -114,7 +119,8 @@ private:
 	void StayJump(void);	// ジャンプ中の処理
 	void LimitInSideFlowIce(void);	// 流氷の内側に制限
 	void EndJump(void);		// ジャンプの終了
-
+	
+	void Event(EVENT_INFO* pEventInfo) override;	// モーションイベント
 	void ManageMotion(void);	// モーションの管理
 
 	void Debug(void);	// デバッグ処理

@@ -24,6 +24,7 @@ class CLight;
 class CTexture;
 class CFade;
 class CEffekseer;
+class CCameraState;
 
 //*****************************************************
 // クラスの定義
@@ -53,6 +54,14 @@ public:
 	static void SetTick(float fDeltaTime) { m_fDeltaTime = fDeltaTime; }
 
 private:
+	// メンバ関数
+	void ToggleDebugCamera(void);	// デバッグカメラの切り替え
+
+	// メンバ変数
+	bool m_bDebugCamera;	// デバッグカメラフラグ
+	CCameraState *m_pCameraStateLast;	// 前回のカメラのステイト
+
+	// 静的メンバ変数
 	static CCamera *m_pCamera;	// カメラのポインタ
 	static CLight *m_pLight;	// ライトのポインタ
 	static CEffekseer *m_pMyEffekseer;  // エフェクシアのポインタ

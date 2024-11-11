@@ -64,6 +64,7 @@ public:
 	void SetTransform(float fRadius);	// トランスフォーム設定
 	virtual bool IsCanPeck(void) { return true; };	// 突っつけるかの判定を返す
 	void ChangeState(CIceState *pState);
+	bool IsOnTopAnyObject(void);	// 何かしらが乗ってる判定
 
 	// 変数取得・設定関数
 	void SetState(E_State state) { m_state = state; }	// 状態
@@ -91,6 +92,7 @@ private:
 	// メンバ関数
 	void FollowWave(void);	// 波に追従する処理
 	void SearchOnThis(void);	// 自身に乗ってるものの検出
+	void GetOnTopObject(vector<CGameObject*> &rVector);	// 上に乗ってるものの検出
 	void Shake(void);	// 揺れの処理
 
 	// メンバ変数
