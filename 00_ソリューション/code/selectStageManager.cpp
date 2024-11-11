@@ -9,6 +9,9 @@
 // インクルード
 //*****************************************************
 #include "selectStageManager.h"
+#include "skybox.h"
+#include "camera.h"
+#include "cameraState.h"
 
 //*****************************************************
 // マクロ定義
@@ -53,6 +56,12 @@ CSelectStageManager *CSelectStageManager::Create(void)
 //=====================================================
 HRESULT CSelectStageManager::Init(void)
 {
+	// スカイボックスの生成
+	CSkybox::Create();
+
+	// カメラのステイト設定
+	Camera::ChangeState(new CCameraStateSelectStage);
+
 	return S_OK;
 }
 

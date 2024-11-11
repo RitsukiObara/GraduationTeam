@@ -66,4 +66,16 @@ private:
 
 };
 
+// ステージセレクト時
+class CCameraStateSelectStage : public CCameraState
+{
+public:
+	CCameraStateSelectStage() {};
+	void Init(CCamera *pCamera);
+	void Update(CCamera* pCamera) override;
+
+private:
+
+};
+
 #endif
