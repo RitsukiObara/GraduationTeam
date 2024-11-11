@@ -50,6 +50,7 @@
 #include "flowIceFactory.h"
 #include "destroy_score.h"
 #include "UI_combo.h"
+#include "UI_ready.h"
 
 //*****************************************************
 // マクロ定義
@@ -164,6 +165,9 @@ HRESULT CGame::Init(void)
 
 	// 流氷ファクトリーの生成
 	CFlowIceFct::Create();
+
+	//ゲームスタート告知UI
+	CUIready::Create();
 
 	return S_OK;
 }
