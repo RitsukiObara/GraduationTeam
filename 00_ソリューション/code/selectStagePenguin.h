@@ -32,6 +32,11 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	bool IsEnter(void);	// エンターの検出
+
+	// 変数取得・設定関数
+	void EnableInput(bool bValue) { m_bInput = bValue; }	// 入力可能フラグ
+	bool IsInput(void) { return m_bInput; }
 
 	// 静的メンバ関数
 	static CSelectStagePenguin *Create(void);	// 生成処理
@@ -39,13 +44,13 @@ public:
 private:
 	// メンバ関数
 	void Input(void);	// 入力
-	void InputMove(void);	// 移動入力
 	void Debug(void);	// デバッグ処理
 
 	// メンバ変数
 	D3DXVECTOR3 m_move;	// 移動量
 	CInputManager *m_pInputMgr;	// 入力マネージャー
 	CCollisionSphere *m_pClsnSphere;	// 球の判定
+	bool m_bInput;	// 入力可能フラグ
 };
 
 #endif

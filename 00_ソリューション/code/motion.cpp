@@ -415,7 +415,7 @@ void CMotion::MultiplyMtx(bool bDrawParts)
 	D3DXMATRIX mtxWorld = GetMatrix();
 	pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
 
-	D3DXMATRIX mtxRotModel, mtxTransModel;
+	D3DXMATRIX mtxRotModel, mtxTransModel, mtxScaleModel;
 	D3DXMATRIX* pMtxParent;
 	D3DXMATRIX mtx;
 
@@ -426,6 +426,11 @@ void CMotion::MultiplyMtx(bool bDrawParts)
 
 		//ワールドマトリックス初期化
 		D3DXMatrixIdentity(&mtx);
+
+		// スケールを反映
+		D3DXVECTOR3 scale = m_apParts[nCntParts]->pParts->GetScale();  // スケールを取得する関数
+		D3DXMatrixScaling(&mtxScaleModel, scale.x, scale.y, scale.z);
+		D3DXMatrixMultiply(&mtx, &mtx, &mtxScaleModel);
 
 		//向きを反映
 		D3DXMatrixRotationYawPitchRoll(&mtxRotModel,
