@@ -17,6 +17,7 @@
 #include "debugproc.h"
 #include "inputkeyboard.h"
 #include "fade.h"
+#include "collision.h"
 
 //*****************************************************
 // マクロ定義
@@ -24,6 +25,8 @@
 namespace
 {
 const string PATH_TEXT = "data\\TEXT\\selectStage.txt";	// テキストパス
+
+const float RADIUS_COLLISION_PUSHOUT = 500.0f;	// 押し出し判定の半径
 }
 
 //*****************************************************
@@ -165,12 +168,24 @@ void CSelectStageManager::SetStage(void)
 	for (S_InfoStage *pInfoStage : m_aInfoStage)
 	{
 		// ステージのXモデルの設置
-		CObjectX *pObjectX = CObjectX::Create();
+		pInfoStage->pModel = CObjectX::Create();
+
+		if (pInfoStage->pModel == nullptr)
+			return;
 
 		int nIdxModel = CModel::Load(&pInfoStage->pathModel[0]);
-		pObjectX->BindModel(nIdxModel);
+		pInfoStage->pModel->BindModel(nIdxModel);
 
-		pObjectX->SetPosition(pInfoStage->pos);
+		pInfoStage->pModel->SetPosition(pInfoStage->pos);
+
+		// 当たり判定の生成
+		pInfoStage->pCollision = CCollisionSphere::Create(CCollision::TAG::TAG_BLOCK, CCollision::TYPE::TYPE_SPHERE, this);
+
+		if (pInfoStage->pCollision == nullptr)
+			return;
+
+		pInfoStage->pCollision->SetRadius(RADIUS_COLLISION_PUSHOUT);
+		pInfoStage->pCollision->SetPosition(GetPosition());
 	}
 }
 
@@ -187,6 +202,13 @@ void CSelectStageManager::Uninit(void)
 //=====================================================
 void CSelectStageManager::Update(void)
 {
+	for (S_InfoStage *pInfoStage : m_aInfoStage)
+	{
+		if (pInfoStage->pCollision != nullptr)
+		{// 判定の追従
+			pInfoStage->pCollision->SetPosition(pInfoStage->pModel->GetPosition());
+		}
+	}
 
 #ifdef _DEBUG
 	Debug();

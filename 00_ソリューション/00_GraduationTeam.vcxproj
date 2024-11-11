@@ -264,6 +264,7 @@
     <ClCompile Include="code\UI.cpp" />
     <ClCompile Include="code\UIManager.cpp" />
     <ClCompile Include="code\UI_enemy.cpp" />
+    <ClCompile Include="code\UI_ready.cpp" />
     <ClCompile Include="code\universal.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -366,6 +367,7 @@
     <ClInclude Include="code\UI.h" />
     <ClInclude Include="code\UIManager.h" />
     <ClInclude Include="code\UI_enemy.h" />
+    <ClInclude Include="code\UI_ready.h" />
     <ClInclude Include="code\universal.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

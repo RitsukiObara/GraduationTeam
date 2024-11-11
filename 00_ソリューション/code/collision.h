@@ -27,14 +27,7 @@ public:
 	{// 識別タグ
 		TAG_NONE = 0,	// 何でもない
 		TAG_PLAYER,	// プレイヤー
-		TAG_ENEMY,	// 敵
-		TAG_PLAYERBULLET,	// プレイヤーの弾
-		TAG_ENEMYBULLET,	// 敵の弾
 		TAG_BLOCK,	// ブロック
-		TAG_ITEM,	// アイテム
-		TAG_GOAL,	// ゴール
-		TAG_ROCKET,	// ロケット
-		TAG_BOX,	// 箱
 		TAG_MAX
 	}TAG;
 
