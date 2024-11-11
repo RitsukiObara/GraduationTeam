@@ -18,6 +18,7 @@
 #include "inputkeyboard.h"
 #include "fade.h"
 #include "collision.h"
+#include "manager.h"
 
 //*****************************************************
 // マクロ定義
@@ -27,6 +28,15 @@ namespace
 const string PATH_TEXT = "data\\TEXT\\selectStage.txt";	// テキストパス
 
 const float RADIUS_COLLISION_PUSHOUT = 500.0f;	// 押し出し判定の半径
+const float RATE_SELECT_COLLISION = 1.4f;	// 選択時の半径の割合
+
+const float SCALE_STATE[CSelectStageManager::E_StateStage::STATE_MAX] = { 0.0f, 1.0f, 1.4f };	// 状態ごとのスケール
+
+const float SPEED_SCALING_STAGE = 0.3f;	// スケーリングの速度
+const float TIME_ENTER = 2.0f;	// エンターにかかる時間
+
+const float SPEED_SCALING_PENGUIN = 0.05f;	// ペンギンのスケーリング速度
+const float SPEED_MOVE_ENTER = 0.01f;	// エンター時の移動速度
 }
 
 //*****************************************************
@@ -36,7 +46,7 @@ const float RADIUS_COLLISION_PUSHOUT = 500.0f;	// 押し出し判定の半径
 //=====================================================
 // コンストラクタ
 //=====================================================
-CSelectStageManager::CSelectStageManager()
+CSelectStageManager::CSelectStageManager() : m_pPenguin(nullptr), m_bEnter(false), m_fTimerFade(0.0f), m_nIdxSelect(0)
 {
 
 }
@@ -77,7 +87,7 @@ HRESULT CSelectStageManager::Init(void)
 	SetStage();
 
 	// ペンギンの生成
-	CSelectStagePenguin::Create();
+	m_pPenguin = CSelectStagePenguin::Create();
 
 	return S_OK;
 }
@@ -186,6 +196,9 @@ void CSelectStageManager::SetStage(void)
 
 		pInfoStage->pCollision->SetRadius(RADIUS_COLLISION_PUSHOUT);
 		pInfoStage->pCollision->SetPosition(GetPosition());
+
+		// 状態の初期設定
+		pInfoStage->state = E_StateStage::STATE_NORMAL;
 	}
 }
 
@@ -202,17 +215,151 @@ void CSelectStageManager::Uninit(void)
 //=====================================================
 void CSelectStageManager::Update(void)
 {
-	for (S_InfoStage *pInfoStage : m_aInfoStage)
-	{
-		if (pInfoStage->pCollision != nullptr)
-		{// 判定の追従
-			pInfoStage->pCollision->SetPosition(pInfoStage->pModel->GetPosition());
-		}
-	}
+	// 選択処理
+	Select();
+
+	if (m_bEnter)
+		StayEnter();	// エンター中の処理
 
 #ifdef _DEBUG
 	Debug();
 #endif
+}
+
+//=====================================================
+// 選択処理
+//=====================================================
+void CSelectStageManager::Select(void)
+{
+	for (int i = 0; i < (int)m_aInfoStage.size(); i++)
+	{
+		S_InfoStage *pInfoStage = m_aInfoStage[i];
+
+		// スケーリング処理
+		Scaling(pInfoStage);
+
+		if (pInfoStage->pCollision == nullptr)
+			continue;
+
+		// 判定の追従
+		pInfoStage->pCollision->SetPosition(pInfoStage->pModel->GetPosition());
+
+		// 判定の一時拡大
+		pInfoStage->pCollision->SetRadius(RATE_SELECT_COLLISION * RADIUS_COLLISION_PUSHOUT);
+
+		// プレイヤーが入っていたら選択状態にする
+		bool bEnter = pInfoStage->pCollision->OnEnter(CCollision::TAG_PLAYER);
+
+		if (bEnter)
+		{
+			pInfoStage->state = E_StateStage::STATE_SELECT;
+
+			// エンター操作の検出
+			if (m_pPenguin != nullptr)
+			{
+				if (m_pPenguin->IsEnter())
+				{// エンターの開始
+					StartEnter();
+
+					m_nIdxSelect = i;
+
+					return;
+				}
+			}
+		}
+		else
+			pInfoStage->state = E_StateStage::STATE_NORMAL;
+
+		// 判定の大きさを戻す
+		pInfoStage->pCollision->SetRadius(RADIUS_COLLISION_PUSHOUT);
+	}
+}
+
+//=====================================================
+// スケーリング処理
+//=====================================================
+void CSelectStageManager::Scaling(S_InfoStage *pInfoStage)
+{
+	CObjectX *pModel = pInfoStage->pModel;
+
+	if (pModel == nullptr)
+		return;
+
+	float fScaleDest = SCALE_STATE[pInfoStage->state];
+	float fScale = pModel->GetScale().x;
+
+	fScale += (fScaleDest - fScale) * SPEED_SCALING_STAGE;
+
+	pModel->SetScale(fScale);
+}
+
+//=====================================================
+// エンター開始
+//=====================================================
+void CSelectStageManager::StartEnter(void)
+{
+	// タイマーのリセット
+	m_fTimerFade = 0.0f;
+
+	// エンターフラグを立てる
+	m_bEnter = true;
+
+	// ペンギンを操作不能にする
+	if (m_pPenguin != nullptr)
+		m_pPenguin->EnableInput(false);
+
+	// 当たり判定の削除
+	for (S_InfoStage *pInfoStage : m_aInfoStage)
+	{
+		if (pInfoStage->pCollision != nullptr)
+		{
+			pInfoStage->pCollision->Uninit();
+			pInfoStage->pCollision = nullptr;
+		}
+	}
+}
+
+//=====================================================
+// エンター中の処理
+//=====================================================
+void CSelectStageManager::StayEnter(void)
+{
+	m_fTimerFade += CManager::GetDeltaTime();
+
+	if (TIME_ENTER < m_fTimerFade)
+		EndEnter();	// エンターの終了
+
+	if (m_pPenguin == nullptr)
+		return;	// 以下、ペンギンの処理
+
+	// ステージに引っ張られる処理
+	D3DXVECTOR3 pos = m_pPenguin->GetPosition();
+	D3DXVECTOR3 posStage = m_aInfoStage[m_nIdxSelect]->pos;
+
+	universal::MoveToDest(&pos, posStage, SPEED_MOVE_ENTER);
+
+	m_pPenguin->SetPosition(pos);
+
+	// スケーリングの処理
+	float fScale = m_pPenguin->GetParts(0)->pParts->GetScale().x;
+
+	fScale += (0 - fScale) * SPEED_SCALING_PENGUIN;
+
+	m_pPenguin->GetParts(0)->pParts->SetScale(fScale);
+}
+
+//=====================================================
+// エンター終了
+//=====================================================
+void CSelectStageManager::EndEnter(void)
+{
+	// フェードの開始
+	CFade *pFade = CFade::GetInstance();
+
+	if (pFade == nullptr)
+		return;
+
+	pFade->SetFade(CScene::MODE::MODE_GAME);
 }
 
 //=====================================================
