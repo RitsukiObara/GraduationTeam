@@ -256,17 +256,7 @@ void CIce::SearchOnThis(void)
 
 	vector<CGameObject*> apObject;
 
-	// 敵の追加
-	vector<CEnemy*> aEnemy = CEnemy::GetInstance();
-
-	for (CEnemy* enemy : aEnemy)
-		apObject.push_back((CGameObject*)enemy);
-
-	// プレイヤーの追加
-	vector<CPlayer*> aPlayer = CPlayer::GetInstance();
-
-	for (CPlayer* player : aPlayer)
-		apObject.push_back((CGameObject*)player);
+	GetOnTopObject(apObject);
 
 	// 上にどれかが乗ってたら沈む
 	for (CGameObject* object : apObject)
@@ -283,6 +273,48 @@ void CIce::SearchOnThis(void)
 	}
 
 	m_fHeightDestFromOcean = HEIGHT_DEFAULT_FROM_OCEAN;
+}
+
+//=====================================================
+// 何かしらが乗ってる判定
+//=====================================================
+bool CIce::IsOnTopAnyObject(void)
+{
+	vector<CGameObject*> apObject;
+
+	GetOnTopObject(apObject);
+
+	// 上にどれかが乗ってたら真を返す
+	for (CGameObject* object : apObject)
+	{
+		D3DXVECTOR3 posObject = object->GetPosition();
+		D3DXVECTOR3 pos = GetPosition();
+
+		if (universal::DistCmpFlat(pos, posObject, SIZE_INIT, nullptr))
+		{// 何かが乗ってるので真を返す
+			return true;
+		}
+	}
+
+	return false;
+}
+
+//=====================================================
+// 判定するオブジェクトの検出
+//=====================================================
+void CIce::GetOnTopObject(vector<CGameObject*> &rVector)
+{
+	// 敵の追加
+	vector<CEnemy*> aEnemy = CEnemy::GetInstance();
+
+	for (CEnemy* enemy : aEnemy)
+		rVector.push_back((CGameObject*)enemy);
+
+	// プレイヤーの追加
+	vector<CPlayer*> aPlayer = CPlayer::GetInstance();
+
+	for (CPlayer* player : aPlayer)
+		rVector.push_back((CGameObject*)player);
 }
 
 //=====================================================

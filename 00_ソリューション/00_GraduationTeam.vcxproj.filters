@@ -333,6 +333,21 @@
     <ClCompile Include="code\selectStage.cpp">
       <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
+    <ClCompile Include="code\selectStageManager.cpp">
+      <Filter>ソース ファイル\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="code\playerselect.cpp">
+      <Filter>ソース ファイル\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="code\fade_fallice.cpp">
+      <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="code\selectStagePenguin.cpp">
+      <Filter>ソース ファイル\character</Filter>
+    </ClCompile>
+    <ClCompile Include="code\UI_ready.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\game.h">
@@ -622,6 +637,21 @@
     </ClInclude>
     <ClInclude Include="code\selectStage.h">
       <Filter>ソース ファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="code\selectStageManager.h">
+      <Filter>ソース ファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="code\playerselect.h">
+      <Filter>ソース ファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="code\fade_fallice.h">
+      <Filter>ソース ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="code\selectStagePenguin.h">
+      <Filter>ソース ファイル\character</Filter>
+    </ClInclude>
+    <ClInclude Include="code\UI_ready.h">
+      <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
