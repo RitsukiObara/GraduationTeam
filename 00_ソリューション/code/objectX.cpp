@@ -240,6 +240,9 @@ void CObjectX::JustDraw(void)
 		// デバイスの取得
 		LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
 
+		// 頂点法線の自動正規化を有効にする
+		pDevice->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
+
 		// ワールドマトリックス設定
 		D3DXMATRIX mtxWorld = CObject3D::GetMatrix();
 		pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
@@ -283,6 +286,9 @@ void CObjectX::JustDraw(void)
 
 		// マテリアルを戻す
 		pDevice->SetMaterial(&matDef);
+
+		// 頂点法線の自動正規化を有効にする
+		pDevice->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
 	}
 }
 

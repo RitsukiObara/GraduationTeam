@@ -250,6 +250,19 @@ void ChangeState(CCameraState *pBehavior)
 	}
 }
 
+// ステイトの取得
+CCameraState *GetState(void)
+{
+	CCamera *pCamera = CManager::GetCamera();
+
+	if (pCamera != nullptr)
+	{
+		return pCamera->GetState();
+	}
+
+	return nullptr;
+}
+
 // ロール値の調整
 void ControlRoll(float fDist, float fFact)
 {

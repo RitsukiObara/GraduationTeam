@@ -122,6 +122,7 @@ private:
 	void StartFlows(void);	// 漂流開始
 	bool FindFlowIce(void);	// 漂流する氷の検出
 	void StayFlow(void);	// 漂流中の処理
+	void JudgeEndFlow(void);	// 漂流の終了分岐
 	void EndFlows(void);	// 漂流終了
 
 	// メンバ変数
