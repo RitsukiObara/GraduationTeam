@@ -24,6 +24,7 @@
 #include "texture.h"
 #include "particle.h"
 #include "fade.h"
+#include "fade_fallice.h"
 #include "inputManager.h"
 #include "debrisSpawner.h"
 #include "cameraState.h"
@@ -94,6 +95,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// フェードの生成
 	CFade::Create();
+	CFade_FallIce::Create();
 
 	// パーティクルの読込
 	CParticle::Load();
@@ -121,6 +123,12 @@ void CManager::Uninit(void)
 	if (pFade != nullptr)
 	{
 		pFade->Uninit();
+	}
+	CFade_FallIce* pFadeFallIce = CFade_FallIce::GetInstance();
+
+	if (pFadeFallIce != nullptr)
+	{
+		pFadeFallIce->Uninit();
 	}
 
 	// パーティクル情報破棄
@@ -207,6 +215,12 @@ void CManager::Update(void)
 	if (pFade != nullptr)
 	{
 		pFade->Update();
+	}
+	CFade_FallIce* pFadeFallIce = CFade_FallIce::GetInstance();
+
+	if (pFadeFallIce != nullptr)
+	{
+		pFadeFallIce->Update();
 	}
 
 	CInputManager::UpdateAll();

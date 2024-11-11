@@ -13,6 +13,7 @@
 #include "debugproc.h"
 #include "object.h"
 #include "fade.h"
+#include "fade_fallice.h"
 #include "blur.h"
 #include "inputkeyboard.h"
 
@@ -261,6 +262,7 @@ void CRenderer::Draw(void)
 {
 	// フェード取得
 	CFade *pFade = CFade::GetInstance();
+	CFade_FallIce* pFadeFallIce = CFade_FallIce::GetInstance();
 
 	// 画面クリア
 	m_pD3DDevice->Clear(0, nullptr,
@@ -293,6 +295,10 @@ void CRenderer::Draw(void)
 		if (pFade != nullptr)
 		{// フェード描画
 			pFade->Draw();
+		}
+		if (pFadeFallIce != nullptr)
+		{// フェード描画
+			pFadeFallIce->Draw();
 		}
 
 		CDebugProc::GetInstance()->Draw();

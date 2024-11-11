@@ -11,6 +11,7 @@
 #include "selectStagePenguin.h"
 #include "inputManager.h"
 #include "collision.h"
+#include "debugproc.h"
 
 //*****************************************************
 // 定数定義
@@ -29,7 +30,7 @@ const float RADIUS_COLLISION = 200.0f;	// 球の判定の半径
 //=====================================================
 // コンストラクタ
 //=====================================================
-CSelectStagePenguin::CSelectStagePenguin(int nPriority) : CMotion(nPriority), m_move(), m_pInputMgr(nullptr), m_pClsnSphere(nullptr)
+CSelectStagePenguin::CSelectStagePenguin(int nPriority) : CMotion(nPriority), m_move(), m_pInputMgr(nullptr), m_pClsnSphere(nullptr), m_bInput(false)
 {
 
 }
@@ -87,6 +88,9 @@ HRESULT CSelectStagePenguin::Init(void)
 		m_pClsnSphere->SetPosition(GetPosition());
 	}
 
+	// 入力フラグを立てておく
+	m_bInput = true;
+
 	return S_OK;
 }
 
@@ -104,8 +108,8 @@ void CSelectStagePenguin::Uninit(void)
 //=====================================================
 void CSelectStagePenguin::Update(void)
 {
-	// 入力処理
-	Input();
+	if(m_bInput)
+		Input();	// 入力処理
 
 	// 移動量分移動
 	AddPosition(m_move);
@@ -146,11 +150,22 @@ void CSelectStagePenguin::Input(void)
 }
 
 //=====================================================
+// エンター入力の検出
+//=====================================================
+bool CSelectStagePenguin::IsEnter(void)
+{
+	if (m_pInputMgr == nullptr)
+		return false;
+
+	return m_pInputMgr->GetTrigger(CInputManager::BUTTON_ENTER);
+}
+
+//=====================================================
 // デバッグ処理
 //=====================================================
 void CSelectStagePenguin::Debug(void)
 {
-
+	CDebugProc::GetInstance()->Print("\n位置[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
 }
 
 //=====================================================

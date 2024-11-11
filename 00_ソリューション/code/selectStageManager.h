@@ -18,6 +18,8 @@
 //*****************************************************
 class CCollisionSphere;
 class CObjectX;
+class CSelectStagePenguin;
+class CGameObject;
 
 //*****************************************************
 // クラスの定義
@@ -25,6 +27,15 @@ class CObjectX;
 class CSelectStageManager : public CObject
 {
 public:
+	// 列挙型定義
+	enum E_StateStage
+	{// ステージの状態
+		STATE_NONE = 0,	// 何もしてない状態
+		STATE_NORMAL,	// 通常状態
+		STATE_SELECT,	// 選択状態
+		STATE_MAX
+	};
+
 	CSelectStageManager();	// コンストラクタ
 	~CSelectStageManager() {};	// デストラクタ
 
@@ -46,15 +57,33 @@ private:
 		string pathModel;	// モデルのパス
 		D3DXVECTOR3 pos;	// 位置
 		CCollisionSphere *pCollision;	// 当たり判定
+		E_StateStage state;	// 状態
+		float fScaleDest;	// 目標のスケール
+
+		// コンストラクタ
+		S_InfoStage() : pModel(nullptr), pos(), pCollision(nullptr), state(E_StateStage::STATE_NONE), fScaleDest(0.0f) {}
 	};
 
 	// メンバ関数
 	void LoadStage(std::ifstream& file, string str, S_InfoStage *pInfoStage);	// ステージ情報の読込
 	void SetStage(void);	// ステージの設置
+	void Select(void);	// 選択処理
+	void Scaling(S_InfoStage *pInfoStage);	// スケーリング処理
+	void SetParticle(int nIdx);	// パーティクルの発生
+
+	void StartEnter(void);	// エンター開始
+	void StayEnter(void);	// エンター中の処理
+	void EndEnter(void);	// エンター終了
+
 	void Debug(void);	// デバッグ処理
 
 	// メンバ変数
 	vector<S_InfoStage*> m_aInfoStage;	// ステージ情報の配列
+	CSelectStagePenguin *m_pPenguin;	// ペンギン
+	bool m_bEnter;	// エンターしたフラグ
+	float m_fTimerFade;	// フェードまでのタイマー
+	int m_nIdxSelect;	// 選んだステージ番号
+	vector<CGameObject*> m_aParticlePos;	// パーティクルの位置用オブジェクト
 
 	// 静的メンバ変数
 };

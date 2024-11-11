@@ -147,7 +147,7 @@ HRESULT CPlayerSelect::Init(void)
 		{
 			m_apPlayerUI[nCount]->SetSize(0.05f,0.05f);
 			m_apPlayerUI[nCount]->SetPosition(D3DXVECTOR3(0.1f + 0.25f * nCount, 0.8f, 0.0f));
-			m_apPlayerUI[nCount]->SetTex(D3DXVECTOR2(0.0f+0.25*nCount, 0.0f), D3DXVECTOR2(0.25f + 0.25f * nCount, 1.0f));
+			m_apPlayerUI[nCount]->SetTex(D3DXVECTOR2(0.0f + 0.25f * nCount, 0.0f), D3DXVECTOR2(0.25f + 0.25f * nCount, 1.0f));
 			m_apPlayerUI[nCount]->SetIdxTexture(nIdx[0]);
 			m_apPlayerUI[nCount]->SetVtx();
 		}
