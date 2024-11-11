@@ -37,9 +37,19 @@ public:
 	static CSelectStageManager *Create(void);	// 生成処理
 
 private:
+	// 構造体定義
+	struct S_InfoStage
+	{// ステージ情報
+		string pathModel;	// モデルのパス
+		D3DXVECTOR3 pos;	// 位置
+	};
+
 	// メンバ関数
+	void LoadStage(std::ifstream& file, string str, S_InfoStage *pInfoStage);
+	void SetStage(void);	// ステージの設置
 
 	// メンバ変数
+	vector<S_InfoStage*> m_aInfoStage;	// ステージ情報の配列
 
 	// 静的メンバ変数
 };

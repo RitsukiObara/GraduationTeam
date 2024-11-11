@@ -7,7 +7,12 @@
 
 SETSTAGE	#0 第一ステージ
 	MODEL = data\\MODEL\\object\\Stage_Obj000.x
-	POS = 0.0 0.0 0.0
+	POS = -1000.0 0.0 0.0
+END_SETSTAGE
+
+SETSTAGE	#1 第二ステージ
+	MODEL = data\\MODEL\\object\\Stage_Obj001.x
+	POS = 1000.0 0.0 0.0
 END_SETSTAGE
 
 END_SCRIPT
