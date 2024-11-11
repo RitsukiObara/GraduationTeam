@@ -16,6 +16,7 @@
 #include "inputkeyboard.h"
 #include "debugproc.h"
 #include "skybox.h"
+#include "selectStageManager.h"
 
 //*****************************************************
 // マクロ定義
@@ -51,9 +52,9 @@ HRESULT CSelectStage::Init(void)
 	// ライトの生成
 	CreateLight();
 
-	// スカイボックスの生成
-	CSkybox::Create();
-	
+	// ステージ選択管理クラスの生成
+	CSelectStageManager::Create();
+
 	return S_OK;
 }
 
