@@ -12,6 +12,9 @@
 // インクルード
 //*****************************************************
 #include "fade.h"
+#include <vector>
+
+class CPolygon2D;
 
 //*****************************************************
 // クラスの定義
@@ -30,7 +33,11 @@ public:
 	virtual void SetFade(CScene::MODE modeNext, bool bTrans = true) override;
 	static CFade_FallIce* GetInstance(void) { return m_pFade; }
 private:
-	static CFade_FallIce* m_pFade;	// 自身のポインタ
+	int m_nCounterFrame;								// 次の落下カウンタ
+	int m_nCounterPattern;								// 次落とすパターン
+	std::vector<LPDIRECT3DVERTEXBUFFER9> m_icePolygon;	// 氷のポリゴン
+	LPDIRECT3DTEXTURE9 m_pTexture;						// 氷のテクスチャ
+	static CFade_FallIce* m_pFade;						// 自身のポインタ
 };
 
 #endif
