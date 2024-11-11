@@ -16,6 +16,8 @@
 //*****************************************************
 // 前方宣言
 //*****************************************************
+class CCollisionSphere;
+class CObjectX;
 
 //*****************************************************
 // クラスの定義
@@ -40,8 +42,10 @@ private:
 	// 構造体定義
 	struct S_InfoStage
 	{// ステージ情報
+		CObjectX *pModel;	// Xモデルのポインタ
 		string pathModel;	// モデルのパス
 		D3DXVECTOR3 pos;	// 位置
+		CCollisionSphere *pCollision;	// 当たり判定
 	};
 
 	// メンバ関数
