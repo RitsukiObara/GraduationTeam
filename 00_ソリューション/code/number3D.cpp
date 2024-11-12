@@ -57,6 +57,7 @@ HRESULT CNumber3D::Init(void)
 			m_apObject[nCount]->SetIdxTexture(m_nIdxTexture);
 			m_apObject[nCount]->SetVtx();
 			m_apObject[nCount]->EnableZtest(true);
+			m_apObject[nCount]->EnableLighting(false);
 			m_apObject[nCount]->SetMode(CPolygon3D::MODE_BILLBOARD);
 		}
 	}

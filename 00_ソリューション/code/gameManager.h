@@ -33,6 +33,9 @@ public:
 
 	// 変数取得・設定関数
 
+	// 静的メンバ関数
+	static CGameManager *Create(void);	// 生成処理
+
 private:
 	// メンバ関数
 

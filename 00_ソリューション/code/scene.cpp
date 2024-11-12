@@ -22,11 +22,21 @@
 #include "light.h"
 #include "sound.h"
 #include "inputManager.h"
+#include "slow.h"
 
 #include "texture.h"
 #include "objectX.h"
 #include "meshcylinder.h"
 #include "polygon3D.h"
+
+//*****************************************************
+// 定数定義
+//*****************************************************
+namespace
+{
+const int NUM_LIGHT = 3;	// ライトの数
+const D3DXCOLOR COL_LIGHT_DEFAULT = { 0.9f,0.9f,0.9f,1.0f };	// ライトのデフォルト色
+}
 
 //=====================================================
 // コンストラクタ
@@ -61,7 +71,45 @@ HRESULT CScene::Init(void)
 		pCylinder->SetVtx();
 	}
 
+	// スロー管理の生成
+	CSlow::Create();
+
+	// ライトの生成
+	CreateLight();
+
 	return S_OK;
+}
+
+//=====================================================
+// ライトの生成
+//=====================================================
+void CScene::CreateLight(void)
+{
+	D3DXVECTOR3 aDir[NUM_LIGHT] =
+	{
+		{ -1.4f, 0.24f, -2.21f, },
+		{ 1.42f, -0.8f, 0.08f },
+		{ -0.29f, -0.8f, 0.55f }
+	};
+
+	for (int i = 0; i < NUM_LIGHT; i++)
+	{
+		CLight *pLight = CLight::Create();
+
+		if (pLight == nullptr)
+			continue;
+
+		D3DLIGHT9 infoLight = pLight->GetLightInfo();
+
+		infoLight.Type = D3DLIGHT_DIRECTIONAL;
+		infoLight.Diffuse = COL_LIGHT_DEFAULT;
+
+		D3DXVECTOR3 vecDir = aDir[i];
+		D3DXVec3Normalize(&vecDir, &vecDir);		//ベクトル正規化
+		infoLight.Direction = vecDir;
+
+		pLight->SetLightInfo(infoLight);
+	}
 }
 
 //=====================================================

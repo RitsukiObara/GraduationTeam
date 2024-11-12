@@ -10,6 +10,7 @@
 //*****************************************************
 #include "manager.h"
 #include "game.h"
+#include "gameManager.h"
 #include "object.h"
 #include "inputkeyboard.h"
 #include "inputManager.h"
@@ -21,48 +22,34 @@
 #include "UIManager.h"
 #include "polygon3D.h"
 #include "texture.h"
-#include "skybox.h"
 #include "renderer.h"
 #include "animEffect3D.h"
 #include "pause.h"
-#include "slow.h"
 #include "meshfield.h"
 #include "CameraState.h"
 #include "particle.h"
 #include "timer.h"
-#include "meshCube.h"
 #include "blur.h"
-#include "light.h"
 #include "result.h"
-#include "title.h"
 #include "ice.h"
 #include "iceManager.h"
 #include "player.h"
 #include "score.h"
 #include "enemy.h"
 #include "seals.h"
-#include "ocean.h"
 #include "stageResultUI.h"
 #include "UI_enemy.h"
-#include "ocean_flow_UI.h"
-#include "flowIce.h"
-#include "BG_Ice.h"
-#include "flowIceFactory.h"
 #include "destroy_score.h"
 #include "UI_combo.h"
-#include "UI_ready.h"
 
 //*****************************************************
-// マクロ定義
+// 定数定義
 //*****************************************************
-#define TRANS_TIME	(100)	// 終了までの余韻のフレーム数
-#define SPEED_TIME	(60)	// タイマーが減っていく速度
-
 namespace
 {
+const int TRANS_TIME = 100;	// 終了までの余韻のフレーム数
+const int SPEED_TIME = 60;	// タイマーが減っていく速度
 const char* PATH_GAME_ROAD = "data\\MAP\\road00.bin";	// ゲームメッシュロードのパス
-const int NUM_LIGHT = 3;	// ライトの数
-const D3DXCOLOR COL_LIGHT_DEFAULT = { 0.9f,0.9f,0.9f,1.0f };	// ライトのデフォルト色
 const float SPEED_CHANGE_LIGHTCOL = 0.1f;	// ライトの色が変わる速度
 
 const int SIZE_GRID[CGame::E_GameMode::MODE_MAX] = { 0, 10, 15 };	// モードごとのステージのサイズ
@@ -82,7 +69,6 @@ CGame::CGame()
 	m_nCntState = 0;
 	m_nTimerCnt = 0;
 	m_bStop = false;
-	m_posMid = { 0.0f,0.0f,0.0f };
 	m_pPause = nullptr;
 	m_GameMode = E_GameMode::MODE_NONE;
 }
@@ -97,21 +83,8 @@ HRESULT CGame::Init(void)
 
 	m_pGame = this;
 
-	m_colLight = COL_LIGHT_DEFAULT;
 	m_state = STATE_NORMAL;
 	m_bStop = false;
-
-	// UIマネージャーの追加
-	CUIManager::Create();
-
-	// スカイボックスの生成
-	CSkybox::Create();
-
-	//背景氷のロード
-	//CBgIce::Load("data\\TEXT\\BG_Ice.txt");
-
-	 //海の追加
-	COcean::Create();
 
 	// フォグをかける
 	CRenderer *pRenderer = CRenderer::GetInstance();
@@ -124,32 +97,19 @@ HRESULT CGame::Init(void)
 		pRenderer->SetCol(D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f));
 	}
 
-	// スロー管理の生成
-	CSlow::Create();
-	
-	// ライトの生成
-	CreateLight();
-
-	Camera::ChangeState(new CFollowPlayer);
-	
-	// タイマー表示の生成
-	m_pTimer = CTimer::Create();
-	m_pTimer->SetPosition(D3DXVECTOR3(0.48f, 0.07f, 0.0f));
-	m_pTimer->SetSecond(MAX_TIME);
-
-	// スコア表示の生成
-	m_pScore = CScore::Create();
-	m_pScore->SetPosition(D3DXVECTOR3(0.09f, 0.07f, 0.0f));
-
 	// モードの取得
 	m_GameMode = E_GameMode::MODE_SINGLE;
 
 	// 氷マネージャー
 	CIceManager::Create(SIZE_GRID[m_GameMode], SIZE_GRID[m_GameMode]);
 
-	// 矢印モデルの生成
-	m_pOceanFlowUI = COceanFlowUI::Create();
-	m_pOceanFlowUI->SetPosition(D3DXVECTOR3(0.09f, 0.07f, 0.0f));
+	// ゲームマネージャーの生成
+	CGameManager::Create();
+	
+	// タイマー表示の生成
+	m_pTimer = CTimer::Create();
+	m_pTimer->SetPosition(D3DXVECTOR3(0.48f, 0.07f, 0.0f));
+	m_pTimer->SetSecond(MAX_TIME);
 
 	// 敵数表示UI生成
 	CUIEnemy::Create();
@@ -159,15 +119,6 @@ HRESULT CGame::Init(void)
 
 	// プレイヤー生成
 	CPlayer::Create();
-
-	// 流氷生成
-	CFlowIce::Create();
-
-	// 流氷ファクトリーの生成
-	CFlowIceFct::Create();
-
-	//ゲームスタート告知UI
-	CUIready::Create();
 
 	return S_OK;
 }
@@ -195,16 +146,6 @@ void CGame::Update(void)
 	CInputKeyboard* pKeyboard = CInputKeyboard::GetInstance();
 	CSound* pSound = CSound::GetInstance();
 
-	// 敵を倒したスコア出す========================================
-	if (pKeyboard->GetTrigger(DIK_K))
-	{
-		//敵を倒した時のスコア生成
-		CDestroyScore::GetInstance()->AddDestroyScore(CEnemy::TYPE_SEALS);
-
-		//敵を倒した時のコンボUI生成
-		CUI_Combo::GetInstance()->AddCombo();
-	}
-
 	if (!m_bStop)
 	{
 		// シーンの更新
@@ -223,9 +164,6 @@ void CGame::Update(void)
 
 	// 状態管理
 	ManageState();
-
-	// ライトの更新
-	UpdateLight();
 
 	// ポーズの更新
 	UpdatePause();
@@ -312,59 +250,6 @@ void CGame::ToggleStop(void)
 }
 
 //=====================================================
-// ライトの生成
-//=====================================================
-void CGame::CreateLight(void)
-{
-	D3DXVECTOR3 aDir[NUM_LIGHT] =
-	{
-		{ -1.4f, 0.24f, -2.21f, },
-		{ 1.42f, -0.8f, 0.08f },
-		{ -0.29f, -0.8f, 0.55f }
-	};
-
-	for (int i = 0; i < NUM_LIGHT; i++)
-	{
-		CLight *pLight = CLight::Create();
-
-		if (pLight == nullptr)
-			continue;
-
-		D3DLIGHT9 infoLight = pLight->GetLightInfo();
-
-		infoLight.Type = D3DLIGHT_DIRECTIONAL;
-		infoLight.Diffuse = m_colLight;
-
-		D3DXVECTOR3 vecDir = aDir[i];
-		D3DXVec3Normalize(&vecDir, &vecDir);		//ベクトル正規化
-		infoLight.Direction = vecDir;
-		
-		pLight->SetLightInfo(infoLight);
-
-		m_aLight.push_back(pLight);
-	}
-}
-
-//=====================================================
-// ライトの更新
-//=====================================================
-void CGame::UpdateLight(void)
-{
-	for (auto it : m_aLight)
-	{
-		D3DLIGHT9 infoLight = it->GetLightInfo();
-
-		D3DXCOLOR col = infoLight.Diffuse;
-
-		col += (m_colLight - col) * SPEED_CHANGE_LIGHTCOL;
-
-		infoLight.Diffuse = col;
-
-		it->SetLightInfo(infoLight);
-	}
-}
-
-//=====================================================
 // ポーズの更新
 //=====================================================
 void CGame::UpdatePause(void)
@@ -375,14 +260,6 @@ void CGame::UpdatePause(void)
 	}
 
 	m_pPause->Update();
-}
-
-//=====================================================
-// ライトの色リセット
-//=====================================================
-void CGame::ResetDestColLight(void)
-{
-	m_colLight = COL_LIGHT_DEFAULT;
 }
 
 //=====================================================
@@ -420,7 +297,15 @@ void CGame::Debug(void)
 			pIceManager->CreateIce(2,-1);
 	}
 
-	pDebugProc->Print("\n中心座標[%f,%f,%f]", m_posMid.x, m_posMid.y, m_posMid.z);
+	// 敵を倒したスコア出す
+	if (pKeyboard->GetTrigger(DIK_K))
+	{
+		//敵を倒した時のスコア生成
+		CDestroyScore::GetInstance()->AddDestroyScore(CEnemy::TYPE_SEALS);
+
+		//敵を倒した時のコンボUI生成
+		CUI_Combo::GetInstance()->AddCombo();
+	}
 }
 
 //=====================================================
@@ -447,4 +332,31 @@ void CGame::Draw(void)
 		"NORMAL",
 		"END",
 	};
+}
+
+//=====================================================
+// スコアの生成
+//=====================================================
+void CGame::CreateScore(void)
+{
+	if (m_pScore == nullptr)
+		m_pScore = CScore::Create();
+}
+
+namespace game
+{
+void AddScore(int nScore)
+{
+	CGame *pGame = CGame::GetInstance();
+
+	if (pGame == nullptr)
+		return;
+
+	CScore *pScore = pGame->GetScore();
+
+	if (pScore == nullptr)
+		return;
+
+	pScore->AddScore(nScore);
+}
 }
