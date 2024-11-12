@@ -331,7 +331,7 @@ void CMotion::SetMotion(int nMotionType)
 	{
 		for (int nCntEvent = 0; nCntEvent < m_aMotionInfo[m_motionType].nNumEvent; nCntEvent++)
 		{
-			m_aMotionInfo[m_motionType].pEvent[nCntEvent].fTimer = m_aMotionInfo[m_motionType].pEvent[nCntEvent].fNumFrame;
+			m_aMotionInfo[m_motionType].pEvent[nCntEvent].fTimer = m_aMotionInfo[m_motionType].pEvent[nCntEvent].fNumFrame + 1.0f;
 		}
 	}
 

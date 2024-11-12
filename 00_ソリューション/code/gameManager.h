@@ -1,56 +1,48 @@
 //*****************************************************
 //
-// シーン処理[scene.h]
+// ゲームマネージャー[gameManager.h]
 // Author:髙山桃也
 //
 //*****************************************************
-#ifndef _SCENE_H_
-#define _SCENE_H_
+#ifndef _GAMEMANAGER_H_
+#define _GAMEMANAGER_H_
 
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "main.h"
+#include "object.h"
+#include "game.h"
 
 //*****************************************************
 // 前方宣言
 //*****************************************************
-class CPlayer;
-class CMeshField;
 
 //*****************************************************
 // クラスの定義
 //*****************************************************
-class CScene
+class CGameManager : public CObject
 {
 public:
-	enum MODE
-	{
-		MODE_LOGO = 0,
-		MODE_TITLE,
-		MODE_SELECTMODE,
-		MODE_TUTORIAL,
-		MODE_SELECTSTAGE,
-		MODE_GAME,
-		MODE_RANKING,
-		MODE_MAX
-	};
+	CGameManager();	// コンストラクタ
+	~CGameManager() {};	// デストラクタ
 
-	CScene();	// コンストラクタ
-	~CScene();	// デストラクタ
-
+	// メンバ関数
 	virtual HRESULT Init(void);
 	virtual void Uninit(void);
 	virtual void Update();
 	virtual void Draw();
-	static CScene *Create(MODE mode);
-	int GetTimer(void) { return m_nTimerTrans; }
-	void SetTimer(int nTime) { m_nTimerTrans = nTime; }
+
+	// 変数取得・設定関数
+
+	// 静的メンバ関数
+	static CGameManager *Create(CGame::E_GameMode mode);	// 生成処理
 
 private:
-	void CreateLight(void);	// ライトの生成
+	// メンバ関数
 
-	int m_nTimerTrans;	// 遷移タイマー
+	// メンバ変数
+
+	// 静的メンバ変数
 };
 
 #endif

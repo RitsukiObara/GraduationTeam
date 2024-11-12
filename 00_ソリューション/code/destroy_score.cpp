@@ -194,7 +194,7 @@ void CDestroyScore::Update(void)
 			m_nScore = m_nScore * nCombo;
 
 			//ƒXƒRƒA‚ð‰ÁŽZ
-			CGame::GetInstance()->GetScore()->AddScore(m_nScore);
+			game::AddScore(m_nScore);
 
 			Uninit();
 

@@ -64,16 +64,11 @@ public:
 	void EnableStop(bool bStop) { m_bStop = bStop; }
 	bool GetStop(void) { return m_bStop; }
 	void ReleasePause(void) { m_pPause = nullptr; };	// ポーズの解放
+	void CreateScore(void);	// スコアの生成
 
 	// 変数取得・設定関数
-	vector<CLight*> GetLight(void) { return m_aLight; };	// ライトの配列
-	void SetDestColLight(D3DXCOLOR col) { m_colLight = col; }	// ライトの色
-	void ResetDestColLight(void);	// ライト色リセット
-	D3DXVECTOR3 GetPosMid(void) { return m_posMid; };	// 中心座標
-	void SetPosMid(D3DXVECTOR3 pos) { m_posMid = pos; };
-	void AddPosMid(D3DXVECTOR3 pos) { m_posMid += pos; };
-	int GetTimeSecond(void) { return m_pTimer->GetSecond(); }
-	CScore* GetScore(void) { return m_pScore; };
+	int GetTimeSecond(void) { if (m_pTimer != nullptr) { return m_pTimer->GetSecond(); } return 0; }
+	CScore *GetScore(void) { return m_pScore; };	// スコア
 
 private:
 	// メンバ関数
@@ -81,20 +76,14 @@ private:
 	void ManageState(void);
 	void ToggleStop(void);
 	void Debug(void);
-	void CreateLight(void);	// ライトの生成
-	void UpdateLight(void);	// ライトの更新
 	void UpdatePause(void);	// ポーズの更新
 
 	// メンバ変数
 	int m_nCntState;	// 状態遷移カウンター
 	int m_nTimerCnt;	// タイマー用のカウント
 	bool m_bStop;	// 停止状態
-	vector<CLight*> m_aLight;	// ゲーム中のライト
 	CTimer* m_pTimer;		// タイマー
 	CScore* m_pScore;		// スコア
-	COceanFlowUI* m_pOceanFlowUI;		// 海流UI
-	D3DXCOLOR m_colLight;	// ライト色
-	D3DXVECTOR3 m_posMid;	// プレイヤーと敵の中心座標
 	CStageResultUI* m_pStageResultUI;	// ステージクリアUI
 	CPause *m_pPause;	// ポーズのポインタ
 	E_GameMode m_GameMode;	// ゲームモード
@@ -103,5 +92,10 @@ private:
 	static E_State m_state;	// 状態
 	static CGame *m_pGame;	// 自身のポインタ
 };
+
+namespace game
+{
+void AddScore(int nScore);	// スコア加算
+}
 
 #endif

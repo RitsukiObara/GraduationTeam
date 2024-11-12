@@ -22,7 +22,7 @@ int CAfterImage::m_nNumAll = 0;	// 総数
 //=====================================================
 // コンストラクタ
 //=====================================================
-CAfterImage::CAfterImage(int nPriority)
+CAfterImage::CAfterImage(int nPriority) : CObjectX(nPriority)
 {
 	m_nLife = 0;
 	m_fDecAlpha = 0.0f;

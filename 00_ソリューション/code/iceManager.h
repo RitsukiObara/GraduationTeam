@@ -56,6 +56,7 @@ public:
 	CIce *CreateIce(int nGridV, int nGridH, CIce::E_Type type = CIce::E_Type::TYPE_NORMAL);	// 氷の生成
 	CIce *CreateFlowIce(int nGridV,int nGridH, CIce::E_Type type = CIce::E_Type::TYPE_NORMAL);	// 流氷の生成
 	void StopIce(CIce *pIce);	// 氷の停止
+	bool CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos);	// 氷をつつけるかのチェック
 	bool PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos);	// 氷をつつく
 	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// 氷の追加
 	bool FindIce(int nNumV, int nNumH, int nIdx,CIce *pIceStand,vector<CIce*> apIceLast,bool bBreak);	// アイスの発見
@@ -69,6 +70,7 @@ public:
 	void GetIceIndex(CIce *pIce, int *pNumV, int *pNumH);	// 氷のグリッド番号を取得
 	CIce* GetLeftDownIdx(int *pNumV, int *pNumH);	// 右下の氷取得
 	void DisableFind(void);	// 探索フラグの無効化
+	void Load(const char* pPath);	// 初期配置読み込み
 
 	// 変数取得・設定関数
 	D3DXVECTOR3 GetGridPosition(int *pNumV, int *pNumH);
