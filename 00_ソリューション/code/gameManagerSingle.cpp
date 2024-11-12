@@ -66,6 +66,72 @@ void CGameManagerSingle::Update(void)
 	CGameManager::Update();
 }
 
+
+//=====================================================
+// 開始状態の更新
+//=====================================================
+void CGameManagerSingle::UpdateStart(void)
+{
+	// 基底クラスの更新
+	CGameManager::UpdateStart();
+}
+
+//=====================================================
+// 通常状態の更新
+//=====================================================
+void CGameManagerSingle::UpdateNormal(void)
+{
+	// 基底クラスの更新
+	CGameManager::UpdateNormal();
+
+	// プレイヤー管理
+	ManagePlayer();
+}
+
+//=====================================================
+// プレイヤーの管理
+//=====================================================
+void CGameManagerSingle::ManagePlayer(void)
+{
+	if (m_pPlayer == nullptr)
+		return;
+
+	CPlayer::E_State state = m_pPlayer->GetState();
+
+	if (state == CPlayer::E_State::STATE_DEATH)
+		DeathPlayer();	// プレイヤーの死亡
+}
+
+//=====================================================
+// プレイヤーの死亡
+//=====================================================
+void CGameManagerSingle::DeathPlayer(void)
+{
+	if (m_pPlayer == nullptr)
+		return;
+
+	m_pPlayer->Uninit();
+	m_pPlayer = nullptr;
+}
+
+//=====================================================
+// リザルト状態の更新
+//=====================================================
+void CGameManagerSingle::UpdateResult(void)
+{
+	// 基底クラスの更新
+	CGameManager::UpdateResult();
+}
+
+//=====================================================
+// 終了状態の更新
+//=====================================================
+void CGameManagerSingle::UpdateEnd(void)
+{
+	// 基底クラスの更新
+	CGameManager::UpdateEnd();
+}
+
 //=====================================================
 // 描画処理
 //=====================================================

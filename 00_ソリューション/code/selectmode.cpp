@@ -11,7 +11,6 @@
 #include "selectmode.h"
 #include "object.h"
 #include "inputManager.h"
-#include "inputkeyboard.h"
 #include "manager.h"
 #include "fade.h"
 #include "texture.h"
@@ -142,6 +141,9 @@ HRESULT CSelectMode::Init(void)
 	assert(pSound != nullptr);
 	pSound->Play(pSound->LABEL_BGM_TITLE);
 
+	// 入力マネージャー生成
+	CInputManager::Create();
+
 	return S_OK;
 }
 
@@ -171,21 +173,21 @@ void CSelectMode::Uninit(void)
 //=====================================================
 void CSelectMode::Update(void)
 {
-	CInputKeyboard* pKeyboard = CInputKeyboard::GetInstance();
-	assert(pKeyboard != nullptr);
+	CInputManager *pInputMgr = CInputManager::GetInstance();
+	assert(pInputMgr != nullptr);
 
 	CSound* pSound = CSound::GetInstance();	// サウンド情報
 	assert(pSound != nullptr);
 
 	// モードの移動
-	if (pKeyboard->GetTrigger(DIK_A))
+	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_LEFT))
 	{
 		ChangeSelectMode(-1);	// モード前にずらす
 
 		// サウンドの再生
 		pSound->Play(CSound::LABEL_SE_PAUSE_ENTER00);
 	}
-	else if (pKeyboard->GetTrigger(DIK_D))
+	else if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_RIGHT))
 	{
 		ChangeSelectMode(1);	// モード先にずらす
 
@@ -194,7 +196,7 @@ void CSelectMode::Update(void)
 	}
 
 	// モード選択完了
-	if (pKeyboard->GetTrigger(DIK_RETURN))
+	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_ENTER))
 	{
 		// フェード中の場合抜ける
 		CFade* pFade = CFade::GetInstance();
