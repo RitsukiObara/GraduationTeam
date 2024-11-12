@@ -21,6 +21,7 @@
 #include "renderer.h"
 #include "camera.h"
 #include "light.h"
+#include "skybox.h"
 #include "sound.h"
 #include "inputManager.h"
 #include "slow.h"
@@ -77,6 +78,9 @@ HRESULT CScene::Init(void)
 
 	// ライトの生成
 	CreateLight();
+
+	// スカイボックスの生成
+	CSkybox::Create();
 
 	return S_OK;
 }
