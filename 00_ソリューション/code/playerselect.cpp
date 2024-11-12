@@ -53,6 +53,7 @@ const float SIZE_UI_PLAYERNUMBER = 0.05f;	// ƒvƒŒƒCƒ„[ƒiƒ“ƒo[UI‚ÌƒTƒCƒY
 const float HEIGHT_UI_PLAYERNUMBER = 0.8f;	// ƒvƒŒƒCƒ„[ƒiƒ“ƒo[UI‚ÌˆÊ’u‚Ì‚‚³
 
 const string PATH_UI_STANDBY = "data\\TEXTURE\\UI\\standby.png";	// ƒXƒ^ƒ“ƒhƒoƒCƒeƒNƒXƒ`ƒƒ‚ÌƒpƒX
+const string PATH_UI_READY = "data\\TEXTURE\\UI\\ready.png";	// €”õŠ®—¹ƒeƒNƒXƒ`ƒƒ‚ÌƒpƒX
 
 const D3DXVECTOR3 INIT_MOVE_PLAYER = D3DXVECTOR3(0.0f, 100.0f, 0.0f);	// ƒvƒŒƒCƒ„[‚Ì‰Šú‚ÌˆÚ“®—Ê
 }
@@ -66,7 +67,7 @@ const D3DXVECTOR3 INIT_MOVE_PLAYER = D3DXVECTOR3(0.0f, 100.0f, 0.0f);	// ƒvƒŒƒCƒ
 //=====================================================
 CPlayerSelect::CPlayerSelect()
 {
-	m_nCountPlayer = 0;
+	m_nNumPlayer = 0;
 	ZeroMemory(&m_StandbyState[0], sizeof(m_StandbyState));
 	ZeroMemory(&m_apPlayerUI[0], sizeof(m_apPlayerUI));
 	ZeroMemory(&m_apPlayer[0], sizeof(m_apPlayer));
@@ -168,55 +169,21 @@ void CPlayerSelect::Update(void)
 	// ƒV[ƒ“‚ÌXV
 	CScene::Update();
 
-	// ƒvƒŒƒCƒ„[‚ÌƒGƒ“ƒgƒŠ[‘€ìŠm”F
-	CheckInputEntry();
+	// ‘€ì
+	Input();
+
+	// ŠJn‚·‚é‚©‚ÌŠm”F
+	CheckStart();
 	
-	// 1l‚¸‚ÂƒGƒ“ƒgƒŠ[‚µ‚½ê‡
-	//if (m_StandbyState[0] != STANDBY_OK)
-	//{
-	//	// ƒvƒŒƒCƒ„[‘SˆõƒGƒ“ƒgƒŠ[‚µ‚½ê‡
-	//	if (m_StandbyState[0] == STANDBY_PLAY && m_StandbyState[1] == STANDBY_PLAY && m_StandbyState[2] == STANDBY_PLAY && m_StandbyState[3] == STANDBY_PLAY)
-	//	{
-	//		int nIdx = CTexture::GetInstance()->Regist("data\\TEXTURE\\UI\\Junbi_ok.png");
-
-	//		for (int nCnt = 0; nCnt < MAX_PLAYER; nCnt++)
-	//		{
-	//			m_StandbyState[nCnt] = STANDBY_OK;
-	//			m_apStateUI[nCnt]->SetIdxTexture(nIdx);
-	//		}
-	//	}
-	//}
-
-	//// ‘JˆÚ‚Å‚«‚éó‘Ô‚Ìê‡
-	////if (m_StandbyState[0] == STANDBY_OK && m_StandbyState[1] == STANDBY_OK && m_StandbyState[2] == STANDBY_OK && m_StandbyState[3] == STANDBY_OK)
-	//{
-	//	if (pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_START, 0) == true)
-	//	{
-	//		CFade* pFade = CFade::GetInstance();
-
-	//		if (pFade == nullptr)
-	//			return;
-
-	//		if (pFade->GetState() != CFade::FADE_NONE)
-	//			return;
-
-	//		// ƒ‚[ƒh‚Ì•Û‘¶
-	//		gameManager::SaveMode(CGame::E_GameMode::MODE_MULTI, m_nCountPlayer);
-	//		
-	//		// ƒtƒF[ƒh
-	//		pFade->SetFade(CScene::MODE_GAME);
-	//	}
-	//}
-
 #ifdef _DEBUG
 	Debug();
 #endif
 }
 
 //=====================================================
-// ƒGƒ“ƒgƒŠ[“ü—Í‚ÌŠm”F
+// ‘€ì
 //=====================================================
-void CPlayerSelect::CheckInputEntry(void)
+void CPlayerSelect::Input(void)
 {
 	for (int i = 0; i < MAX_PLAYER; i++)
 	{
@@ -225,6 +192,10 @@ void CPlayerSelect::CheckInputEntry(void)
 
 		if (m_apInputMgr[i]->GetTrigger(CInputManager::E_Button::BUTTON_ENTER))
 			CreatePlayer(i);	// ƒvƒŒƒCƒ„[‚ÌƒGƒ“ƒgƒŠ[
+
+		if (m_apPlayer[i] != nullptr &&
+			m_apInputMgr[i]->GetTrigger(CInputManager::E_Button::BUTTON_READY))
+			Ready(i);	// €”õ
 	}
 }
 
@@ -256,6 +227,66 @@ void CPlayerSelect::CreatePlayer(int nIdx)
 		// “ü—Íƒ}ƒl[ƒWƒƒ[‚ÌŠ„‚è“–‚Ä
 		m_apPlayer[nIdx]->BindInputMgr(m_apInputMgr[nIdx]);	
 	}
+
+	m_nNumPlayer++;
+}
+
+//=====================================================
+// €”õ
+//=====================================================
+void CPlayerSelect::Ready(int nIdx)
+{
+	// ƒGƒ“ƒgƒŠ[ó‘Ô‚ğİ’è
+	m_StandbyState[nIdx] = STANDBY_OK;
+
+	// ƒeƒNƒXƒ`ƒƒ•ÏX
+	int nIdxTexture = Texture::GetIdx(&PATH_UI_READY[0]);
+	if (m_apStateUI[nIdx] != nullptr)
+		m_apStateUI[nIdx]->SetIdxTexture(nIdxTexture);
+}
+
+//=====================================================
+// ŠJn‚·‚é‚©‚ÌŠm”F
+//=====================================================
+void CPlayerSelect::CheckStart(void)
+{
+	if (m_nNumPlayer == 0)
+		return;
+
+	bool bStart = true;
+
+	for (int i = 0; i < MAX_PLAYER; i++)
+		if (m_StandbyState[i] != E_StandyrState::STANDBY_OK && m_apPlayer[i] != nullptr)
+			bStart = false;
+
+	if (bStart)
+		StartFade();
+}
+
+//=====================================================
+// ƒtƒF[ƒh‚ÌŠJn
+//=====================================================
+void CPlayerSelect::StartFade(void)
+{
+	CFade* pFade = CFade::GetInstance();
+
+	if (pFade == nullptr)
+		return;
+
+	if (pFade->GetState() != CFade::FADE::FADE_NONE)
+		return;
+
+	// ƒvƒŒƒCƒ„[ƒGƒ“ƒ^[ƒtƒ‰ƒO‚Ìİ’è
+	vector<bool> abEnter(MAX_PLAYER);
+
+	for (int i = 0; i < MAX_PLAYER; i++)
+		abEnter[i] = m_apPlayer[i] != nullptr;
+
+	// ƒ‚[ƒh‚Ì•Û‘¶
+	gameManager::SaveMode(CGame::E_GameMode::MODE_MULTI, abEnter);
+
+	// ƒQ[ƒ€‚É‘JˆÚ
+	pFade->SetFade(CScene::MODE_GAME);
 }
 
 //=====================================================
@@ -268,8 +299,6 @@ void CPlayerSelect::Debug(void)
 
 	if (pKeyboard == nullptr || pDebugProc == nullptr)
 		return;
-
-	pDebugProc->Print("\nƒGƒ“ƒgƒŠ[l”[%dl]", m_nCountPlayer);
 }
 
 //=====================================================

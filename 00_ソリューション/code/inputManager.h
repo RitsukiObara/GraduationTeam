@@ -21,6 +21,7 @@ public:
 	enum E_Button
 	{// ボタンの種類
 		BUTTON_ENTER = 0,	// エンターボタン
+		BUTTON_READY,	// 準備ボタン
 		BUTTON_BACK,	// 戻るボタン
 		BUTTON_PAUSE,	// ポーズ
 		BUTTON_AXIS_UP,	// 上方向キー スティック左

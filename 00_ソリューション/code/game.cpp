@@ -99,7 +99,8 @@ HRESULT CGame::Init(void)
 	}
 
 	// モードの取得
-	gameManager::LoadMode(&m_GameMode, nullptr);
+	vector<bool> abFrag;
+	gameManager::LoadMode(&m_GameMode, abFrag);
 
 	// 氷マネージャー
 	CIceManager* pIceManager = CIceManager::Create(SIZE_GRID[m_GameMode], SIZE_GRID[m_GameMode]);
@@ -144,11 +145,11 @@ void CGame::Update(void)
 	}
 
 	// ポーズ========================================
-	if (pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE))
+	/*if (pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE))
 	{
 		if(m_pPause == nullptr)
 			m_pPause = CPause::Create();
-	}
+	}*/
 
 	// カメラ更新
 	UpdateCamera();

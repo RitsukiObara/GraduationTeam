@@ -9,6 +9,8 @@
 // インクルード
 //*****************************************************
 #include "gameManagerMulti.h"
+#include "inputManager.h"
+#include "player.h"
 
 //=====================================================
 // コンストラクタ
@@ -25,6 +27,27 @@ HRESULT CGameManagerMulti::Init(void)
 {
 	// 基底クラスの初期化
 	CGameManager::Init();
+
+	// モードの取得
+	vector<bool> abFrag;
+	CGame::E_GameMode mode;
+	gameManager::LoadMode(&mode, abFrag);
+
+	for (int i = 0; i < (int)abFrag.size(); i++)
+	{
+		CInputManager *pInpuMgr = CInputManager::Create();
+
+		if (!abFrag[i])
+			continue;
+
+		CPlayer *pPlayer = CPlayer::Create();
+
+		if (pPlayer == nullptr)
+			continue;
+
+		pPlayer->BindInputMgr(pInpuMgr);
+		m_apPlayer.push_back(pPlayer);
+	}
 
 	return S_OK;
 }

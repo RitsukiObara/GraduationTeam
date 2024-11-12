@@ -191,6 +191,13 @@ void CInputManager::Update(void)
 		pKeyboard->GetTrigger(DIK_RETURN)
 	);
 
+	// 準備ボタン
+	m_info.abTrigger[BUTTON_READY] =
+	(
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_START, m_nID) ||
+		pKeyboard->GetTrigger(DIK_O)
+	);
+
 	// 戻るボタン
 	m_info.abTrigger[BUTTON_BACK] =
 	(
