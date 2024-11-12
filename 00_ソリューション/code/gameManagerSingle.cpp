@@ -112,6 +112,8 @@ void CGameManagerSingle::DeathPlayer(void)
 
 	m_pPlayer->Uninit();
 	m_pPlayer = nullptr;
+
+	CGame::SetState(CGame::E_State::STATE_END);
 }
 
 //=====================================================

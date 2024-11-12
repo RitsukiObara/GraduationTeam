@@ -15,7 +15,7 @@
 //=====================================================
 // コンストラクタ
 //=====================================================
-CGameManagerMulti::CGameManagerMulti()
+CGameManagerMulti::CGameManagerMulti() : m_nNumDeathPlayer(0)
 {
 
 }
@@ -86,6 +86,50 @@ void CGameManagerMulti::UpdateNormal(void)
 {
 	// 基底クラスの更新
 	CGameManager::UpdateNormal();
+
+	// プレイヤー管理
+	ManagePlayer();
+
+	// ゲーム終了の確認
+	CheckEndGame();
+}
+
+//=====================================================
+// プレイヤーの管理
+//=====================================================
+void CGameManagerMulti::ManagePlayer(void)
+{
+	for (int i = 0; i < (int)m_apPlayer.size(); i++)
+	{
+		if (m_apPlayer[i] == nullptr)
+			continue;
+
+		if (m_apPlayer[i]->GetState() == CPlayer::E_State::STATE_DEATH)
+			DeathPlayer(i);
+	}
+}
+
+//=====================================================
+// プレイヤーの死亡
+//=====================================================
+void CGameManagerMulti::DeathPlayer(int nIdx)
+{
+	m_apPlayer[nIdx]->Uninit();
+	m_apPlayer[nIdx] = nullptr;
+
+	m_nNumDeathPlayer++;
+}
+
+//=====================================================
+// ゲーム終了の確認
+//=====================================================
+void CGameManagerMulti::CheckEndGame(void)
+{
+	// プレイヤー数と死亡数が一致したらゲーム終了
+	if ((int)m_apPlayer.size() == m_nNumDeathPlayer)
+	{
+		CGame::SetState(CGame::E_State::STATE_END);
+	}
 }
 
 //=====================================================
