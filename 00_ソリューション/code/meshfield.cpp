@@ -34,6 +34,13 @@
 #define ANGLE_SLIP	(0.7f)	// 坂を滑る角度
 #define CMP_LENGTH	(1000.0f)	// 判定する半径
 #define OCEAN_SPEED	(80.0f)	// 海流の速度
+namespace
+{
+	const float OCEAN_SPEED_UP = 0.01875f;		// 波の速度増加量（構造変更前0.3fの16分の1）
+	const float OCEAN_SPEED_DOWN = 0.03125f;	// 波の速度減少量（構造変更前0.5fの16分の1）
+	const float OCEAN_SPEED_MAX = 5.0f;			// 波の速度最大値（構造変更前80.0fの16分の1）
+	const float OCEAN_SPEED_MULTIPLY = 16.0f;	// 氷の流れる速度->波の速度にする際の速度倍率
+}
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -789,15 +796,16 @@ void CMeshField::Wave(float fRot)
 	if (pIceManager == nullptr)
 		return;
 
-	CIceManager::E_Stream nOceanRot = CIceManager::GetInstance()->GetDirStream();	// 海流の向きを取得
-	CIceManager::E_Stream nOceanRotNext = CIceManager::GetInstance()->GetDirStreamNext();	// 次の海流の向きを取得
+	CIceManager::E_Stream nOceanRot = pIceManager->GetDirStream();	// 海流の向きを取得
+	CIceManager::E_Stream nOceanRotNext = pIceManager->GetDirStreamNext();	// 次の海流の向きを取得
+	float oceanSpeed = pIceManager->GetOceanLevel();	// 氷の流れる速度取得
 
 	// 海流の速度が上がっている状態の時
 	if (m_eOcean_Speed_State == OCEAN_STATE_UP)
 	{
 		pOcean->SetRandState(false);
 
-		m_fOceanSpeed += 0.3f;
+		oceanSpeed += OCEAN_SPEED_UP;
 
 		if (nOceanRot != nOceanRotNext)
 		{
@@ -809,18 +817,21 @@ void CMeshField::Wave(float fRot)
 	// 海流の速度が下がっている状態の時
 	if (m_eOcean_Speed_State == OCEAN_STATE_DOWN)
 	{
-		m_fOceanSpeed -= 0.5f;
+		oceanSpeed -= OCEAN_SPEED_DOWN;
 	}
 
-	if (m_fOceanSpeed < 0.0f)
+	if (oceanSpeed < 0.0f)
 	{
 		m_eOcean_Speed_State = OCEAN_STATE_UP;
 	}
 
-	if (m_fOceanSpeed > 80.0f)
+	if (oceanSpeed > OCEAN_SPEED_MAX)
 	{
 		m_eOcean_Speed_State = OCEAN_STATE_NONE;
 	}
+
+	// 氷の流れる速度設定
+	pIceManager->SetOceanLevel(oceanSpeed);
 
 	for (nCountV = 0; nCountV < m_nDivNumV + 1; nCountV++)
 	{// 頂点座標の設定
@@ -829,22 +840,22 @@ void CMeshField::Wave(float fRot)
 			//	矢印が海流の向きに流れる処理
 			if (nOceanRot == CIceManager::STREAM_UP)
 			{// 海流が上向き
-				pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.y = sinf(fRot) * m_fOceanSpeed;
+				pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.y = sinf(fRot) * oceanSpeed * OCEAN_SPEED_MULTIPLY;
 			}
 
 			if (nOceanRot == CIceManager::STREAM_RIGHT)
 			{// 海流が右向き
-				pVtx[nCountU * (m_nDivNumV + 1) + nCountV].pos.y = sinf(fRot) * m_fOceanSpeed;
+				pVtx[nCountU * (m_nDivNumV + 1) + nCountV].pos.y = sinf(fRot) * oceanSpeed * OCEAN_SPEED_MULTIPLY;
 			}
 
 			if (nOceanRot == CIceManager::STREAM_DOWN)
 			{// 海流が下向き
-				pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.y = sinf(fRot) * m_fOceanSpeed;
+				pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.y = sinf(fRot) * oceanSpeed * OCEAN_SPEED_MULTIPLY;
 			}
 
 			if (nOceanRot == CIceManager::STREAM_LEFT)
 			{// 海流が左向き
-				pVtx[nCountU * (m_nDivNumV + 1) + nCountV].pos.y = sinf(fRot) * m_fOceanSpeed;
+				pVtx[nCountU * (m_nDivNumV + 1) + nCountV].pos.y = sinf(fRot) * oceanSpeed * OCEAN_SPEED_MULTIPLY;
 			}
 		}
 
