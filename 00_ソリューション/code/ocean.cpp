@@ -30,6 +30,11 @@
 #define CHENGE_LENGTH	(10000)	// 操作できる頂点までの距離
 #define ANGLE_SLIP	(0.7f)	// 坂を滑る角度
 #define CMP_LENGTH	(1000.0f)	// 判定する半径
+namespace
+{
+	const int OCEAN_ROT_CHANGE_TIME_DEFAULT = 10;	// デフォルトの海流向き変更時間
+	const int OCEAN_ROT_CHANGE_TIME_DEGREE = 10;	// 海流向き変更時間ぶれ幅
+}
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -46,6 +51,8 @@ COcean::COcean()
 	m_nRandNextKeep = 0;
 	m_nRandState = false;
 	m_fRot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_nSetRotTime = 0;
+	m_nExecRotChangeTime = 0;
 }
 
 //=====================================================
@@ -81,6 +88,8 @@ HRESULT COcean::Init(void)
 {
 	CMeshField::Init();
 
+	SetNextOceanRot();	// 最初に次の向き設定
+
 	return S_OK;
 }
 
@@ -111,7 +120,8 @@ void COcean::Update(void)
 	m_fSpeed += 0.007f * OceanFlowLevel;
 
 	//OceanRotState();
-	OceanCycleTimer();
+	//OceanCycleTimer();
+	OceanChangeCheck();
 
 	universal::LimitRot(&m_fSpeed);
 
@@ -130,6 +140,48 @@ void COcean::Draw(void)
 
 	//頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
+}
+
+//====================================================
+// 次の海流の向き設定処理
+//====================================================
+void COcean::SetNextOceanRot(void)
+{
+	CGame* pGame = CGame::GetInstance();
+	if (pGame == nullptr)
+		return;
+
+	// 向き変更
+	do
+	{
+		m_nRandNextKeep = universal::RandRange(CIceManager::E_Stream::STREAM_MAX, CIceManager::E_Stream::STREAM_UP);
+	} while (m_nRandKeep == m_nRandNextKeep);	// 次の向きが変わるまで乱数を回す
+
+	// 変更時間設定
+	m_nExecRotChangeTime = OCEAN_ROT_CHANGE_TIME_DEFAULT + universal::RandRange(OCEAN_ROT_CHANGE_TIME_DEGREE, 0);
+	m_nSetRotTime = pGame->GetTimeSecond();	 // 現在のタイムを取得
+}
+
+//====================================================
+// 海流の向き変更時間か確認処理
+//====================================================
+void COcean::OceanChangeCheck(void)
+{
+	COcean* pOcean = COcean::GetInstance();
+	CIceManager* pIceManager = CIceManager::GetInstance();
+	CGame* pGame = CGame::GetInstance();
+	if (pOcean == nullptr || pIceManager == nullptr || pGame == nullptr)
+		return;
+
+	int nNowTime = pGame->GetTimeSecond();	 // 現在のタイムを取得
+
+	if (m_nSetRotTime - nNowTime >= m_nExecRotChangeTime)
+	{// 変更時間になった
+		pOcean->SetOceanSpeedState(COcean::OCEAN_STATE_DOWN);	// 海流の速度を下げる
+		pIceManager->SetDirStreamNext((CIceManager::E_Stream)(m_nRandNextKeep));	// 海流の向きをランダムにする
+		m_nRandKeep = m_nRandNextKeep;	// 現在の向きに設定
+		SetNextOceanRot();	// 次の向き設定
+	}
 }
 
 //====================================================
