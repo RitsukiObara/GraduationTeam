@@ -9,6 +9,8 @@
 // インクルード
 //*****************************************************
 #include "gameManagerSingle.h"
+#include "enemy.h"
+#include "player.h"
 
 //=====================================================
 // コンストラクタ
@@ -25,6 +27,15 @@ HRESULT CGameManagerSingle::Init(void)
 {
 	// 基底クラスの初期化
 	CGameManager::Init();
+
+	// 敵数表示UI生成
+	CUIEnemy::Create();
+
+	// 敵生成
+	CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
+
+	// プレイヤー生成
+	CPlayer::Create();
 
 	return S_OK;
 }

@@ -16,6 +16,7 @@
 //*****************************************************
 // 前方宣言
 //*****************************************************
+class CTimer;
 
 //*****************************************************
 // クラスの定義
@@ -38,11 +39,25 @@ public:
 	static CGameManager *Create(CGame::E_GameMode mode);	// 生成処理
 
 private:
+	// 関数ポインタ型の定義
+	typedef void (CGameManager::*StateFunc)(void);	// 状態ごとの更新
+
 	// メンバ関数
+	virtual void ManageGameState(void);	// ゲームの状態管理
+	virtual void UpdateStart(void);		// 開始状態の更新
+	virtual void UpdateNormal(void);	// 通常状態の更新
+	virtual void UpdateResult(void);	// リザルト状態の更新
+	virtual void UpdateEnd(void);		// 終了状態の更新
 
 	// メンバ変数
 
 	// 静的メンバ変数
 };
+
+namespace gameManager
+{
+void SaveMode(CGame::E_GameMode mode, int nNumPlayer = 1);	// モード保存
+void LoadMode(CGame::E_GameMode *pMode, int *pNumPlayer);	// モード読込
+}
 
 #endif

@@ -28,6 +28,7 @@
 #include "orbit.h"
 #include "debugproc.h"
 #include "UI.h"
+#include "gameManager.h"
 
 //*****************************************************
 // 定数定義
@@ -197,11 +198,24 @@ void CSelectMode::Update(void)
 	{
 		// フェード中の場合抜ける
 		CFade* pFade = CFade::GetInstance();
-		if (pFade == nullptr) { assert(false); return; }
-		if (pFade->GetState() != CFade::FADE_NONE) { assert(false); return; }
+		if (pFade == nullptr)
+			assert(false);
+		if (pFade->GetState() != CFade::FADE_NONE)
+			return;
 
-		// タイトルに遷移する
-		pFade->SetFade(CScene::MODE_GAME);
+		switch (m_selectMode)
+		{
+		case CSelectMode::MODE_SINGLE:
+			gameManager::SaveMode(CGame::E_GameMode::MODE_SINGLE, 1);
+			pFade->SetFade(CScene::MODE_GAME);
+			break;
+		case CSelectMode::MODE_PARTY:
+			pFade->SetFade(CScene::MODE_SELECTPLAYER);
+			break;
+		default:
+			assert(false);
+			break;
+		}
 
 		// サウンドの再生
 		pSound->Play(CSound::LABEL_SE_PAUSE_ENTER00);

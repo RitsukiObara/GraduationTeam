@@ -11,6 +11,7 @@
 #include "timer.h"
 #include "UI.h"
 #include "texture.h"
+#include "game.h"
 
 //*****************************************************
 // 定数定義
@@ -152,6 +153,9 @@ HRESULT CTimer::Init(void)
 
 	// 数字のトランスフォームの設定
 	TransformNumber();
+
+	SetPosition(D3DXVECTOR3(0.48f, 0.07f, 0.0f));
+	SetSecond(CGame::MAX_TIME);
 
 	return S_OK;
 }
