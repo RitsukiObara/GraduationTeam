@@ -651,7 +651,7 @@ void CIceStateFlow::Uninit(CIce *pIce)
 void CIceStateFlow::Update(CIce *pIce)
 {
 	if (!m_bDrift)
-		UpdateSarchIce(pIce);	// 氷を探している時の更新
+		UpdateSearchIce(pIce);	// 氷を探している時の更新
 	else
 		UpdateDriftIce(pIce);	// 漂着してるときの更新
 }
@@ -659,7 +659,7 @@ void CIceStateFlow::Update(CIce *pIce)
 //=====================================================
 // 氷を探しているときの更新
 //=====================================================
-void CIceStateFlow::UpdateSarchIce(CIce *pIce)
+void CIceStateFlow::UpdateSearchIce(CIce *pIce)
 {
 	CIceManager *pIceManager = CIceManager::GetInstance();
 

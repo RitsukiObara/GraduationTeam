@@ -188,7 +188,7 @@ private:
 	typedef bool (CIceStateFlow::*DirectionFunc)(CIce *pIce,int nIdxV,int nIdxH, vector<CIce*> &rpHitIce);
 
 	// メンバ関数
-	void UpdateSarchIce(CIce *pIce);	// 氷を探してる時の更新
+	void UpdateSearchIce(CIce *pIce);	// 氷を探してる時の更新
 	void UpdateDriftIce(CIce *pIce);	// 漂着する時の更新
 	void CollideIce(CIce *pIce);	// 氷との判定
 	bool CheckUp(CIce *pIce, int nIdxV, int nIdxH, vector<CIce*> &rpHitIce);	// 上方向の確認
