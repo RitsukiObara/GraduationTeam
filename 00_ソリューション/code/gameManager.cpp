@@ -19,6 +19,8 @@
 #include "UI_ready.h"
 #include "ocean_flow_UI.h"
 #include "flowIceFactory.h"
+#include "gameManagerSingle.h"
+#include "gameManagerMulti.h"
 
 //=====================================================
 // コンストラクタ
@@ -31,11 +33,22 @@ CGameManager::CGameManager()
 //=====================================================
 // 生成処理
 //=====================================================
-CGameManager *CGameManager::Create(void)
+CGameManager *CGameManager::Create(CGame::E_GameMode mode)
 {
 	CGameManager* pGameManager = nullptr;
 
-	pGameManager = new CGameManager;
+	switch (mode)
+	{
+	case CGame::MODE_SINGLE:
+		pGameManager = new CGameManagerSingle;
+		break;
+	case CGame::MODE_MULTI:
+		pGameManager = new CGameManagerMulti;
+		break;
+	default:
+		assert(false);
+		break;
+	}
 
 	if (pGameManager == nullptr)
 		return nullptr;

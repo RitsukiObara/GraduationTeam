@@ -1,17 +1,16 @@
 //*****************************************************
 //
-// ゲームマネージャー[gameManager.h]
+// マルチゲームマネージャー[gameManagerMulti.h]
 // Author:髙山桃也
 //
 //*****************************************************
-#ifndef _GAMEMANAGER_H_
-#define _GAMEMANAGER_H_
+#ifndef _GAMEMANAGERMULTI_H_
+#define _GAMEMANAGERMULTI_H_
 
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "object.h"
-#include "game.h"
+#include "gameManager.h"
 
 //*****************************************************
 // 前方宣言
@@ -20,22 +19,21 @@
 //*****************************************************
 // クラスの定義
 //*****************************************************
-class CGameManager : public CObject
+class CGameManagerMulti : public CGameManager
 {
 public:
-	CGameManager();	// コンストラクタ
-	~CGameManager() {};	// デストラクタ
+	CGameManagerMulti();	// コンストラクタ
+	~CGameManagerMulti() {};	// デストラクタ
 
 	// メンバ関数
-	virtual HRESULT Init(void);
-	virtual void Uninit(void);
-	virtual void Update();
-	virtual void Draw();
+	HRESULT Init(void) override;
+	void Uninit(void) override;
+	void Update() override;
+	void Draw() override;
 
 	// 変数取得・設定関数
 
 	// 静的メンバ関数
-	static CGameManager *Create(CGame::E_GameMode mode);	// 生成処理
 
 private:
 	// メンバ関数

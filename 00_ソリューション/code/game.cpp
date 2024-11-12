@@ -104,7 +104,7 @@ HRESULT CGame::Init(void)
 	CIceManager::Create(SIZE_GRID[m_GameMode], SIZE_GRID[m_GameMode]);
 
 	// ゲームマネージャーの生成
-	CGameManager::Create();
+	CGameManager::Create(m_GameMode);
 	
 	// タイマー表示の生成
 	m_pTimer = CTimer::Create();

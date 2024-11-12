@@ -378,6 +378,12 @@
     <ClCompile Include="code\title.cpp">
       <Filter>ソース ファイル\scene\title</Filter>
     </ClCompile>
+    <ClCompile Include="code\gameManagerMulti.cpp">
+      <Filter>ソース ファイル\scene\game</Filter>
+    </ClCompile>
+    <ClCompile Include="code\gameManagerSingle.cpp">
+      <Filter>ソース ファイル\scene\game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\scene.h">
@@ -685,6 +691,12 @@
     </ClInclude>
     <ClInclude Include="code\title.h">
       <Filter>ソース ファイル\scene\title</Filter>
+    </ClInclude>
+    <ClInclude Include="code\gameManagerMulti.h">
+      <Filter>ソース ファイル\scene\game</Filter>
+    </ClInclude>
+    <ClInclude Include="code\gameManagerSingle.h">
+      <Filter>ソース ファイル\scene\game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
