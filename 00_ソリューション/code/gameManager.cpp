@@ -23,6 +23,14 @@
 #include "gameManagerSingle.h"
 #include "gameManagerMulti.h"
 
+//*****************************************************
+// 定数定義
+//*****************************************************
+namespace
+{
+const string PATH_TEX = "data\\TEMP\\mode.txt";	// モードのパス
+}
+
 //=====================================================
 // コンストラクタ
 //=====================================================
@@ -175,4 +183,66 @@ void CGameManager::UpdateEnd(void)
 void CGameManager::Draw(void)
 {
 
+}
+
+namespace gameManager
+{
+// モード保存
+void SaveMode(CGame::E_GameMode mode, int nNumPlayer)
+{
+	std::ofstream file(PATH_TEX);
+
+	if (file.is_open())
+	{
+		file << "MODE = " << (int)mode << '\n';			// モード
+		file << "NUM_PLAYER = " << nNumPlayer << '\n';	// 人数
+
+		file.close();
+	}
+	else
+	{
+		assert(("ファイルが開けませんでした", false));
+	}
+}
+
+// モード読込
+void LoadMode(CGame::E_GameMode *pMode, int *pNumPlayer)
+{
+	std::ifstream file(PATH_TEX);
+
+	if (file.is_open())
+	{
+		std::string temp;
+
+		while (std::getline(file, temp))
+		{// 読み込むものがなくなるまで読込
+			std::istringstream iss(temp);
+			std::string key;
+			iss >> key;
+
+			if (key == "MODE")
+			{// モード
+				int nMode;
+				iss >> temp >> nMode;
+				*pMode = (CGame::E_GameMode)nMode;
+			}
+
+			if (key == "NUM_PLAYER" && pNumPlayer != nullptr)
+			{// 人数
+				iss >> temp >> *pNumPlayer;
+			}
+
+			if (file.eof())
+			{// 読み込み終了
+				break;
+			}
+		}
+
+		file.close();
+	}
+	else
+	{
+		assert(("ファイルが開けませんでした", false));
+	}
+}
 }

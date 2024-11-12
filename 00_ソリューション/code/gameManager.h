@@ -54,4 +54,10 @@ private:
 	// 静的メンバ変数
 };
 
+namespace gameManager
+{
+void SaveMode(CGame::E_GameMode mode, int nNumPlayer = 1);	// モード保存
+void LoadMode(CGame::E_GameMode *pMode, int *pNumPlayer);	// モード読込
+}
+
 #endif

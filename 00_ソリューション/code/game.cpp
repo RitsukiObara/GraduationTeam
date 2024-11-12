@@ -99,7 +99,7 @@ HRESULT CGame::Init(void)
 	}
 
 	// モードの取得
-	m_GameMode = E_GameMode::MODE_SINGLE;
+	gameManager::LoadMode(&m_GameMode, nullptr);
 
 	// 氷マネージャー
 	CIceManager* pIceManager = CIceManager::Create(SIZE_GRID[m_GameMode], SIZE_GRID[m_GameMode]);
