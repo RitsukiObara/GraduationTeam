@@ -106,11 +106,11 @@ HRESULT CGame::Init(void)
 	CIceManager* pIceManager = CIceManager::Create(SIZE_GRID[m_GameMode], SIZE_GRID[m_GameMode]);
 	pIceManager->Load(PATH_SAMPLE_ICESTAGE);
 
-	// ゲームマネージャーの生成
-	CGameManager::Create(m_GameMode);
-	
 	// タイマー生成
 	m_pTimer = CTimer::Create();
+
+	// ゲームマネージャーの生成
+	CGameManager::Create(m_GameMode);
 
 	return S_OK;
 }
