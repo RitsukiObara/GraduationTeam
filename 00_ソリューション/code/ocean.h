@@ -30,13 +30,18 @@ public:
 	void Draw(void);
 
 	// 変数取得・設定関数
+	CIceManager::E_Stream GetNowDirStream(void) { return (CIceManager::E_Stream)m_nRandKeep; }
+	CIceManager::E_Stream GetNextDirStream(void) { return (CIceManager::E_Stream)m_nRandNextKeep; }
+
 	void SetRandState(bool nRandState) { m_nRandState = nRandState; }	// ランダム変数の設定
+	void SetNextOceanRot(void);	// 次の海流の向き設定
 
 private:
 
 	// メンバ関数
 	void OceanRotState(void); // 海流の向きとメッシュの向きを連動させる処理
 	void OceanCycleTimer(void); // 海流周期を時間で管理する処理
+	void OceanChangeCheck(void);	// 海流の向き変更時間か確認処理
 
 	float m_fSpeed;	// 海流のスピード
 	D3DXVECTOR3 m_fRot;	// 海流の向き
@@ -44,5 +49,7 @@ private:
 	int m_nRandKeep;	// ランダム関数の保存用
 	int m_nRandNextKeep;	// 次のランダム関数の保存用
 	bool m_nRandState;	// ランダム変数の状態
+	int m_nSetRotTime;	// 向き変更をした時のタイマー時間
+	int m_nExecRotChangeTime;	// 向き変更をするまでのタイマー時間
 };
 #endif
