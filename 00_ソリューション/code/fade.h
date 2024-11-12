@@ -39,12 +39,17 @@ public:
 	~CFade();	// デストラクタ
 	
 	static CFade *Create(void);
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
+	virtual HRESULT Init(void);
+	virtual void Uninit(void);
+	virtual void Update(void);
+	virtual void Draw(void);
 	virtual void SetFade(CScene::MODE modeNext,bool bTrans = true);
 	FADE GetState(void);
+	void SetState(FADE state) { m_fade = state; }
+	bool IsTrans(void) { return m_bTrans; }
+	void SetIsTrans(bool trans) { m_bTrans = trans; }
+	CScene::MODE GetModeNext(void) { return m_modeNext; }
+	void SetModeNext(CScene::MODE modeNext) { m_modeNext = modeNext; }
 	void SetColor(D3DXCOLOR col) { m_col = col; }
 	static CFade *GetInstance(void) { return m_pFade; }
 
