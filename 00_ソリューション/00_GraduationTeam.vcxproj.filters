@@ -49,14 +49,35 @@
     <Filter Include="ソース ファイル\factory">
       <UniqueIdentifier>{1e74ac24-c599-495a-aea3-93b967f591ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\scene\game">
+      <UniqueIdentifier>{a4c2cfae-e61b-422b-b6ca-6b637dd538b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scene\logo">
+      <UniqueIdentifier>{e82406c0-55c8-4933-b538-2530ab54d2e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scene\playerselect">
+      <UniqueIdentifier>{8b3a3c1a-8ecd-476e-a923-647d9bd447ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scene\ranking">
+      <UniqueIdentifier>{b2d857bb-c667-459f-ba0b-e0604248e843}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scene\result">
+      <UniqueIdentifier>{d4aebfc9-2d49-45ad-bff8-5bed49ab4137}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scene\tutorial">
+      <UniqueIdentifier>{554c5943-617c-4c22-9877-8b111729433f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scene\selectStage">
+      <UniqueIdentifier>{882f98cf-f47d-4410-855c-937ecf72e12d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scene\selectmode">
+      <UniqueIdentifier>{ed5fe24e-62b1-49fa-8bc0-86a6561953c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scene\title">
+      <UniqueIdentifier>{e5afd224-6fb6-4f49-b9e8-b83bc61919bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="code\game.cpp">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="code\title.cpp">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
     <ClCompile Include="code\scene.cpp">
       <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
@@ -219,9 +240,6 @@
     <ClCompile Include="code\frame.cpp">
       <Filter>ソース ファイル\VFX</Filter>
     </ClCompile>
-    <ClCompile Include="code\logo.cpp">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
     <ClCompile Include="code\camera.cpp">
       <Filter>ソース ファイル\camera</Filter>
     </ClCompile>
@@ -255,20 +273,11 @@
     <ClCompile Include="code\skybox.cpp">
       <Filter>ソース ファイル\gameobject</Filter>
     </ClCompile>
-    <ClCompile Include="code\resultBehavior.cpp">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
     <ClCompile Include="code\result.cpp">
       <Filter>ソース ファイル\gameobject</Filter>
     </ClCompile>
     <ClCompile Include="code\random.cpp">
       <Filter>ソース ファイル\base</Filter>
-    </ClCompile>
-    <ClCompile Include="code\tutorial.cpp">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="code\ranking.cpp">
-      <Filter>ソース ファイル\scene</Filter>
     </ClCompile>
     <ClCompile Include="code\iceManager.cpp">
       <Filter>ソース ファイル\gameobject</Filter>
@@ -327,18 +336,6 @@
     <ClCompile Include="code\collision.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
-    <ClCompile Include="code\selectmode.cpp">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="code\selectStage.cpp">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="code\selectStageManager.cpp">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="code\playerselect.cpp">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
     <ClCompile Include="code\fade_fallice.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
@@ -348,14 +345,41 @@
     <ClCompile Include="code\UI_ready.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
+    <ClCompile Include="code\game.cpp">
+      <Filter>ソース ファイル\scene\game</Filter>
+    </ClCompile>
+    <ClCompile Include="code\gameManager.cpp">
+      <Filter>ソース ファイル\scene\game</Filter>
+    </ClCompile>
+    <ClCompile Include="code\logo.cpp">
+      <Filter>ソース ファイル\scene\logo</Filter>
+    </ClCompile>
+    <ClCompile Include="code\playerselect.cpp">
+      <Filter>ソース ファイル\scene\playerselect</Filter>
+    </ClCompile>
+    <ClCompile Include="code\ranking.cpp">
+      <Filter>ソース ファイル\scene\ranking</Filter>
+    </ClCompile>
+    <ClCompile Include="code\resultBehavior.cpp">
+      <Filter>ソース ファイル\scene\result</Filter>
+    </ClCompile>
+    <ClCompile Include="code\tutorial.cpp">
+      <Filter>ソース ファイル\scene\tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="code\selectStage.cpp">
+      <Filter>ソース ファイル\scene\selectStage</Filter>
+    </ClCompile>
+    <ClCompile Include="code\selectStageManager.cpp">
+      <Filter>ソース ファイル\scene\selectStage</Filter>
+    </ClCompile>
+    <ClCompile Include="code\selectmode.cpp">
+      <Filter>ソース ファイル\scene\selectmode</Filter>
+    </ClCompile>
+    <ClCompile Include="code\title.cpp">
+      <Filter>ソース ファイル\scene\title</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="code\game.h">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="code\title.h">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClInclude>
     <ClInclude Include="code\scene.h">
       <Filter>ソース ファイル\scene</Filter>
     </ClInclude>
@@ -521,9 +545,6 @@
     <ClInclude Include="code\frame.h">
       <Filter>ソース ファイル\VFX</Filter>
     </ClInclude>
-    <ClInclude Include="code\logo.h">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClInclude>
     <ClInclude Include="code\camera.h">
       <Filter>ソース ファイル\camera</Filter>
     </ClInclude>
@@ -557,20 +578,11 @@
     <ClInclude Include="code\skybox.h">
       <Filter>ソース ファイル\gameobject</Filter>
     </ClInclude>
-    <ClInclude Include="code\resultBehavior.h">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClInclude>
     <ClInclude Include="code\result.h">
       <Filter>ソース ファイル\gameobject</Filter>
     </ClInclude>
     <ClInclude Include="code\random.h">
       <Filter>ソース ファイル\base</Filter>
-    </ClInclude>
-    <ClInclude Include="code\tutorial.h">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="code\ranking.h">
-      <Filter>ソース ファイル\scene</Filter>
     </ClInclude>
     <ClInclude Include="code\iceManager.h">
       <Filter>ソース ファイル\gameobject</Filter>
@@ -632,18 +644,6 @@
     <ClInclude Include="code\container.h">
       <Filter>ソース ファイル\base</Filter>
     </ClInclude>
-    <ClInclude Include="code\selectmode.h">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="code\selectStage.h">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="code\selectStageManager.h">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="code\playerselect.h">
-      <Filter>ソース ファイル\scene</Filter>
-    </ClInclude>
     <ClInclude Include="code\fade_fallice.h">
       <Filter>ソース ファイル\base</Filter>
     </ClInclude>
@@ -652,6 +652,39 @@
     </ClInclude>
     <ClInclude Include="code\UI_ready.h">
       <Filter>ソース ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="code\game.h">
+      <Filter>ソース ファイル\scene\game</Filter>
+    </ClInclude>
+    <ClInclude Include="code\gameManager.h">
+      <Filter>ソース ファイル\scene\game</Filter>
+    </ClInclude>
+    <ClInclude Include="code\logo.h">
+      <Filter>ソース ファイル\scene\logo</Filter>
+    </ClInclude>
+    <ClInclude Include="code\playerselect.h">
+      <Filter>ソース ファイル\scene\playerselect</Filter>
+    </ClInclude>
+    <ClInclude Include="code\ranking.h">
+      <Filter>ソース ファイル\scene\ranking</Filter>
+    </ClInclude>
+    <ClInclude Include="code\resultBehavior.h">
+      <Filter>ソース ファイル\scene\result</Filter>
+    </ClInclude>
+    <ClInclude Include="code\tutorial.h">
+      <Filter>ソース ファイル\scene\tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="code\selectStage.h">
+      <Filter>ソース ファイル\scene\selectStage</Filter>
+    </ClInclude>
+    <ClInclude Include="code\selectStageManager.h">
+      <Filter>ソース ファイル\scene\selectStage</Filter>
+    </ClInclude>
+    <ClInclude Include="code\selectmode.h">
+      <Filter>ソース ファイル\scene\selectmode</Filter>
+    </ClInclude>
+    <ClInclude Include="code\title.h">
+      <Filter>ソース ファイル\scene\title</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -178,6 +178,7 @@
     <ClCompile Include="code\cameraState.cpp" />
     <ClCompile Include="code\collision.cpp" />
     <ClCompile Include="code\fade_fallice.cpp" />
+    <ClCompile Include="code\gameManager.cpp" />
     <ClCompile Include="code\nextflowice.cpp" />
     <ClCompile Include="code\playerselect.cpp" />
     <ClCompile Include="code\selectmode.cpp" />
@@ -282,6 +283,7 @@
     <ClInclude Include="code\collision.h" />
     <ClInclude Include="code\container.h" />
     <ClInclude Include="code\fade_fallice.h" />
+    <ClInclude Include="code\gameManager.h" />
     <ClInclude Include="code\nextflowice.h" />
     <ClInclude Include="code\playerselect.h" />
     <ClInclude Include="code\selectmode.h" />
