@@ -61,6 +61,7 @@
 namespace
 {
 const char* PATH_GAME_ROAD = "data\\MAP\\road00.bin";	// ゲームメッシュロードのパス
+const char* PATH_SAMPLE_ICESTAGE = "data\\TEXT\\ice_stage_01.txt";	// サンプル初期配置のパス
 const int NUM_LIGHT = 3;	// ライトの数
 const D3DXCOLOR COL_LIGHT_DEFAULT = { 0.9f,0.9f,0.9f,1.0f };	// ライトのデフォルト色
 const float SPEED_CHANGE_LIGHTCOL = 0.1f;	// ライトの色が変わる速度
@@ -145,7 +146,8 @@ HRESULT CGame::Init(void)
 	m_GameMode = E_GameMode::MODE_SINGLE;
 
 	// 氷マネージャー
-	CIceManager::Create(SIZE_GRID[m_GameMode], SIZE_GRID[m_GameMode]);
+	CIceManager* pIceManager = CIceManager::Create(SIZE_GRID[m_GameMode], SIZE_GRID[m_GameMode]);
+	pIceManager->Load(PATH_SAMPLE_ICESTAGE);
 
 	// 矢印モデルの生成
 	m_pOceanFlowUI = COceanFlowUI::Create();
