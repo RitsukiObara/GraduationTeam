@@ -13,6 +13,7 @@
 #include "logo.h"
 #include "title.h"
 #include "selectmode.h"
+#include "playerselect.h"
 #include "selectStage.h"
 #include "tutorial.h"
 #include "ranking.h"
@@ -179,6 +180,11 @@ CScene *CScene::Create(MODE mode)
 	case CScene::MODE_SELECTMODE:
 
 		pScene = new CSelectMode;
+
+		break;
+	case CScene::MODE_SELECTPLAYER:
+
+		pScene = new CPlayerSelect;
 
 		break;
 	case CScene::MODE_SELECTSTAGE:
