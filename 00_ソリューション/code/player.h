@@ -76,6 +76,7 @@ public:
 	int GetGridH(void) { return m_nGridH; }
 	void SetState(E_State state) { m_state = state; }	// 状態
 	E_State GetState(void) { return m_state; }
+	void BindInputMgr(CInputManager *pInputMgr) { m_pInputMgr = pInputMgr; }	// 入力マネージャー
 
 	// 静的メンバ関数
 	static CPlayer* Create(void);	// 生成処理
