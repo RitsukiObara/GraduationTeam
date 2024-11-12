@@ -295,6 +295,11 @@ void CPlayer::Forward(void)
 
 	float fSpeed = SPEED_MOVE_MAX;
 
+	// 突っつきモーション中は行わない
+	int nMotion = GetMotion();
+	if (nMotion == MOTION_PECK || nMotion == MOTION_CANNOTPECK)
+		return;
+
 	if (LINE_INPUT_MOVE < fLengthAxis)
 	{// 移動軸操作がしきい値を越えていたら、移動速度の立ち上がりを開始
 		m_fTimerStartMove += CManager::GetDeltaTime();
@@ -348,6 +353,11 @@ void CPlayer::FactingRot(void)
 	if (m_pInputMgr == nullptr)
 		return;
 
+	// 突っつきモーション中は行わない
+	int nMotion = GetMotion();
+	if (nMotion == MOTION_PECK || nMotion == MOTION_CANNOTPECK)
+		return;
+
 	// 目標方向の設定
 	CInputManager::S_Axis axis = m_pInputMgr->GetAxis();
 	D3DXVECTOR3 axisMove = axis.axisMove;
@@ -372,6 +382,11 @@ void CPlayer::FactingRot(void)
 void CPlayer::JudgeTurn(void)
 {
 	if (m_pInputMgr == nullptr)
+		return;
+
+	// 突っつきモーション中は行わない
+	int nMotion = GetMotion();
+	if (nMotion == MOTION_PECK || nMotion == MOTION_CANNOTPECK)
 		return;
 
 	// 差分角度を作成
@@ -652,14 +667,17 @@ void CPlayer::InputPeck(void)
 
 	if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_PECK))
 	{
-		// 突っつく処理
+		// 突っつけるかチェック
 		D3DXVECTOR3 rot = GetRotation();
 		D3DXVECTOR3 pos = GetPosition();
 
 		rot.y += D3DX_PI;
 		universal::LimitRot(&rot.y);
 
-		pIceManager->PeckIce(m_nGridV, m_nGridH, rot.y, pos);
+		if (pIceManager->CheckPeck(m_nGridV, m_nGridH, rot.y, pos))
+			SetMotion(MOTION::MOTION_PECK);
+		else
+			SetMotion(MOTION::MOTION_CANNOTPECK);
 	}
 }
 
@@ -728,9 +746,13 @@ void CPlayer::EndJump(void)
 void CPlayer::ManageMotion(void)
 {
 	int nMotion = GetMotion();
-	bool bFinifh = IsFinish();
+	bool bFinish = IsFinish();
 
-	if (m_fragMotion.bWalk)
+	if ((nMotion == MOTION_PECK || nMotion == MOTION_CANNOTPECK) && !bFinish)
+	{
+
+	}
+	else if (m_fragMotion.bWalk)
 	{// 歩きモーションフラグ有効
 		if (nMotion != MOTION::MOTION_WALK)
 			SetMotion(MOTION::MOTION_WALK);
@@ -739,6 +761,31 @@ void CPlayer::ManageMotion(void)
 	{// 何もフラグが立っていない状態
 		if(nMotion != MOTION::MOTION_NEUTRAL)
 			SetMotion(MOTION::MOTION_NEUTRAL);
+	}
+}
+
+//=====================================================
+// モーションイベント
+//=====================================================
+void CPlayer::Event(EVENT_INFO* pEventInfo)
+{
+	int nMotion = GetMotion();
+
+	if (nMotion == MOTION::MOTION_PECK)
+	{
+		CIceManager* pIceManager = CIceManager::GetInstance();
+
+		if (pIceManager == nullptr)
+			return;
+
+		// 突っつく処理
+		D3DXVECTOR3 rot = GetRotation();
+		D3DXVECTOR3 pos = GetPosition();
+
+		rot.y += D3DX_PI;
+		universal::LimitRot(&rot.y);
+
+		pIceManager->PeckIce(m_nGridV, m_nGridH, rot.y, pos);
 	}
 }
 

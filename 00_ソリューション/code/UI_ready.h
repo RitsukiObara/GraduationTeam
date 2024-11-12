@@ -1,1 +1,84 @@
-#pragma once
+//*****************************************************
+//
+// ゲームスタート告知UI処理[UI_ready.h]
+// Author:森川駿弥
+//
+//*****************************************************
+#ifndef _UI_READY_H_
+#define _UI_READY_H_
+
+//*****************************************************
+// インクルード
+//*****************************************************
+#include "gameObject.h"
+#include "number.h"
+
+//*****************************************************
+// 前方宣言
+//*****************************************************
+class CUI;
+
+//*****************************************************
+// クラスの定義
+//*****************************************************
+class CUIready : public CGameObject
+{
+public:
+	// 列挙型定義
+	enum E_Number
+	{// 数字の種類
+		NUMBER_SECOND = 0,	// 秒
+		NUMBER_MAX
+	};
+
+	// 列挙型定義
+	enum STATE
+	{// テクスチャの種類
+		STATE_NUMBER = 0,	//数字状態
+		STATE_GO,			//GO指示
+		STATE_MAX
+	};
+
+	CUIready();	// コンストラクタ
+	~CUIready();	// デストラクタ
+
+	// メンバ関数
+	HRESULT Init();
+	void Uninit();
+	void Update();
+	void Draw();
+	static CUIready* Create();	// 生成
+
+	// 変数取得・設定関数
+	int GetSecond() { return m_nSecond; }	// 秒
+	void SetSecond(int nSecond) { m_nSecond = nSecond; }
+	void AddSecond(int nSecond) { m_nSecond += nSecond; }
+	bool GetFlag() { return m_bStop; }	// 動作フラグ
+	void SetFlag(bool bStop) { m_bStop = bStop; }
+	void SetPosition(D3DXVECTOR3 pos) override;	// 位置
+	void SetScaleNumber(float fScale);	// 数字のスケール
+	float GetScaleNumber(void) { return m_fScaleNumber; }
+	void SetColor(E_Number number, D3DXCOLOR col);	// 色
+	D3DXCOLOR GetColor(E_Number number);
+
+	// 静的メンバ関数
+	static void SaveSecond(int nSecond);	// 時間保存
+	static int LoadSecond(void);	// 時間読込
+
+private:
+	// メンバ関数
+	void UpdateNumber();	// 数字の更新
+	void TransformNumber();	// 数字のトランスフォーム設定
+
+	// メンバ変数
+	int m_nSecond;			// 現在の時間(秒)
+	float m_fScaleNumber;	// 数字のスケール
+	bool m_bStop;				// タイマー停止のフラグ
+	vector<CNumber*> m_aNumber;	// 数字の配列
+	int m_nFrame;				//フレーム計算
+	STATE m_state;				//状態変数
+	CUI* m_Go;	// GOの配列
+	int m_StateCnt;	//状態遷移カウント
+};
+
+#endif
