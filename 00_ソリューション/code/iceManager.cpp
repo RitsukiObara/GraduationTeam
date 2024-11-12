@@ -342,6 +342,43 @@ void CIceManager::StopIce(CIce *pIce)
 }
 
 //=====================================================
+// 氷をつつけるかのチェック
+//=====================================================
+bool CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos)
+{
+	CIce *pIceStand = m_aGrid[nNumV][nNumH].pIce;
+	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
+
+	int nNumBreakV = nNumV;
+	int nNumBreakH = nNumH;
+
+	CIce* pIcePeck = nullptr;
+
+	// 向きに合わせて氷を選択
+	for (auto it : apIce)
+	{
+		if (it == nullptr)
+			continue;
+
+		// 氷とスティック角度の比較
+		D3DXVECTOR3 posIce = it->GetPosition();
+		bool bSelect = universal::IsInFanTargetYFlat(pos, posIce, fRot, RANGE_SELECT_ICE);
+
+		if (bSelect)
+		{// 氷が選べたらfor文を終了
+			pIcePeck = it;
+			break;
+		}
+	}
+
+	// 番号を取得
+	GetIceIndex(pIcePeck, &nNumBreakV, &nNumBreakH);
+
+	// 突っつける氷かのチェック
+	return CanPeck(pIcePeck, nNumBreakV, nNumBreakH);
+}
+
+//=====================================================
 // 氷をつつく
 //=====================================================
 bool CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos)
