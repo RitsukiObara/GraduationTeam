@@ -98,6 +98,8 @@ HRESULT COceanFlowUI::Init(void)
 
 	m_state = STATE_IN;
 
+	SetPosition(D3DXVECTOR3(0.09f, 0.07f, 0.0f));
+
 	return S_OK;
 }
 

@@ -92,7 +92,7 @@ HRESULT CIceManager::Init(void)
 	SetGridPos();
 
 	// 仮マップ生成
-	CreateIce(3, 6,CIce::E_Type::TYPE_HARD);
+	/*CreateIce(3, 6,CIce::E_Type::TYPE_HARD);
 	CreateIce(3, 5);
 	CreateIce(3, 4);
 	CreateIce(4, 4);
@@ -111,7 +111,7 @@ HRESULT CIceManager::Init(void)
 	CreateIce(6, 8);
 	CreateIce(5, 8);
 	CreateIce(4, 8);
-	CreateIce(4, 7);
+	CreateIce(4, 7);*/
 
 	// 海流を初期化
 	m_dirStream = E_Stream::STREAM_LEFT;
@@ -339,6 +339,43 @@ void CIceManager::StopIce(CIce *pIce)
 	pIce->SetState(CIce::E_State::STATE_NORMAL);
 
 	// グリッドに属性を割り振る
+}
+
+//=====================================================
+// 氷をつつけるかのチェック
+//=====================================================
+bool CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos)
+{
+	CIce *pIceStand = m_aGrid[nNumV][nNumH].pIce;
+	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
+
+	int nNumBreakV = nNumV;
+	int nNumBreakH = nNumH;
+
+	CIce* pIcePeck = nullptr;
+
+	// 向きに合わせて氷を選択
+	for (auto it : apIce)
+	{
+		if (it == nullptr)
+			continue;
+
+		// 氷とスティック角度の比較
+		D3DXVECTOR3 posIce = it->GetPosition();
+		bool bSelect = universal::IsInFanTargetYFlat(pos, posIce, fRot, RANGE_SELECT_ICE);
+
+		if (bSelect)
+		{// 氷が選べたらfor文を終了
+			pIcePeck = it;
+			break;
+		}
+	}
+
+	// 番号を取得
+	GetIceIndex(pIcePeck, &nNumBreakV, &nNumBreakH);
+
+	// 突っつける氷かのチェック
+	return CanPeck(pIcePeck, nNumBreakV, nNumBreakH);
 }
 
 //=====================================================
@@ -1341,4 +1378,67 @@ CIce* CIceManager::GetLeftDownIdx(int *pNumV, int *pNumH)
 void CIceManager::Draw(void)
 {
 
+}
+
+//=====================================================
+// 初期配置読み込み処理
+//=====================================================
+void CIceManager::Load(const char* pPath)
+{
+	bool bLoad = false;
+	int nGridV = 0;
+	std::ifstream ifs(pPath);
+
+	if (ifs.is_open())
+	{
+		std::string strLine;
+		while (std::getline(ifs, strLine))
+		{
+			std::istringstream iss(strLine);
+			std::string key;
+			iss >> key;
+			
+			if (strLine.length() == 0)
+				continue;	// 読み込んだ文字が空なら通らない
+
+			if (key == "SETICE")
+			{
+				bLoad = true;
+				continue;
+			}
+
+			if (key == "END_SETICE")
+			{// 終了
+				break;
+			}
+
+			// 配置読み込み
+			if (bLoad)
+			{// SETICE読み込んだ
+				int nGridH = 0;
+				for (int cnt = 0; cnt < (int)strLine.size(); cnt++)
+				{
+					char cData = strLine[cnt];
+					if (cData != ' ')
+					{// 何かしら数字がいる
+						if (cData == '1')
+						{// 通常氷
+							CreateIce(nGridV, nGridH);
+						}
+						else if (cData == '2')
+						{// 硬い氷
+							CreateIce(nGridV, nGridH, CIce::E_Type::TYPE_HARD);
+						}
+						nGridH++;
+					}
+				}
+				nGridV++;	// 行カウント増やす
+			}
+		}
+		ifs.close();
+	}
+	else
+	{
+		assert(("ファイルが開けませんでした", false));
+	}
 }

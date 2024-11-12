@@ -172,7 +172,7 @@ void CFade_FallIce::Update(void)
 
 					// 配置位置計算
 					D3DXVECTOR3 pos;
-					pos.x = ((((*itr).y % 2 == 0) ? 0 : 0.5) + (*itr).x) * POLYGON_WIDTH;
+					pos.x = ((((*itr).y % 2 == 0) ? 0 : 0.5f) + (*itr).x) * POLYGON_WIDTH;
 					pos.y = SCREEN_HEIGHT - (POLYGON_HEIGHT - (POLYGON_WIDTH / 2.0f / sqrtf(3))) * (*itr).y;
 					pos.z = 0.0f;
 
@@ -267,13 +267,13 @@ void CFade_FallIce::Draw(void)
 	//テクスチャ設定
 	pDevice->SetTexture(0, m_pTexture);
 
-	for (int cntVtx = 0; cntVtx < m_icePolygon.size(); cntVtx++)
+	for (int cntVtx = 0; cntVtx < (int)m_icePolygon.size(); cntVtx++)
 	{
 		//頂点バッファをデータストリームに設定
 		pDevice->SetStreamSource(0, m_icePolygon[cntVtx], 0, sizeof(VERTEX_2D));
 
 		//ポリゴンの描画
-		for (int cntSize = 0; cntSize < FALLICE_PATTERN[cntVtx].size(); cntSize++)
+		for (int cntSize = 0; cntSize < (int)FALLICE_PATTERN[cntVtx].size(); cntSize++)
 		{
 			pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, cntSize * 4, 2);
 		}

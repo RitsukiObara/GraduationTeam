@@ -48,6 +48,8 @@ public:
 	void SetTimer(int nTime) { m_nTimerTrans = nTime; }
 
 private:
+	void CreateLight(void);	// ライトの生成
+
 	int m_nTimerTrans;	// 遷移タイマー
 };
 
