@@ -10,6 +10,7 @@
 //*****************************************************
 #include "gameManager.h"
 #include "UIManager.h"
+#include "timer.h"
 #include "skybox.h"
 #include "ocean.h"
 #include "BG_Ice.h"
@@ -104,6 +105,66 @@ void CGameManager::Uninit(void)
 // 更新処理
 //=====================================================
 void CGameManager::Update(void)
+{
+	// ゲームの状態管理
+	ManageGameState();
+}
+
+//=====================================================
+// ゲームの状態管理
+//=====================================================
+void CGameManager::ManageGameState(void)
+{
+	CGame::E_State state = CGame::GetState();
+
+	switch (state)
+	{
+	case CGame::STATE_START:
+		UpdateStart();
+		break;
+	case CGame::STATE_NORMAL:
+		UpdateNormal();
+		break;
+	case CGame::STATE_RESULT:
+		UpdateResult();
+		break;
+	case CGame::STATE_END:
+		UpdateEnd();
+		break;
+	default:
+		assert(false);
+		break;
+	}
+}
+
+//=====================================================
+// 開始状態の更新
+//=====================================================
+void CGameManager::UpdateStart(void)
+{
+
+}
+
+//=====================================================
+// 通常状態の更新
+//=====================================================
+void CGameManager::UpdateNormal(void)
+{
+
+}
+
+//=====================================================
+// リザルト状態の更新
+//=====================================================
+void CGameManager::UpdateResult(void)
+{
+
+}
+
+//=====================================================
+// 終了状態の更新
+//=====================================================
+void CGameManager::UpdateEnd(void)
 {
 
 }
