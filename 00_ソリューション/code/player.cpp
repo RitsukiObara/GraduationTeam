@@ -657,6 +657,11 @@ void CPlayer::EndFlows(void)
 //=====================================================
 void CPlayer::InputPeck(void)
 {
+	int nMotion = GetMotion();
+
+	if (nMotion == MOTION_CANNOTPECK || nMotion == MOTION_PECK)
+		return;
+
 	if (m_pInputMgr == nullptr)
 		return;
 

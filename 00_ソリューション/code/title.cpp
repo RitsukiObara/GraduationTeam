@@ -393,7 +393,7 @@ void CTitle::Fade(void)
 	if (pFade->GetState() != CFade::FADE_NONE)
 		return;
 
-	pFade->SetFade(CScene::MODE_GAME);
+	pFade->SetFade(CScene::MODE_SELECTMODE);
 }
 
 //====================================================

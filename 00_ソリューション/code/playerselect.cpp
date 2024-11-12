@@ -42,6 +42,7 @@
 #include "flowIceFactory.h"
 #include "UI.h"
 #include "ocean.h"
+#include "gameManager.h"
 
 //*****************************************************
 // マクロ定義
@@ -73,7 +74,6 @@ CPlayerSelect::CPlayerSelect()
 	ZeroMemory(&m_StandbyState[0], sizeof(m_StandbyState));
 	ZeroMemory(&m_apPlayerUI[0], sizeof(m_apPlayerUI));
 	ZeroMemory(&m_apPlayer[0], sizeof(m_apPlayer));
-
 }
 
 //=====================================================
@@ -177,6 +177,7 @@ void CPlayerSelect::Uninit(void)
 			m_apPlayer[nCount] = nullptr;
 		}
 	}
+
 	// オブジェクト全棄
 	CObject::ReleaseAll();
 
@@ -236,7 +237,7 @@ void CPlayerSelect::Update(void)
 	}
 
 	// 遷移できる状態の場合
-	if (m_StandbyState[0] == STANDBY_OK && m_StandbyState[1] == STANDBY_OK && m_StandbyState[2] == STANDBY_OK && m_StandbyState[3] == STANDBY_OK)
+	//if (m_StandbyState[0] == STANDBY_OK && m_StandbyState[1] == STANDBY_OK && m_StandbyState[2] == STANDBY_OK && m_StandbyState[3] == STANDBY_OK)
 	{
 		if (pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_START, 0) == true)
 		{
@@ -248,6 +249,10 @@ void CPlayerSelect::Update(void)
 			if (pFade->GetState() != CFade::FADE_NONE)
 				return;
 
+			// モードの保存
+			gameManager::SaveMode(CGame::E_GameMode::MODE_MULTI, m_nCountPlayer);
+			
+			// フェード
 			pFade->SetFade(CScene::MODE_GAME);
 		}
 	}

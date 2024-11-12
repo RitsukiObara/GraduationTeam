@@ -99,7 +99,7 @@ HRESULT CGame::Init(void)
 	}
 
 	// モードの取得
-	m_GameMode = E_GameMode::MODE_SINGLE;
+	gameManager::LoadMode(&m_GameMode, nullptr);
 
 	// 氷マネージャー
 	CIceManager* pIceManager = CIceManager::Create(SIZE_GRID[m_GameMode], SIZE_GRID[m_GameMode]);
@@ -108,19 +108,8 @@ HRESULT CGame::Init(void)
 	// ゲームマネージャーの生成
 	CGameManager::Create(m_GameMode);
 	
-	// タイマー表示の生成
+	// タイマー生成
 	m_pTimer = CTimer::Create();
-	m_pTimer->SetPosition(D3DXVECTOR3(0.48f, 0.07f, 0.0f));
-	m_pTimer->SetSecond(MAX_TIME);
-
-	// 敵数表示UI生成
-	CUIEnemy::Create();
-
-	// 敵生成
-	CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
-
-	// プレイヤー生成
-	CPlayer::Create();
 
 	return S_OK;
 }
