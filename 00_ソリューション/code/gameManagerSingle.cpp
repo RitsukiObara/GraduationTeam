@@ -11,6 +11,7 @@
 #include "gameManagerSingle.h"
 #include "enemy.h"
 #include "player.h"
+#include "inputManager.h"
 
 //=====================================================
 // コンストラクタ
@@ -35,7 +36,14 @@ HRESULT CGameManagerSingle::Init(void)
 	CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
 
 	// プレイヤー生成
-	CPlayer::Create();
+	m_pPlayer = CPlayer::Create();
+
+	if (m_pPlayer != nullptr)
+	{
+		// 入力マネージャーの割り当て
+		CInputManager *pInpuMgr = CInputManager::Create();
+		m_pPlayer->BindInputMgr(pInpuMgr);
+	}
 
 	return S_OK;
 }

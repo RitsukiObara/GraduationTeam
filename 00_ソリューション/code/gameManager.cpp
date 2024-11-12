@@ -11,7 +11,6 @@
 #include "gameManager.h"
 #include "UIManager.h"
 #include "timer.h"
-#include "skybox.h"
 #include "ocean.h"
 #include "BG_Ice.h"
 #include "camera.h"
@@ -74,9 +73,6 @@ HRESULT CGameManager::Init(void)
 {
 	// UIマネージャーの追加
 	CUIManager::Create();
-
-	// スカイボックスの生成
-	CSkybox::Create();
 
 	//海の生成
 	COcean::Create();

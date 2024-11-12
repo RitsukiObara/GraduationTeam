@@ -99,15 +99,6 @@ HRESULT CInputManager::Init(void)
 //=====================================================
 void CInputManager::Uninit(void)
 {
-	for (auto itr = s_aInputMgr.begin(); itr < s_aInputMgr.end(); itr++)
-	{
-		if (*itr == this)
-		{
-			s_aInputMgr.erase(itr);
-			break;
-		}
-	}
-
 	// 自身のポインタ破棄
 	delete this;
 }
@@ -195,7 +186,7 @@ void CInputManager::Update(void)
 	// エンター
 	m_info.abTrigger[BUTTON_ENTER] =
 	(
-		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_A, 0) ||
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_A, m_nID) ||
 		pMouse->GetTrigger(CInputMouse::BUTTON_LMB) ||
 		pKeyboard->GetTrigger(DIK_RETURN)
 	);
@@ -203,7 +194,7 @@ void CInputManager::Update(void)
 	// 戻るボタン
 	m_info.abTrigger[BUTTON_BACK] =
 	(
-		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_B, 0) ||
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_B, m_nID) ||
 		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_BACK, m_nID) ||
 		pMouse->GetTrigger(CInputMouse::BUTTON_RMB)
 	);

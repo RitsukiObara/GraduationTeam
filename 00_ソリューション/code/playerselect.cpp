@@ -45,24 +45,21 @@
 #include "gameManager.h"
 
 //*****************************************************
-// マクロ定義
+// 定数定義
 //*****************************************************
-#define TRANS_TIME	(100)	// 終了までの余韻のフレーム数
-#define SPEED_TIME	(60)	// タイマーが減っていく速度
-
 namespace
 {
-	const char* PATH_GAME_ROAD = "data\\MAP\\road00.bin";	// ゲームメッシュロードのパス
-	const int NUM_LIGHT = 3;	// ライトの数
-	const D3DXCOLOR COL_LIGHT_DEFAULT = { 0.9f,0.9f,0.9f,1.0f };	// ライトのデフォルト色
-	const float SPEED_CHANGE_LIGHTCOL = 0.1f;	// ライトの色が変わる速度
+const float SIZE_UI_PLAYERNUMBER = 0.05f;	// プレイヤーナンバーUIのサイズ
+const float HEIGHT_UI_PLAYERNUMBER = 0.8f;	// プレイヤーナンバーUIの位置の高さ
 
+const string PATH_UI_STANDBY = "data\\TEXTURE\\UI\\standby.png";	// スタンドバイテクスチャのパス
+
+const D3DXVECTOR3 INIT_MOVE_PLAYER = D3DXVECTOR3(0.0f, 100.0f, 0.0f);	// プレイヤーの初期の移動量
 }
 
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CPlayerSelect* CPlayerSelect::m_pGame = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -70,10 +67,10 @@ CPlayerSelect* CPlayerSelect::m_pGame = nullptr;	// 自身のポインタ
 CPlayerSelect::CPlayerSelect()
 {
 	m_nCountPlayer = 0;
-	m_posMid = { 0.0f,0.0f,0.0f };
 	ZeroMemory(&m_StandbyState[0], sizeof(m_StandbyState));
 	ZeroMemory(&m_apPlayerUI[0], sizeof(m_apPlayerUI));
 	ZeroMemory(&m_apPlayer[0], sizeof(m_apPlayer));
+	ZeroMemory(&m_apInputMgr[0], sizeof(m_apInputMgr));
 }
 
 //=====================================================
@@ -84,45 +81,17 @@ HRESULT CPlayerSelect::Init(void)
 	// 親クラスの初期化
 	CScene::Init();
 
-	m_pGame = this;
-
-	m_colLight = COL_LIGHT_DEFAULT;
-
 	// UIマネージャーの追加
 	CUIManager::Create();
 
-	// スカイボックスの生成
-	CSkybox::Create();
-
-	COcean::Create();
-
-	// フォグをかける
-	CRenderer* pRenderer = CRenderer::GetInstance();
-
-	if (pRenderer != nullptr)
-	{
-		pRenderer->EnableFog(true);
-		pRenderer->SetStart(50000);
-		pRenderer->SetEnd(70000);
-		pRenderer->SetCol(D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f));
-	}
-
-	// スロー管理の生成
-	CSlow::Create();
-
-	// ライトの生成
-	CreateLight();
-
 	Camera::ChangeState(new CFollowPlayer);
-
-
-	// 氷マネージャー
-	CIceManager::Create(15, 15);
 
 	// テクスチャ番号取得
 	int nIdx[2]; 
 	nIdx[0] = CTexture::GetInstance()->Regist("data\\TEXTURE\\UI\\player_Count.png");
 	nIdx[1]= CTexture::GetInstance()->Regist("data\\TEXTURE\\UI\\Abutton.png");
+
+	float fRateOnePlayer = 1.0f / MAX_PLAYER;
 
 	// UI生成
 	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
@@ -131,9 +100,9 @@ HRESULT CPlayerSelect::Init(void)
 		m_apPlayerUI[nCount] = CUI::Create();
 		if (m_apPlayerUI[nCount] != nullptr)
 		{
-			m_apPlayerUI[nCount]->SetSize(0.05f,0.05f);
-			m_apPlayerUI[nCount]->SetPosition(D3DXVECTOR3(0.1f + 0.25f * nCount, 0.8f, 0.0f));
-			m_apPlayerUI[nCount]->SetTex(D3DXVECTOR2(0.0f + 0.25f * nCount, 0.0f), D3DXVECTOR2(0.25f + 0.25f * nCount, 1.0f));
+			m_apPlayerUI[nCount]->SetSize(SIZE_UI_PLAYERNUMBER, SIZE_UI_PLAYERNUMBER);
+			m_apPlayerUI[nCount]->SetPosition(D3DXVECTOR3(0.1f + fRateOnePlayer * nCount, HEIGHT_UI_PLAYERNUMBER, 0.0f));
+			m_apPlayerUI[nCount]->SetTex(D3DXVECTOR2(0.0f + fRateOnePlayer * nCount, 0.0f), D3DXVECTOR2(fRateOnePlayer + fRateOnePlayer * nCount, 1.0f));
 			m_apPlayerUI[nCount]->SetIdxTexture(nIdx[0]);
 			m_apPlayerUI[nCount]->SetVtx();
 		}
@@ -143,11 +112,15 @@ HRESULT CPlayerSelect::Init(void)
 		if (m_apStateUI[nCount] != nullptr)
 		{
 			m_apStateUI[nCount]->SetSize(0.07f, 0.05f);
-			m_apStateUI[nCount]->SetPosition(D3DXVECTOR3(0.1f + 0.25f * nCount, 0.9f, 0.0f));
+			m_apStateUI[nCount]->SetPosition(D3DXVECTOR3(0.1f + fRateOnePlayer * nCount, 0.9f, 0.0f));
 			m_apStateUI[nCount]->SetTex(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(1.0f, 1.0f));
 			m_apStateUI[nCount]->SetIdxTexture(nIdx[1]);
 			m_apStateUI[nCount]->SetVtx();
 		}
+
+		// 入力マネージャーの生成
+		CInputManager *pInputMgr = CInputManager::Create();
+		m_apInputMgr[nCount] = pInputMgr;
 	}
 
 	return S_OK;
@@ -182,8 +155,6 @@ void CPlayerSelect::Uninit(void)
 	CObject::ReleaseAll();
 
 	CScene::Uninit();
-
-	m_pGame = nullptr;
 }
 
 //=====================================================
@@ -192,76 +163,50 @@ void CPlayerSelect::Uninit(void)
 void CPlayerSelect::Update(void)
 {
 	CFade* pFade = CFade::GetInstance();
-	CInputManager* pInputManager = CInputManager::GetInstance();
-	CInputKeyboard* pKeyboard = CInputKeyboard::GetInstance();
-	CInputJoypad* pJoypad = CInputJoypad::GetInstance();
 	CSound* pSound = CSound::GetInstance();
-
-
+	
 	// シーンの更新
 	CScene::Update();
 
+	// プレイヤーのエントリー操作確認
+	CheckInputEntry();
 	
 	// 1人ずつエントリーした場合
-	if (m_StandbyState[0] != STANDBY_OK)
-	{
-		if (pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_A, m_nCountPlayer) == true)
-		{
-			int nIdx = CTexture::GetInstance()->Regist("data\\TEXTURE\\UI\\standby.png");
+	//if (m_StandbyState[0] != STANDBY_OK)
+	//{
+	//	// プレイヤー全員エントリーした場合
+	//	if (m_StandbyState[0] == STANDBY_PLAY && m_StandbyState[1] == STANDBY_PLAY && m_StandbyState[2] == STANDBY_PLAY && m_StandbyState[3] == STANDBY_PLAY)
+	//	{
+	//		int nIdx = CTexture::GetInstance()->Regist("data\\TEXTURE\\UI\\Junbi_ok.png");
 
-			// プレイヤー生成
-			m_apPlayer[m_nCountPlayer] = CPlayer::Create();
-			m_apStateUI[m_nCountPlayer]->SetIdxTexture(nIdx);
-			m_StandbyState[m_nCountPlayer] = STANDBY_PLAY;
-			m_apPlayerUI[m_nCountPlayer]->SetSize(0.05f, 0.05f);
-			m_apStateUI[m_nCountPlayer]->SetVtx();
+	//		for (int nCnt = 0; nCnt < MAX_PLAYER; nCnt++)
+	//		{
+	//			m_StandbyState[nCnt] = STANDBY_OK;
+	//			m_apStateUI[nCnt]->SetIdxTexture(nIdx);
+	//		}
+	//	}
+	//}
 
-			m_apPlayer[m_nCountPlayer]->SetMove(D3DXVECTOR3(0.0f, 100.0f, 0.0f));
-			m_apPlayer[m_nCountPlayer]->SetState(CPlayer::STATE_NORMAL);
+	//// 遷移できる状態の場合
+	////if (m_StandbyState[0] == STANDBY_OK && m_StandbyState[1] == STANDBY_OK && m_StandbyState[2] == STANDBY_OK && m_StandbyState[3] == STANDBY_OK)
+	//{
+	//	if (pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_START, 0) == true)
+	//	{
+	//		CFade* pFade = CFade::GetInstance();
 
-			m_nCountPlayer++;
+	//		if (pFade == nullptr)
+	//			return;
 
-		}
-		// プレイヤー全員エントリーした場合
-		if (m_StandbyState[0] == STANDBY_PLAY && m_StandbyState[1] == STANDBY_PLAY && m_StandbyState[2] == STANDBY_PLAY && m_StandbyState[3] == STANDBY_PLAY)
-		{
-			int nIdx = CTexture::GetInstance()->Regist("data\\TEXTURE\\UI\\Junbi_ok.png");
+	//		if (pFade->GetState() != CFade::FADE_NONE)
+	//			return;
 
-			for (int nCnt = 0; nCnt < MAX_PLAYER; nCnt++)
-			{
-				m_StandbyState[nCnt] = STANDBY_OK;
-				m_apStateUI[nCnt]->SetIdxTexture(nIdx);
-
-			}
-		}
-	}
-
-	// 遷移できる状態の場合
-	//if (m_StandbyState[0] == STANDBY_OK && m_StandbyState[1] == STANDBY_OK && m_StandbyState[2] == STANDBY_OK && m_StandbyState[3] == STANDBY_OK)
-	{
-		if (pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_START, 0) == true)
-		{
-			CFade* pFade = CFade::GetInstance();
-
-			if (pFade == nullptr)
-				return;
-
-			if (pFade->GetState() != CFade::FADE_NONE)
-				return;
-
-			// モードの保存
-			gameManager::SaveMode(CGame::E_GameMode::MODE_MULTI, m_nCountPlayer);
-			
-			// フェード
-			pFade->SetFade(CScene::MODE_GAME);
-		}
-	}
-
-	// カメラ更新
-	UpdateCamera();
-
-	// ライトの更新
-	UpdateLight();
+	//		// モードの保存
+	//		gameManager::SaveMode(CGame::E_GameMode::MODE_MULTI, m_nCountPlayer);
+	//		
+	//		// フェード
+	//		pFade->SetFade(CScene::MODE_GAME);
+	//	}
+	//}
 
 #ifdef _DEBUG
 	Debug();
@@ -269,79 +214,48 @@ void CPlayerSelect::Update(void)
 }
 
 //=====================================================
-// カメラの更新
+// エントリー入力の確認
 //=====================================================
-void CPlayerSelect::UpdateCamera(void)
+void CPlayerSelect::CheckInputEntry(void)
 {
-	CCamera* pCamera = CManager::GetCamera();
-
-	if (pCamera == nullptr)
+	for (int i = 0; i < MAX_PLAYER; i++)
 	{
-		return;
-	}
-
-	pCamera->Update();
-}
-
-//=====================================================
-// ライトの生成
-//=====================================================
-void CPlayerSelect::CreateLight(void)
-{
-	D3DXVECTOR3 aDir[NUM_LIGHT] =
-	{
-		{ -1.4f, 0.24f, -2.21f, },
-		{ 1.42f, -0.8f, 0.08f },
-		{ -0.29f, -0.8f, 0.55f }
-	};
-
-	for (int i = 0; i < NUM_LIGHT; i++)
-	{
-		CLight* pLight = CLight::Create();
-
-		if (pLight == nullptr)
+		if (m_apInputMgr[i] == nullptr)
 			continue;
 
-		D3DLIGHT9 infoLight = pLight->GetLightInfo();
-
-		infoLight.Type = D3DLIGHT_DIRECTIONAL;
-		infoLight.Diffuse = m_colLight;
-
-		D3DXVECTOR3 vecDir = aDir[i];
-		D3DXVec3Normalize(&vecDir, &vecDir);		//ベクトル正規化
-		infoLight.Direction = vecDir;
-
-		pLight->SetLightInfo(infoLight);
-
-		m_aLight.push_back(pLight);
+		if (m_apInputMgr[i]->GetTrigger(CInputManager::E_Button::BUTTON_ENTER))
+			CreatePlayer(i);	// プレイヤーのエントリー
 	}
 }
 
 //=====================================================
-// ライトの更新
+// プレイヤーの生成
 //=====================================================
-void CPlayerSelect::UpdateLight(void)
+void CPlayerSelect::CreatePlayer(int nIdx)
 {
-	for (auto it : m_aLight)
+	if (m_apPlayer[nIdx] != nullptr)
+		return;	// 枠が埋まってたら処理を通らない
+
+	// テクスチャ変更
+	int nIdxTexture = Texture::GetIdx(&PATH_UI_STANDBY[0]);
+	if(m_apStateUI[nIdx] != nullptr)
+		m_apStateUI[nIdx]->SetIdxTexture(nIdxTexture);
+
+	// エントリー状態を設定
+	m_StandbyState[nIdx] = STANDBY_PLAY;
+	
+	// プレイヤーの生成
+	m_apPlayer[nIdx] = CPlayer::Create();
+	
+	if (m_apPlayer[nIdx] != nullptr)
 	{
-		D3DLIGHT9 infoLight = it->GetLightInfo();
+		// プレイヤー初期設定
+		m_apPlayer[nIdx]->SetMove(INIT_MOVE_PLAYER);
+		m_apPlayer[nIdx]->SetState(CPlayer::STATE_NORMAL);
 
-		D3DXCOLOR col = infoLight.Diffuse;
-
-		col += (m_colLight - col) * SPEED_CHANGE_LIGHTCOL;
-
-		infoLight.Diffuse = col;
-
-		it->SetLightInfo(infoLight);
+		// 入力マネージャーの割り当て
+		m_apPlayer[nIdx]->BindInputMgr(m_apInputMgr[nIdx]);	
 	}
-}
-
-//=====================================================
-// ライトの色リセット
-//=====================================================
-void CPlayerSelect::ResetDestColLight(void)
-{
-	m_colLight = COL_LIGHT_DEFAULT;
 }
 
 //=====================================================
@@ -353,19 +267,8 @@ void CPlayerSelect::Debug(void)
 	CDebugProc* pDebugProc = CDebugProc::GetInstance();
 
 	if (pKeyboard == nullptr || pDebugProc == nullptr)
-	{
 		return;
-	}
 
-	if (pKeyboard->GetTrigger(DIK_I))
-	{// アイス仮生成
-		CIceManager* pIceManager = CIceManager::GetInstance();
-
-		if (pIceManager != nullptr)
-			pIceManager->CreateIce(2, -1);
-	}
-
-	pDebugProc->Print("\n中心座標[%f,%f,%f]", m_posMid.x, m_posMid.y, m_posMid.z);
 	pDebugProc->Print("\nエントリー人数[%d人]", m_nCountPlayer);
 }
 
@@ -374,16 +277,5 @@ void CPlayerSelect::Debug(void)
 //=====================================================
 void CPlayerSelect::Draw(void)
 {
-#ifndef _DEBUG
 
-	return;
-
-#endif
-
-	CDebugProc* pDebugProc = CDebugProc::GetInstance();
-
-	if (pDebugProc == nullptr)
-	{
-		return;
-	}
 }

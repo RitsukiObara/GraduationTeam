@@ -88,9 +88,6 @@ CPlayer* CPlayer::Create(void)
 //=====================================================
 HRESULT CPlayer::Init(void)
 {
-	// 入力マネージャー生成
-	m_pInputMgr = CInputManager::Create();
-
 	// 読込
 	Load((char*)&PATH_BODY[0]);
 
@@ -692,10 +689,10 @@ void CPlayer::InputPeck(void)
 void CPlayer::InputJump(void)
 {
 	//if (m_pInputMgr == nullptr)
-	return;
+		return;
 
-	if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_JUMP))
-		SarchJumpIce();	// ジャンプ先の氷を探す
+	//if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_JUMP))
+	//	SarchJumpIce();	// ジャンプ先の氷を探す
 }
 
 //=====================================================
@@ -825,7 +822,7 @@ void CPlayer::Debug(void)
 	CInputJoypad *pJoypad = CInputJoypad::GetInstance();
 	CInputManager *pInputMgr = CInputManager::GetInstance();
 
-	if (pDebugProc == nullptr || pInputKeyboard == nullptr || pJoypad == nullptr)
+	if (pDebugProc == nullptr || pInputKeyboard == nullptr || pJoypad == nullptr || pInputMgr == nullptr)
 		return;
 
 	pDebugProc->Print("\nプレイヤー情報==========================");
