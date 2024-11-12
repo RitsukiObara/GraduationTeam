@@ -76,7 +76,7 @@ public:
 	int GetGridH(void) { return m_nGridH; }
 	void SetState(E_State state) { m_state = state; }	// 状態
 	E_State GetState(void) { return m_state; }
-	void BindInputMgr(CInputManager *pInputMgr) { m_pInputMgr = pInputMgr; }	// 入力マネージャー
+	void BindInputMgr(CInputManager *pInputMgr) { m_pInputMgr = pInputMgr; }	// 入力マネージャーs
 
 	// 静的メンバ関数
 	static CPlayer* Create(void);	// 生成処理
@@ -113,6 +113,7 @@ private:
 	void StartFlows(void);	// 漂流開始
 	bool FindFlowIce(void);	// 漂流する氷の検出
 	void StayFlow(void);	// 漂流中の処理
+	void FlowDeath(void);	// 漂流中の死
 	void EndFlows(void);	// 漂流終了
 
 	void InputJump(void);	// ジャンプの入力

@@ -598,6 +598,9 @@ void CPlayer::StayFlow(void)
 
 	// —¬•X“à‚ÉˆÊ’u‚ğ§ŒÀ
 	LimitInSideFlowIce();
+
+	// •Y—¬’†‚Ì€
+	FlowDeath();
 }
 
 //=====================================================
@@ -638,6 +641,17 @@ void CPlayer::LimitInSideFlowIce(void)
 		posPlayer.y = m_pLandFlow->GetPosition().y;
 		SetPosition(posPlayer);
 	}
+}
+
+//=====================================================
+// •Y—¬’†‚Ì€
+//=====================================================
+void CPlayer::FlowDeath(void)
+{
+	D3DXVECTOR3 pos = GetPosition();
+
+	if (!universal::IsInScreen(pos))
+		Hit(0.0f);
 }
 
 //=====================================================
@@ -689,7 +703,7 @@ void CPlayer::InputPeck(void)
 void CPlayer::InputJump(void)
 {
 	//if (m_pInputMgr == nullptr)
-		return;
+		//return;
 
 	//if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_JUMP))
 	//	SarchJumpIce();	// ƒWƒƒƒ“ƒvæ‚Ì•X‚ğ’T‚·

@@ -30,8 +30,12 @@ public:
 	// メンバ関数
 	virtual HRESULT Init(void);
 	virtual void Uninit(void);
-	virtual void Update();
-	virtual void Draw();
+	virtual void Update(void);
+	virtual void Draw(void);
+	virtual void UpdateStart(void);		// 開始状態の更新
+	virtual void UpdateNormal(void);	// 通常状態の更新
+	virtual void UpdateResult(void);	// リザルト状態の更新
+	virtual void UpdateEnd(void);		// 終了状態の更新
 
 	// 変数取得・設定関数
 
@@ -39,15 +43,8 @@ public:
 	static CGameManager *Create(CGame::E_GameMode mode);	// 生成処理
 
 private:
-	// 関数ポインタ型の定義
-	typedef void (CGameManager::*StateFunc)(void);	// 状態ごとの更新
-
 	// メンバ関数
-	virtual void ManageGameState(void);	// ゲームの状態管理
-	virtual void UpdateStart(void);		// 開始状態の更新
-	virtual void UpdateNormal(void);	// 通常状態の更新
-	virtual void UpdateResult(void);	// リザルト状態の更新
-	virtual void UpdateEnd(void);		// 終了状態の更新
+	void ManageGameState(void);	// ゲームの状態管理
 
 	// メンバ変数
 

@@ -145,11 +145,14 @@ void CGame::Update(void)
 	}
 
 	// ポーズ========================================
-	/*if (pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE))
+	if (pInputManager != nullptr)
 	{
-		if(m_pPause == nullptr)
-			m_pPause = CPause::Create();
-	}*/
+		if (pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE))
+		{
+			if (m_pPause == nullptr)
+				m_pPause = CPause::Create();
+		}
+	}
 
 	// カメラ更新
 	UpdateCamera();
