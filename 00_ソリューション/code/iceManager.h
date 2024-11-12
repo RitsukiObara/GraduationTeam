@@ -82,6 +82,7 @@ public:
 	E_Stream GetDirStreamNext(void) { return m_dirStreamNext; }	// ŽŸ‚ÌŠC—¬‚Ì•ûŒüŽæ“¾
 	vector<CIce*> GetFlows(void);	// —¬‚ê‚Ä‚é•X‚ÌŽæ“¾
 
+	void SetOceanLevel(float level) { m_fOceanLevel = level; }
 	void SetDirStream(E_Stream direction) { m_dirStream = direction; }	// ŠC—¬‚Ì•ûŒü
 	void SetDirStreamNext(E_Stream directionNext) { m_dirStreamNext = directionNext; }	// ŽŸ‚ÌŠC—¬‚Ì•ûŒü
 

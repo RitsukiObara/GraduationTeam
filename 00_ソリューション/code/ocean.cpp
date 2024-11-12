@@ -197,13 +197,13 @@ void COcean::OceanCycleTimer(void)
 		// 現状と次の向きが同じとき数値をリセット
 		if (m_nRandKeep == m_nRandNextKeep)
 		{
-			m_nRandNextKeep = universal::RandRange(pIceManager->E_Stream::STREAM_MAX, pIceManager->E_Stream::STREAM_UP);
+			m_nRandNextKeep = universal::RandRange(CIceManager::E_Stream::STREAM_MAX, CIceManager::E_Stream::STREAM_UP);
 		}
 
 		// 現状と次の向きが同じじゃないとき
 		if (m_nRandKeep != m_nRandNextKeep)
 		{
-			pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);	// 海流の速度を下げる
+			pOcean->SetOceanSpeedState(COcean::OCEAN_STATE_DOWN);	// 海流の速度を下げる
 			pIceManager->SetDirStreamNext((CIceManager::E_Stream)(m_nRandNextKeep));	// 海流の向きをランダムにする
 		}
 	}
