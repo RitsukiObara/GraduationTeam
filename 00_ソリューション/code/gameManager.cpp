@@ -184,14 +184,16 @@ void CGameManager::Draw(void)
 namespace gameManager
 {
 // モード保存
-void SaveMode(CGame::E_GameMode mode, int nNumPlayer)
+void SaveMode(CGame::E_GameMode mode, vector<bool> abPlayerEnter)
 {
 	std::ofstream file(PATH_TEX);
 
 	if (file.is_open())
 	{
 		file << "MODE = " << (int)mode << '\n';			// モード
-		file << "NUM_PLAYER = " << nNumPlayer << '\n';	// 人数
+
+		for(bool bEnter : abPlayerEnter)
+			file << "PLAYER = " << bEnter << '\n';	// エンターフラグ
 
 		file.close();
 	}
@@ -202,7 +204,7 @@ void SaveMode(CGame::E_GameMode mode, int nNumPlayer)
 }
 
 // モード読込
-void LoadMode(CGame::E_GameMode *pMode, int *pNumPlayer)
+void LoadMode(CGame::E_GameMode *pMode, vector<bool> &rbPlayerEnter)
 {
 	std::ifstream file(PATH_TEX);
 
@@ -223,9 +225,12 @@ void LoadMode(CGame::E_GameMode *pMode, int *pNumPlayer)
 				*pMode = (CGame::E_GameMode)nMode;
 			}
 
-			if (key == "NUM_PLAYER" && pNumPlayer != nullptr)
+			if (key == "PLAYER")
 			{// 人数
-				iss >> temp >> *pNumPlayer;
+				int nData;
+				iss >> temp >> nData;
+
+				rbPlayerEnter.push_back(nData);
 			}
 
 			if (file.eof())

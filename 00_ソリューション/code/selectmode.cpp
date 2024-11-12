@@ -203,10 +203,12 @@ void CSelectMode::Update(void)
 		if (pFade->GetState() != CFade::FADE_NONE)
 			return;
 
+		vector<bool> abEnter = { true };
+
 		switch (m_selectMode)
 		{
 		case CSelectMode::MODE_SINGLE:
-			gameManager::SaveMode(CGame::E_GameMode::MODE_SINGLE, 1);
+			gameManager::SaveMode(CGame::E_GameMode::MODE_SINGLE, abEnter);
 			pFade->SetFade(CScene::MODE_GAME);
 			break;
 		case CSelectMode::MODE_PARTY:

@@ -51,13 +51,15 @@ public:
 
 private:
 	// メンバ関数
-	void CheckInputEntry(void);	// エントリーの確認
+	void Input(void);	// 操作
 	void CreatePlayer(int nIdx);	// プレイヤーの生成
+	void Ready(int nIdx);	// 準備
+	void CheckStart(void);	// 開始するかの確認
+	void StartFade(void);	// フェードの開始
 	void Debug(void);
 
 	// メンバ変数
-	int m_nCountPlayer;
-
+	int m_nNumPlayer;	// プレイヤーの数
 	E_StandyrState m_StandbyState[MAX_PLAYER];	// プレイヤーの状態
 	CUI *m_apPlayerUI[MAX_PLAYER];	// プレイヤー用2Dオブジェクトのポインタ
 	CUI *m_apStateUI[MAX_PLAYER];	// プレイヤー用2Dオブジェクトのポインタ
