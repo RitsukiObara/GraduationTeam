@@ -222,7 +222,7 @@ void CResultSingleWin::UpdateApperScore(void)
 
 	if (m_fTimer > scoreCaption::TIME_APPER)
 	{// ˆê’èŠÔŒo‰ß‚ÅŸ‚Ìó‘Ô‚ÉˆÚ‚é
-
+		m_state = E_State::STATE_WAIT;
 	}
 }
 
