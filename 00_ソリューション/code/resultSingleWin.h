@@ -29,6 +29,8 @@ public:
 		STATE_NONE = 0,		// 何もしてない状態
 		STATE_MOVECAMERA,	// カメラ移動状態
 		STATE_APPERSCORE,	// スコア出現
+		STATE_APPERRANKING,	// ランキング出現
+		STATE_WAIT,			// 待機状態
 		STATE_END,			// 終了状態
 		STATE_MAX
 	};
@@ -57,6 +59,8 @@ private:
 
 	void UpdateMoveCamera(void);	// カメラ移動状態の更新
 	void UpdateApperScore(void);	// スコア出現状態の更新
+	void UpdateApperRanking(void);	// ランキング出現状態の更新
+	void UpdateWait(void);			// 待機状態の更新
 
 	// メンバ変数
 	CUI *m_apCaptionScore[CAPTION_MAX];		// 自身のキャプションのポインタ

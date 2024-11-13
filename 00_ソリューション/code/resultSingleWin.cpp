@@ -15,6 +15,8 @@
 #include "number.h"
 #include "texture.h"
 #include "manager.h"
+#include "inputManager.h"
+#include "fade.h"
 
 //*****************************************************
 // 定数定義
@@ -67,7 +69,9 @@ CResultSingleWin::FuncUpdateState CResultSingleWin::s_aFuncUpdateState[] =	// 状
 {
 	nullptr,									// 何もしない更新
 	&CResultSingleWin::UpdateMoveCamera,		// カメラ移動の更新
-	&CResultSingleWin::UpdateApperScore,		// フェード状態の更新
+	&CResultSingleWin::UpdateApperScore,		// スコア出現状態の更新
+	&CResultSingleWin::UpdateApperRanking,		// ランキング出現状態の更新
+	&CResultSingleWin::UpdateWait,				// 待機状態の更新
 	nullptr,									// 終了状態の更新
 };
 
@@ -179,7 +183,7 @@ void CResultSingleWin::UpdateMoveCamera(void)
 }
 
 //=====================================================
-// スコア出現状態状態の更新処理
+// スコア出現状態の更新処理
 //=====================================================
 void CResultSingleWin::UpdateApperScore(void)
 {
@@ -219,6 +223,36 @@ void CResultSingleWin::UpdateApperScore(void)
 	if (m_fTimer > scoreCaption::TIME_APPER)
 	{// 一定時間経過で次の状態に移る
 
+	}
+}
+
+//=====================================================
+// ランキング出現状態の更新処理
+//=====================================================
+void CResultSingleWin::UpdateApperRanking(void)
+{
+	
+}
+
+//=====================================================
+// 待機状態の更新処理
+//=====================================================
+void CResultSingleWin::UpdateWait(void)
+{
+	vector<CInputManager*> aInputMgr = CInputManager::GetArray();
+
+	for (CInputManager *pInputMgr : aInputMgr)
+	{
+		if (pInputMgr == nullptr)
+			continue;
+
+		if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_ENTER))
+		{// フェードしてタイトルに戻る
+			CFade *pFade = CFade::GetInstance();
+
+			if (pFade != nullptr)
+				pFade->SetFade(CScene::MODE::MODE_TITLE);
+		}
 	}
 }
 

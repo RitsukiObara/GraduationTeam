@@ -273,9 +273,7 @@ void CGame::Debug(void)
 	CDebugProc *pDebugProc = CDebugProc::GetInstance();
 
 	if (pKeyboard == nullptr || pDebugProc == nullptr)
-	{
 		return;
-	}
 
 	if (pKeyboard->GetTrigger(DIK_F))
 	{// ’âŽ~ó‘Ô‚ÌØ‚è‘Ö‚¦
@@ -286,7 +284,7 @@ void CGame::Debug(void)
 	{// Ÿ—˜
 		CResultSingle::Create(true);
 	}
-	if (pKeyboard->GetTrigger(DIK_9))
+	else if (pKeyboard->GetTrigger(DIK_9))
 	{// ”s–k
 		CResultSingle::Create(false);
 	}
