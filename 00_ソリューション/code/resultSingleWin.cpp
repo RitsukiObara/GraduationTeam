@@ -66,7 +66,7 @@ const int NUM_PLACE[CResultSingleWin::E_ScoreCaption::CAPTION_MAX] = { 5, 2 };	/
 CResultSingleWin::FuncUpdateState CResultSingleWin::s_aFuncUpdateState[] =	// 状態更新関数
 {
 	nullptr,									// 何もしない更新
-	nullptr,									// カメラ移動の更新
+	&CResultSingleWin::UpdateMoveCamera,		// カメラ移動の更新
 	&CResultSingleWin::UpdateApperScore,		// フェード状態の更新
 	nullptr,									// 終了状態の更新
 };
@@ -97,6 +97,12 @@ HRESULT CResultSingleWin::Init(void)
 
 	// 2Dオブジェクトの生成
 	Create2D();
+
+	// 状態の初期化
+	m_state = E_State::STATE_MOVECAMERA;
+
+	// カメラの設定
+	Camera::ChangeState(new CCameraResultSingle(this));
 
 	return S_OK;
 }
@@ -161,6 +167,15 @@ void CResultSingleWin::Update(void)
 
 	// 親クラスの更新
 	CResultSingle::Update();
+}
+
+//=====================================================
+// カメラ移動状態の更新
+//=====================================================
+void CResultSingleWin::UpdateMoveCamera(void)
+{
+	if (GetState() == CResultSingle::E_State::STATE_ENDFADE)
+		m_state = E_State::STATE_APPERSCORE;
 }
 
 //=====================================================

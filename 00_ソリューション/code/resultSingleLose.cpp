@@ -21,43 +21,7 @@
 //*****************************************************
 namespace
 {
-namespace scoreCaption
-{
-const string PATH_TEX[CResultSingleLose::E_ScoreCaption::CAPTION_MAX] =
-{// キャプションのパス
-	"data\\TEXTURE\\UI\\Restart.png",
-	"data\\TEXTURE\\UI\\Resume.png",
-};
-const float TIME_APPER = 2.0f;	// 出現にかかる時間
-const float WIDTH = 0.16f;	// 幅
-const float HEIGHT = 0.1f;	// 高さ
-const float HEIGHT_INIT = -HEIGHT;
-const D3DXVECTOR3 POS_INIT[CResultSingleLose::E_ScoreCaption::CAPTION_MAX] =
-{// 初期位置
-	{ 0.3f,HEIGHT_INIT,0.0f },
-	{ 0.7f,HEIGHT_INIT,0.0f },
-};
-const float HEIGHT_DEST = 0.4f;	// 目標の高さ
-const float DIFF_HEIGHT = HEIGHT_DEST - HEIGHT_INIT;	// 高さの差分
-}
 
-namespace scoreNumber
-{
-const float SIZE_INIT = 0.03f;	// サイズ
-const float HEIGHT_INIT = -0.1f;
-const D3DXVECTOR3 POS_INIT[CResultSingleLose::E_ScoreCaption::CAPTION_MAX] =
-{// 初期位置
-	{ 0.2f,HEIGHT_INIT,0.0f },
-	{ 0.7f,HEIGHT_INIT,0.0f },
-};
-const float HEIGHT_DEST = 0.4f;	// 目標の高さ
-const float DIFF_HEIGHT = HEIGHT_DEST - HEIGHT_INIT;	// 高さの差分
-}
-
-namespace score
-{
-const int NUM_PLACE[CResultSingleLose::E_ScoreCaption::CAPTION_MAX] = { 5, 2 };	// スコアの桁数
-}
 }
 
 //*****************************************************

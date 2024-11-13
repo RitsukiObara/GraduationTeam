@@ -265,7 +265,7 @@ void CCameraResultSingle::MoveToPlayerFront(CCamera* pCamera)
 	m_fTimerMove += CManager::GetDeltaTime();
 
 	if (m_fTimerMove > CCameraResultSingle::TIME_MOVE)
-		m_pResult->EndMove();	// ƒJƒƒ‰ˆÚ“®‚ÌI—¹
+		m_pResult->SetState(CResultSingle::E_State::STATE_FADE);
 
 	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
 

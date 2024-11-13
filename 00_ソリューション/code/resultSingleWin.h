@@ -55,6 +55,7 @@ private:
 	void Create2D(void);	// 2DUIの生成
 	void CreatepOwnScore(void);	// 自身のスコアの表示
 
+	void UpdateMoveCamera(void);	// カメラ移動状態の更新
 	void UpdateApperScore(void);	// スコア出現状態の更新
 
 	// メンバ変数

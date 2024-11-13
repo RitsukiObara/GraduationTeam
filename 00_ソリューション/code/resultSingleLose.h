@@ -4,8 +4,8 @@
 // Author:髙山桃也
 //
 //*****************************************************
-#ifndef _RESULTSINGLEWIN_H_
-#define _RESULTSINGLEWIN_H_
+#ifndef _RESULTSINGLELOSE_H_
+#define _RESULTSINGLELOSE_H_
 
 //*****************************************************
 // インクルード

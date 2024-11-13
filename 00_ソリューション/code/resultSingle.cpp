@@ -9,6 +9,8 @@
 // ÉCÉìÉNÉãÅ[Éh
 //*****************************************************
 #include "resultSingle.h"
+#include "resultSingleWin.h"
+#include "resultSingleLose.h"
 #include "manager.h"
 #include "ui.h"
 #include "inputManager.h"
@@ -20,6 +22,7 @@
 #include "ranking.h"
 #include "camera.h"
 #include "cameraState.h"
+#include "debugproc.h"
 
 //*****************************************************
 // íËêîíËã`
@@ -50,44 +53,6 @@ const D3DXVECTOR3 DIFF_POS = DEST_POS - INIT_POS;						// ç∑ï™à íu
 const float WIDTH = 0.2f;		// ïù
 const float HEIGHT = 0.17f;	// çÇÇ≥
 }
-
-namespace scoreCaption
-{
-const string PATH_TEX[CResultSingle::E_ScoreCaption::CAPTION_MAX] =
-{// ÉLÉÉÉvÉVÉáÉìÇÃÉpÉX
-	"data\\TEXTURE\\UI\\Restart.png",
-	"data\\TEXTURE\\UI\\Resume.png",
-};
-const float TIME_APPER = 2.0f;	// èoåªÇ…Ç©Ç©ÇÈéûä‘
-const float WIDTH = 0.16f;	// ïù
-const float HEIGHT = 0.1f;	// çÇÇ≥
-const float HEIGHT_INIT = -HEIGHT;
-const D3DXVECTOR3 POS_INIT[CResultSingle::E_ScoreCaption::CAPTION_MAX] =
-{// èâä˙à íu
-	{ 0.3f,HEIGHT_INIT,0.0f },
-	{ 0.7f,HEIGHT_INIT,0.0f },
-};
-const float HEIGHT_DEST = 0.4f;	// ñ⁄ïWÇÃçÇÇ≥
-const float DIFF_HEIGHT = HEIGHT_DEST - HEIGHT_INIT;	// çÇÇ≥ÇÃç∑ï™
-}
-
-namespace scoreNumber
-{
-const float SIZE_INIT = 0.03f;	// ÉTÉCÉY
-const float HEIGHT_INIT = -0.1f;
-const D3DXVECTOR3 POS_INIT[CResultSingle::E_ScoreCaption::CAPTION_MAX] =
-{// èâä˙à íu
-	{ 0.2f,HEIGHT_INIT,0.0f },
-	{ 0.7f,HEIGHT_INIT,0.0f },
-};
-const float HEIGHT_DEST = 0.4f;	// ñ⁄ïWÇÃçÇÇ≥
-const float DIFF_HEIGHT = HEIGHT_DEST - HEIGHT_INIT;	// çÇÇ≥ÇÃç∑ï™
-}
-
-namespace score
-{
-const int NUM_PLACE[CResultSingle::E_ScoreCaption::CAPTION_MAX] = { 5, 2 };	// ÉXÉRÉAÇÃåÖêî
-}
 }
 
 //*****************************************************
@@ -96,17 +61,15 @@ const int NUM_PLACE[CResultSingle::E_ScoreCaption::CAPTION_MAX] = { 5, 2 };	// É
 CResultSingle::FuncUpdateState CResultSingle::s_aFuncUpdateState[] =	// èÛë‘çXêVä÷êî
 {
 	nullptr,					// âΩÇ‡ÇµÇ»Ç¢çXêV
-	nullptr,					// ÉJÉÅÉâà⁄ìÆÇÃçXêV
-	&CResultSingle::UpdateFade,		// ÉtÉFÅ[ÉhèÛë‘ÇÃçXêV
-	&CResultSingle::UpdateApperScore,		// ÉtÉFÅ[ÉhèÛë‘ÇÃçXêV
-	&CResultSingle::UpdateSelect,		// ëIëèÛë‘ÇÃçXêV
+	&CResultSingle::UpdateFade,	// ÉtÉFÅ[ÉhèÛë‘ÇÃçXêV
+	nullptr,					// ÉtÉFÅ[ÉhèIóπèÛë‘ÇÃçXêV
 	nullptr,					// èIóπèÛë‘ÇÃçXêV
 };
 
 //====================================================
 // ÉRÉìÉXÉgÉâÉNÉ^
 //====================================================
-CResultSingle::CResultSingle() : m_fTimer(0.0f), m_apCaptionScore(),m_apNumberOwn(),m_bWin(false)
+CResultSingle::CResultSingle() : m_fTimer(0.0f),m_pCaption(nullptr),m_bWin(false)
 {
 
 }
@@ -126,7 +89,10 @@ CResultSingle *CResultSingle::Create(bool bWin)
 {
 	CResultSingle *pResult = nullptr;
 
-	pResult = new CResultSingle;
+	if(bWin)
+		pResult = new CResultSingleWin;	// èüóòÇÃÉäÉUÉãÉg
+	else 
+		pResult = new CResultSingleLose;	// îsñkÇÃÉäÉUÉãÉg
 
 	if (pResult != nullptr)
 	{
@@ -154,16 +120,6 @@ HRESULT CResultSingle::Init(void)
 	// 2DÉIÉuÉWÉFÉNÉgÇÃê∂ê¨
 	Create2D(m_bWin);
 
-	// èÛë‘ÇÃèâä˙ê›íË
-	if (m_bWin)
-	{
-		m_state = STATE_MOVECAMERA;
-
-		Camera::ChangeState(new CCameraResultSingle(this));
-	}
-	else
-		m_state = STATE_FADE;
-
 	return S_OK;
 }
 
@@ -174,12 +130,6 @@ void CResultSingle::Create2D(bool bWin)
 {
 	// îwåiÇÃê∂ê¨
 	CreateBg();
-
-	if (bWin)
-	{// èüóòÇµÇΩÇ∆Ç´ÇÃÇ›ê∂ê¨Ç∑ÇÈÇ‡ÇÃ
-		// é©êgÇÃÉXÉRÉAÇÃê∂ê¨
-		CreatepOwnScore();
-	}
 }
 
 //====================================================
@@ -196,34 +146,6 @@ void CResultSingle::CreateBg(void)
 	m_pBg->SetPosition(bg::POS);
 	m_pBg->SetCol(bg::INIT_COL);
 	m_pBg->SetVtx();
-}
-
-//====================================================
-// é©êgÇÃÉXÉRÉAÇÃê∂ê¨
-//====================================================
-void CResultSingle::CreatepOwnScore(void)
-{
-	for (int i = 0; i < E_ScoreCaption::CAPTION_MAX; i++)
-	{
-		// ÉLÉÉÉvÉVÉáÉìÇÃê∂ê¨
-		m_apCaptionScore[i] = CUI::Create();
-		if (m_apCaptionScore[i] == nullptr)
-			continue;
-
-		m_apCaptionScore[i]->SetSize(scoreCaption::WIDTH, scoreCaption::HEIGHT);
-		m_apCaptionScore[i]->SetPosition(scoreCaption::POS_INIT[i]);
-		int nIdxTexture = Texture::GetIdx(&scoreCaption::PATH_TEX[i][0]);
-		m_apCaptionScore[i]->SetIdxTexture(nIdxTexture);
-		m_apCaptionScore[i]->SetVtx();
-
-		// êîéöÇÃê∂ê¨
-		m_apNumberOwn[i] = CNumber::Create(score::NUM_PLACE[i], 0);
-		if (m_apNumberOwn[i] == nullptr)
-			continue;
-
-		m_apNumberOwn[i]->SetPosition(scoreNumber::POS_INIT[i]);
-		m_apNumberOwn[i]->SetSizeAll(scoreNumber::SIZE_INIT, scoreNumber::SIZE_INIT);
-	}
 }
 
 //====================================================
@@ -270,7 +192,7 @@ void CResultSingle::UpdateFade(void)
 
 	if (bg::TIME_FADE < m_fTimer)
 	{// ÉtÉFÅ[ÉhèÛë‘ÇÃèIóπ
-		m_state = E_State::STATE_APPERSCORE;
+		m_state = E_State::STATE_ENDFADE;
 		m_fTimer = 0.0f;
 		Camera::ChangeState(nullptr);
 
@@ -278,70 +200,13 @@ void CResultSingle::UpdateFade(void)
 	}
 }
 
-//=====================================================
-// ÉXÉRÉAèoåªèÛë‘èÛë‘ÇÃçXêVèàóù
-//=====================================================
-void CResultSingle::UpdateApperScore(void)
-{
-	m_fTimer += CManager::GetDeltaTime();
-
-	float fTime = m_fTimer / scoreCaption::TIME_APPER;
-	float fRate = easing::EaseOutExpo(fTime);
-	universal::LimitValuefloat(&fRate, 1.0f, 0.0f);
-
-	for (int i = 0; i < E_ScoreCaption::CAPTION_MAX; i++)
-	{
-		//-----------------------------------------
-		// ÉLÉÉÉvÉVÉáÉìÇÃà⁄ìÆ
-		//-----------------------------------------
-		if (m_apCaptionScore[i] == nullptr)
-			continue;
-
-		D3DXVECTOR3 posCaption = m_apCaptionScore[i]->GetPosition();
-		posCaption.y = scoreCaption::HEIGHT_INIT + scoreCaption::DIFF_HEIGHT * fRate;
-
-		m_apCaptionScore[i]->SetPosition(posCaption);
-		m_apCaptionScore[i]->SetVtx();
-
-		//-----------------------------------------
-		// êîéöÇÃà⁄ìÆ
-		//-----------------------------------------
-		// êîéöÇÃê∂ê¨
-		if (m_apNumberOwn[i] == nullptr)
-			continue;
-
-		D3DXVECTOR3 posNumber = m_apNumberOwn[i]->GetPosition();
-		posNumber.y = scoreNumber::HEIGHT_INIT + scoreCaption::DIFF_HEIGHT * fRate;
-
-		m_apNumberOwn[i]->SetPosition(posNumber);
-	}
-
-	if (m_fTimer > scoreCaption::TIME_APPER)
-	{// àÍíËéûä‘åoâﬂÇ≈éüÇÃèÛë‘Ç…à⁄ÇÈ
-
-	}
-}
-
-//=====================================================
-// ëIëèÛë‘ÇÃçXêVèàóù
-//=====================================================
-void CResultSingle::UpdateSelect(void)
-{
-
-}
-
 //====================================================
 // ï`âÊèàóù
 //====================================================
 void CResultSingle::Draw(void)
 {
-
-}
-
-//====================================================
-// ÉJÉÅÉâà⁄ìÆÇÃèIóπ
-//====================================================
-void CResultSingle::EndMove(void)
-{
-	m_state = E_State::STATE_FADE;
+#ifdef _DEBUG
+	CDebugProc::GetInstance()->Print("\nÉäÉUÉãÉgÉfÉoÉbÉOèÓïÒ===============================");
+	CDebugProc::GetInstance()->Print("\nèÛë‘[%d]",m_state);
+#endif
 }
