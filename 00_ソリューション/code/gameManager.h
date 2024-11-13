@@ -55,6 +55,9 @@ namespace gameManager
 {
 void SaveMode(CGame::E_GameMode mode, vector<bool> abPlayerEnter);	// モード保存
 void LoadMode(CGame::E_GameMode *pMode, vector<bool> &rbPlayerEnter);	// モード読込
+
+void SaveIdxMap(int nIdx);
+int LoadIdxMap(void);
 }
 
 #endif

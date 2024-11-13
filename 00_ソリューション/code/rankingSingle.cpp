@@ -15,7 +15,6 @@
 //*****************************************************
 namespace
 {
-const string PATH_SAVE = "data\\BYNARY\\ranking00.bin";	// 保存ファイルのパス
 const int NUM_DATA_DEFAULT = 4;	// デフォルトのデータ数
 }
 
@@ -38,14 +37,17 @@ CRankingSingle::~CRankingSingle()
 //====================================================
 // 生成処理
 //====================================================
-CRankingSingle *CRankingSingle::Create(void)
+CRankingSingle *CRankingSingle::Create(string pathSave)
 {
 	CRankingSingle *pRanking = nullptr;
 
 	pRanking = new CRankingSingle;
 
 	if (pRanking != nullptr)
+	{
+		pRanking->m_pathSave = pathSave;
 		pRanking->Init();
+	}
 
 	return pRanking;
 }
@@ -55,7 +57,7 @@ CRankingSingle *CRankingSingle::Create(void)
 //====================================================
 HRESULT CRankingSingle::Init(void)
 {
-#if 1
+#if 0
 	Reset();	// リセット処理
 
 	Save();
@@ -140,7 +142,7 @@ void CRankingSingle::Load(void)
 	ReleaseArray();
 
 	// ファイルを開く
-	std::ifstream inputFile(PATH_SAVE, std::ios::binary);
+	std::ifstream inputFile(m_pathSave, std::ios::binary);
 
 	if (!inputFile.is_open())
 		assert(("ランキングファイルを開けませんでした", false));
@@ -169,7 +171,7 @@ void CRankingSingle::Load(void)
 void CRankingSingle::Save(void)
 {
 	// ファイルを開く
-	std::ofstream outputFile(PATH_SAVE, std::ios::binary);
+	std::ofstream outputFile(m_pathSave, std::ios::binary);
 
 	if (!outputFile.is_open())
 		assert(("ランキングファイルを開けませんでした", false));

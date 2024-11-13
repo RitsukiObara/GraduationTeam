@@ -46,9 +46,10 @@ public:
 	vector<S_InfoRank*> GetRank(void) { return m_apRank; }	// ランク情報配列
 
 	// 静的メンバ関数
-	static CRankingSingle *Create(void);	// 生成処理
+	static CRankingSingle *Create(string pathSave = "data\\BYNARY\\ranking00.bin");	// 生成処理
 
 private:
+	string m_pathSave;	// 保存パス
 	vector<S_InfoRank*> m_apRank;	// ランク情報配列
 };
 

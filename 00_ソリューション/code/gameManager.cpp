@@ -28,6 +28,7 @@
 namespace
 {
 const string PATH_TEX = "data\\TEMP\\mode.txt";	// モードのパス
+const string PATH_IDXMAP = "data\\TEMP\\mapIdx.bin";	// マップ番号のパス
 }
 
 //=====================================================
@@ -245,5 +246,38 @@ void LoadMode(CGame::E_GameMode *pMode, vector<bool> &rbPlayerEnter)
 	{
 		assert(("ファイルが開けませんでした", false));
 	}
+}
+
+// マップ番号保存
+void SaveIdxMap(int nIdx)
+{
+	// ファイルを開く
+	std::ofstream outputFile(PATH_IDXMAP, std::ios::binary);
+
+	if (!outputFile.is_open())
+		assert(false);
+
+	// データの保存
+	outputFile.write(reinterpret_cast<char*>(&nIdx), sizeof(int));
+
+	outputFile.close();
+}
+
+// マップ番号読込
+int LoadIdxMap(void)
+{
+	// ファイルを開く
+	std::ifstream inputFile(PATH_IDXMAP, std::ios::binary);
+
+	if (!inputFile.is_open())
+		assert(false);
+
+	int nIdx;
+
+	inputFile.read(reinterpret_cast<char*>(&nIdx), sizeof(int));
+
+	inputFile.close();
+
+	return nIdx;
 }
 }
