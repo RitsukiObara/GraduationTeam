@@ -384,6 +384,9 @@
     <ClCompile Include="code\gameManagerSingle.cpp">
       <Filter>ソース ファイル\scene\game</Filter>
     </ClCompile>
+    <ClCompile Include="code\albatross.cpp">
+      <Filter>ソース ファイル\character</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\scene.h">
@@ -697,6 +700,9 @@
     </ClInclude>
     <ClInclude Include="code\gameManagerSingle.h">
       <Filter>ソース ファイル\scene\game</Filter>
+    </ClInclude>
+    <ClInclude Include="code\albatross.h">
+      <Filter>ソース ファイル\character</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

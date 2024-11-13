@@ -166,6 +166,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="code\afterimage.cpp" />
+    <ClCompile Include="code\albatross.cpp" />
     <ClCompile Include="code\anim3D.cpp" />
     <ClCompile Include="code\animation2D.cpp" />
     <ClCompile Include="code\animEffect3D.cpp" />
@@ -272,6 +273,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\afterimage.h" />
+    <ClInclude Include="code\albatross.h" />
     <ClInclude Include="code\anim3D.h" />
     <ClInclude Include="code\animation2D.h" />
     <ClInclude Include="code\animEffect3D.h" />
