@@ -96,7 +96,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 		pManager->Init(hInstance, hWnd, TRUE);
 #else 
 		// マネージャーの初期化
-		pManager->Init(hInstance, hWnd, FALSE);
+		pManager->Init(hInstance, hWnd, TRUE);
 #endif	
 	}
 
@@ -223,8 +223,10 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	int nID;
 
+#ifdef _DEBUG
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam))
 		return true;
+#endif
 
 	switch (uMsg)
 	{
