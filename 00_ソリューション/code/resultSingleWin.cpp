@@ -21,6 +21,7 @@
 #include "game.h"
 #include "player.h"
 #include "rankingSingle.h"
+#include "gameManager.h"
 
 //*****************************************************
 // 定数定義
@@ -63,6 +64,17 @@ const float DIFF_HEIGHT = HEIGHT_DEST - HEIGHT_INIT;	// 高さの差分
 namespace score
 {
 const int NUM_PLACE[CResultSingleWin::E_ScoreCaption::CAPTION_MAX] = { 5, 2 };	// スコアの桁数
+}
+
+namespace ranking
+{
+const string PATH_SAVE[] =
+{// ステージの数分のパス
+	"data\\BYNARY\\ranking00.bin",
+	"data\\BYNARY\\ranking01.bin",
+	"data\\BYNARY\\ranking02.bin",
+	"data\\BYNARY\\ranking03.bin",
+};
 }
 }
 
@@ -113,7 +125,8 @@ HRESULT CResultSingleWin::Init(void)
 	Camera::ChangeState(new CCameraResultSingle(this));
 
 	// ランキング処理の生成
-	CRankingSingle::Create();
+	int nIdxMap = gameManager::LoadIdxMap();
+	CRankingSingle::Create(ranking::PATH_SAVE[nIdxMap]);
 
 	return S_OK;
 }

@@ -49,9 +49,6 @@ HRESULT CSelectStage::Init(void)
 	// 親クラスの初期化
 	CScene::Init();
 
-	// ライトの生成
-	CreateLight();
-
 	// ステージ選択管理クラスの生成
 	CSelectStageManager::Create();
 
@@ -98,38 +95,6 @@ void CSelectStage::UpdateCamera(void)
 	}
 
 	pCamera->Update();
-}
-
-//=====================================================
-// ライトの生成
-//=====================================================
-void CSelectStage::CreateLight(void)
-{
-	D3DXVECTOR3 aDir[NUM_LIGHT] =
-	{
-		{ -1.4f, 0.24f, -2.21f, },
-		{ 1.42f, -0.8f, 0.08f },
-		{ -0.29f, -0.8f, 0.55f }
-	};
-
-	for (int i = 0; i < NUM_LIGHT; i++)
-	{
-		CLight *pLight = CLight::Create();
-
-		if (pLight == nullptr)
-			continue;
-
-		D3DLIGHT9 infoLight = pLight->GetLightInfo();
-
-		infoLight.Type = D3DLIGHT_DIRECTIONAL;
-		infoLight.Diffuse = COL_LIGHT_DEFAULT;
-
-		D3DXVECTOR3 vecDir = aDir[i];
-		D3DXVec3Normalize(&vecDir, &vecDir);		//ベクトル正規化
-		infoLight.Direction = vecDir;
-		
-		pLight->SetLightInfo(infoLight);
-	}
 }
 
 //=====================================================

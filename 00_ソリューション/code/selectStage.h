@@ -34,7 +34,6 @@ private:
 	// メンバ関数
 	void UpdateCamera(void);
 	void Debug(void);
-	void CreateLight(void);	// ライトの生成
 
 	// メンバ変数
 
