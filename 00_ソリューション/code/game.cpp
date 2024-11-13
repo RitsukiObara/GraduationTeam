@@ -30,7 +30,7 @@
 #include "particle.h"
 #include "timer.h"
 #include "blur.h"
-#include "result.h"
+#include "resultSingle.h"
 #include "ice.h"
 #include "iceManager.h"
 #include "player.h"
@@ -277,19 +277,11 @@ void CGame::Debug(void)
 
 	if (pKeyboard->GetTrigger(DIK_0))
 	{// 勝利
-		CResult::Create(true);
+		CResultSingle::Create(true);
 	}
 	if (pKeyboard->GetTrigger(DIK_9))
 	{// 敗北
-		CResult::Create(false);
-	}
-
-	if (pKeyboard->GetTrigger(DIK_I))
-	{// アイス仮生成
-		CIceManager *pIceManager = CIceManager::GetInstance();
-
-		if (pIceManager != nullptr)
-			pIceManager->CreateIce(2,-1);
+		CResultSingle::Create(false);
 	}
 
 	// 敵を倒したスコア出す
@@ -301,6 +293,12 @@ void CGame::Debug(void)
 		//敵を倒した時のコンボUI生成
 		CUI_Combo::GetInstance()->AddCombo();
 	}
+
+	pDebugProc->Print("\nゲームデバッグキー======================");
+	pDebugProc->Print("\nF:時間停止");
+	pDebugProc->Print("\n0:勝利");
+	pDebugProc->Print("\n9:敗北");
+	pDebugProc->Print("\nK:敵倒したスコア生成");
 }
 
 //=====================================================
