@@ -19,6 +19,7 @@
 #include "fade.h"
 #include "score.h"
 #include "game.h"
+#include "player.h"
 
 //*****************************************************
 // 定数定義
@@ -143,7 +144,13 @@ void CResultSingleWin::CreatepOwnScore(void)
 	//----------------------------
 	// 突いた回数の取得
 	//----------------------------
-	int nTimePeck = 0;
+	vector<CPlayer*> apPlayer = CPlayer::GetInstance();	// プレイヤーの取得
+	assert(!apPlayer.empty());
+
+	CPlayer *pPlayer = *apPlayer.begin();
+	assert(pPlayer != nullptr);
+
+	int nTimePeck = pPlayer->GetTimePeck();
 
 	//----------------------------
 	// ポリゴンの生成
