@@ -20,6 +20,7 @@
 #include "score.h"
 #include "game.h"
 #include "player.h"
+#include "rankingSingle.h"
 
 //*****************************************************
 // 定数定義
@@ -110,6 +111,9 @@ HRESULT CResultSingleWin::Init(void)
 
 	// カメラの設定
 	Camera::ChangeState(new CCameraResultSingle(this));
+
+	// ランキング処理の生成
+	CRankingSingle::Create();
 
 	return S_OK;
 }
