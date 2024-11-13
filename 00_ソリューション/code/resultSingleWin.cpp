@@ -1,6 +1,6 @@
 //*****************************************************
 //
-// シングルリザルトの処理[resultSingle.cpp]
+// シングル勝ちリザルトの処理[resultSingleWin.cpp]
 // Author:髙山桃也
 //
 //*****************************************************
@@ -8,52 +8,22 @@
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "resultSingle.h"
-#include "manager.h"
-#include "ui.h"
-#include "inputManager.h"
-#include "texture.h"
-#include "fade.h"
-#include "game.h"
-#include "sound.h"
-#include "timer.h"
-#include "ranking.h"
+#include "resultSingleWin.h"
+#include "UI.h"
 #include "camera.h"
 #include "cameraState.h"
+#include "number.h"
+#include "texture.h"
+#include "manager.h"
 
 //*****************************************************
 // 定数定義
 //*****************************************************
 namespace
 {
-namespace bg
-{
-const char* PATH = "data\\TEXTURE\\UI\\title_logo00.png";	// パス
-const float WIDTH = 0.5f;	// 幅
-const float HEIGHT = 0.5f;	// 高さ
-const D3DXCOLOR INIT_COL = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);	// 初期の色
-const float DEST_ALPHA = 0.5f;	// 目標色
-const float DIFF_ALPHA = DEST_ALPHA - INIT_COL.a;			// 差分アルファ値
-const D3DXVECTOR3 POS = D3DXVECTOR3(0.5f, 0.5f, 0.0f);	// 位置
-const float TIME_FADE = 2.0f;	// フェードにかかる時間
-}
-
-namespace caption
-{
-const float	MOVE_TIME = 1.5f;	// 移動時間
-const D3DXCOLOR DEST_COL = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);		// 目標色
-const D3DXCOLOR INIT_COL = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f);		// 初期色
-const D3DXCOLOR DIFF_COL = DEST_COL - INIT_COL;						// 差分色
-const D3DXVECTOR3 DEST_POS = D3DXVECTOR3(0.5f, 0.2f, 0.0f);			// 目標位置
-const D3DXVECTOR3 INIT_POS = DEST_POS + D3DXVECTOR3(0.0f, 0.1f, 0.0f);	// 初期位置
-const D3DXVECTOR3 DIFF_POS = DEST_POS - INIT_POS;						// 差分位置
-const float WIDTH = 0.2f;		// 幅
-const float HEIGHT = 0.17f;	// 高さ
-}
-
 namespace scoreCaption
 {
-const string PATH_TEX[CResultSingle::E_ScoreCaption::CAPTION_MAX] =
+const string PATH_TEX[CResultSingleWin::E_ScoreCaption::CAPTION_MAX] =
 {// キャプションのパス
 	"data\\TEXTURE\\UI\\Restart.png",
 	"data\\TEXTURE\\UI\\Resume.png",
@@ -62,7 +32,7 @@ const float TIME_APPER = 2.0f;	// 出現にかかる時間
 const float WIDTH = 0.16f;	// 幅
 const float HEIGHT = 0.1f;	// 高さ
 const float HEIGHT_INIT = -HEIGHT;
-const D3DXVECTOR3 POS_INIT[CResultSingle::E_ScoreCaption::CAPTION_MAX] =
+const D3DXVECTOR3 POS_INIT[CResultSingleWin::E_ScoreCaption::CAPTION_MAX] =
 {// 初期位置
 	{ 0.3f,HEIGHT_INIT,0.0f },
 	{ 0.7f,HEIGHT_INIT,0.0f },
@@ -75,7 +45,7 @@ namespace scoreNumber
 {
 const float SIZE_INIT = 0.03f;	// サイズ
 const float HEIGHT_INIT = -0.1f;
-const D3DXVECTOR3 POS_INIT[CResultSingle::E_ScoreCaption::CAPTION_MAX] =
+const D3DXVECTOR3 POS_INIT[CResultSingleWin::E_ScoreCaption::CAPTION_MAX] =
 {// 初期位置
 	{ 0.2f,HEIGHT_INIT,0.0f },
 	{ 0.7f,HEIGHT_INIT,0.0f },
@@ -86,27 +56,25 @@ const float DIFF_HEIGHT = HEIGHT_DEST - HEIGHT_INIT;	// 高さの差分
 
 namespace score
 {
-const int NUM_PLACE[CResultSingle::E_ScoreCaption::CAPTION_MAX] = { 5, 2 };	// スコアの桁数
+const int NUM_PLACE[CResultSingleWin::E_ScoreCaption::CAPTION_MAX] = { 5, 2 };	// スコアの桁数
 }
 }
 
 //*****************************************************
 // 静的メンバ変数
 //*****************************************************
-CResultSingle::FuncUpdateState CResultSingle::s_aFuncUpdateState[] =	// 状態更新関数
+CResultSingleWin::FuncUpdateState CResultSingleWin::s_aFuncUpdateState[] =	// 状態更新関数
 {
-	nullptr,					// 何もしない更新
-	nullptr,					// カメラ移動の更新
-	&CResultSingle::UpdateFade,		// フェード状態の更新
-	&CResultSingle::UpdateApperScore,		// フェード状態の更新
-	&CResultSingle::UpdateSelect,		// 選択状態の更新
-	nullptr,					// 終了状態の更新
+	nullptr,									// 何もしない更新
+	nullptr,									// カメラ移動の更新
+	&CResultSingleWin::UpdateApperScore,		// フェード状態の更新
+	nullptr,									// 終了状態の更新
 };
 
 //====================================================
 // コンストラクタ
 //====================================================
-CResultSingle::CResultSingle() : m_fTimer(0.0f), m_apCaptionScore(),m_apNumberOwn(),m_bWin(false)
+CResultSingleWin::CResultSingleWin() : m_fTimer(0.0f), m_apCaptionScore(),m_apNumberOwn()
 {
 
 }
@@ -114,55 +82,21 @@ CResultSingle::CResultSingle() : m_fTimer(0.0f), m_apCaptionScore(),m_apNumberOw
 //====================================================
 // デストラクタ
 //====================================================
-CResultSingle::~CResultSingle()
+CResultSingleWin::~CResultSingleWin()
 {
 
-}
-
-//====================================================
-// 生成処理
-//====================================================
-CResultSingle *CResultSingle::Create(bool bWin)
-{
-	CResultSingle *pResult = nullptr;
-
-	pResult = new CResultSingle;
-
-	if (pResult != nullptr)
-	{
-		pResult->m_bWin = bWin;
-		pResult->Init();
-	}
-
-	return pResult;
 }
 
 //====================================================
 // 初期化処理
 //====================================================
-HRESULT CResultSingle::Init(void)
+HRESULT CResultSingleWin::Init(void)
 {
-	// ゲーム画面をリザルト状態にする
-	CGame::SetState(CGame::E_State::STATE_RESULT);
-
-	CSound* pSound = CSound::GetInstance();	// サウンド情報
-	assert(pSound != nullptr);
-
-	// サウンドの再生
-	pSound->Play(CSound::LABEL_BGM_RESULT);
+	// 親クラスの初期化
+	CResultSingle::Init();
 
 	// 2Dオブジェクトの生成
-	Create2D(m_bWin);
-
-	// 状態の初期設定
-	if (m_bWin)
-	{
-		m_state = STATE_MOVECAMERA;
-
-		Camera::ChangeState(new CCameraResultSingle(this));
-	}
-	else
-		m_state = STATE_FADE;
+	Create2D();
 
 	return S_OK;
 }
@@ -170,38 +104,16 @@ HRESULT CResultSingle::Init(void)
 //====================================================
 // 2Dオブジェクトの生成
 //====================================================
-void CResultSingle::Create2D(bool bWin)
+void CResultSingleWin::Create2D(void)
 {
-	// 背景の生成
-	CreateBg();
-
-	if (bWin)
-	{// 勝利したときのみ生成するもの
-		// 自身のスコアの生成
-		CreatepOwnScore();
-	}
-}
-
-//====================================================
-// 背景の生成
-//====================================================
-void CResultSingle::CreateBg(void)
-{
-	m_pBg = CUI::Create();
-
-	if (m_pBg == nullptr)
-		return;
-
-	m_pBg->SetSize(bg::WIDTH, bg::HEIGHT);
-	m_pBg->SetPosition(bg::POS);
-	m_pBg->SetCol(bg::INIT_COL);
-	m_pBg->SetVtx();
+	// 自身のスコアの生成
+	CreatepOwnScore();
 }
 
 //====================================================
 // 自身のスコアの生成
 //====================================================
-void CResultSingle::CreatepOwnScore(void)
+void CResultSingleWin::CreatepOwnScore(void)
 {
 	for (int i = 0; i < E_ScoreCaption::CAPTION_MAX; i++)
 	{
@@ -229,18 +141,15 @@ void CResultSingle::CreatepOwnScore(void)
 //====================================================
 // 終了処理
 //====================================================
-void CResultSingle::Uninit(void)
+void CResultSingleWin::Uninit(void)
 {
-	Object::DeleteObject((CObject**)&m_pBg);
-	Object::DeleteObject((CObject**)&m_pCaption);
-
-	Release();
+	CResultSingle::Uninit();
 }
 
 //====================================================
 // 更新処理
 //====================================================
-void CResultSingle::Update(void)
+void CResultSingleWin::Update(void)
 {
 	assert(m_state > -1 && m_state < STATE_MAX);
 	if (s_aFuncUpdateState[m_state] != nullptr)
@@ -249,39 +158,15 @@ void CResultSingle::Update(void)
 		// 各状態ごとの更新
 		(this->*(s_aFuncUpdateState[m_state]))();
 	}
-}
 
-//=====================================================
-// フェード状態の更新処理
-//=====================================================
-void CResultSingle::UpdateFade(void)
-{
-	if (m_pBg == nullptr)
-		return;
-
-	m_fTimer += CManager::GetDeltaTime();
-
-	// タイマーのイージング
-	float fTime = m_fTimer / bg::TIME_FADE;
-	float fRate = easing::EaseOutExpo(fTime);
-
-	// 色の設定
-	m_pBg->SetAlpha(bg::INIT_COL.a + bg::DIFF_ALPHA * fRate);
-
-	if (bg::TIME_FADE < m_fTimer)
-	{// フェード状態の終了
-		m_state = E_State::STATE_APPERSCORE;
-		m_fTimer = 0.0f;
-		Camera::ChangeState(nullptr);
-
-		return;
-	}
+	// 親クラスの更新
+	CResultSingle::Update();
 }
 
 //=====================================================
 // スコア出現状態状態の更新処理
 //=====================================================
-void CResultSingle::UpdateApperScore(void)
+void CResultSingleWin::UpdateApperScore(void)
 {
 	m_fTimer += CManager::GetDeltaTime();
 
@@ -322,26 +207,11 @@ void CResultSingle::UpdateApperScore(void)
 	}
 }
 
-//=====================================================
-// 選択状態の更新処理
-//=====================================================
-void CResultSingle::UpdateSelect(void)
-{
-
-}
-
 //====================================================
 // 描画処理
 //====================================================
-void CResultSingle::Draw(void)
+void CResultSingleWin::Draw(void)
 {
-
-}
-
-//====================================================
-// カメラ移動の終了
-//====================================================
-void CResultSingle::EndMove(void)
-{
-	m_state = E_State::STATE_FADE;
+	// 親クラスの描画
+	CResultSingle::Draw();
 }
