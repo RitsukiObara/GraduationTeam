@@ -66,6 +66,7 @@ public:
 	static void UninitDevice(void);	// デバイスの総終了
 	static void ReleaseAll(void);	// 全インスタンス解放
 	static void UpdateAll(void);	// 全インスタンス更新
+	static vector<CInputManager*> GetArray(void) { return s_aInputMgr; }	// 配列の取得
 
 private:
 	struct S_Info

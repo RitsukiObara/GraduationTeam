@@ -329,7 +329,6 @@ void CObject::DrawAll(void)
 
 	// オブジェクトの描画
 	DrawObject(true);	// ブラーするオブジェクトを全て描き切ってから
-	DrawObject(false);	// ブラーしないオブジェクトを描画する
 
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);

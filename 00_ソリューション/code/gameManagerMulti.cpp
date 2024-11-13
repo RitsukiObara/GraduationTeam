@@ -59,6 +59,8 @@ void CGameManagerMulti::Uninit(void)
 {
 	// Šî’êƒNƒ‰ƒX‚ÌI—¹
 	CGameManager::Uninit();
+
+	m_apPlayer.clear();
 }
 
 //=====================================================
