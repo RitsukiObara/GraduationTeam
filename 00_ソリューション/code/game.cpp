@@ -41,6 +41,7 @@
 #include "UI_enemy.h"
 #include "destroy_score.h"
 #include "UI_combo.h"
+#include "albatross.h"
 
 //*****************************************************
 // 定数定義
@@ -137,6 +138,7 @@ void CGame::Update(void)
 	CInputManager* pInputManager = CInputManager::GetInstance();
 	CInputKeyboard* pKeyboard = CInputKeyboard::GetInstance();
 	CSound* pSound = CSound::GetInstance();
+	CIceManager::E_Stream OceanFlow = CIceManager::GetInstance()->GetDirStreamNext();
 
 	if (!m_bStop)
 	{
@@ -166,6 +168,11 @@ void CGame::Update(void)
 	if (pKeyboard->GetTrigger(DIK_L))
 	{// アザラシ生成
 		CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
+	}
+
+	if (pKeyboard->GetTrigger(DIK_O))
+	{// アホウドリ生成
+		CAlbatross::Create(OceanFlow);
 	}
 
 #ifdef _DEBUG

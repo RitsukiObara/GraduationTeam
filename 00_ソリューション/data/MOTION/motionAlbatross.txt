@@ -14,10 +14,10 @@ NUM_MODEL = 4
 #------------------------------------------------------------------------------
 # ÉÇÉfÉãÉtÉ@ÉCÉãñº
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/enemy/Albatross/00_Body.x		# [0]ëÃ
-MODEL_FILENAME = data/MODEL/enemy/Albatross/01_RArm.x		# [1]âEòr
-MODEL_FILENAME = data/MODEL/enemy/Albatross/02_LArm.x		# [2]ç∂òr
-MODEL_FILENAME = data/MODEL/enemy/Albatross/03_Tail.x		# [3]êKîˆ
+MODEL_FILENAME = data/MODEL/albatross/00_Body.x		# [0]ëÃ
+MODEL_FILENAME = data/MODEL/albatross/01_RArm.x		# [1]âEòr
+MODEL_FILENAME = data/MODEL/albatross/02_LArm.x		# [2]ç∂òr
+MODEL_FILENAME = data/MODEL/albatross/03_Tail.x		# [3]êKîˆ
 
 #------------------------------------------------------------------------------
 # ÉLÉÉÉâÉNÉ^Å[èÓïÒ
@@ -62,95 +62,95 @@ MOTIONSET
         FRAME = 9
         KEY # -----[0]----
             POS = 0.00 2.60 0.00
-            ROT = 0.00 0.00 -0.03
+            ROT = -0.03 0.00 0.00
         END_KEY
         KEY # -----[1]----
             POS = 0.00 0.00 0.00
-            ROT = -0.27 0.00 0.00
+            ROT = 0.00 0.00 -0.27
         END_KEY
         KEY # -----[2]----
             POS = 0.00 0.00 0.00
-            ROT = 0.24 0.00 0.00
+            ROT = 0.00 0.00 0.24
         END_KEY
         KEY # -----[3]----
             POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 -0.20
+            ROT = -0.20 0.00 0.00
         END_KEY
     END_KEYSET
     KEYSET     #---<< 1 / 5 >>
         FRAME = 8
         KEY # -----[0]----
             POS = 0.00 -0.10 0.00
-            ROT = 0.00 0.00 0.03
+            ROT = 0.03 0.00 0.00
         END_KEY
         KEY # -----[1]----
             POS = 0.00 0.00 0.00
-            ROT = 0.67 0.00 0.00
+            ROT = 0.00 0.00 0.67
         END_KEY
         KEY # -----[2]----
             POS = 0.00 0.00 0.00
-            ROT = -0.69 0.00 0.00
+            ROT = 0.00 0.00 -0.69
         END_KEY
         KEY # -----[3]----
             POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 0.01
+            ROT = 0.01 0.00 0.00
         END_KEY
     END_KEYSET
     KEYSET     #---<< 2 / 5 >>
         FRAME = 12
         KEY # -----[0]----
             POS = 0.00 3.90 0.00
-            ROT = 0.00 0.00 -0.03
+            ROT = -0.03 0.00 0.00
         END_KEY
         KEY # -----[1]----
             POS = 0.00 0.00 0.00
-            ROT = -0.41 0.00 0.00
+            ROT = 0.00 0.00 -0.41
         END_KEY
         KEY # -----[2]----
             POS = 0.00 0.00 0.00
-            ROT = 0.43 0.00 0.00
+            ROT = 0.00 0.00 0.43
         END_KEY
         KEY # -----[3]----
             POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 -0.20
+            ROT = -0.20 0.00 0.00
         END_KEY
     END_KEYSET
     KEYSET     #---<< 3 / 5 >>
         FRAME = 60
         KEY # -----[0]----
             POS = 0.00 -0.50 0.00
-            ROT = 0.00 0.00 0.03
+            ROT = 0.03 0.00 0.00
         END_KEY
         KEY # -----[1]----
             POS = 0.00 0.00 0.00
-            ROT = 0.77 0.00 0.00
+            ROT = 0.00 0.00 0.77
         END_KEY
         KEY # -----[2]----
             POS = 0.00 0.00 0.00
-            ROT = -0.76 0.00 0.00
+            ROT = 0.00 0.00 -0.76
         END_KEY
         KEY # -----[3]----
             POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 0.01
+            ROT = 0.01 0.00 0.00
         END_KEY
     END_KEYSET
     KEYSET     #---<< 4 / 5 >>
         FRAME = 15
         KEY # -----[0]----
             POS = 0.00 0.10 0.00
-            ROT = 0.00 0.00 -0.04
+            ROT = -0.04 0.00 0.00
         END_KEY
         KEY # -----[1]----
             POS = 0.00 0.00 0.00
-            ROT = 0.40 0.00 0.00
+            ROT = 0.00 0.00 0.40
         END_KEY
         KEY # -----[2]----
             POS = 0.00 0.00 0.00
-            ROT = -0.40 0.00 0.00
+            ROT = 0.00 0.00 -0.40
         END_KEY
         KEY # -----[3]----
             POS = 0.00 0.00 0.00
-            ROT = 0.00 0.00 -0.25
+            ROT = -0.25 0.00 0.00
         END_KEY
     END_KEYSET
 END_MOTIONSET
