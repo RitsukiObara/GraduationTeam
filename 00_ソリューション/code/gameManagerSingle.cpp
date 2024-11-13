@@ -12,6 +12,7 @@
 #include "enemy.h"
 #include "player.h"
 #include "inputManager.h"
+#include "resultSingle.h"
 
 //=====================================================
 // コンストラクタ
@@ -66,7 +67,6 @@ void CGameManagerSingle::Update(void)
 	CGameManager::Update();
 }
 
-
 //=====================================================
 // 開始状態の更新
 //=====================================================
@@ -112,6 +112,9 @@ void CGameManagerSingle::DeathPlayer(void)
 
 	m_pPlayer->Uninit();
 	m_pPlayer = nullptr;
+
+	// プレイヤー死亡で敗北
+	CResultSingle::Create(false);
 }
 
 //=====================================================

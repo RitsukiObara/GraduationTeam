@@ -40,11 +40,16 @@ private:
 	// メンバ関数
 	void UpdateStart(void) override;		// 開始状態の更新
 	void UpdateNormal(void) override;	// 通常状態の更新
+	void ManagePlayer(void);	// プレイヤーの管理
+	void DeathPlayer(int nIdx);	// プレイヤーの死亡
+	void CheckEndGame(void);	// ゲーム終了のチェック
+
 	void UpdateResult(void) override;	// リザルト状態の更新
 	void UpdateEnd(void) override;		// 終了状態の更新
 
 	// メンバ変数
 	vector<CPlayer*> m_apPlayer;	// プレイヤーの配列
+	int m_nNumDeathPlayer;	// プレイヤーの死の数
 
 	// 静的メンバ変数
 };

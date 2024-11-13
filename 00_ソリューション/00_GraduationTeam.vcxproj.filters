@@ -273,7 +273,7 @@
     <ClCompile Include="code\skybox.cpp">
       <Filter>ソース ファイル\gameobject</Filter>
     </ClCompile>
-    <ClCompile Include="code\result.cpp">
+    <ClCompile Include="code\resultSingle.cpp">
       <Filter>ソース ファイル\gameobject</Filter>
     </ClCompile>
     <ClCompile Include="code\random.cpp">
@@ -584,7 +584,7 @@
     <ClInclude Include="code\skybox.h">
       <Filter>ソース ファイル\gameobject</Filter>
     </ClInclude>
-    <ClInclude Include="code\result.h">
+    <ClInclude Include="code\resultSingle.h">
       <Filter>ソース ファイル\gameobject</Filter>
     </ClInclude>
     <ClInclude Include="code\random.h">
