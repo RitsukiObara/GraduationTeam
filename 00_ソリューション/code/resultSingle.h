@@ -16,6 +16,7 @@
 // 前方宣言
 //*****************************************************
 class CUI;
+class CNumber;
 
 //*****************************************************
 // クラス定義
@@ -28,9 +29,16 @@ public:
 		STATE_NONE = 0,		// 何もしてない状態
 		STATE_MOVECAMERA,	// カメラ移動状態
 		STATE_FADE,			// フェード状態
+		STATE_APPERSCORE,	// スコア出現
 		STATE_SELECT,		// 選択状態
 		STATE_END,			// 終了状態
 		STATE_MAX
+	};
+	enum E_ScoreCaption
+	{
+		CAPTION_SCORE = 0,	// スコア
+		CAPTION_TIMEPECK,	// つっついた回数
+		CAPTION_MAX
 	};
 
 	CResultSingle();	// コンストラクタ
@@ -52,7 +60,7 @@ public:
 
 private:
 	// 列挙型定義
-	enum SELECT
+	enum E_Select
 	{
 		SELECT_YES = 0,	// はい
 		SELECT_NO,		// いいえ
@@ -63,12 +71,16 @@ private:
 	void Create2D(bool bWin);
 
 	void UpdateFade(void);			// フェード状態の更新
+	void UpdateApperScore(void);	// スコア出現状態の更新
 	void UpdateSelect(void);		// 選択状態の更新
 
 	// メンバ変数
 	bool m_bWin;	// 勝利フラグ
 	CUI *m_pBg;			// 背景のポインタ
 	CUI *m_pCaption;	// 見出しのポインタ
+
+	CUI *m_apCaptionScore[CAPTION_MAX];		// 自身のキャプションのポインタ
+	CNumber *m_apNumberOwn[CAPTION_MAX];	// 自身の成績の数字ポインタ
 
 	CUI *m_pContinue;				// コンテニューロゴのポインタ
 	CUI *m_apSelect[SELECT_MAX];	// 選択肢のポインタ
