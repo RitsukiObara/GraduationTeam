@@ -11,6 +11,7 @@
 // インクルード
 //*****************************************************
 #include "motion.h"
+#include "iceManager.h"
 
 //*****************************************************
 // 前方宣言
@@ -23,16 +24,6 @@ class CPolygon3D;
 class CAlbatross : public CMotion
 {
 public:
-	// 列挙型定義
-	enum E_FlyDirection
-	{// 流れる方向
-		FLYDIRECTION_UP,	// 上
-		FLYDIRECTION_RIGHT,	// 右
-		FLYDIRECTION_DOWN,	// 下
-		FLYDIRECTION_LEFT,	// 左
-		FLYDIRECTION_MAX
-	};
-
 	CAlbatross(int nPriority = 4);	// コンストラクタ
 	~CAlbatross();	// デストラクタ
 
@@ -45,7 +36,7 @@ public:
 	void ManageMotion(void);	// モーション管理
 
 	// 静的メンバ関数
-	static CAlbatross* Create(void);
+	static CAlbatross* Create(CIceManager::E_Stream dir);
 
 private:
 	enum E_Motion
@@ -55,10 +46,9 @@ private:
 		MOTION_MAX
 	};
 
-	// メンバ関数
-	int m_DirStream;
-	int m_DirStreamNext;
-	E_FlyDirection m_FlyDirection;	// 飛ぶ方向
+	void Stream(CIceManager::E_Stream dir);
+
+	D3DXVECTOR3 m_Move; // 移動量
 };
 
 #endif

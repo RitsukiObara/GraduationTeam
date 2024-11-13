@@ -14,10 +14,10 @@ NUM_MODEL = 4
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/enemy/Albatross/00_Body.x		# [0]体
-MODEL_FILENAME = data/MODEL/enemy/Albatross/01_RArm.x		# [1]右腕
-MODEL_FILENAME = data/MODEL/enemy/Albatross/02_LArm.x		# [2]左腕
-MODEL_FILENAME = data/MODEL/enemy/Albatross/03_Tail.x		# [3]尻尾
+MODEL_FILENAME = data/MODEL/albatross/00_Body.x		# [0]体
+MODEL_FILENAME = data/MODEL/albatross/01_RArm.x		# [1]右腕
+MODEL_FILENAME = data/MODEL/albatross/02_LArm.x		# [2]左腕
+MODEL_FILENAME = data/MODEL/albatross/03_Tail.x		# [3]尻尾
 
 #------------------------------------------------------------------------------
 # キャラクター情報

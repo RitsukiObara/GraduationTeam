@@ -9,7 +9,6 @@
 // インクルード
 //*****************************************************
 #include "albatross.h"
-#include "iceManager.h"
 #include "particle.h"
 #include "debugproc.h"
 
@@ -20,8 +19,8 @@ namespace
 {
 	const std::string PATH_BODY = "data\\MOTION\\motionAlbatross.txt";	// アホウドリのパス
 
-	const float HEIGHT_APPER = -400.0f;	// 出現時の高さ
-	const float WIDTH_APPER = -340.0f;	// 出現時の横のずれ
+	const float HEIGHT_APPER = 400.0f;	// 出現時の高さ
+	const float WIDTH_APPER = 340.0f;	// 出現時の横のずれ
 }
 
 //=====================================================
@@ -43,7 +42,7 @@ CAlbatross::~CAlbatross()
 //=====================================================
 // 生成処理
 //=====================================================
-CAlbatross* CAlbatross::Create(void)
+CAlbatross* CAlbatross::Create(CIceManager::E_Stream dir)
 {
 	CAlbatross* pAlbatross = nullptr;
 
@@ -51,7 +50,11 @@ CAlbatross* CAlbatross::Create(void)
 
 	if (pAlbatross != nullptr)
 	{
+		CIceManager::E_Stream OceanFlow = CIceManager::GetInstance()->GetDirStreamNext();
+
 		pAlbatross->Init();
+
+		pAlbatross->Stream(OceanFlow);
 	}
 
 	return pAlbatross;
@@ -71,7 +74,48 @@ HRESULT CAlbatross::Init(void)
 	// ポーズ初期化
 	InitPose(0);
 
+	// 継承クラスの初期化
+	CMotion::Init();
+
 	return S_OK;
+}
+
+//=====================================================
+// アホウドリの向きを決める処理
+//=====================================================
+void CAlbatross::Stream(CIceManager::E_Stream dir)
+{
+	D3DXVECTOR3 rot = CAlbatross::GetRotation();
+
+	switch (dir)
+	{
+	case CIceManager::STREAM_UP:	// 上
+
+		rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+		break;
+	case CIceManager::STREAM_RIGHT:	// 右
+
+		rot = D3DXVECTOR3(0.0f, D3DX_PI * 0.5f, 0.0f);
+
+		break;
+	case CIceManager::STREAM_DOWN:	// 下
+
+		rot = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);
+
+		break;
+	case CIceManager::STREAM_LEFT:	// 左
+
+		rot = D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, 0.0f);
+
+		break;
+	default:
+
+		assert(false);
+		break;
+	}
+
+	CAlbatross::SetRotation(rot);
 }
 
 //=====================================================
@@ -87,56 +131,24 @@ void CAlbatross::Uninit(void)
 //=====================================================
 void CAlbatross::Update(void)
 {
-	CIceManager* pIce = CIceManager::GetInstance();
+	D3DXVECTOR3 pos = CAlbatross::GetPosition();
+	D3DXVECTOR3 rot = CAlbatross::GetRotation();
 
-	m_DirStream = pIce->GetDirStream();	// 現在の海流の方向を取得
-	m_DirStreamNext = pIce->GetDirStreamNext();	// 次の海流の方向を取得
+	//GetForward();
 
-	if (m_DirStream != m_DirStreamNext)	// 現在と次の海流が違うときアホウドリを次の海流の向きに飛ばす
-	{
-		if (m_DirStreamNext == CIceManager::STREAM_UP)	// 上
-		{
-			m_FlyDirection = FLYDIRECTION_UP;
-		}
+	m_Move = D3DXVECTOR3(sinf(rot.y), 0.5f, cosf(rot.y));
 
-		if (m_DirStreamNext == CIceManager::STREAM_RIGHT)	// 右
-		{
-			m_FlyDirection = FLYDIRECTION_RIGHT;
-		}
+	pos += m_Move;
 
-		if (m_DirStreamNext == CIceManager::STREAM_DOWN)	// 下
-		{
-			m_FlyDirection = FLYDIRECTION_DOWN;
-		}
+	CAlbatross::SetPosition(pos);
 
-		if (m_DirStreamNext == CIceManager::STREAM_LEFT)	// 左
-		{
-			m_FlyDirection = FLYDIRECTION_LEFT;
-		}
-	}
+	//// モーションの管理
+	//ManageMotion();
 
-	if (m_FlyDirection == FLYDIRECTION_UP)
-	{
+	CDebugProc* pDebugProc = CDebugProc::GetInstance();
 
-	}
-
-	if (m_FlyDirection == FLYDIRECTION_RIGHT)
-	{
-
-	}
-
-	if (m_FlyDirection == FLYDIRECTION_DOWN)
-	{
-
-	}
-
-	if (m_FlyDirection == FLYDIRECTION_LEFT)
-	{
-
-	}
-
-	// モーションの管理
-	ManageMotion();
+	pDebugProc->Print("\nアホウドリ==========================");
+	pDebugProc->Print("\n位置[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
 }
 
 //=====================================================
@@ -159,5 +171,6 @@ void CAlbatross::ManageMotion(void)
 //=====================================================
 void CAlbatross::Draw(void)
 {
-
+	// 継承クラスの描画
+	CMotion::Draw();
 }
