@@ -106,10 +106,7 @@ HRESULT CSelectMode::Init(void)
 {
 	// シーンの初期化
 	if (FAILED(CScene::Init()))
-	{ // 初期化に失敗した場合
-
 		return E_FAIL;
-	}
 
 	// 説明の生成
 	//m_pManual = CUI::Create();
@@ -159,13 +156,14 @@ void CSelectMode::Uninit(void)
 			Object::DeleteObject((CObject**)&m_apModeUI[cnt]);
 		}
 	}
-	Object::DeleteObject((CObject**)&m_pManual);
 
-	// シーンの終了
-	CScene::Uninit();
+	Object::DeleteObject((CObject**)&m_pManual);
 
 	// オブジェクト全破棄
 	CObject::ReleaseAll();
+
+	// シーンの終了
+	CScene::Uninit();
 }
 
 //=====================================================

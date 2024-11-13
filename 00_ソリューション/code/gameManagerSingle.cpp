@@ -56,6 +56,8 @@ void CGameManagerSingle::Uninit(void)
 {
 	// Šî’êƒNƒ‰ƒX‚ÌI—¹
 	CGameManager::Uninit();
+
+	m_pPlayer = nullptr;
 }
 
 //=====================================================

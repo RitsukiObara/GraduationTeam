@@ -16,6 +16,8 @@
 #include "debugproc.h"
 #include "manager.h"
 #include "title.h"
+#include "resultSingle.h"
+#include "player.h"
 
 //*****************************************************
 // 定数定義
@@ -33,6 +35,12 @@ const D3DXVECTOR3 POSV_GAME = { 0.0f,1544.0f,-681.0f };	// ゲーム中の視点位置
 
 const D3DXVECTOR3 POSR_DEFAULT_SELECTSTAGE = { 0.0f,0.0f,-400.0f };	// ステージセレクト中のデフォルト注視点位置
 const D3DXVECTOR3 POSV_DEFAULT_SELECTSTAGE = { 0.0f,2244.0f,-2001.0f };	// ステージセレクト中のデフォルト視点位置
+
+namespace resultSingle
+{
+const D3DXVECTOR3 POS_OFFSET = { 0.0f,100.0f,-500.0f };	// 目標地点のオフセット
+const float SPEED_POSR = 0.1f;	// 注視点の速度
+}
 }
 
 //***********************************************************************************
@@ -188,4 +196,88 @@ void CCameraStateSelectStage::Init(CCamera* pCamera)
 void CCameraStateSelectStage::Update(CCamera* pCamera)
 {
 
+}
+
+//**************************************************************************
+// シングルリザルト
+//**************************************************************************
+//=====================================================
+// コンストラクタ
+//=====================================================
+CCameraResultSingle::CCameraResultSingle(CResultSingle *pResult)
+{
+	// リザルトの受け取り
+	m_pResult = pResult;
+}
+
+//=====================================================
+// 初期化
+//=====================================================
+void CCameraResultSingle::Init(CCamera* pCamera)
+{
+	// 目的位置設定
+	DecidePosDest(pCamera);
+}
+
+//=====================================================
+// 目的位置設定
+//=====================================================
+void CCameraResultSingle::DecidePosDest(CCamera* pCamera)
+{
+	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+
+	// カメラ現在地を初期位置に設定
+	m_posInitiial = pInfoCamera->posV;
+
+	//-------------------------------
+	// 目標位置の設定
+	//-------------------------------
+	vector<CPlayer*> apPlayer = CPlayer::GetInstance();	// プレイヤーの取得
+	assert(!apPlayer.empty());
+
+	CPlayer *pPlayer = *apPlayer.begin();
+	assert(pPlayer != nullptr);
+
+	// プレイヤーの位置にオフセットを設定して、目標位置にする
+	m_posDest = pPlayer->GetPosition() + resultSingle::POS_OFFSET;
+
+	// 初期差分ベクトルの設定
+	m_vecDiffInitial = m_posDest - m_posInitiial;
+}
+
+//=====================================================
+// 更新
+//=====================================================
+void CCameraResultSingle::Update(CCamera* pCamera)
+{
+	// プレイヤーの前まで移動する処理
+	MoveToPlayerFront(pCamera);
+}
+
+//=====================================================
+// プレイヤーの前まで移動する処理
+//=====================================================
+void CCameraResultSingle::MoveToPlayerFront(CCamera* pCamera)
+{
+	//-------------------------------
+	// 視点の移動
+	//-------------------------------
+	m_fTimerMove += CManager::GetDeltaTime();
+
+	if (m_fTimerMove > CCameraResultSingle::TIME_MOVE)
+		m_pResult->EndMove();	// カメラ移動の終了
+
+	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+
+	float fTime = m_fTimerMove / CCameraResultSingle::TIME_MOVE;
+	float fRate = easing::EaseOutExpo(fTime);
+
+	pInfoCamera->posV = m_posInitiial + m_vecDiffInitial * fRate;
+
+	//-------------------------------
+	// 注視点の移動
+	//-------------------------------
+	D3DXVECTOR3 posDestR = m_posDest - resultSingle::POS_OFFSET;
+
+	pInfoCamera->posR += (posDestR - pInfoCamera->posR) * resultSingle::SPEED_POSR;
 }

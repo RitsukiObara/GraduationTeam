@@ -78,4 +78,30 @@ private:
 
 };
 
+// シングルリザルト時
+class CResultSingle;
+class CCameraResultSingle : public CCameraState
+{
+public:
+	CCameraResultSingle(CResultSingle *pResult);
+	void Init(CCamera *pCamera);
+	void Update(CCamera* pCamera) override;
+
+private:
+	// 定数定義
+	static constexpr float TIME_MOVE = 5.0f;	// 移動にかかる時間
+
+	// メンバ関数
+	void DecidePosDest(CCamera* pCamera);	// 目標位置の決定
+	void MoveToPlayerFront(CCamera* pCamera);	// プレイヤーの前まで移動する処理
+
+	// メンバ変数
+	D3DXVECTOR3 m_posDest;	// 目標位置
+	D3DXVECTOR3 m_posInitiial;	// 初期位置位置
+	D3DXVECTOR3 m_vecDiffInitial;	// 初期差分ベクトル
+	float m_fTimerMove;	// 移動タイマー
+	CResultSingle *m_pResult;	// リザルトのポインタ
+};
+
+
 #endif

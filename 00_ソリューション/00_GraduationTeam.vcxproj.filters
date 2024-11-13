@@ -61,9 +61,6 @@
     <Filter Include="ソース ファイル\scene\ranking">
       <UniqueIdentifier>{b2d857bb-c667-459f-ba0b-e0604248e843}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\scene\result">
-      <UniqueIdentifier>{d4aebfc9-2d49-45ad-bff8-5bed49ab4137}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\scene\tutorial">
       <UniqueIdentifier>{554c5943-617c-4c22-9877-8b111729433f}</UniqueIdentifier>
     </Filter>
@@ -75,6 +72,9 @@
     </Filter>
     <Filter Include="ソース ファイル\scene\title">
       <UniqueIdentifier>{e5afd224-6fb6-4f49-b9e8-b83bc61919bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scene\game\resultSingle">
+      <UniqueIdentifier>{b87aea4e-e401-4a55-b5a2-af66d41b2916}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -273,9 +273,6 @@
     <ClCompile Include="code\skybox.cpp">
       <Filter>ソース ファイル\gameobject</Filter>
     </ClCompile>
-    <ClCompile Include="code\resultSingle.cpp">
-      <Filter>ソース ファイル\gameobject</Filter>
-    </ClCompile>
     <ClCompile Include="code\random.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
@@ -360,9 +357,6 @@
     <ClCompile Include="code\ranking.cpp">
       <Filter>ソース ファイル\scene\ranking</Filter>
     </ClCompile>
-    <ClCompile Include="code\resultBehavior.cpp">
-      <Filter>ソース ファイル\scene\result</Filter>
-    </ClCompile>
     <ClCompile Include="code\tutorial.cpp">
       <Filter>ソース ファイル\scene\tutorial</Filter>
     </ClCompile>
@@ -386,6 +380,9 @@
     </ClCompile>
     <ClCompile Include="code\albatross.cpp">
       <Filter>ソース ファイル\character</Filter>
+    </ClCompile>
+    <ClCompile Include="code\resultSingle.cpp">
+      <Filter>ソース ファイル\scene\game\resultSingle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -587,9 +584,6 @@
     <ClInclude Include="code\skybox.h">
       <Filter>ソース ファイル\gameobject</Filter>
     </ClInclude>
-    <ClInclude Include="code\resultSingle.h">
-      <Filter>ソース ファイル\gameobject</Filter>
-    </ClInclude>
     <ClInclude Include="code\random.h">
       <Filter>ソース ファイル\base</Filter>
     </ClInclude>
@@ -677,9 +671,6 @@
     <ClInclude Include="code\ranking.h">
       <Filter>ソース ファイル\scene\ranking</Filter>
     </ClInclude>
-    <ClInclude Include="code\resultBehavior.h">
-      <Filter>ソース ファイル\scene\result</Filter>
-    </ClInclude>
     <ClInclude Include="code\tutorial.h">
       <Filter>ソース ファイル\scene\tutorial</Filter>
     </ClInclude>
@@ -703,6 +694,9 @@
     </ClInclude>
     <ClInclude Include="code\albatross.h">
       <Filter>ソース ファイル\character</Filter>
+    </ClInclude>
+    <ClInclude Include="code\resultSingle.h">
+      <Filter>ソース ファイル\scene\game\resultSingle</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
