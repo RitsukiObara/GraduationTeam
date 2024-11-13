@@ -18,6 +18,8 @@
 #include "sound.h"
 #include "timer.h"
 #include "ranking.h"
+#include "camera.h"
+#include "cameraState.h"
 
 //*****************************************************
 // 定数定義
@@ -33,6 +35,7 @@ namespace
 		const float DEST_ALPHA = 0.5f;	// 目標色
 		const float DIFF_ALPHA = DEST_ALPHA - INIT_COL.a;			// 差分アルファ値
 		const D3DXVECTOR3 POS = D3DXVECTOR3(0.5f, 0.5f, 0.0f);	// 位置
+		const float TIME_FADE = 2.0f;	// フェードにかかる時間
 	}
 
 	namespace caption
@@ -53,9 +56,10 @@ namespace
 //*****************************************************
 // 静的メンバ変数
 //*****************************************************
-CResultSingle::FuncUpdateState CResultSingle::m_aFuncUpdateState[] =	// 状態更新関数
+CResultSingle::FuncUpdateState CResultSingle::s_aFuncUpdateState[] =	// 状態更新関数
 {
 	nullptr,					// 何もしない更新
+	nullptr,					// カメラ移動の更新
 	&CResultSingle::UpdateFade,		// フェード状態の更新
 	&CResultSingle::UpdateSelect,		// 選択状態の更新
 	nullptr,					// 終了状態の更新
@@ -64,7 +68,7 @@ CResultSingle::FuncUpdateState CResultSingle::m_aFuncUpdateState[] =	// 状態更新
 //====================================================
 // コンストラクタ
 //====================================================
-CResultSingle::CResultSingle()
+CResultSingle::CResultSingle() : m_fTimer(0.0f)
 {
 
 }
@@ -88,9 +92,8 @@ CResultSingle *CResultSingle::Create(bool bWin)
 
 	if (pResult != nullptr)
 	{
+		pResult->m_bWin = bWin;
 		pResult->Init();
-
-		pResult->Create2D(bWin);
 	}
 
 	return pResult;
@@ -101,9 +104,6 @@ CResultSingle *CResultSingle::Create(bool bWin)
 //====================================================
 HRESULT CResultSingle::Init(void)
 {
-	// 初期状態にする
-	m_state = STATE_FADE;
-
 	// ゲーム画面をリザルト状態にする
 	CGame::SetState(CGame::E_State::STATE_RESULT);
 
@@ -112,6 +112,19 @@ HRESULT CResultSingle::Init(void)
 
 	// サウンドの再生
 	pSound->Play(CSound::LABEL_BGM_RESULT);
+
+	// 2Dオブジェクトの生成
+	Create2D(m_bWin);
+
+	// 状態の初期設定
+	if (m_bWin)
+	{
+		m_state = STATE_MOVECAMERA;
+
+		Camera::ChangeState(new CCameraResultSingle(this));
+	}
+	else
+		m_state = STATE_FADE;
 
 	return S_OK;
 }
@@ -152,24 +165,41 @@ void CResultSingle::Uninit(void)
 void CResultSingle::Update(void)
 {
 	assert(m_state > -1 && m_state < STATE_MAX);
-	if (m_aFuncUpdateState[m_state] != nullptr)
+	if (s_aFuncUpdateState[m_state] != nullptr)
 	{ // 更新関数が指定されている場合
 
 		// 各状態ごとの更新
-		(this->*(m_aFuncUpdateState[m_state]))();
+		(this->*(s_aFuncUpdateState[m_state]))();
 	}
 }
 
 //=====================================================
-//	フェード状態の更新処理
+// フェード状態の更新処理
 //=====================================================
 void CResultSingle::UpdateFade(void)
 {
-	
+	if (m_pBg == nullptr)
+		return;
+
+	m_fTimer += CManager::GetDeltaTime();
+
+	// タイマーのイージング
+	float fTime = m_fTimer / bg::TIME_FADE;
+	float fRate = easing::EaseOutExpo(fTime);
+
+	// 色の設定
+	m_pBg->SetAlpha(bg::INIT_COL.a + bg::DIFF_ALPHA * fRate);
+
+	if (bg::TIME_FADE < m_fTimer)
+	{// フェード状態の終了
+		m_state = E_State::STATE_SELECT;
+
+		return;
+	}
 }
 
 //=====================================================
-//	選択状態の更新処理
+// 選択状態の更新処理
 //=====================================================
 void CResultSingle::UpdateSelect(void)
 {
@@ -182,4 +212,12 @@ void CResultSingle::UpdateSelect(void)
 void CResultSingle::Draw(void)
 {
 
+}
+
+//====================================================
+// カメラ移動の終了
+//====================================================
+void CResultSingle::EndMove(void)
+{
+	m_state = E_State::STATE_FADE;
 }

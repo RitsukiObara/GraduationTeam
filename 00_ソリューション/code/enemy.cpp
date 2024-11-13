@@ -157,6 +157,7 @@ void CEnemy::Uninit(void)
 		{
 			continue;
 		}
+
 		//Vector‚©‚çíœ
 		s_vector.erase(itr);
 

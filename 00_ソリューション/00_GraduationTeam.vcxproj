@@ -250,7 +250,6 @@
     <ClCompile Include="code\ranking.cpp" />
     <ClCompile Include="code\renderer.cpp" />
     <ClCompile Include="code\resultSingle.cpp" />
-    <ClCompile Include="code\resultBehavior.cpp" />
     <ClCompile Include="code\ripples.cpp" />
     <ClCompile Include="code\scene.cpp" />
     <ClCompile Include="code\score.cpp" />
@@ -356,7 +355,6 @@
     <ClInclude Include="code\ranking.h" />
     <ClInclude Include="code\renderer.h" />
     <ClInclude Include="code\resultSingle.h" />
-    <ClInclude Include="code\resultBehavior.h" />
     <ClInclude Include="code\ripples.h" />
     <ClInclude Include="code\scene.h" />
     <ClInclude Include="code\score.h" />
