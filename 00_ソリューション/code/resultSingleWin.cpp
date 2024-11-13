@@ -17,6 +17,8 @@
 #include "manager.h"
 #include "inputManager.h"
 #include "fade.h"
+#include "score.h"
+#include "game.h"
 
 //*****************************************************
 // 定数定義
@@ -125,6 +127,28 @@ void CResultSingleWin::Create2D(void)
 //====================================================
 void CResultSingleWin::CreatepOwnScore(void)
 {
+	//----------------------------
+	// スコアの取得
+	//----------------------------
+	CGame *pGame = CGame::GetInstance();
+	if (pGame == nullptr)
+		return;
+
+	CScore *pScore = pGame->GetScore();
+	if (pScore == nullptr)
+		return;
+
+	int nScore = pScore->GetScore();
+
+	//----------------------------
+	// 突いた回数の取得
+	//----------------------------
+	int nTimePeck = 0;
+
+	//----------------------------
+	// ポリゴンの生成
+	//----------------------------
+	int aData[E_ScoreCaption::CAPTION_MAX] = { nScore,nTimePeck };	// 数字の値
 	for (int i = 0; i < E_ScoreCaption::CAPTION_MAX; i++)
 	{
 		// キャプションの生成
@@ -139,7 +163,7 @@ void CResultSingleWin::CreatepOwnScore(void)
 		m_apCaptionScore[i]->SetVtx();
 
 		// 数字の生成
-		m_apNumberOwn[i] = CNumber::Create(score::NUM_PLACE[i], 0);
+		m_apNumberOwn[i] = CNumber::Create(score::NUM_PLACE[i], aData[i]);
 		if (m_apNumberOwn[i] == nullptr)
 			continue;
 
