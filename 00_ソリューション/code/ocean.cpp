@@ -24,18 +24,13 @@
 #include "albatross.h"
 
 //*****************************************************
-// マクロ定義
+// 定数定義
 //*****************************************************
-#define MESHFIELD_TEX_FILE			"data\\TEXTURE\\BG\\field00.jpg"				// テクスチャファイル名
-#define SPLIT_TEX					(10)										// テクスチャ分割数
-#define CHENGE_LENGTH	(10000)	// 操作できる頂点までの距離
-#define ANGLE_SLIP	(0.7f)	// 坂を滑る角度
-#define CMP_LENGTH	(1000.0f)	// 判定する半径
-#define MAX_ALBATROSS	(2)										// アホウドリ最大数
 namespace
 {
 	const int OCEAN_ROT_CHANGE_TIME_DEFAULT = 10;	// デフォルトの海流向き変更時間
 	const int OCEAN_ROT_CHANGE_TIME_DEGREE = 10;	// 海流向き変更時間ぶれ幅
+	const int MAX_ALBATROSS = 2;					// アホウドリ最大数
 }
 
 //*****************************************************
