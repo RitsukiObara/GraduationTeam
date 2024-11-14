@@ -90,6 +90,15 @@ HRESULT COcean::Init(void)
 {
 	CMeshField::Init();
 
+	CIceManager* pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager != nullptr)
+	{ // 流氷マネージャーが NULL じゃない場合
+
+		// 保存用変数に現在の海流を設定する
+		m_nRandKeep = pIceManager->GetDirStream();
+	}
+
 	SetNextOceanRot();	// 最初に次の向き設定
 
 	return S_OK;
@@ -172,10 +181,11 @@ void COcean::OceanChangeCheck(void)
 	COcean* pOcean = COcean::GetInstance();
 	CIceManager* pIceManager = CIceManager::GetInstance();
 	CGame* pGame = CGame::GetInstance();
-	CIceManager::E_Stream OceanFlow = CIceManager::GetInstance()->GetDirStreamNext();
 
 	if (pOcean == nullptr || pIceManager == nullptr || pGame == nullptr)
 		return;
+
+	CIceManager::E_Stream OceanFlow = pIceManager->GetDirStreamNext();
 
 	int nNowTime = pGame->GetTimeSecond();	 // 現在のタイムを取得
 

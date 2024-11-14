@@ -111,6 +111,8 @@ HRESULT CAlbatross::Init(void)
 
 	CAlbatross::SetPosition(pos);
 
+	SetMotion(MOTION_FLY);
+
 	return S_OK;
 }
 
@@ -184,6 +186,9 @@ void CAlbatross::Update(void)
 	{
 		Uninit();
 	}
+
+	// モーション更新
+	CMotion::Update();
 
 	CDebugProc* pDebugProc = CDebugProc::GetInstance();
 
