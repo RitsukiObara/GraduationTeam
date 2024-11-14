@@ -56,14 +56,16 @@ const float DIFF_HEIGHT = HEIGHT_DEST - HEIGHT_INIT;	// 高さの差分
 //----------------------------
 namespace scoreNumber
 {
-const float SIZE_INIT = 0.03f;	// サイズ
+const float WIDTH_NUMBER = 0.03f;	// 数字の幅
+const float HEIGHT_NUMBER = 0.04f;	// 数字の高さ
+
 const float HEIGHT_INIT = -0.1f;
 const D3DXVECTOR3 POS_INIT[CResultSingleWin::E_ScoreCaption::CAPTION_MAX] =
 {// 初期位置
 	{ 0.2f,HEIGHT_INIT,0.0f },
-	{ 0.7f,HEIGHT_INIT,0.0f },
+	{ 0.73f,HEIGHT_INIT,0.0f },
 };
-const float HEIGHT_DEST = 0.45f;	// 目標の高さ
+const float HEIGHT_DEST = 0.44f;	// 目標の高さ
 const float DIFF_HEIGHT = HEIGHT_DEST - HEIGHT_INIT;	// 高さの差分
 }
 
@@ -209,6 +211,7 @@ void CResultSingleWin::CreateOwnScore(void)
 		m_apCaptionScore[i]->SetPosition(scoreCaption::POS_INIT[i]);
 		int nIdxTexture = Texture::GetIdx(&scoreCaption::PATH_TEX[i][0]);
 		m_apCaptionScore[i]->SetIdxTexture(nIdxTexture);
+		m_apCaptionScore[i]->SetAlpha(0.0f);
 		m_apCaptionScore[i]->SetVtx();
 
 		// 数字の生成
@@ -217,7 +220,8 @@ void CResultSingleWin::CreateOwnScore(void)
 			continue;
 
 		m_apNumberOwn[i]->SetPosition(scoreNumber::POS_INIT[i]);
-		m_apNumberOwn[i]->SetSizeAll(scoreNumber::SIZE_INIT, scoreNumber::SIZE_INIT);
+		m_apNumberOwn[i]->SetSizeAll(scoreNumber::WIDTH_NUMBER, scoreNumber::HEIGHT_NUMBER);
+		m_apNumberOwn[i]->SetAlpha(0.0f);
 	}
 }
 
@@ -297,7 +301,7 @@ void CResultSingleWin::Update(void)
 //=====================================================
 void CResultSingleWin::UpdateMoveCamera(void)
 {
-	if (GetState() == CResultSingle::E_State::STATE_ENDFADE)
+	if (GetState() == CResultSingle::E_State::STATE_ENDAPPERCAPTION)
 		m_state = E_State::STATE_APPERSCORE;
 }
 
@@ -325,18 +329,19 @@ void CResultSingleWin::UpdateApperScore(void)
 
 		m_apCaptionScore[i]->SetPosition(posCaption);
 		m_apCaptionScore[i]->SetVtx();
+		m_apCaptionScore[i]->SetAlpha(fRate);
 
 		//-----------------------------------------
 		// 数字の移動
 		//-----------------------------------------
-		// 数字の生成
 		if (m_apNumberOwn[i] == nullptr)
 			continue;
 
 		D3DXVECTOR3 posNumber = m_apNumberOwn[i]->GetPosition();
-		posNumber.y = scoreNumber::HEIGHT_INIT + scoreCaption::DIFF_HEIGHT * fRate;
+		posNumber.y = scoreNumber::HEIGHT_INIT + scoreNumber::DIFF_HEIGHT * fRate;
 
 		m_apNumberOwn[i]->SetPosition(posNumber);
+		m_apNumberOwn[i]->SetAlpha(fRate);
 	}
 
 	if (m_fTimer > scoreCaption::TIME_APPER)

@@ -31,7 +31,6 @@ namespace
 {
 namespace bg
 {
-const char* PATH = "data\\TEXTURE\\UI\\title_logo00.png";	// パス
 const float WIDTH = 0.5f;	// 幅
 const float HEIGHT = 0.5f;	// 高さ
 const D3DXCOLOR INIT_COL = D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f);	// 初期の色
@@ -43,14 +42,20 @@ const float TIME_FADE = 2.0f;	// フェードにかかる時間
 
 namespace caption
 {
-const float	MOVE_TIME = 1.5f;	// 移動時間
-const D3DXCOLOR DEST_COL = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);		// 目標色
-const D3DXCOLOR INIT_COL = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f);		// 初期色
-const D3DXCOLOR DIFF_COL = DEST_COL - INIT_COL;						// 差分色
-const D3DXVECTOR3 DEST_POS = D3DXVECTOR3(0.5f, 0.2f, 0.0f);			// 目標位置
+const int NUM_TEX = 2;													// テクスチャの種類
+const char* PATH[NUM_TEX] =
+{																		// パス
+	"data\\TEXTURE\\UI\\gameover.png",
+	"data\\TEXTURE\\UI\\stage_clear.png",
+};
+const float	MOVE_TIME = 1.5f;											// 移動時間
+const D3DXCOLOR DEST_COL = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);			// 目標色
+const D3DXCOLOR INIT_COL = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f);			// 初期色
+const D3DXCOLOR DIFF_COL = DEST_COL - INIT_COL;							// 差分色
+const D3DXVECTOR3 DEST_POS = D3DXVECTOR3(0.5f, 0.2f, 0.0f);				// 目標位置
 const D3DXVECTOR3 INIT_POS = DEST_POS + D3DXVECTOR3(0.0f, 0.1f, 0.0f);	// 初期位置
 const D3DXVECTOR3 DIFF_POS = DEST_POS - INIT_POS;						// 差分位置
-const float WIDTH = 0.2f;		// 幅
+const float WIDTH = 0.3f;	// 幅
 const float HEIGHT = 0.17f;	// 高さ
 }
 }
@@ -60,10 +65,11 @@ const float HEIGHT = 0.17f;	// 高さ
 //*****************************************************
 CResultSingle::FuncUpdateState CResultSingle::s_aFuncUpdateState[] =	// 状態更新関数
 {
-	nullptr,					// 何もしない更新
-	&CResultSingle::UpdateFade,	// フェード状態の更新
-	nullptr,					// フェード終了状態の更新
-	nullptr,					// 終了状態の更新
+	nullptr,							// 何もしない更新
+	&CResultSingle::UpdateFade,			// フェード状態の更新
+	&CResultSingle::UpdateApperCaption,	// キャプション出現状態の更新
+	nullptr,							// キャプション出現終了状態の更新
+	nullptr,							// 終了状態の更新
 };
 
 //====================================================
@@ -130,6 +136,28 @@ void CResultSingle::Create2D(bool bWin)
 {
 	// 背景の生成
 	CreateBg();
+
+	// 見出しの生成
+	CreateCaption();
+}
+
+//====================================================
+// 見出しの生成
+//====================================================
+void CResultSingle::CreateCaption(void)
+{
+	m_pCaption = CUI::Create();
+
+	if (m_pCaption == nullptr)
+		return;
+
+	m_pCaption->SetSize(caption::WIDTH, caption::HEIGHT);
+	m_pCaption->SetPosition(caption::INIT_POS);
+	m_pCaption->SetCol(caption::INIT_COL);
+	m_pCaption->SetVtx();
+
+	int nIdxTexture = Texture::GetIdx(caption::PATH[m_bWin]);
+	m_pCaption->SetIdxTexture(nIdxTexture);
 }
 
 //====================================================
@@ -192,11 +220,41 @@ void CResultSingle::UpdateFade(void)
 
 	if (bg::TIME_FADE < m_fTimer)
 	{// フェード状態の終了
-		m_state = E_State::STATE_ENDFADE;
+		m_state = E_State::STATE_APPERCAPTION;
 		m_fTimer = 0.0f;
 		Camera::ChangeState(nullptr);
 
 		return;
+	}
+}
+
+//=====================================================
+// キャプション出現状態の更新
+//=====================================================
+void CResultSingle::UpdateApperCaption(void)
+{
+	if (m_pCaption == nullptr)
+		return;
+
+	m_fTimer += CManager::GetDeltaTime();
+
+	float fTime = m_fTimer / caption::MOVE_TIME;
+	float fRate = easing::EaseOutExpo(fTime);
+	universal::LimitValuefloat(&fRate, 1.0f, 0.0f);
+
+	//-----------------------------------------
+	// キャプションの移動
+	//-----------------------------------------
+	D3DXVECTOR3 posCaption = caption::INIT_POS + caption::DIFF_POS * fRate;
+
+	m_pCaption->SetPosition(posCaption);
+	m_pCaption->SetVtx();
+	m_pCaption->SetAlpha(fRate);
+
+	if (m_fTimer > caption::MOVE_TIME)
+	{// 一定時間経過で次の状態に移る
+		m_state = E_State::STATE_ENDAPPERCAPTION;
+		m_fTimer = 0.0f;
 	}
 }
 
