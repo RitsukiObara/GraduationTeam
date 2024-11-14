@@ -755,6 +755,7 @@ void CPlayer::InputPeck(void)
 //=====================================================
 void CPlayer::RotationDirUI(int nDir)
 {
+#if 0
 	if (m_pDir == nullptr)
 		return;
 
@@ -768,6 +769,9 @@ void CPlayer::RotationDirUI(int nDir)
 	universal::FactingRot(&rot.y, fRotDest, DirUI::FACT_ROT);
 
 	m_pDir->SetRotation(rot);
+#else
+
+#endif
 }
 
 //=====================================================

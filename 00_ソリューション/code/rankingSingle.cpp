@@ -15,7 +15,7 @@
 //*****************************************************
 namespace
 {
-const int NUM_DATA_DEFAULT = 4;	// デフォルトのデータ数
+const int NUM_DATA_DEFAULT = 3;	// デフォルトのデータ数
 }
 
 //====================================================
@@ -57,7 +57,7 @@ CRankingSingle *CRankingSingle::Create(string pathSave)
 //====================================================
 HRESULT CRankingSingle::Init(void)
 {
-#if 0
+#if 1
 	Reset();	// リセット処理
 
 	Save();
@@ -73,8 +73,8 @@ HRESULT CRankingSingle::Init(void)
 //====================================================
 void CRankingSingle::Reset(void)
 {
-	int aScore[NUM_DATA_DEFAULT] = { 10000,6700,5000,4000 };
-	int nTimePeck[NUM_DATA_DEFAULT] = { 10, 5, 20, 30 };
+	int aScore[NUM_DATA_DEFAULT] = { 10000,6700,5000 };
+	int nTimePeck[NUM_DATA_DEFAULT] = { 10, 15, 20 };
 
 	for (int i = 0; i < NUM_DATA_DEFAULT; i++)
 	{

@@ -55,7 +55,7 @@ public:
 
 private:
 	// 定数定義
-	static constexpr int NUM_RANKING = 4;	// ランキングの数
+	static constexpr int NUM_RANKING = 3;	// ランキングの数
 
 	// メンバ関数
 	void Create2D(void);			// 2DUIの生成
