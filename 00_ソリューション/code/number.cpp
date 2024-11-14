@@ -198,6 +198,20 @@ void CNumber::SetColor(D3DXCOLOR col)
 }
 
 //=====================================================
+// アルファ値設定処理
+//=====================================================
+void CNumber::SetAlpha(float fAlpha)
+{
+	for (int nCount = 0; nCount < m_nNumPlace; nCount++)
+	{
+		if (m_apObject[nCount] != nullptr)
+		{
+			m_apObject[nCount]->SetAlpha(fAlpha);
+		}
+	}
+}
+
+//=====================================================
 // 色取得処理
 //=====================================================
 D3DXCOLOR CNumber::GetColor(void)

@@ -17,6 +17,7 @@
 //*****************************************************
 class CUI;
 class CNumber;
+class CRankingSingle;
 
 //*****************************************************
 // クラス定義
@@ -53,9 +54,13 @@ public:
 	// 変数取得・設定関数
 
 private:
+	// 定数定義
+	static constexpr int NUM_RANKING = 4;	// ランキングの数
+
 	// メンバ関数
-	void Create2D(void);	// 2DUIの生成
-	void CreatepOwnScore(void);	// 自身のスコアの表示
+	void Create2D(void);			// 2DUIの生成
+	void CreateOwnScore(void);		// 自身のスコアの生成
+	void CreateRankingNumber(void);	// ランキング数字の生成
 
 	void UpdateMoveCamera(void);	// カメラ移動状態の更新
 	void UpdateApperScore(void);	// スコア出現状態の更新
@@ -66,8 +71,11 @@ private:
 	CUI *m_apCaptionScore[CAPTION_MAX];		// 自身のキャプションのポインタ
 	CNumber *m_apNumberOwn[CAPTION_MAX];	// 自身の成績の数字ポインタ
 
+	CNumber *m_apRankingNumber[NUM_RANKING][CAPTION_MAX];	// ランキングの数字の配列
+	CRankingSingle *m_pRanking;								// ランキング処理
+
 	E_State m_state;		// 状態
-	float m_fTimer;	// タイマー
+	float m_fTimer;			// タイマー
 
 	// 状態更新の関数ポインタ型エイリアス定義
 	typedef void (CResultSingleWin::*FuncUpdateState)(void);
