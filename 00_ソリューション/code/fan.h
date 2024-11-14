@@ -36,7 +36,7 @@ public:
 	void SetRotation(D3DXVECTOR3 rot);
 	D3DXVECTOR3 GetRotation(void) { return m_rot; }
 
-	void SetCol(D3DXCOLOR col);
+	virtual void SetCol(D3DXCOLOR col);
 	D3DXCOLOR GetCol(void) { return m_col; }
 
 	void SetIdxTexture(int nIdx) { m_nIdxTexture = nIdx; }

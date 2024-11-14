@@ -33,6 +33,15 @@ const float OCEAN_FLOW_MIN = 1.00f;		// 海流の速度最小
 const float OCEAN_FLOW_MAX = 5.00f;	// 海流の速度最大
 
 const float RANGE_SELECT_ICE = D3DX_PI / 6;	// 氷を選択するときの角度の範囲
+
+const D3DXCOLOR COL_ICE[CIceManager::E_Pecker::PECKER_MAX] =	// 突っつく人による色
+{
+	D3DXCOLOR(1.0f,0.0f,0.0f,1.0f),
+	D3DXCOLOR(0.0f,1.0f,0.0f,1.0f),
+	D3DXCOLOR(0.0f,0.0f,1.0f,1.0f),
+	D3DXCOLOR(0.0f,1.0f,1.0f,1.0f),
+};
+const D3DXCOLOR COL_ICE_DEFAULT = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// デフォルト色
 }
 
 //*****************************************************
@@ -90,28 +99,6 @@ HRESULT CIceManager::Init(void)
 
 	// グリッドの位置設定
 	SetGridPos();
-
-	// 仮マップ生成
-	/*CreateIce(3, 6,CIce::E_Type::TYPE_HARD);
-	CreateIce(3, 5);
-	CreateIce(3, 4);
-	CreateIce(4, 4);
-	CreateIce(4, 6);
-	CreateIce(4, 5);
-	CreateIce(5, 5);
-	CreateIce(6, 5);
-	CreateIce(6, 4);
-	CreateIce(6, 3);
-	CreateIce(7, 3);
-	CreateIce(7, 4);
-	CreateIce(7, 5);
-	CreateIce(7, 6);
-	CreateIce(7, 7);
-	CreateIce(7, 8);
-	CreateIce(6, 8);
-	CreateIce(5, 8);
-	CreateIce(4, 8);
-	CreateIce(4, 7);*/
 
 	// 海流を初期化
 	m_dirStream = E_Stream::STREAM_LEFT;
@@ -204,6 +191,7 @@ void CIceManager::ManageStateIce(void)
 
 			m_aGrid[i][j].pIce->EnableBreak(false);
 			m_aGrid[i][j].pIce->EnableCanFind(true);
+			m_aGrid[i][j].pIce->SetColor(COL_ICE_DEFAULT);
 		}
 	}
 }
@@ -344,7 +332,7 @@ void CIceManager::StopIce(CIce *pIce)
 //=====================================================
 // 氷をつつけるかのチェック
 //=====================================================
-bool CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos)
+bool CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, E_Direction *pDir)
 {
 	CIce *pIceStand = m_aGrid[nNumV][nNumH].pIce;
 	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
@@ -355,18 +343,22 @@ bool CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos)
 	CIce* pIcePeck = nullptr;
 
 	// 向きに合わせて氷を選択
-	for (auto it : apIce)
+	for (int i = 0; i < (int)apIce.size(); i++)
 	{
-		if (it == nullptr)
+		if (apIce[i] == nullptr)
 			continue;
 
 		// 氷とスティック角度の比較
-		D3DXVECTOR3 posIce = it->GetPosition();
+		D3DXVECTOR3 posIce = apIce[i]->GetPosition();
 		bool bSelect = universal::IsInFanTargetYFlat(pos, posIce, fRot, RANGE_SELECT_ICE);
 
 		if (bSelect)
 		{// 氷が選べたらfor文を終了
-			pIcePeck = it;
+			pIcePeck = apIce[i];
+
+			if (pDir != nullptr)	// 番号保存
+				*pDir = (E_Direction)i;
+
 			break;
 		}
 	}

@@ -226,6 +226,9 @@ void CPlayerSelect::CreatePlayer(int nIdx)
 
 		// 入力マネージャーの割り当て
 		m_apPlayer[nIdx]->BindInputMgr(m_apInputMgr[nIdx]);	
+
+		// プレイヤーIDの割り当て
+		m_apPlayer[nIdx]->SetID(nIdx);
 	}
 
 	m_nNumPlayer++;

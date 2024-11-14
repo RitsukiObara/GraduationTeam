@@ -46,6 +46,7 @@ HRESULT CGameManagerMulti::Init(void)
 			continue;
 
 		pPlayer->BindInputMgr(pInpuMgr);
+		pPlayer->SetID(i);
 		m_apPlayer.push_back(pPlayer);
 	}
 

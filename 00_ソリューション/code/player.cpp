@@ -20,6 +20,7 @@
 #include "flowIce.h"
 #include "effect3D.h"
 #include "collision.h"
+#include "texture.h"
 
 //*****************************************************
 // 定数定義
@@ -42,6 +43,17 @@ const float SPEED_MOVE_MAX = 2.5f;	// 最大移動速度
 const float LINE_STOP_TURN = 0.2f;	// 振り向きを停止するしきい値
 const float LINE_START_TURN = D3DX_PI * 0.6f;	// 振り向きを開始するしきい値
 const float FACT_ROTATION_TURN = 0.2f;	// 振り向き回転係数
+
+//-------------------------------
+// 方向UIの定数
+//-------------------------------
+namespace DirUI
+{
+const string PATH_TEX = "data\\TEXTURE\\UI\\dirPeck.png";	// テクスチャパス
+const float WIDTH = 70.0f;		// 幅
+const float HEIGHT = 130.0f;	// 高さ
+const float FACT_ROT = 0.6f;	// 回転係数
+}
 }
 
 //*****************************************************
@@ -53,8 +65,11 @@ vector<CPlayer*> CPlayer::s_apPlayer;	// 格納用の配列
 // コンストラクタ
 //=====================================================
 CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(STATE_NONE), m_pIceMoveDest(nullptr), m_bEnableInput(false), m_fTimerStartMove(0.0f),
-m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f), m_pLandSystemFlow(nullptr), m_pLandFlow(nullptr), m_nTimePeck(0)
+m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f), m_pLandSystemFlow(nullptr), m_pLandFlow(nullptr), m_nTimePeck(0), m_nID(0)
 {
+	// デフォルトは入った順の番号
+	m_nID = (int)s_apPlayer.size();
+
 	s_apPlayer.push_back(this);
 }
 
@@ -98,13 +113,16 @@ HRESULT CPlayer::Init(void)
 
 	// グリッド番号の初期化
 	InitGridIdx();
+	
+	// 方向UI生成
+	//CreateDirUI();
 
 	// 入力可能フラグを設定
 	m_bEnableInput = true;
 
 	// 状態設定
 #ifdef _DEBUG
-	m_state = STATE_INVINCIBLE;
+	m_state = STATE_NORMAL;
 #else
 	m_state = STATE_NORMAL;
 #endif // _DEBUG
@@ -129,17 +147,39 @@ void CPlayer::InitGridIdx(void)
 }
 
 //=====================================================
+// 方向UIの生成
+//=====================================================
+void CPlayer::CreateDirUI(void)
+{
+	// 生成
+	m_pDir = CPolygon3D::Create(GetPosition());
+	assert(m_pDir != nullptr);
+
+	// テクスチャ設定
+	int nIdxTexture = Texture::GetIdx(&DirUI::PATH_TEX[0]);
+	m_pDir->SetIdxTexture(nIdxTexture);
+
+	// サイズ設定
+	m_pDir->SetSize(DirUI::WIDTH, DirUI::HEIGHT);
+	m_pDir->SetVtx();
+
+	// ライティングの設定
+	m_pDir->EnableLighting(false);
+	m_pDir->EnableZtest(true);
+}
+
+//=====================================================
 // 終了処理
 //=====================================================
 void CPlayer::Uninit(void)
 {
+	Object::DeleteObject((CObject**)&m_pDir);
+
 	for (auto itr = s_apPlayer.begin(); itr < s_apPlayer.end(); itr++)
 	{
 		//削除対象じゃない場合
 		if (*itr != this)
-		{
 			continue;
-		}
 
 		//Vectorから削除
 		s_apPlayer.erase(itr);
@@ -173,6 +213,9 @@ void CPlayer::Update(void)
 
 	// モーション更新
 	CMotion::Update();
+
+	// 方向UIの追従
+	FollowDirUI();
 
 #ifdef _DEBUG
 	Debug();
@@ -681,20 +724,50 @@ void CPlayer::InputPeck(void)
 	if (pIceManager == nullptr)
 		return;
 
-	if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_PECK))
-	{
-		// 突っつけるかチェック
-		D3DXVECTOR3 rot = GetRotation();
-		D3DXVECTOR3 pos = GetPosition();
+	// 突っつけるかチェック
+	D3DXVECTOR3 rot = GetRotation();
+	D3DXVECTOR3 pos = GetPosition();
 
-		rot.y += D3DX_PI;
-		universal::LimitRot(&rot.y);
+	rot.y += D3DX_PI;
+	universal::LimitRot(&rot.y);
 
-		if (pIceManager->CheckPeck(m_nGridV, m_nGridH, rot.y, pos))
+	CIceManager::E_Direction dir;
+
+	if (pIceManager->CheckPeck(m_nGridV, m_nGridH, rot.y, pos, &dir))
+	{// 突っつけるとき
+		// 方向UIの回転
+		RotationDirUI(dir);
+
+		if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_PECK))
 			SetMotion(MOTION::MOTION_PECK);
-		else
+	}
+	else
+	{// 突っつけないとき
+		if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_PECK))
 			SetMotion(MOTION::MOTION_CANNOTPECK);
 	}
+
+	CDebugProc::GetInstance()->Print("\nつっつく方向[%d]", dir);
+}
+
+//=====================================================
+// 方向UIの回転
+//=====================================================
+void CPlayer::RotationDirUI(int nDir)
+{
+	if (m_pDir == nullptr)
+		return;
+
+	D3DXVECTOR3 rot = m_pDir->GetRotation();
+
+	float fRate = D3DX_PI * 2 / CIceManager::E_Direction::DIRECTION_MAX;
+
+	float fRotDest = D3DX_PI * 1.5f;
+	fRotDest += fRate * (nDir - 1);
+
+	universal::FactingRot(&rot.y, fRotDest, DirUI::FACT_ROT);
+
+	m_pDir->SetRotation(rot);
 }
 
 //=====================================================
@@ -754,6 +827,19 @@ void CPlayer::EndJump(void)
 
 	// 入力を有効化
 	EnableInput(true);
+}
+
+//=====================================================
+// 方向UIの追従
+//=====================================================
+void CPlayer::FollowDirUI(void)
+{
+	if (m_pDir == nullptr)
+		return;
+
+	D3DXVECTOR3 posPlayer = GetPosition();
+
+	m_pDir->SetPosition(posPlayer);
 }
 
 //=====================================================

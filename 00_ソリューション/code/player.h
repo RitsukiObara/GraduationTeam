@@ -55,7 +55,7 @@ public:
 		STATE_MAX
 	};
 
-	CPlayer(int nPriority = 4);	// コンストラクタ
+	CPlayer(int nPriority = 5);	// コンストラクタ
 	~CPlayer();	// デストラクタ
 
 	// メンバ関数
@@ -66,18 +66,20 @@ public:
 	void Hit(float fDamage) override;	// ヒット処理
 
 	// 取得・設定
-	void SetMove(D3DXVECTOR3 move) { m_move = move; }	// 移動量
+	void SetMove(D3DXVECTOR3 move) { m_move = move; }				// 移動量
 	D3DXVECTOR3 GetMove(void) { return m_move; }
 	void EnableInput(bool bEnable) { m_bEnableInput = bEnable; }	// 入力可能フラグ
 	bool IsEnableInput(void) { return m_bEnableInput; }
-	void SetGridV(int nValue) { m_nGridV = nValue; }	// グリッドの縦番号
+	void SetGridV(int nValue) { m_nGridV = nValue; }				// グリッドの縦番号
 	int GetGridV(void) { return m_nGridV; }
-	void SetGridH(int nValue) { m_nGridH = nValue; }	// グリッドの横番号
+	void SetGridH(int nValue) { m_nGridH = nValue; }				// グリッドの横番号
 	int GetGridH(void) { return m_nGridH; }
-	void SetState(E_State state) { m_state = state; }	// 状態
+	void SetState(E_State state) { m_state = state; }				// 状態
 	E_State GetState(void) { return m_state; }
-	void BindInputMgr(CInputManager *pInputMgr) { m_pInputMgr = pInputMgr; }	// 入力マネージャーs
-	int GetTimePeck(void) { return m_nTimePeck; }	// 氷を突いた回数
+	int GetTimePeck(void) { return m_nTimePeck; }					// 氷を突いた回数
+	void BindInputMgr(CInputManager *pInputMgr) { m_pInputMgr = pInputMgr; }	// 入力マネージャー
+	void SetID(int nID) { m_nID = nID; }	// 番号
+	int GetID(void) { return m_nID; }
 
 	// 静的メンバ関数
 	static CPlayer* Create(void);	// 生成処理
@@ -93,7 +95,8 @@ private:
 
 	// メンバ関数
 	void InitGridIdx(void);	// グリッド番号の初期化
-	
+	void CreateDirUI(void);	// 方向UIの生成
+
 	void Input(void);	// 入力
 	
 	void MoveAnalog(void);	// アナログ移動
@@ -106,7 +109,8 @@ private:
 	
 	void CollideIce(void);	// 氷との判定
 
-	void InputPeck(void);	// 突っつきの入力
+	void InputPeck(void);			// 突っつきの入力
+	void RotationDirUI(int nDir);	// 方向UIの回転
 	
 	CIce *SelectIceByRot(float fRot);	// 氷を向きで取得
 	bool CheckGridChange(void);	// グリッドが変わったかどうかの判定
@@ -117,33 +121,42 @@ private:
 	void FlowDeath(void);	// 漂流中の死
 	void EndFlows(void);	// 漂流終了
 
-	void InputJump(void);	// ジャンプの入力
-	void SarchJumpIce(void);	// ジャンプ先の氷を探す
-	void StartJump(void);	// ジャンプの開始
-	void StayJump(void);	// ジャンプ中の処理
+	void InputJump(void);			// ジャンプの入力
+	void SarchJumpIce(void);		// ジャンプ先の氷を探す
+	void StartJump(void);			// ジャンプの開始
+	void StayJump(void);			// ジャンプ中の処理
 	void LimitInSideFlowIce(void);	// 流氷の内側に制限
-	void EndJump(void);		// ジャンプの終了
+	void EndJump(void);				// ジャンプの終了
 	
+	void FollowDirUI(void);	// 方向UIの追従
+
 	void Event(EVENT_INFO* pEventInfo) override;	// モーションイベント
-	void ManageMotion(void);	// モーションの管理
+	void ManageMotion(void);						// モーションの管理
 
 	void Debug(void);	// デバッグ処理
 
 	// メンバ変数
 	int m_nGridV;	// 今いるグリッドの縦番号
 	int m_nGridH;	// 今いるグリッドの横番号
+
 	bool m_bEnableInput;	// 入力可能フラグ
-	bool m_bTurn;	// 振り返っているフラグ
-	float m_fRotTurn;	// 振り返る角度
-	D3DXVECTOR3 m_move;	// 移動量
+	bool m_bTurn;			// 振り返っているフラグ
+	float m_fRotTurn;		// 振り返る角度
+
+	D3DXVECTOR3 m_move;			// 移動量
 	float m_fTimerStartMove;	// 移動の立ち上がりのタイマー
-	E_State m_state;		// プレイヤー状態
-	CIce *m_pIceMoveDest;	// 移動目標の氷
-	CIce *m_pLandFlow;	// 漂流時に乗ってる氷のポインタ
+	E_State m_state;			// プレイヤー状態
+
+	CIce *m_pIceMoveDest;			// 移動目標の氷
+	CIce *m_pLandFlow;				// 漂流時に乗ってる氷のポインタ
 	CFlowIce *m_pLandSystemFlow;	// 乗ってる流氷システム
+	int m_nTimePeck;				// 氷を突いた回数
+	CPolygon3D *m_pDir;				// 方向を示すポリゴン
+
 	S_FragMotion m_fragMotion;	// モーションフラグ
+
+	int m_nID;					// 番号
 	CInputManager *m_pInputMgr;	// 入力マネージャー
-	int m_nTimePeck;	// 氷を突いた回数
 
 	// 静的メンバ変数
 	static vector<CPlayer*> s_apPlayer;	// 格納用の配列

@@ -31,6 +31,7 @@ public:
 	void DrawBillboard(void);	// ビルボード描画
 	void SetVtx(void) override;	// 頂点設定
 	void SetTex(float fScrollX, float fScrollY);      // テクスチャ座標設定処理
+	void SetCol(D3DXCOLOR col) override;
 
 private:
 	D3DXMATRIX m_mtxWorld;	// ワールドマトリックス

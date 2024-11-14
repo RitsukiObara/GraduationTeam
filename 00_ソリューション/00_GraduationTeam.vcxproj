@@ -183,6 +183,7 @@
     <ClCompile Include="code\gameManagerMulti.cpp" />
     <ClCompile Include="code\gameManagerSingle.cpp" />
     <ClCompile Include="code\nextflowice.cpp" />
+    <ClCompile Include="code\peckLine.cpp" />
     <ClCompile Include="code\playerselect.cpp" />
     <ClCompile Include="code\rankingSingle.cpp" />
     <ClCompile Include="code\resultSingleLose.cpp" />
@@ -293,6 +294,7 @@
     <ClInclude Include="code\gameManagerMulti.h" />
     <ClInclude Include="code\gameManagerSingle.h" />
     <ClInclude Include="code\nextflowice.h" />
+    <ClInclude Include="code\peckLine.h" />
     <ClInclude Include="code\playerselect.h" />
     <ClInclude Include="code\rankingSingle.h" />
     <ClInclude Include="code\resultSingleLose.h" />

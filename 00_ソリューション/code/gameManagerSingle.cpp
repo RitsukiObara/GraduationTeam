@@ -33,9 +33,6 @@ HRESULT CGameManagerSingle::Init(void)
 	// 敵数表示UI生成
 	CUIEnemy::Create();
 
-	// 敵生成
-	CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
-
 	// プレイヤー生成
 	m_pPlayer = CPlayer::Create();
 

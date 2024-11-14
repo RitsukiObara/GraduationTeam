@@ -65,6 +65,7 @@ public:
 	virtual bool IsCanPeck(void) { return true; };	// “Ë‚Á‚Â‚¯‚é‚©‚Ì”»’è‚ğ•Ô‚·
 	void ChangeState(CIceState *pState);
 	bool IsOnTopAnyObject(void);	// ‰½‚©‚µ‚ç‚ªæ‚Á‚Ä‚é”»’è
+	void SetColor(D3DXCOLOR col);	// F‚Ìİ’è
 
 	// •Ï”æ“¾Eİ’èŠÖ”
 	void SetState(E_State state) { m_state = state; }	// ó‘Ô
