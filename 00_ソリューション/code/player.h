@@ -55,7 +55,7 @@ public:
 		STATE_MAX
 	};
 
-	CPlayer(int nPriority = 4);	// コンストラクタ
+	CPlayer(int nPriority = 5);	// コンストラクタ
 	~CPlayer();	// デストラクタ
 
 	// メンバ関数
@@ -95,7 +95,8 @@ private:
 
 	// メンバ関数
 	void InitGridIdx(void);	// グリッド番号の初期化
-	
+	void CreateDirUI(void);	// 方向UIの生成
+
 	void Input(void);	// 入力
 	
 	void MoveAnalog(void);	// アナログ移動
@@ -108,7 +109,8 @@ private:
 	
 	void CollideIce(void);	// 氷との判定
 
-	void InputPeck(void);	// 突っつきの入力
+	void InputPeck(void);			// 突っつきの入力
+	void RotationDirUI(int nDir);	// 方向UIの回転
 	
 	CIce *SelectIceByRot(float fRot);	// 氷を向きで取得
 	bool CheckGridChange(void);	// グリッドが変わったかどうかの判定
@@ -126,6 +128,8 @@ private:
 	void LimitInSideFlowIce(void);	// 流氷の内側に制限
 	void EndJump(void);				// ジャンプの終了
 	
+	void FollowDirUI(void);	// 方向UIの追従
+
 	void Event(EVENT_INFO* pEventInfo) override;	// モーションイベント
 	void ManageMotion(void);						// モーションの管理
 
@@ -147,6 +151,7 @@ private:
 	CIce *m_pLandFlow;				// 漂流時に乗ってる氷のポインタ
 	CFlowIce *m_pLandSystemFlow;	// 乗ってる流氷システム
 	int m_nTimePeck;				// 氷を突いた回数
+	CPolygon3D *m_pDir;				// 方向を示すポリゴン
 
 	S_FragMotion m_fragMotion;	// モーションフラグ
 

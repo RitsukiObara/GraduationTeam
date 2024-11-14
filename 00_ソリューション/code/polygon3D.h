@@ -26,7 +26,7 @@ public:
 		MODE_MAX
 	};
 
-	CPolygon3D(int nPriority = 5);	// コンストラクタ
+	CPolygon3D(int nPriority = 4);	// コンストラクタ
 	~CPolygon3D();	// デストラクタ
 
 	HRESULT Init(void);
