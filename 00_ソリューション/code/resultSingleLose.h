@@ -26,9 +26,19 @@ public:
 	enum E_State
 	{
 		STATE_NONE = 0,		// 何もしてない状態
+		STATE_APPER_MENU,	// メニュー選択状態
+		STATE_SELECT,		// 選択状態
 		STATE_END,			// 終了状態
 		STATE_MAX
 	};
+	// 列挙型定義
+	enum E_Select
+	{
+		SELECT_NO = 0,	// いいえ
+		SELECT_YES,		// はい
+		SELECT_MAX
+	};
+
 	CResultSingleLose();	// コンストラクタ
 	~CResultSingleLose();	// デストラクタ
 
@@ -41,21 +51,16 @@ public:
 	// 変数取得・設定関数
 
 private:
-	// 列挙型定義
-	enum E_Select
-	{
-		SELECT_NO = 0,	// いいえ
-		SELECT_YES,		// はい
-		SELECT_MAX
-	};
-
 	// メンバ関数
-	void Create2D(void);	// 2DUIの生成
+	void Create2D(void);		// 2DUIの生成
+	void CreateMenu(void);		// メニューの生成
+	void UpdateApperMenu(void);	// メニューの出現
+	void UpdateSelect(void);	// 選択状態
 
 	// メンバ変数
-
-	E_State m_state;		// 状態
-	float m_fTimer;	// タイマー
+	E_State m_state;						// 状態
+	float m_fTimer;							// タイマー
+	CUI *m_apMenu[E_Select::SELECT_MAX];	// メニュー項目のポリゴン
 
 	// 状態更新の関数ポインタ型エイリアス定義
 	typedef void (CResultSingleLose::*FuncUpdateState)(void);
