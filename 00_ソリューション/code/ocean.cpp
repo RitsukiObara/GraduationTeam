@@ -195,6 +195,7 @@ void COcean::OceanChangeCheck(void)
 		pIceManager->SetDirStreamNext((CIceManager::E_Stream)(m_nRandNextKeep));	// ŠC—¬‚ÌŒü‚«‚ğƒ‰ƒ“ƒ_ƒ€‚É‚·‚é
 		m_nRandKeep = m_nRandNextKeep;	// Œ»İ‚ÌŒü‚«‚Éİ’è
 		SetNextOceanRot();	// Ÿ‚ÌŒü‚«İ’è
+		m_bRandState = false;	// ƒ‰ƒ“ƒ_ƒ€‚Ìó‘Ô‚ğ false ‚É‚·‚é
 	}
 
 	if (m_nSetRotTime - nNowTime + 3 == m_nExecRotChangeTime)
