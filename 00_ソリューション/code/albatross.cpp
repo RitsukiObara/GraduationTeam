@@ -11,6 +11,7 @@
 #include "albatross.h"
 #include "particle.h"
 #include "debugproc.h"
+#include "ocean.h"
 
 //*****************************************************
 // 定数定義
@@ -21,6 +22,9 @@ namespace
 
 	const float HEIGHT_APPER = 400.0f;	// 出現時の高さ
 	const float WIDTH_APPER = 340.0f;	// 出現時の横のずれ
+	const float POS_X = 1750.0f;	// アホウドリの出現位置X
+	const float POS_Z = 1300.0f;	// アホウドリの出現位置Z
+	const float POS_Y = 500.0f;	// アホウドリの出現位置Y
 }
 
 //=====================================================
@@ -50,11 +54,9 @@ CAlbatross* CAlbatross::Create(CIceManager::E_Stream dir)
 
 	if (pAlbatross != nullptr)
 	{
-		CIceManager::E_Stream OceanFlow = CIceManager::GetInstance()->GetDirStreamNext();
-
 		pAlbatross->Init();
 
-		pAlbatross->Stream(OceanFlow);
+		pAlbatross->Stream(dir);
 	}
 
 	return pAlbatross;
@@ -76,6 +78,38 @@ HRESULT CAlbatross::Init(void)
 
 	// 継承クラスの初期化
 	CMotion::Init();
+
+	D3DXVECTOR3 pos = CAlbatross::GetPosition();
+
+	switch (COcean::GetInstance()->GetNextDirStream())
+	{
+	case CIceManager::STREAM_UP:	// 上
+
+		pos = D3DXVECTOR3(0.0f, POS_Y, -POS_Z);
+
+		break;
+	case CIceManager::STREAM_RIGHT:	// 右
+
+		pos = D3DXVECTOR3(-POS_X, POS_Y, 0.0f);
+
+		break;
+	case CIceManager::STREAM_DOWN:	// 下
+
+		pos = D3DXVECTOR3(0.0f, POS_Y, POS_Z);
+
+		break;
+	case CIceManager::STREAM_LEFT:	// 左
+
+		pos = D3DXVECTOR3(POS_X, POS_Y, 0.0f);
+
+		break;
+	default:
+
+		assert(false);
+		break;
+	}
+
+	CAlbatross::SetPosition(pos);
 
 	return S_OK;
 }
@@ -123,7 +157,8 @@ void CAlbatross::Stream(CIceManager::E_Stream dir)
 //=====================================================
 void CAlbatross::Uninit(void)
 {
-
+	// 継承クラスの終了
+	CMotion::Uninit();
 }
 
 //=====================================================
@@ -134,14 +169,21 @@ void CAlbatross::Update(void)
 	D3DXVECTOR3 pos = CAlbatross::GetPosition();
 	D3DXVECTOR3 rot = CAlbatross::GetRotation();
 
-	m_Move = D3DXVECTOR3(sinf(rot.y + D3DX_PI), 0.5f, cosf(rot.y + D3DX_PI));
+	m_Move = D3DXVECTOR3(sinf(rot.y + D3DX_PI), 0.0f, cosf(rot.y + D3DX_PI));	// 向いてる方向に移動する
 
-	pos += m_Move;
+	pos += m_Move * 6.0f;
 
 	CAlbatross::SetPosition(pos);
 
 	//// モーションの管理
 	//ManageMotion();
+
+	// アホウドリの画面外処理
+	if (pos.x > 2000.0f || pos.x < -2000.0f ||
+		pos.z > 2000.0f || pos.z < -2000.0f)
+	{
+		Uninit();
+	}
 
 	CDebugProc* pDebugProc = CDebugProc::GetInstance();
 
