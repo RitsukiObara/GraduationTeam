@@ -52,11 +52,11 @@ const float	MOVE_TIME = 1.5f;											// 移動時間
 const D3DXCOLOR DEST_COL = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);			// 目標色
 const D3DXCOLOR INIT_COL = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f);			// 初期色
 const D3DXCOLOR DIFF_COL = DEST_COL - INIT_COL;							// 差分色
-const D3DXVECTOR3 DEST_POS = D3DXVECTOR3(0.5f, 0.2f, 0.0f);				// 目標位置
-const D3DXVECTOR3 INIT_POS = DEST_POS + D3DXVECTOR3(0.0f, 0.1f, 0.0f);	// 初期位置
+const D3DXVECTOR3 DEST_POS = D3DXVECTOR3(0.5f, 0.1f, 0.0f);				// 目標位置
+const D3DXVECTOR3 INIT_POS = DEST_POS + D3DXVECTOR3(0.0f, 0.2f, 0.0f);	// 初期位置
 const D3DXVECTOR3 DIFF_POS = DEST_POS - INIT_POS;						// 差分位置
-const float WIDTH = 0.3f;	// 幅
-const float HEIGHT = 0.17f;	// 高さ
+const float WIDTH = 0.25f;	// 幅
+const float HEIGHT = 0.13f;	// 高さ
 }
 }
 

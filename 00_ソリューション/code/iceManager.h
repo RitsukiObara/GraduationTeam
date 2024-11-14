@@ -64,7 +64,7 @@ public:
 	CIce *CreateIce(int nGridV, int nGridH, CIce::E_Type type = CIce::E_Type::TYPE_NORMAL);	// 氷の生成
 	CIce *CreateFlowIce(int nGridV,int nGridH, CIce::E_Type type = CIce::E_Type::TYPE_NORMAL);	// 流氷の生成
 	void StopIce(CIce *pIce);	// 氷の停止
-	bool CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos,int nIdxCaller = 0);	// 氷をつつけるかのチェック
+	bool CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, E_Direction *pDir = nullptr);	// 氷をつつけるかのチェック
 	bool PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos);	// 氷をつつく
 	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// 氷の追加
 	bool FindIce(int nNumV, int nNumH, int nIdx,CIce *pIceStand,vector<CIce*> apIceLast,bool bBreak);	// アイスの発見

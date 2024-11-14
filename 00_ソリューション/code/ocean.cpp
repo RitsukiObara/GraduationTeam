@@ -24,18 +24,13 @@
 #include "albatross.h"
 
 //*****************************************************
-// マクロ定義
+// 定数定義
 //*****************************************************
-#define MESHFIELD_TEX_FILE			"data\\TEXTURE\\BG\\field00.jpg"				// テクスチャファイル名
-#define SPLIT_TEX					(10)										// テクスチャ分割数
-#define CHENGE_LENGTH	(10000)	// 操作できる頂点までの距離
-#define ANGLE_SLIP	(0.7f)	// 坂を滑る角度
-#define CMP_LENGTH	(1000.0f)	// 判定する半径
-#define MAX_ALBATROSS	(2)										// アホウドリ最大数
 namespace
 {
 	const int OCEAN_ROT_CHANGE_TIME_DEFAULT = 10;	// デフォルトの海流向き変更時間
 	const int OCEAN_ROT_CHANGE_TIME_DEGREE = 10;	// 海流向き変更時間ぶれ幅
+	const int MAX_ALBATROSS = 2;					// アホウドリ最大数
 }
 
 //*****************************************************
@@ -89,6 +84,15 @@ COcean* COcean::Create(void)
 HRESULT COcean::Init(void)
 {
 	CMeshField::Init();
+
+	CIceManager* pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager != nullptr)
+	{ // 流氷マネージャーが NULL じゃない場合
+
+		// 保存用変数に現在の海流を設定する
+		m_nRandKeep = pIceManager->GetDirStream();
+	}
 
 	SetNextOceanRot();	// 最初に次の向き設定
 
@@ -172,10 +176,11 @@ void COcean::OceanChangeCheck(void)
 	COcean* pOcean = COcean::GetInstance();
 	CIceManager* pIceManager = CIceManager::GetInstance();
 	CGame* pGame = CGame::GetInstance();
-	CIceManager::E_Stream OceanFlow = CIceManager::GetInstance()->GetDirStreamNext();
 
 	if (pOcean == nullptr || pIceManager == nullptr || pGame == nullptr)
 		return;
+
+	CIceManager::E_Stream OceanFlow = pIceManager->GetDirStreamNext();
 
 	int nNowTime = pGame->GetTimeSecond();	 // 現在のタイムを取得
 
@@ -185,6 +190,7 @@ void COcean::OceanChangeCheck(void)
 		pIceManager->SetDirStreamNext((CIceManager::E_Stream)(m_nRandNextKeep));	// 海流の向きをランダムにする
 		m_nRandKeep = m_nRandNextKeep;	// 現在の向きに設定
 		SetNextOceanRot();	// 次の向き設定
+		m_bRandState = false;	// ランダムの状態を false にする
 	}
 
 	if (m_nSetRotTime - nNowTime + 3 == m_nExecRotChangeTime)

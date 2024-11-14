@@ -790,7 +790,6 @@ void CMeshField::Wave(float fRot)
 
 	int nCountV, nCountU;
 
-	COcean* pOcean = COcean::GetInstance();
 	CIceManager* pIceManager = CIceManager::GetInstance();
 
 	if (pIceManager == nullptr)
@@ -803,8 +802,6 @@ void CMeshField::Wave(float fRot)
 	// ŠC—¬‚Ì‘¬“x‚ªã‚ª‚Á‚Ä‚¢‚éó‘Ô‚ÌŽž
 	if (m_eOcean_Speed_State == OCEAN_STATE_UP)
 	{
-		pOcean->SetRandState(false);
-
 		oceanSpeed += OCEAN_SPEED_UP;
 
 		if (nOceanRot != nOceanRotNext)
