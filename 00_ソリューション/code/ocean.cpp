@@ -21,6 +21,7 @@
 #include "iceManager.h"
 #include "timer.h"
 #include "universal.h"
+#include "albatross.h"
 
 //*****************************************************
 // マクロ定義
@@ -30,6 +31,7 @@
 #define CHENGE_LENGTH	(10000)	// 操作できる頂点までの距離
 #define ANGLE_SLIP	(0.7f)	// 坂を滑る角度
 #define CMP_LENGTH	(1000.0f)	// 判定する半径
+#define MAX_ALBATROSS	(2)										// アホウドリ最大数
 namespace
 {
 	const int OCEAN_ROT_CHANGE_TIME_DEFAULT = 10;	// デフォルトの海流向き変更時間
@@ -49,7 +51,7 @@ COcean::COcean()
 	m_fSpeed = 0.0f;
 	m_nRandKeep = 0;
 	m_nRandNextKeep = 0;
-	m_nRandState = false;
+	m_bRandState = false;
 	m_fRot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_nSetRotTime = 0;
 	m_nExecRotChangeTime = 0;
@@ -170,6 +172,8 @@ void COcean::OceanChangeCheck(void)
 	COcean* pOcean = COcean::GetInstance();
 	CIceManager* pIceManager = CIceManager::GetInstance();
 	CGame* pGame = CGame::GetInstance();
+	CIceManager::E_Stream OceanFlow = CIceManager::GetInstance()->GetDirStreamNext();
+
 	if (pOcean == nullptr || pIceManager == nullptr || pGame == nullptr)
 		return;
 
@@ -181,6 +185,20 @@ void COcean::OceanChangeCheck(void)
 		pIceManager->SetDirStreamNext((CIceManager::E_Stream)(m_nRandNextKeep));	// 海流の向きをランダムにする
 		m_nRandKeep = m_nRandNextKeep;	// 現在の向きに設定
 		SetNextOceanRot();	// 次の向き設定
+	}
+
+	if (m_nSetRotTime - nNowTime + 3 == m_nExecRotChangeTime)
+	{
+		if (m_bRandState == false)
+		{
+			for (int nCnt = 0; nCnt < MAX_ALBATROSS; nCnt++)
+			{
+				// アホウドリ生成
+				CAlbatross::Create((CIceManager::E_Stream)(m_nRandNextKeep));
+			}
+
+			m_bRandState = true;
+		}
 	}
 }
 
@@ -239,9 +257,9 @@ void COcean::OceanCycleTimer(void)
 	// 10の倍数の時に入る
 	if (OceanCycleTimer % 10 == 0)
 	{
-		if (m_nRandState == false)
+		if (m_bRandState == false)
 		{
-			m_nRandState = true;
+			m_bRandState = true;
 
 			m_nRandKeep = m_nRandNextKeep;
 		}
