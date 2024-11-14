@@ -73,6 +73,7 @@ private:
 
 	CNumber *m_apRankingNumber[NUM_RANKING][CAPTION_MAX];	// ランキングの数字の配列
 	CRankingSingle *m_pRanking;								// ランキング処理
+	CUI *m_pFrame;											// フレームのポリゴン
 
 	E_State m_state;		// 状態
 	float m_fTimer;			// タイマー

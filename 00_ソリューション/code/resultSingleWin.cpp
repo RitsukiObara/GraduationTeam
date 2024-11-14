@@ -57,7 +57,7 @@ const float DIFF_HEIGHT = HEIGHT_DEST - HEIGHT_INIT;	// 高さの差分
 namespace scoreNumber
 {
 const float WIDTH_NUMBER = 0.03f;	// 数字の幅
-const float HEIGHT_NUMBER = 0.04f;	// 数字の高さ
+const float HEIGHT_NUMBER = 0.06f;	// 数字の高さ
 
 const float HEIGHT_INIT = -0.1f;
 const D3DXVECTOR3 POS_INIT[CResultSingleWin::E_ScoreCaption::CAPTION_MAX] =
@@ -65,7 +65,7 @@ const D3DXVECTOR3 POS_INIT[CResultSingleWin::E_ScoreCaption::CAPTION_MAX] =
 	{ 0.2f,HEIGHT_INIT,0.0f },
 	{ 0.73f,HEIGHT_INIT,0.0f },
 };
-const float HEIGHT_DEST = 0.44f;	// 目標の高さ
+const float HEIGHT_DEST = 0.43f;	// 目標の高さ
 const float DIFF_HEIGHT = HEIGHT_DEST - HEIGHT_INIT;	// 高さの差分
 }
 
@@ -89,16 +89,30 @@ const string PATH_SAVE[] =
 	"data\\BYNARY\\ranking02.bin",
 	"data\\BYNARY\\ranking03.bin",
 };
-const D3DXVECTOR3 POS_NUMBER_DEFAULT = { 0.2f, 0.7f,0.0f };	// 数字のデフォルト位置
-const float DIST_NUMBER = 0.1f;									// 数字間の距離
+const D3DXVECTOR3 POS_NUMBER_DEFAULT = { 0.3f, 0.68f,0.0f };		// 数字のデフォルト位置
+const float DIST_NUMBER = 0.12f;								// 数字間の距離
 const float WIDTH_NUMBER = 0.025f;								// 数字の幅
-const float HEIGHT_NUMBER = 0.03f;								// 数字の高さ
-const float OFFSET_TIMEPECK = 0.5f;								// 突っついた回数表示のオフセット
+const float HEIGHT_NUMBER = 0.05f;								// 数字の高さ
+const float OFFSET_TIMEPECK = 0.35f;								// 突っついた回数表示のオフセット
 
 const float TIME_APPER = 2.0f;						// 出現にかかる時間
 const float ALPHA_INIT = 0.0f;						// 初期アルファ値
 const float ALPHA_DEST = 1.0f;						// 目標のアルファ値
 const float ALPHA_DIFF = ALPHA_DEST - ALPHA_INIT;	// 差分アルファ値
+}
+
+//----------------------------
+// フレーム定数
+//----------------------------
+namespace frame
+{
+const string PATH_TEX = "data\\TEXTURE\\UI\\result_ranking.png";	// テクスチャパス
+const D3DXCOLOR DEST_COL = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);			// 目標色
+const D3DXCOLOR INIT_COL = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f);			// 初期色
+const D3DXCOLOR DIFF_COL = DEST_COL - INIT_COL;							// 差分色
+const D3DXVECTOR3 INIT_POS = D3DXVECTOR3(0.5f, 0.76f, 0.0f);				// 初期位置
+const float WIDTH = 0.3f;	// 幅
+const float HEIGHT = 0.24f;	// 高さ
 }
 }
 
@@ -118,7 +132,7 @@ CResultSingleWin::FuncUpdateState CResultSingleWin::s_aFuncUpdateState[] =	// 状
 //====================================================
 // コンストラクタ
 //====================================================
-CResultSingleWin::CResultSingleWin() : m_fTimer(0.0f), m_apCaptionScore(),m_apNumberOwn(), m_pRanking(nullptr), m_apRankingNumber()
+CResultSingleWin::CResultSingleWin() : m_fTimer(0.0f), m_apCaptionScore(),m_apNumberOwn(), m_pRanking(nullptr), m_apRankingNumber(), m_pFrame(nullptr)
 {
 
 }
@@ -230,9 +244,28 @@ void CResultSingleWin::CreateOwnScore(void)
 //====================================================
 void CResultSingleWin::CreateRankingNumber(void)
 {
+	//--------------------------
+	// ランキングのフレーム
+	//--------------------------
+	m_pFrame = CUI::Create();
+
+	if (m_pFrame == nullptr)
+		return;
+
+	int nIdxTexture = Texture::GetIdx(&frame::PATH_TEX[0]);
+	m_pFrame->SetIdxTexture(nIdxTexture);
+
+	m_pFrame->SetSize(frame::WIDTH, frame::HEIGHT);
+	m_pFrame->SetPosition(frame::INIT_POS);
+	m_pFrame->SetCol(frame::INIT_COL);
+	m_pFrame->SetVtx();
+
 	if (m_pRanking == nullptr)
 		return;
 
+	//--------------------------
+	// ランキングの数字
+	//--------------------------
 	vector<CRankingSingle::S_InfoRank*> aInfoRank = m_pRanking->GetRank();
 
 	if (aInfoRank.empty())
@@ -375,6 +408,11 @@ void CResultSingleWin::UpdateApperRanking(void)
 			m_apRankingNumber[i][j]->SetAlpha(fAlpha);
 		}
 	}
+
+	if (m_pFrame == nullptr)
+		return;
+
+	m_pFrame->SetAlpha(fRate);
 
 	if (m_fTimer > ranking::TIME_APPER)
 		m_state = E_State::STATE_WAIT;
