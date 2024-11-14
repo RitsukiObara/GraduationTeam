@@ -21,7 +21,7 @@ class CNumber;
 //*****************************************************
 // ƒNƒ‰ƒX’è‹`
 //*****************************************************
-class CResultSingle : CObject
+class CResultSingle : public CObject
 {
 public:
 	enum E_State
