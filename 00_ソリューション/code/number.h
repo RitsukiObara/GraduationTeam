@@ -43,6 +43,7 @@ public:
 	float GetHeight(void) { return 0.0f; }	// サイズ取得
 	void SetTex(const char* pFileName);
 	void SetColor(D3DXCOLOR col);
+	void SetAlpha(float fAlpha);
 	D3DXCOLOR GetColor(void);
 
 private:

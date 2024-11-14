@@ -21,15 +21,16 @@ class CNumber;
 //*****************************************************
 // クラス定義
 //*****************************************************
-class CResultSingle : CObject
+class CResultSingle : public CObject
 {
 public:
 	enum E_State
 	{
-		STATE_NONE = 0,		// 何もしてない状態
-		STATE_FADE,			// フェード状態
-		STATE_ENDFADE,		// フェード終了状態
-		STATE_END,			// 終了状態
+		STATE_NONE = 0,			// 何もしてない状態
+		STATE_FADE,				// フェード状態
+		STATE_APPERCAPTION,		// 見出し出現状態
+		STATE_ENDAPPERCAPTION,	// 見出し出現終了状態
+		STATE_END,				// 終了状態
 		STATE_MAX
 	};
 	CResultSingle();	// コンストラクタ
@@ -51,9 +52,11 @@ public:
 private:
 	// メンバ関数
 	void Create2D(bool bWin);	// 2DUIの生成
+	void CreateCaption(void);	// 見出しの生成
 	void CreateBg(void);		// 背景の生成
 	
 	void UpdateFade(void);			// フェード状態の更新
+	void UpdateApperCaption(void);	// キャプション出現状態の更新
 
 	// メンバ変数
 	bool m_bWin;	// 勝利フラグ
