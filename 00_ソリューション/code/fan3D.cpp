@@ -168,6 +168,35 @@ void CFan3D::SetVtx(void)
 }
 
 //=====================================================
+// 色設定
+//=====================================================
+void CFan3D::SetCol(D3DXCOLOR col)
+{
+	CFan::SetCol(col);
+
+	// 頂点情報のポインタ
+	VERTEX_3D *pVtx;
+
+	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = *GetVtxBuff();
+
+	int nNumVtx = GetNumVtx();
+
+	if (pVtxBuff != nullptr)
+	{
+		// 頂点バッファをロックし、頂点情報へのポインタを取得
+		pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+		for (int nCnt = 0; nCnt < nNumVtx + 2; nCnt++)
+		{
+			pVtx[nCnt].col = col;
+		}
+
+		// 頂点バッファのアンロック
+		pVtxBuff->Unlock();
+	}
+}
+
+//=====================================================
 // テクスチャ座標設定処理
 //=====================================================
 void CFan3D::SetTex(float fScrollX, float fScrollY)

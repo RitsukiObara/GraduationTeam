@@ -141,23 +141,4 @@ void CFan::SetRotation(D3DXVECTOR3 rot)
 void CFan::SetCol(D3DXCOLOR col)
 {
 	m_col = col;
-
-	// 頂点情報のポインタ
-	VERTEX_2D *pVtx;
-
-	if (m_pVtxBuff != nullptr)
-	{
-		// 頂点バッファをロックし、頂点情報へのポインタを取得
-		m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-		for (int nCnt = 0; nCnt < m_nNumVtx + 2; nCnt++)
-		{
-			pVtx[nCnt].col = (D3DCOLOR)m_col;
-
-			pVtx[nCnt].rhw = 1.0;
-		}
-
-		// 頂点バッファのアンロック
-		m_pVtxBuff->Unlock();
-	}
 }

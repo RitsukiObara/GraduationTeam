@@ -282,9 +282,7 @@ void CMeshCylinder::SetVtx(void)
 void CMeshCylinder::SetCol(D3DXCOLOR col)
 {
 	if (m_pVtxBuff == nullptr)
-	{
 		return;
-	}
 
 	m_col = col;
 
@@ -297,7 +295,7 @@ void CMeshCylinder::SetCol(D3DXCOLOR col)
 	for (int nCnt = 0; nCnt < m_meshCylinder.nNumVtx; nCnt++)
 	{
 		//頂点カラーの設定
-		pVtx[nCnt].col = m_col;
+		//pVtx[nCnt].col = m_col;
 	}
 
 	//頂点バッファをアンロック

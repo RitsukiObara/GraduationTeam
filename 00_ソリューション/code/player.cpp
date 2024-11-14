@@ -53,8 +53,11 @@ vector<CPlayer*> CPlayer::s_apPlayer;	// 格納用の配列
 // コンストラクタ
 //=====================================================
 CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(STATE_NONE), m_pIceMoveDest(nullptr), m_bEnableInput(false), m_fTimerStartMove(0.0f),
-m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f), m_pLandSystemFlow(nullptr), m_pLandFlow(nullptr), m_nTimePeck(0)
+m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f), m_pLandSystemFlow(nullptr), m_pLandFlow(nullptr), m_nTimePeck(0), m_nID(0)
 {
+	// デフォルトは入った順の番号
+	m_nID = (int)s_apPlayer.size();
+
 	s_apPlayer.push_back(this);
 }
 
@@ -681,20 +684,23 @@ void CPlayer::InputPeck(void)
 	if (pIceManager == nullptr)
 		return;
 
-	if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_PECK))
+	// 突っつけるかチェック
+	D3DXVECTOR3 rot = GetRotation();
+	D3DXVECTOR3 pos = GetPosition();
+
+	rot.y += D3DX_PI;
+	universal::LimitRot(&rot.y);
+
+	if (pIceManager->CheckPeck(m_nGridV, m_nGridH, rot.y, pos, GetID()))
 	{
-		// 突っつけるかチェック
-		D3DXVECTOR3 rot = GetRotation();
-		D3DXVECTOR3 pos = GetPosition();
-
-		rot.y += D3DX_PI;
-		universal::LimitRot(&rot.y);
-
-		if (pIceManager->CheckPeck(m_nGridV, m_nGridH, rot.y, pos))
+		if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_PECK))
+		{
 			SetMotion(MOTION::MOTION_PECK);
-		else
-			SetMotion(MOTION::MOTION_CANNOTPECK);
+		}
 	}
+	else
+		if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_PECK))
+			SetMotion(MOTION::MOTION_CANNOTPECK);
 }
 
 //=====================================================
