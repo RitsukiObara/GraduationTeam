@@ -30,37 +30,37 @@ CHARACTERSET
     PARTSSET
         INDEX = 0
         PARENT = -1
-        POS = 0.0 59.8 0.0
+        POS = 0.0 60.0 0.0
         ROT = 0.0 0.0 0.0
     END_PARTSSET
     PARTSSET
         INDEX = 1
         PARENT = 0
-        POS = -110.8 30.2 0.0
+        POS = 0.0 30.2 -114.8
         ROT = 0.0 0.0 0.0
     END_PARTSSET
     PARTSSET
         INDEX = 2
         PARENT = 0
-        POS = -88.6 -10.8 25.8
+        POS = -20.0 -9.0 -85.2
         ROT = 0.0 0.0 0.0
     END_PARTSSET
     PARTSSET
         INDEX = 3
         PARENT = 0
-        POS = -88.6 -10.8 -25.8
+        POS = 20.0 -9.0 -85.0
         ROT = 0.0 0.0 0.0
     END_PARTSSET
     PARTSSET
         INDEX = 4
         PARENT = 0
-        POS = -12.0 -6.6 29.6
+        POS = -21.0 -6.0 -9.0
         ROT = 0.0 0.0 0.0
     END_PARTSSET
     PARTSSET
         INDEX = 5
         PARENT = 0
-        POS = -12.0 -6.6 -29.6
+        POS = 21.0 -6.0 -9.0
         ROT = 0.0 0.0 0.0
     END_PARTSSET
 END_CHARACTERSET

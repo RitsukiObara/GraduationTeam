@@ -91,22 +91,22 @@ void CAlbatross::Stream(CIceManager::E_Stream dir)
 	{
 	case CIceManager::STREAM_UP:	// è„
 
-		rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		rot = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);
 
 		break;
 	case CIceManager::STREAM_RIGHT:	// âE
 
-		rot = D3DXVECTOR3(0.0f, D3DX_PI * 0.5f, 0.0f);
+		rot = D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, 0.0f);
 
 		break;
 	case CIceManager::STREAM_DOWN:	// â∫
 
-		rot = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);
+		rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 		break;
 	case CIceManager::STREAM_LEFT:	// ç∂
 
-		rot = D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, 0.0f);
+		rot = D3DXVECTOR3(0.0f, D3DX_PI * 0.5f, 0.0f);
 
 		break;
 	default:
@@ -134,9 +134,7 @@ void CAlbatross::Update(void)
 	D3DXVECTOR3 pos = CAlbatross::GetPosition();
 	D3DXVECTOR3 rot = CAlbatross::GetRotation();
 
-	//GetForward();
-
-	m_Move = D3DXVECTOR3(sinf(rot.y), 0.5f, cosf(rot.y));
+	m_Move = D3DXVECTOR3(sinf(rot.y + D3DX_PI), 0.5f, cosf(rot.y + D3DX_PI));
 
 	pos += m_Move;
 
