@@ -34,7 +34,6 @@ public:
 	CIceManager::E_Stream GetNowDirStream(void) { return (CIceManager::E_Stream)m_nRandKeep; }
 	CIceManager::E_Stream GetNextDirStream(void) { return (CIceManager::E_Stream)m_nRandNextKeep; }
 
-	void SetRandState(bool nRandState) { m_bRandState = nRandState; }	// ƒ‰ƒ“ƒ_ƒ€•Ï”‚Ìİ’è
 	void SetNextOceanRot(void);	// Ÿ‚ÌŠC—¬‚ÌŒü‚«İ’è
 
 private:

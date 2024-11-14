@@ -41,8 +41,7 @@ public:
 private:
 	enum E_Motion
 	{// ÉÇÅ[ÉVÉáÉì
-		MOTION_NEUTRAL = 0,	// ë“ã@
-		MOTION_FLY,		// îÚÇ‘
+		MOTION_FLY = 0,		// îÚÇ‘
 		MOTION_MAX
 	};
 
