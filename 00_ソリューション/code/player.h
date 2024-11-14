@@ -77,6 +77,7 @@ public:
 	void SetState(E_State state) { m_state = state; }	// 状態
 	E_State GetState(void) { return m_state; }
 	void BindInputMgr(CInputManager *pInputMgr) { m_pInputMgr = pInputMgr; }	// 入力マネージャーs
+	int GetTimePeck(void) { return m_nTimePeck; }	// 氷を突いた回数
 
 	// 静的メンバ関数
 	static CPlayer* Create(void);	// 生成処理
@@ -142,6 +143,7 @@ private:
 	CFlowIce *m_pLandSystemFlow;	// 乗ってる流氷システム
 	S_FragMotion m_fragMotion;	// モーションフラグ
 	CInputManager *m_pInputMgr;	// 入力マネージャー
+	int m_nTimePeck;	// 氷を突いた回数
 
 	// 静的メンバ変数
 	static vector<CPlayer*> s_apPlayer;	// 格納用の配列

@@ -53,7 +53,7 @@ vector<CPlayer*> CPlayer::s_apPlayer;	// 格納用の配列
 // コンストラクタ
 //=====================================================
 CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(STATE_NONE), m_pIceMoveDest(nullptr), m_bEnableInput(false), m_fTimerStartMove(0.0f),
-m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f), m_pLandSystemFlow(nullptr), m_pLandFlow(nullptr)
+m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f), m_pLandSystemFlow(nullptr), m_pLandFlow(nullptr), m_nTimePeck(0)
 {
 	s_apPlayer.push_back(this);
 }
@@ -801,7 +801,8 @@ void CPlayer::Event(EVENT_INFO* pEventInfo)
 		rot.y += D3DX_PI;
 		universal::LimitRot(&rot.y);
 
-		pIceManager->PeckIce(m_nGridV, m_nGridH, rot.y, pos);
+		if (pIceManager->PeckIce(m_nGridV, m_nGridH, rot.y, pos))
+			m_nTimePeck++;
 	}
 }
 

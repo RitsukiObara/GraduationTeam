@@ -21,6 +21,7 @@
 #include "manager.h"
 #include "particle.h"
 #include "ocean.h"
+#include "gameManager.h"
 
 //*****************************************************
 // マクロ定義
@@ -277,9 +278,9 @@ void CSelectStageManager::Select(void)
 			{
 				if (m_pPenguin->IsEnter())
 				{// エンターの開始
-					StartEnter();
-
 					m_nIdxSelect = i;
+
+					StartEnter();
 
 					return;
 				}
@@ -373,6 +374,9 @@ void CSelectStageManager::StartEnter(void)
 			pInfoStage->pCollision = nullptr;
 		}
 	}
+
+	// ステージ番号保存
+	gameManager::SaveIdxMap(m_nIdxSelect);
 }
 
 //=====================================================

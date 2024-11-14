@@ -184,6 +184,9 @@
     <ClCompile Include="code\gameManagerSingle.cpp" />
     <ClCompile Include="code\nextflowice.cpp" />
     <ClCompile Include="code\playerselect.cpp" />
+    <ClCompile Include="code\rankingSingle.cpp" />
+    <ClCompile Include="code\resultSingleLose.cpp" />
+    <ClCompile Include="code\resultSingleWin.cpp" />
     <ClCompile Include="code\selectmode.cpp" />
     <ClCompile Include="code\selectStage.cpp" />
     <ClCompile Include="code\selectStageManager.cpp" />
@@ -291,6 +294,9 @@
     <ClInclude Include="code\gameManagerSingle.h" />
     <ClInclude Include="code\nextflowice.h" />
     <ClInclude Include="code\playerselect.h" />
+    <ClInclude Include="code\rankingSingle.h" />
+    <ClInclude Include="code\resultSingleLose.h" />
+    <ClInclude Include="code\resultSingleWin.h" />
     <ClInclude Include="code\selectmode.h" />
     <ClInclude Include="code\selectStage.h" />
     <ClInclude Include="code\selectStageManager.h" />

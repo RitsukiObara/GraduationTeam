@@ -384,6 +384,15 @@
     <ClCompile Include="code\resultSingle.cpp">
       <Filter>ソース ファイル\scene\game\resultSingle</Filter>
     </ClCompile>
+    <ClCompile Include="code\resultSingleLose.cpp">
+      <Filter>ソース ファイル\scene\game\resultSingle</Filter>
+    </ClCompile>
+    <ClCompile Include="code\resultSingleWin.cpp">
+      <Filter>ソース ファイル\scene\game\resultSingle</Filter>
+    </ClCompile>
+    <ClCompile Include="code\rankingSingle.cpp">
+      <Filter>ソース ファイル\scene\game\resultSingle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\scene.h">
@@ -696,6 +705,15 @@
       <Filter>ソース ファイル\character</Filter>
     </ClInclude>
     <ClInclude Include="code\resultSingle.h">
+      <Filter>ソース ファイル\scene\game\resultSingle</Filter>
+    </ClInclude>
+    <ClInclude Include="code\resultSingleLose.h">
+      <Filter>ソース ファイル\scene\game\resultSingle</Filter>
+    </ClInclude>
+    <ClInclude Include="code\resultSingleWin.h">
+      <Filter>ソース ファイル\scene\game\resultSingle</Filter>
+    </ClInclude>
+    <ClInclude Include="code\rankingSingle.h">
       <Filter>ソース ファイル\scene\game\resultSingle</Filter>
     </ClInclude>
   </ItemGroup>

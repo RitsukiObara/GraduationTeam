@@ -46,6 +46,12 @@ HRESULT CGameManagerSingle::Init(void)
 		m_pPlayer->BindInputMgr(pInpuMgr);
 	}
 
+	// ƒXƒRƒA‚Ì¶¬
+	CGame *pGame = CGame::GetInstance();
+
+	if (pGame != nullptr)
+		pGame->CreateScore();
+
 	return S_OK;
 }
 
