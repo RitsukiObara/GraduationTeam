@@ -15,6 +15,9 @@
 #include "number.h"
 #include "texture.h"
 #include "manager.h"
+#include "inputManager.h"
+#include "fade.h"
+#include "sound.h"
 
 //*****************************************************
 // 定数定義
@@ -28,8 +31,8 @@ namespace menu
 {
 const string PATH_TEX[CResultSingleLose::E_Select::SELECT_MAX] =
 {// メニューテクスチャのパス
-	"data\\TEXTURE\\UI\\result_score.png",
-	"data\\TEXTURE\\UI\\result_peck.png",
+	"data\\TEXTURE\\UI\\Restart.png",
+	"data\\TEXTURE\\UI\\Quit.png",
 };
 const float TIME_APPER = 2.0f;		// 出現にかかる時間
 const float WIDTH = 0.2f;			// 幅
@@ -186,7 +189,55 @@ void CResultSingleLose::UpdateApperMenu(void)
 //=====================================================
 void CResultSingleLose::UpdateSelect(void)
 {
+	CInputManager *pInputManager = CInputManager::GetInstance();
+	CSound* pSound = CSound::GetInstance();
+	CFade *pFade = CFade::GetInstance();
 
+	if (pFade == nullptr)
+	{
+		return;
+	}
+	else
+	{
+		if (pFade->GetState() != CFade::FADE_NONE)
+			return;
+	}
+
+	if (pInputManager == nullptr)
+	{
+		return;
+	}
+
+	if (m_apMenu[m_select] != nullptr)
+	{// 以前に選択してた項目を非選択色にする
+		m_apMenu[m_select]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
+	}
+
+	// 項目切り替え
+	if (pInputManager->GetTrigger(CInputManager::BUTTON_AXIS_RIGHT))
+	{
+		m_select = (E_Select)((m_select + 1) % E_Select::SELECT_MAX);
+	}
+
+	if (pInputManager->GetTrigger(CInputManager::BUTTON_AXIS_LEFT))
+	{
+		m_select = (E_Select)((m_select + E_Select::SELECT_MAX - 1) % E_Select::SELECT_MAX);
+	}
+
+	if (m_apMenu[m_select] != nullptr)
+	{// 選択している項目の色変更
+		m_apMenu[m_select]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	}
+
+	if (pInputManager->GetTrigger(CInputManager::BUTTON_ENTER))
+	{// 選択項目にフェードする
+		if (pSound != nullptr)
+		{
+			pSound->Play(pSound->LABEL_SE_PAUSE_ENTER00);
+		}
+
+		Fade(m_select);
+	}
 }
 
 //====================================================
@@ -196,4 +247,27 @@ void CResultSingleLose::Draw(void)
 {
 	// 親クラスの描画
 	CResultSingle::Draw();
+}
+
+//====================================================
+// フェードする処理
+//====================================================
+void CResultSingleLose::Fade(E_Select select)
+{
+	CFade *pFade = CFade::GetInstance();
+
+	if (pFade == nullptr)
+		return;
+
+	switch (select)
+	{
+	case CResultSingleLose::E_Select::SELECT_CONTINUE:	// コンティニュー
+		pFade->SetFade(CScene::MODE::MODE_GAME);
+		break;
+	case CResultSingleLose::E_Select::SELECT_QUIT:		// タイトルに戻る
+		pFade->SetFade(CScene::MODE::MODE_TITLE);
+		break;
+	default:
+		break;
+	}
 }
