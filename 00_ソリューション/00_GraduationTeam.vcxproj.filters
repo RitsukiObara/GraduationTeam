@@ -393,6 +393,9 @@
     <ClCompile Include="code\rankingSingle.cpp">
       <Filter>ソース ファイル\scene\game\resultSingle</Filter>
     </ClCompile>
+    <ClCompile Include="code\peckLine.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\scene.h">
@@ -715,6 +718,9 @@
     </ClInclude>
     <ClInclude Include="code\rankingSingle.h">
       <Filter>ソース ファイル\scene\game\resultSingle</Filter>
+    </ClInclude>
+    <ClInclude Include="code\peckLine.h">
+      <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

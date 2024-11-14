@@ -332,7 +332,7 @@ void CIceManager::StopIce(CIce *pIce)
 //=====================================================
 // 氷をつつけるかのチェック
 //=====================================================
-bool CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, int nIdxCaller)
+bool CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, E_Direction *pDir)
 {
 	CIce *pIceStand = m_aGrid[nNumV][nNumH].pIce;
 	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
@@ -343,18 +343,22 @@ bool CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, i
 	CIce* pIcePeck = nullptr;
 
 	// 向きに合わせて氷を選択
-	for (auto it : apIce)
+	for (int i = 0; i < (int)apIce.size(); i++)
 	{
-		if (it == nullptr)
+		if (apIce[i] == nullptr)
 			continue;
 
 		// 氷とスティック角度の比較
-		D3DXVECTOR3 posIce = it->GetPosition();
+		D3DXVECTOR3 posIce = apIce[i]->GetPosition();
 		bool bSelect = universal::IsInFanTargetYFlat(pos, posIce, fRot, RANGE_SELECT_ICE);
 
 		if (bSelect)
 		{// 氷が選べたらfor文を終了
-			pIcePeck = it;
+			pIcePeck = apIce[i];
+
+			if (pDir != nullptr)	// 番号保存
+				*pDir = (E_Direction)i;
+
 			break;
 		}
 	}
@@ -363,16 +367,7 @@ bool CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, i
 	GetIceIndex(pIcePeck, &nNumBreakV, &nNumBreakH);
 
 	// 突っつける氷かのチェック
-	if (CanPeck(pIcePeck, nNumBreakV, nNumBreakH))
-	{
-		// 呼んだ人によって色を変更
-		D3DXCOLOR col = COL_ICE[nIdxCaller];
-		pIcePeck->SetColor(col);
-
-		return true;
-	}
-	else
-		return false;
+	return CanPeck(pIcePeck, nNumBreakV, nNumBreakH);
 }
 
 //=====================================================
