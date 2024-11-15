@@ -40,6 +40,9 @@ public:
 	void SetScale(D3DXVECTOR3 scale) { m_scale = scale; }
 	void SetScale(float fScale) { m_scale = { fScale, fScale, fScale }; }
 
+	// 静的メンバ関数
+	static CObject3D *Create(void);	// 生成処理
+
 private:
 	// メンバ変数
 	D3DXMATRIX m_mtxWorld;	// ワールドマトリックス

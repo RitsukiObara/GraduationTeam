@@ -1,7 +1,7 @@
 //===========================================================
 //
 // マイエフェクシア[MyEffekseer.h]
-// Author 大原怜将
+// Author : 髙山桃也
 //
 //===========================================================
 #ifndef _EFFEKSEER_H_     // このマクロが定義されてなかったら
@@ -11,19 +11,16 @@ class CEffekseerEffect;
 
 #define MAX_EFK   (64)
 
-class CEffekseer
+class CMyEffekseer
 {// エフェクシアのマネージャー
 public:
-	CEffekseer();
-	~CEffekseer();
+	CMyEffekseer();
+	~CMyEffekseer();
 
 	// 種類
 	enum TYPE
 	{
 		TYPE_NONE = 0,  // なんもない
-		TYPE_HIT00,     // 通常ヒットエフェクト
-		TYPE_HIT01,     // ガードヒットエフェクト
-		TYPE_HIT02,     // 大ヒットエフェクト
 		TYPE_MAX
 	};
 
@@ -38,8 +35,12 @@ public:
 	void SetupEffekseerModules(::Effekseer::ManagerRef efkManager);
 	void Release(int idx);
 	void ReleaseEffect(CEffekseerEffect *pEffect);	// エフェクトの解放
-	const char* GetPathEffect(CEffekseer::TYPE type);
+	const char* GetPathEffect(CMyEffekseer::TYPE type);
 	std::list<CEffekseerEffect*> *GetList(void) { return &m_listEffect; };	// リストの取得
+
+	// 静的メンバ関数
+	static CMyEffekseer *Create(void);
+	static CMyEffekseer *GetInstance(void) { return s_pMyEffekseer; }	// インスタンス取得
 
 private:
 	// メンバ変数 
@@ -52,7 +53,8 @@ private:
 	std::list<CEffekseerEffect*> m_listEffect;	// エフェクトクラスのリスト
 
 	// 静的メンバ変数
-	static const char* m_apEfkName[CEffekseer::TYPE_MAX];
+	static const char* m_apEfkName[CMyEffekseer::TYPE_MAX];
+	static CMyEffekseer *s_pMyEffekseer;		// 自身のポインタ
 };
 
 class CEffekseerEffect
@@ -95,6 +97,6 @@ private:
 
 namespace MyEffekseer
 {
-CEffekseerEffect *CreateEffect(CEffekseer::TYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot = { 0.0f,0.0f,0.0f }, D3DXVECTOR3 scale = { 100.0f,100.0f,100.0f });
+CEffekseerEffect *CreateEffect(CMyEffekseer::TYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot = { 0.0f,0.0f,0.0f }, D3DXVECTOR3 scale = { 100.0f,100.0f,100.0f });
 }
 #endif

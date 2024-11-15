@@ -264,7 +264,7 @@ void COrbit::Draw()
 //==========================================
 // 生成処理
 //==========================================
-COrbit *COrbit::Create(D3DXMATRIX mtxWorld, D3DXVECTOR3 posOffset1, D3DXVECTOR3 posOffset2, D3DXCOLOR col,int nNumEdge, int nIdxTexture)
+COrbit *COrbit::Create(D3DXMATRIX mtxWorld, D3DXVECTOR3 posOffset1, D3DXVECTOR3 posOffset2,int nNumEdge)
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
@@ -285,19 +285,12 @@ COrbit *COrbit::Create(D3DXMATRIX mtxWorld, D3DXVECTOR3 posOffset1, D3DXVECTOR3 
 			// 初期化
 			pOrbit->Init();
 
-			// 色の代入
-			pOrbit->m_colOffset[0] = col;
-			pOrbit->m_colOffset[1] = col;
-
 			// オフセットの代入
 			pOrbit->m_posOffset[0] = posOffset1;
 			pOrbit->m_posOffset[1] = posOffset2;
 
 			// 辺の数の代入
 			pOrbit->m_nNumEdge = nNumEdge;
-
-			// テクスチャ番号の代入
-			pOrbit->m_nIdxTexture = nIdxTexture;
 
 			for (int nCntVtx = 0; nCntVtx < nNumEdge; nCntVtx++)
 			{
@@ -314,9 +307,6 @@ COrbit *COrbit::Create(D3DXMATRIX mtxWorld, D3DXVECTOR3 posOffset1, D3DXVECTOR3 
 				pos = { mtx._41,mtx._42 ,mtx._43 };
 
 				pOrbit->m_aPosPoint[nCntVtx][1] = pos;
-
-				pOrbit->m_aColPoint[nCntVtx][0] = col;
-				pOrbit->m_aColPoint[nCntVtx][1] = col;
 			}
 
 			VERTEX_3D *pVtx;		//頂点情報のポインタ
@@ -346,7 +336,7 @@ COrbit *COrbit::Create(D3DXMATRIX mtxWorld, D3DXVECTOR3 posOffset1, D3DXVECTOR3 
 //==========================================
 // 位置設定処理
 //==========================================
-void COrbit::SetOffset(D3DXMATRIX mtxWorld, D3DXCOLOR col)
+void COrbit::SetOffset(D3DXMATRIX mtxWorld)
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
@@ -368,10 +358,30 @@ void COrbit::SetOffset(D3DXMATRIX mtxWorld, D3DXCOLOR col)
 
 		//ワールドマトリックスの設定
 		pDevice->SetTransform(D3DTS_WORLD, &m_aMtxOffset[nCntOffset]);
-
-		m_colOffset[nCntOffset] = col;
 	}
 
 	//ポリゴン更新処理
 	UpdatePolygon();
+}
+
+//==========================================
+// 色の設定
+//==========================================
+void COrbit::SetColor(D3DXCOLOR col, int nOffset)
+{
+	if (nOffset == -1)
+	{
+		for(int i = 0;i < NUM_OFFSET;i++)
+			m_colOffset[i] = col;
+	}
+	else
+		m_colOffset[nOffset] = col;
+}
+
+//==========================================
+// 色の取得
+//==========================================
+D3DXCOLOR COrbit::GetColor(int nOffset)
+{
+	return m_colOffset[nOffset];
 }

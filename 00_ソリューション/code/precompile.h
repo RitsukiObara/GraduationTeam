@@ -34,6 +34,9 @@
 #include <imconfig.h>
 #include <imgui_impl_win32.h>
 #include <backends/imgui_impl_dx9.h>
+#include <Effekseer.h>
+#include <EffekseerRendererDX9.h>
+#include <Effekseer.Modules.h>
 
 //========================================
 // UsingéŒ¾

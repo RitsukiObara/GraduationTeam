@@ -28,6 +28,19 @@ CObject3D::~CObject3D()
 }
 
 //=====================================================
+// ê∂ê¨èàóù
+//=====================================================
+CObject3D *CObject3D::Create(void)
+{
+	CObject3D *pObject3D = new CObject3D;
+
+	if (pObject3D != nullptr)
+		pObject3D->Init();
+
+	return pObject3D;
+}
+
+//=====================================================
 // èâä˙âª
 //=====================================================
 HRESULT CObject3D::Init(void)
