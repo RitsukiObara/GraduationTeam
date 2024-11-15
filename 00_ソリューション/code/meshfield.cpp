@@ -108,9 +108,7 @@ HRESULT CMeshField::Init(void)
 	m_fOceanSpeed = OCEAN_SPEED;
 
 	// ì«çûèàóù
-	Load("data\\MAP\\field00.bin");
-
-	//Reset();
+	Load("data\\BYNARY\\field00.bin");
 
 	m_nDivTex = SPLIT_TEX;
 
@@ -239,7 +237,7 @@ void CMeshField::Uninit(void)
 //=====================================================
 void CMeshField::Update(void)
 {
-	Edit();
+	//Edit();
 }
 
 //=====================================================
