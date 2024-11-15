@@ -292,22 +292,8 @@ COrbit *COrbit::Create(D3DXMATRIX mtxWorld, D3DXVECTOR3 posOffset1, D3DXVECTOR3 
 			// 辺の数の代入
 			pOrbit->m_nNumEdge = nNumEdge;
 
-			for (int nCntVtx = 0; nCntVtx < nNumEdge; nCntVtx++)
-			{
-				D3DXMATRIX mtx;
-
-				universal::SetOffSet(&mtx, mtxWorld, posOffset1);
-
-				D3DXVECTOR3 pos = { mtx._41,mtx._42 ,mtx._43 };
-
-				pOrbit->m_aPosPoint[nCntVtx][0] = pos;
-
-				universal::SetOffSet(&mtx, mtxWorld, posOffset2);
-
-				pos = { mtx._41,mtx._42 ,mtx._43 };
-
-				pOrbit->m_aPosPoint[nCntVtx][1] = pos;
-			}
+			// 頂点のリセット
+			pOrbit->ResetVtx(mtxWorld);
 
 			VERTEX_3D *pVtx;		//頂点情報のポインタ
 
@@ -331,6 +317,29 @@ COrbit *COrbit::Create(D3DXMATRIX mtxWorld, D3DXVECTOR3 posOffset1, D3DXVECTOR3 
 	}
 
 	return pOrbit;
+}
+
+//==========================================
+// 頂点リセット
+//==========================================
+void COrbit::ResetVtx(D3DXMATRIX mtx)
+{
+	for (int nCntVtx = 0; nCntVtx < m_nNumEdge; nCntVtx++)
+	{
+		D3DXMATRIX mtx;
+
+		universal::SetOffSet(&mtx, mtx, m_posOffset[0]);
+
+		D3DXVECTOR3 pos = { mtx._41,mtx._42 ,mtx._43 };
+
+		m_aPosPoint[nCntVtx][0] = pos;
+
+		universal::SetOffSet(&mtx, mtx, m_posOffset[1]);
+
+		pos = { mtx._41,mtx._42 ,mtx._43 };
+
+		m_aPosPoint[nCntVtx][1] = pos;
+	}
 }
 
 //==========================================

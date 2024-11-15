@@ -53,19 +53,29 @@ public:
 	static CPeckLine *Create(CPlayer *pPlayer);
 
 private:
+	// 構造体定義
+	struct S_InfoLine
+	{// 線の構造体
+		CObject3D *pPosOrbit;	// 軌跡の先端用3Dオブジェクト
+		D3DXVECTOR3 posInit;	// 初期位置
+		D3DXVECTOR3 posDest;	// 目標位置
+		COrbit *pOrbit;			// 軌跡
+		float fTimer;			// タイマー
+
+		S_InfoLine() : pPosOrbit(nullptr),posInit() ,posDest(), pOrbit(nullptr), fTimer(0.0f) {};	// コンストラクタ
+	};
+
 	// メンバ関数
-	void CreateObject(void);	// オブジェクトの生成
+	void CreateLine(void);	// オブジェクトの生成
 	void UpdateMove(void);		// 移動状態の更新
-	void FollowOrbit(void);		// 軌跡の追従
+	void UpdateAllLine(void);	// 全ての線の更新
 
 	// メンバ変数
-	CPlayer *m_pPlayer;		// 持ち主のプレイヤー
-	CObject3D *m_pPosOrbit;	// 軌跡の先端用3Dオブジェクト
-	D3DXVECTOR3 m_posDest;	// 目標位置
-	COrbit *m_pOrbit;		// 軌跡
-	float m_fTimer;			// タイマー
-	float m_fTimerWait;		// 待機タイマー
-	E_State m_state;		// 状態
+	CPlayer *m_pPlayer;					// プレイヤーのポインタ
+	vector<S_InfoLine*> m_aInfoLine;	// 線の配列
+	float m_fTimerWait;					// 待機タイマー
+	E_State m_state;					// 状態
+	D3DXVECTOR3 m_posDest;				// 目標位置
 
 	// 状態更新の関数ポインタ型エイリアス定義
 	typedef void (CPeckLine::*FuncUpdateState)(void);

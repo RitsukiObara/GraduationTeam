@@ -187,7 +187,6 @@
     <ClCompile Include="code\MyEffekseer.cpp" />
     <ClCompile Include="code\nextflowice.cpp" />
     <ClCompile Include="code\peckLine.cpp" />
-    <ClCompile Include="code\peckWave.cpp" />
     <ClCompile Include="code\playerselect.cpp" />
     <ClCompile Include="code\rankingSingle.cpp" />
     <ClCompile Include="code\resultSingleLose.cpp" />
@@ -301,7 +300,6 @@
     <ClInclude Include="code\MyEffekseer.h" />
     <ClInclude Include="code\nextflowice.h" />
     <ClInclude Include="code\peckLine.h" />
-    <ClInclude Include="code\peckWave.h" />
     <ClInclude Include="code\playerselect.h" />
     <ClInclude Include="code\rankingSingle.h" />
     <ClInclude Include="code\resultSingleLose.h" />

@@ -14,6 +14,7 @@
 #include "orbit.h"
 #include "manager.h"
 #include "effect3D.h"
+#include "MyEffekseer.h"
 #include "debugproc.h"
 
 //*****************************************************
@@ -28,9 +29,9 @@ namespace orbit
 {
 const D3DXVECTOR3 OFFSET_LEFT	= { 10.0f,0.0f,0.0f };				// 左側のオフセット
 const D3DXVECTOR3 OFFSET_RIGHT	= { -10.0f,0.0f,0.0f };				// 右側のオフセット
-const int NUM_EDGE				= 40;								// 辺の数
-const float MOVE_TIME			= 0.2f;								// 移動にかかる時間
-const float WAIT_TIME			= 0.7f;								// 待機時間
+const int NUM_EDGE				= 20;								// 辺の数
+const float MOVE_TIME			= 0.05f;							// 移動にかかる時間
+const float WAIT_TIME			= 0.5f;								// 待機時間
 const float FACT_PARABOLA		= 10.0f;							// 放物線の係数
 const D3DXCOLOR COL_INIT		= D3DXCOLOR(1.0f,0.0f,0.0f,1.0f);	// 軌跡の色
 const float HEIGHT_PARABOLA		= 100.0f;							// 放物線の高さ
@@ -49,7 +50,7 @@ CPeckLine::FuncUpdateState CPeckLine::s_aFuncUpdateState[] =
 //====================================================
 // コンストラクタ
 //====================================================
-CPeckLine::CPeckLine() : m_pPlayer(nullptr), m_pPosOrbit(nullptr),m_pOrbit(nullptr), m_fTimer(0.0f), m_posDest(), m_state(E_State::STATE_NONE), m_fTimerWait(0.0f)
+CPeckLine::CPeckLine() : m_pPlayer(nullptr), m_posDest(), m_state(E_State::STATE_NONE), m_fTimerWait(0.0f)
 {
 
 }
@@ -87,35 +88,52 @@ HRESULT CPeckLine::Init(void)
 {
 	assert(m_pPlayer != nullptr);	// プレイヤー渡し忘れ用
 
-	// オブジェクトの生成
-	CreateObject();
-
 	return S_OK;
 }
 
 //====================================================
-// オブジェクト生成
+// 線の生成
 //====================================================
-void CPeckLine::CreateObject(void)
+void CPeckLine::CreateLine(void)
 {
-	//--------------------------
+	S_InfoLine *pInfo = new S_InfoLine;
+	if (pInfo == nullptr)
+		return;
+
+	pInfo->posDest = m_posDest;
+	pInfo->posInit = m_pPlayer->GetPosition();
+
+	//---------------------------------
 	// 軌跡先端用3Dオブジェクトの生成
-	//--------------------------
-	m_pPosOrbit = CObject3D::Create();
+	//---------------------------------
+	pInfo->pPosOrbit = CObject3D::Create();
 
-	if (m_pPosOrbit == nullptr)
+	if (pInfo->pPosOrbit == nullptr)
 		return;
 
-	//--------------------------
+	D3DXVECTOR3 posPlayer = m_pPlayer->GetPosition();
+	D3DXVECTOR3 vecDiff = m_posDest - posPlayer;
+
+	float fRot = atan2f(vecDiff.x, vecDiff.z);
+
+	pInfo->pPosOrbit->SetRotation(D3DXVECTOR3(0.0f, fRot, 0.0f));
+	pInfo->pPosOrbit->SetPosition(posPlayer);
+
+	pInfo->pPosOrbit->Draw();
+
+	//---------------------------------
 	// 軌跡の生成
-	//--------------------------
-	D3DXMATRIX mtx = m_pPosOrbit->GetMatrix();
-	m_pOrbit = COrbit::Create(mtx, orbit::OFFSET_LEFT, orbit::OFFSET_RIGHT, orbit::NUM_EDGE);
+	//---------------------------------
+	D3DXMATRIX mtx = pInfo->pPosOrbit->GetMatrix();
+	pInfo->pOrbit = COrbit::Create(mtx, orbit::OFFSET_LEFT, orbit::OFFSET_RIGHT, orbit::NUM_EDGE);
 
-	if (m_pOrbit == nullptr)
+	if (pInfo->pOrbit == nullptr)
 		return;
 
-	//m_pOrbit->EnableZtest(true);
+	pInfo->pOrbit->ResetVtx(mtx);
+
+	// 配列に追加
+	m_aInfoLine.push_back(pInfo);
 }
 
 //====================================================
@@ -123,6 +141,20 @@ void CPeckLine::CreateObject(void)
 //====================================================
 void CPeckLine::Uninit(void)
 {
+	for (S_InfoLine *pInfo : m_aInfoLine)
+	{
+		// 自身の終了
+		pInfo->pPosOrbit->Uninit();
+		pInfo->pPosOrbit = nullptr;
+
+		pInfo->pOrbit->Uninit();
+		pInfo->pOrbit = nullptr;
+		
+		delete pInfo;
+	}
+
+	m_aInfoLine.clear();
+
 	Release();
 }
 
@@ -134,6 +166,9 @@ void CPeckLine::Update(void)
 	// 状態ごとの更新
 	if(s_aFuncUpdateState[m_state] != nullptr)
 		(this->*(s_aFuncUpdateState[m_state]))();
+
+	// 全ての線の更新
+	UpdateAllLine();
 }
 
 //====================================================
@@ -146,16 +181,6 @@ void CPeckLine::StartMove(D3DXVECTOR3 posDest)
 
 	// 目標位置を設定
 	m_posDest = posDest;
-
-	if (m_pPosOrbit != nullptr)
-	{
-		D3DXVECTOR3 posPlayer = m_pPlayer->GetPosition();
-		D3DXVECTOR3 vecDiff = posDest - posPlayer;
-
-		float fRot = atan2f(vecDiff.x, vecDiff.z);
-
-		m_pPosOrbit->SetRotation(D3DXVECTOR3(0.0f, fRot, 0.0f));
-	}
 }
 
 //====================================================
@@ -165,49 +190,82 @@ void CPeckLine::UpdateMove(void)
 {
 	m_fTimerWait += CManager::GetDeltaTime();
 
-	// 軌跡の追従
-	FollowOrbit();
+	if (m_fTimerWait > orbit::WAIT_TIME)
+	{// 時間経過で線を生成
+		CreateLine();
 
-	if (m_fTimerWait < orbit::WAIT_TIME)
-		return;
-
-	m_fTimer += CManager::GetDeltaTime();
-
-	// タイマーの割合を計算
-	float fRate = m_fTimer / orbit::MOVE_TIME;
-
-	// オブジェクトの位置を設定
-	D3DXVECTOR3 posOwner = m_pPlayer->GetPosition();
-	D3DXVECTOR3 posObject = universal::Lerp(posOwner, m_posDest, fRate);
-
-	// 高さに放物線を追加
-	float fParabola = universal::ParabolaY(fRate - 0.5f, orbit::FACT_PARABOLA);
-	fParabola *= -orbit::HEIGHT_PARABOLA; 
-	fParabola += orbit::HEIGHT_PARABOLA;
-	posObject.y += fParabola;
-
-	m_pPosOrbit->SetPosition(posObject);
-
-	// 一定時間経過で移動終了
-	if (m_fTimer > orbit::MOVE_TIME)
-	{
 		m_fTimerWait = 0.0f;
-		m_fTimer = 0.0f;
 	}
 }
 
 //====================================================
-// 軌跡の追従
+// 全ての線の更新
 //====================================================
-void CPeckLine::FollowOrbit(void)
+void CPeckLine::UpdateAllLine(void)
 {
-	if (m_pOrbit == nullptr || m_pPosOrbit == nullptr)
-		return;
+	for (auto it = m_aInfoLine.begin(); it != m_aInfoLine.end(); /* no increment here */)
+	{
+		S_InfoLine* pInfo = *it;
 
-	D3DXMATRIX mtx = m_pPosOrbit->GetMatrix();
+		if (pInfo == nullptr || pInfo->pOrbit == nullptr || pInfo->pPosOrbit == nullptr)
+		{
+			it = m_aInfoLine.erase(it); // 無効な要素をリストから削除
+			continue;
+		}
 
-	m_pOrbit->SetOffset(mtx);
-	m_pOrbit->SetColor(orbit::COL_INIT);
+		//---------------------------------
+		// 位置の更新
+		//---------------------------------
+		// 一定時間経過で移動終了
+		if (pInfo->fTimer > orbit::MOVE_TIME)
+		{
+			pInfo->fTimer = 0.0f;
+
+			// 波紋エフェクトの生成
+			MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_PECKWAVE, pInfo->posDest);
+
+			// 軌跡を独立させる
+			pInfo->pOrbit->SetEnd(true);
+
+			// 自身の終了処理
+			pInfo->pPosOrbit->Uninit();
+			pInfo->pPosOrbit = nullptr;
+
+			pInfo->pOrbit = nullptr;
+
+			delete pInfo;
+			pInfo = nullptr;
+
+			it = m_aInfoLine.erase(it); // 削除した要素をリストから安全に削除
+			continue;
+		}
+
+		pInfo->fTimer += CManager::GetDeltaTime();
+
+		// タイマーの割合を計算
+		float fRate = pInfo->fTimer / orbit::MOVE_TIME;
+
+		// オブジェクトの位置を設定
+		D3DXVECTOR3 posOwner = pInfo->posInit;
+		D3DXVECTOR3 posObject = universal::Lerp(posOwner, pInfo->posDest, fRate);
+
+		// 高さに放物線を追加
+		float fParabola = universal::ParabolaY(fRate - 0.5f, orbit::FACT_PARABOLA);
+		fParabola *= -orbit::HEIGHT_PARABOLA;
+		fParabola += orbit::HEIGHT_PARABOLA * 2;
+		posObject.y += fParabola;
+
+		pInfo->pPosOrbit->SetPosition(posObject);
+
+		//---------------------------------
+		// 軌跡の追従
+		//---------------------------------
+		D3DXMATRIX mtx = pInfo->pPosOrbit->GetMatrix();
+		pInfo->pOrbit->SetOffset(mtx);
+		pInfo->pOrbit->SetColor(orbit::COL_INIT);
+
+		++it; // ループを進める
+	}
 }
 
 //====================================================
@@ -219,7 +277,6 @@ void CPeckLine::EndMove(void)
 	m_state = E_State::STATE_NONE;
 
 	// タイマーリセット
-	m_fTimer = 0.0f;
 	m_fTimerWait = orbit::WAIT_TIME;
 }
 

@@ -20,7 +20,8 @@
 //***********************************************************
 const char* CMyEffekseer::m_apEfkName[CMyEffekseer::TYPE_MAX] =		// エフェクトのパス
 {
-	"",                               // なんもない
+	"",											// なんもない
+	"data\\EFFEKSEER\\Effect\\peckWave.efkefc",	// つっつきの波紋
 };
 CMyEffekseer *CMyEffekseer::s_pMyEffekseer = nullptr;	// 自身のポインタ
 
@@ -390,7 +391,7 @@ namespace MyEffekseer
 {
 CEffekseerEffect *CreateEffect(CMyEffekseer::TYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 scale)
 {
-	CMyEffekseer *pEffekseer = CManager::GetMyEffekseer();
+	CMyEffekseer *pEffekseer = CMyEffekseer::GetInstance();
 
 	if (pEffekseer == nullptr)
 		return nullptr;

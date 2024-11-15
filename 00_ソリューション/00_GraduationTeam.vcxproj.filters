@@ -402,9 +402,6 @@
     <ClCompile Include="code\peckLine.cpp">
       <Filter>ソース ファイル\UI\peck</Filter>
     </ClCompile>
-    <ClCompile Include="code\peckWave.cpp">
-      <Filter>ソース ファイル\UI\peck</Filter>
-    </ClCompile>
     <ClCompile Include="code\MyEffekseer.cpp">
       <Filter>ソース ファイル\lib</Filter>
     </ClCompile>
@@ -735,9 +732,6 @@
       <Filter>ソース ファイル\character</Filter>
     </ClInclude>
     <ClInclude Include="code\peckLine.h">
-      <Filter>ソース ファイル\UI\peck</Filter>
-    </ClInclude>
-    <ClInclude Include="code\peckWave.h">
       <Filter>ソース ファイル\UI\peck</Filter>
     </ClInclude>
     <ClInclude Include="code\MyEffekseer.h">

@@ -40,6 +40,8 @@ public:
 	void SetEnd(bool bEnd) { m_bEnd = bEnd; }
 	int GetID(void) { return m_nID; }
 
+	void ResetVtx(D3DXMATRIX mtx);
+
 	// •Ï”æ“¾Eİ’èŠÖ”
 	void SetColor(D3DXCOLOR col, int nOffset = -1);	// F
 	D3DXCOLOR GetColor(int nOffset);
