@@ -332,7 +332,7 @@ void CIceManager::StopIce(CIce *pIce)
 //=====================================================
 // 氷をつつけるかのチェック
 //=====================================================
-bool CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, E_Direction *pDir)
+bool CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, E_Direction *pDir, CIce **ppIce)
 {
 	CIce *pIceStand = m_aGrid[nNumV][nNumH].pIce;
 	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
@@ -358,6 +358,8 @@ bool CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, E
 
 			if (pDir != nullptr)	// 番号保存
 				*pDir = (E_Direction)i;
+			
+			*ppIce = pIcePeck;	// 選んでる氷保存
 
 			break;
 		}

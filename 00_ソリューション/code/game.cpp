@@ -239,9 +239,9 @@ void CGame::ManageState(void)
 //=====================================================
 void CGame::ToggleStop(void)
 {
-	m_bStop = m_bStop ? false : true;
+	//m_bStop = m_bStop ? false : true;
 
-	if (m_bStop)
+	if (true)
 	{
 		Camera::ChangeState(new CMoveControl);
 	}

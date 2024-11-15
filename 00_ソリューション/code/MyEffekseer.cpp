@@ -1,14 +1,13 @@
 //===========================================================
 //
 // マイエフェクシア[MyEffekseer.cpp]
-// Author 大原怜将
+// Author : 髙山桃也
 //
 //===========================================================
 
-#include <iostream>
-#include <string>
-
-#include "main.h"
+//***********************************************************
+// インクルード
+//***********************************************************
 #include "manager.h"
 #include "renderer.h"
 #include "MyEffekseer.h"
@@ -16,19 +15,19 @@
 #include "debugproc.h"
 #include "game.h"
 
-// エフェクトの名前
-const char* CEffekseer::m_apEfkName[CEffekseer::TYPE_MAX] =
+//***********************************************************
+// 静的メンバ変数宣言
+//***********************************************************
+const char* CMyEffekseer::m_apEfkName[CMyEffekseer::TYPE_MAX] =		// エフェクトのパス
 {
 	"",                               // なんもない
-	"data\\EFFEKSEER\\Effect\\hit00.efkefc",  // 通常ヒットエフェクト
-	"data\\EFFEKSEER\\Effect\\hit01.efkefc",  // ガードヒットエフェクト
-	"data\\EFFEKSEER\\Effect\\hit02.efkefc",  // 大ヒットエフェクト
 };
+CMyEffekseer *CMyEffekseer::s_pMyEffekseer = nullptr;	// 自身のポインタ
 
 //===========================================================
 // コンストラクタ
 //===========================================================
-CEffekseer::CEffekseer()
+CMyEffekseer::CMyEffekseer()
 {
 	m_nNum = 0;
 }
@@ -36,43 +35,55 @@ CEffekseer::CEffekseer()
 //===========================================================
 // デストラクタ
 //===========================================================
-CEffekseer::~CEffekseer()
+CMyEffekseer::~CMyEffekseer()
 {
 
 }
 
 //===========================================================
+// 生成処理
+//===========================================================
+CMyEffekseer *CMyEffekseer::Create(void)
+{
+	if (s_pMyEffekseer == nullptr)
+	{
+		s_pMyEffekseer = new CMyEffekseer;
+
+		if (s_pMyEffekseer != nullptr)
+			s_pMyEffekseer->Init();
+	}
+
+	return s_pMyEffekseer;
+}
+
+//===========================================================
 // 初期化処理
 //===========================================================
-void CEffekseer::Init(void)
+void CMyEffekseer::Init(void)
 {
 	// エフェクトのマネージャーの作成
 	m_efkManager = ::Effekseer::Manager::Create(8000);
 
-	// Specify a position of view
 	// 視点位置を確定
 	viewerPosition = ::Effekseer::Vector3D(0.0f, 0.0f, 0.0f);
 
 	// 座標系を設定する。アプリケーションと一致させる必要がある。
 	m_efkManager->SetCoordinateSystem(Effekseer::CoordinateSystem::LH);
 
-	// Setup effekseer modules
 	// Effekseerのモジュールをセットアップする
 	SetupEffekseerModules(m_efkManager);
 
-	// Specify a projection matrix
 	// 投影行列を設定
 	projectionMatrix.PerspectiveFovLH(90.0f / 180.0f * 3.14f, (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 1.0f, 500.0f);
 
-	// Specify a camera matrix
-		// カメラ行列を設定
+	// カメラ行列を設定
 	cameraMatrix.LookAtLH(viewerPosition, ::Effekseer::Vector3D(0.0f, 0.0f, 0.0f), ::Effekseer::Vector3D(0.0f, 1.0f, 0.0f));
 }
 
 //===========================================================
 // 終了処理
 //===========================================================
-void CEffekseer::Uninit(void)
+void CMyEffekseer::Uninit(void)
 {
 	for (auto it = m_listEffect.begin(); it != m_listEffect.end();)
 	{
@@ -87,12 +98,14 @@ void CEffekseer::Uninit(void)
 	}
 
 	m_nNum = 0;
+
+	delete this;
 }
 
 //===========================================================
 // 更新処理
 //===========================================================
-void CEffekseer::Update(void)
+void CMyEffekseer::Update(void)
 {
 	for (auto it = m_listEffect.begin(); it != m_listEffect.end(); )
 	{
@@ -155,11 +168,10 @@ void CEffekseer::Update(void)
 //===========================================================
 // 描画処理
 //===========================================================
-void CEffekseer::Draw(void)
+void CMyEffekseer::Draw(void)
 {
 	if (m_efkRenderer != nullptr)
 	{
-		// Specify a projection matrix
 		// 投影行列を設定
 		m_efkRenderer->SetProjectionMatrix(projectionMatrix);
 
@@ -181,15 +193,12 @@ void CEffekseer::Draw(void)
 			}
 		}
 
-		// Specify a camera matrix
 		// カメラ行列を設定
 		m_efkRenderer->SetCameraMatrix(cameraMatrix);
 
-		// Begin to rendering effects
 		// エフェクトの描画開始処理を行う。
 		m_efkRenderer->BeginRendering();
 
-		// Render effects
 		// エフェクトの描画を行う。
 		Effekseer::Manager::DrawParameter drawParameter;
 		drawParameter.ZNear = 0.0f;
@@ -197,7 +206,6 @@ void CEffekseer::Draw(void)
 		drawParameter.ViewProjectionMatrix = m_efkRenderer->GetCameraProjectionMatrix();
 		m_efkManager->Draw(drawParameter);
 
-		// Finish to rendering effects
 		// エフェクトの描画終了処理を行う。
 		m_efkRenderer->EndRendering();
 	}
@@ -206,7 +214,7 @@ void CEffekseer::Draw(void)
 //===========================================================
 // エフェクトの生成
 //===========================================================
-CEffekseerEffect *CEffekseer::CreateEffect(const char* FileName, ::Effekseer::Vector3D pos, ::Effekseer::Vector3D rot, ::Effekseer::Vector3D scale)
+CEffekseerEffect *CMyEffekseer::CreateEffect(const char* FileName, ::Effekseer::Vector3D pos, ::Effekseer::Vector3D rot, ::Effekseer::Vector3D scale)
 {
 	CEffekseerEffect *pEffect = nullptr;
 
@@ -224,7 +232,6 @@ CEffekseerEffect *CEffekseer::CreateEffect(const char* FileName, ::Effekseer::Ve
 
 	pEffect->SetEffect(effect);
 	
-	// Play an effect
 	// エフェクトの再生
 	Effekseer::Handle handle = m_efkManager->Play(effect, 0, 0, 0);
 
@@ -240,18 +247,15 @@ CEffekseerEffect *CEffekseer::CreateEffect(const char* FileName, ::Effekseer::Ve
 //===========================================================
 // モジュール設定
 //===========================================================
-void CEffekseer::SetupEffekseerModules(::Effekseer::ManagerRef efkManager)
+void CMyEffekseer::SetupEffekseerModules(::Effekseer::ManagerRef efkManager)
 {
-		// Create a  graphics device
 	// 描画デバイスの作成
 	::Effekseer::Backend::GraphicsDeviceRef graphicsDevice;
 	graphicsDevice = ::EffekseerRendererDX9::CreateGraphicsDevice(CRenderer::GetInstance()->GetDevice());
 
-	// Create a renderer of effects
 	// エフェクトのレンダラーの作成
 	m_efkRenderer = ::EffekseerRendererDX9::Renderer::Create(graphicsDevice, 8000);
 
-	// Sprcify rendering modules
 	// 描画モジュールの設定
 	efkManager->SetSpriteRenderer(m_efkRenderer->CreateSpriteRenderer());
 	efkManager->SetRibbonRenderer(m_efkRenderer->CreateRibbonRenderer());
@@ -259,8 +263,6 @@ void CEffekseer::SetupEffekseerModules(::Effekseer::ManagerRef efkManager)
 	efkManager->SetTrackRenderer(m_efkRenderer->CreateTrackRenderer());
 	efkManager->SetModelRenderer(m_efkRenderer->CreateModelRenderer());
 
-	// Specify a texture, model, curve and material loader
-	// It can be extended by yourself. It is loaded from a file on now.
 	// テクスチャ、モデル、カーブ、マテリアルローダーの設定する。
 	// ユーザーが独自で拡張できる。現在はファイルから読み込んでいる。
 	efkManager->SetTextureLoader(m_efkRenderer->CreateTextureLoader());
@@ -272,7 +274,7 @@ void CEffekseer::SetupEffekseerModules(::Effekseer::ManagerRef efkManager)
 //===========================================================
 // エフェクトのリリース
 //===========================================================
-void CEffekseer::Release(int idx)
+void CMyEffekseer::Release(int idx)
 {
 
 }
@@ -280,7 +282,7 @@ void CEffekseer::Release(int idx)
 //===========================================================
 // エフェクトのリリース
 //===========================================================
-void CEffekseer::ReleaseEffect(CEffekseerEffect *pEffect)
+void CMyEffekseer::ReleaseEffect(CEffekseerEffect *pEffect)
 {
 	if (pEffect == nullptr)
 		return;
@@ -295,7 +297,7 @@ void CEffekseer::ReleaseEffect(CEffekseerEffect *pEffect)
 //===========================================================
 // エフェクトファイルのパス取得
 //===========================================================
-const char* CEffekseer::GetPathEffect(CEffekseer::TYPE type)
+const char* CMyEffekseer::GetPathEffect(CMyEffekseer::TYPE type)
 {
 	if (type <= TYPE::TYPE_NONE || type >= TYPE::TYPE_MAX)
 		return nullptr;
@@ -332,7 +334,7 @@ void CEffekseerEffect::Init(::Effekseer::Vector3D pos, ::Effekseer::Vector3D rot
 	m_scale = scale;
 	m_time = 0;
 
-	CEffekseer *pEffekseer = CManager::GetMyEffekseer();
+	CMyEffekseer *pEffekseer = CManager::GetMyEffekseer();
 
 	if (pEffekseer == nullptr)
 		return;
@@ -350,7 +352,7 @@ void CEffekseerEffect::Init(::Effekseer::Vector3D pos, ::Effekseer::Vector3D rot
 //===========================================================
 void CEffekseerEffect::Uninit()
 {
-	CEffekseer *pEffekseer = CManager::GetMyEffekseer();
+	CMyEffekseer *pEffekseer = CManager::GetMyEffekseer();
 
 	if (pEffekseer == nullptr)
 		return;
@@ -366,7 +368,7 @@ void CEffekseerEffect::Uninit()
 //===========================================================
 CEffekseerEffect *CEffekseerEffect::FollowPosition(D3DXVECTOR3 pos)
 {
-	CEffekseer *pEffekseer = CManager::GetMyEffekseer();
+	CMyEffekseer *pEffekseer = CManager::GetMyEffekseer();
 
 	if (pEffekseer == nullptr)
 		return nullptr;
@@ -386,9 +388,9 @@ CEffekseerEffect *CEffekseerEffect::FollowPosition(D3DXVECTOR3 pos)
 
 namespace MyEffekseer
 {
-CEffekseerEffect *CreateEffect(CEffekseer::TYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 scale)
+CEffekseerEffect *CreateEffect(CMyEffekseer::TYPE type, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 scale)
 {
-	CEffekseer *pEffekseer = CManager::GetMyEffekseer();
+	CMyEffekseer *pEffekseer = CManager::GetMyEffekseer();
 
 	if (pEffekseer == nullptr)
 		return nullptr;
