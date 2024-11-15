@@ -36,6 +36,9 @@ const D3DXVECTOR3 POSV_GAME = { 0.0f,1544.0f,-681.0f };	// ゲーム中の視点位置
 const D3DXVECTOR3 POSR_DEFAULT_SELECTSTAGE = { 0.0f,0.0f,-400.0f };	// ステージセレクト中のデフォルト注視点位置
 const D3DXVECTOR3 POSV_DEFAULT_SELECTSTAGE = { 0.0f,2244.0f,-2001.0f };	// ステージセレクト中のデフォルト視点位置
 
+const D3DXVECTOR3 POSR_DEFAULT_SELECTMODE = { 0.0f,50.0f,0.0f };	// モードセレクト中のデフォルト注視点位置
+const D3DXVECTOR3 POSV_DEFAULT_SELECTMODE = { 0.0f,200.0f,-2000.0f };	// モードセレクト中のデフォルト視点位置
+
 namespace resultSingle
 {
 const D3DXVECTOR3 POS_OFFSET = { 0.0f,100.0f,-500.0f };	// 目標地点のオフセット
@@ -280,4 +283,30 @@ void CCameraResultSingle::MoveToPlayerFront(CCamera* pCamera)
 	D3DXVECTOR3 posDestR = m_posDest - resultSingle::POS_OFFSET;
 
 	pInfoCamera->posR += (posDestR - pInfoCamera->posR) * resultSingle::SPEED_POSR;
+}
+
+//**************************************************************************
+// モードセレクト
+//**************************************************************************
+//=====================================================
+// 初期化
+//=====================================================
+void CCameraStateSelectMode::Init(CCamera* pCamera)
+{
+	if (pCamera == nullptr)
+		return;
+
+	CCamera::Camera* pInfoCamera = pCamera->GetCamera();
+
+	// カメラ視点、注視点位置初期化
+	pInfoCamera->posR = POSR_DEFAULT_SELECTMODE;
+	pInfoCamera->posV = POSV_DEFAULT_SELECTMODE;
+}
+
+//=====================================================
+// 更新
+//=====================================================
+void CCameraStateSelectMode::Update(CCamera* pCamera)
+{
+
 }

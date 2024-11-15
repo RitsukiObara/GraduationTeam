@@ -396,6 +396,9 @@
     <ClCompile Include="code\peckLine.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
+    <ClCompile Include="code\selectmodepenguin.cpp">
+      <Filter>ソース ファイル\character</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\scene.h">
@@ -721,6 +724,9 @@
     </ClInclude>
     <ClInclude Include="code\peckLine.h">
       <Filter>ソース ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="code\selectmodepenguin.h">
+      <Filter>ソース ファイル\character</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

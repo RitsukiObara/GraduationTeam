@@ -782,6 +782,10 @@ void CMeshField::Reset(void)
 //=====================================================
 void CMeshField::Wave(float fRot)
 {
+	CIceManager* pIceManager = CIceManager::GetInstance();
+	if (pIceManager == nullptr)
+		return;
+
 	// 頂点情報のポインタ
 	VERTEX_3D* pVtx;
 
@@ -789,12 +793,6 @@ void CMeshField::Wave(float fRot)
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	int nCountV, nCountU;
-
-	CIceManager* pIceManager = CIceManager::GetInstance();
-
-	if (pIceManager == nullptr)
-		return;
-
 	CIceManager::E_Stream nOceanRot = pIceManager->GetDirStream();	// 海流の向きを取得
 	CIceManager::E_Stream nOceanRotNext = pIceManager->GetDirStreamNext();	// 次の海流の向きを取得
 	float oceanSpeed = pIceManager->GetOceanLevel();	// 氷の流れる速度取得
