@@ -28,6 +28,7 @@
 #include "debugproc.h"
 #include "UI.h"
 #include "gameManager.h"
+#include "selectmodepenguin.h"
 
 //*****************************************************
 // 定数定義
@@ -56,11 +57,13 @@ namespace
 		};
 		const D3DXVECTOR3 POS[CSelectMode::MODE_MAX] =
 		{
-			D3DXVECTOR3(0.395f, 0.38f, 0.0f),
-			D3DXVECTOR3(0.605f, 0.62f, 0.0f),
+			D3DXVECTOR3(0.195f, 0.48f, 0.0f),
+			D3DXVECTOR3(0.405f, 0.72f, 0.0f),
 			//D3DXVECTOR3(0.5f, 0.5f, 0.0f)
 		};
-		const float NOSELECT_ALPHA = 0.35f;	// 選択されていないときの不透明度
+		const D3DXCOLOR NOSELECT_COLOR = D3DXCOLOR(0.7f, 0.7f, 0.7f, 0.8f);
+		const float NOSELECT_ALPHA = 0.5f;	// 選択されていないときの不透明度
+		const float SELECTUI_COLORCHANGE_COEF = 0.4f;	// モードUIの変化の慣性
 	}
 
 	namespace manual
@@ -140,6 +143,8 @@ HRESULT CSelectMode::Init(void)
 	// メッシュフィールド
 	CMeshField* pMeshField = CMeshField::Create();
 	pMeshField->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	pMeshField->SetIdxTexture(CTexture::GetInstance()->Regist("data\\TEXTURE\\MATERIAL\\ice000.jpg"));
+	pMeshField->SetDivTex(128);
 
 	// かまくら（仮）
 	CObjectX *pIgloo = CObjectX::Create();
@@ -150,6 +155,10 @@ HRESULT CSelectMode::Init(void)
 	CSound* pSound = CSound::GetInstance();
 	assert(pSound != nullptr);
 	pSound->Play(pSound->LABEL_BGM_TITLE);
+
+	// 遊ぶペンギン
+	CSelectModePenguin* pPenguin = CSelectModePenguin::Create(new CSelectModePenguinState_Stand);
+	pPenguin->SetPosition(D3DXVECTOR3(400.0f, 10.0f, -1000.0f));
 
 	// 入力マネージャー生成
 	CInputManager::Create();
@@ -236,6 +245,9 @@ void CSelectMode::Update(void)
 		pSound->Play(CSound::LABEL_SE_PAUSE_ENTER00);
 	}
 
+	// モードUI見た目更新処理
+	UpdateSelectModeUI();
+
 	// シーンの更新
 	CScene::Update();
 }
@@ -257,6 +269,32 @@ void CSelectMode::ChangeSelectMode(int move)
 	// 値移動
 	m_selectMode = (MODE)((m_selectMode + move + MODE_MAX) % MODE_MAX);
 
+	//// 選択しているモード不透明/それ以外半透明
+	//for (int cnt = 0; cnt < MODE_MAX; cnt++)
+	//{
+	//	if (m_apModeUI[cnt] != nullptr)
+	//	{
+	//		// 設定
+	//		if (cnt == m_selectMode)
+	//		{// 選択しているモード
+	//			m_apModeUI[cnt]->SetCol(D3DXCOLOR(1.0f,1.0f,1.0f,1.0f));
+	//			//m_apModeUI[cnt]->SetAlpha(1.0f);
+	//		}
+	//		else
+	//		{// それ以外半透明
+	//			m_apModeUI[cnt]->SetCol(selectUI::NOSELECT_COLOR);
+	//			//m_apModeUI[cnt]->SetAlpha(selectUI::NOSELECT_ALPHA);
+	//		}
+	//		m_apModeUI[cnt]->SetVtx();	// 頂点反映
+	//	}
+	//}
+}
+
+//=====================================================
+// モードUI見た目更新処理
+//=====================================================
+void CSelectMode::UpdateSelectModeUI(void)
+{
 	// 選択しているモード不透明/それ以外半透明
 	for (int cnt = 0; cnt < MODE_MAX; cnt++)
 	{
@@ -265,11 +303,19 @@ void CSelectMode::ChangeSelectMode(int move)
 			// 設定
 			if (cnt == m_selectMode)
 			{// 選択しているモード
-				m_apModeUI[cnt]->SetAlpha(1.0f);
+				D3DXCOLOR nowCol = m_apModeUI[cnt]->GetCol();
+				D3DXCOLOR diffCol = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f) - nowCol;
+				diffCol *= selectUI::SELECTUI_COLORCHANGE_COEF;
+				nowCol += diffCol;
+				m_apModeUI[cnt]->SetCol(nowCol);
 			}
 			else
 			{// それ以外半透明
-				m_apModeUI[cnt]->SetAlpha(selectUI::NOSELECT_ALPHA);
+				D3DXCOLOR nowCol = m_apModeUI[cnt]->GetCol();
+				D3DXCOLOR diffCol = selectUI::NOSELECT_COLOR - nowCol;
+				diffCol *= selectUI::SELECTUI_COLORCHANGE_COEF;
+				nowCol += diffCol;
+				m_apModeUI[cnt]->SetCol(nowCol);
 			}
 			m_apModeUI[cnt]->SetVtx();	// 頂点反映
 		}

@@ -43,6 +43,7 @@ public:
 private:
 	// メンバ関数
 	void ChangeSelectMode(int move);	// モード移動処理
+	void UpdateSelectModeUI(void);		// モードUI見た目更新処理
 
 	// メンバ変数
 	CUI *m_apModeUI[MODE_MAX];	// モードUI

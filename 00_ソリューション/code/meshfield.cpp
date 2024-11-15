@@ -756,6 +756,40 @@ void CMeshField::SetCol(D3DXCOLOR col)
 }
 
 //=====================================================
+// テクスチャ分割数設定
+//=====================================================
+void CMeshField::SetDivTex(int nDivTex)
+{
+	m_nDivTex = nDivTex;
+
+	// 頂点情報のポインタ
+	VERTEX_3D* pVtx;
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int nCountV = 0; nCountV < m_nDivNumV + 1; nCountV++)
+	{// 頂点座標の設定
+		for (int nCountU = 0; nCountU < m_nDivNumU + 1; nCountU++)
+		{
+			// 頂点座標
+			pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.x = (nCountU - m_nDivNumU * 0.5f) * m_fLengthMesh;
+			pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.z = (((m_nDivNumU) * 0.5f) - nCountV) * m_fLengthMesh;
+
+			// テクスチャ座標
+			pVtx[nCountV * (m_nDivNumU + 1) + nCountU].tex = D3DXVECTOR2
+			(
+				((float)m_nDivTex / (float)m_nDivNumU) * nCountU,
+				((float)m_nDivTex / (float)m_nDivNumU) * nCountV
+			);
+		}
+	}
+
+	// 頂点バッファをアンロック
+	m_pVtxBuff->Unlock();
+}
+
+//=====================================================
 // 高さのリセット
 //=====================================================
 void CMeshField::Reset(void)
