@@ -21,6 +21,7 @@
 #include "effect3D.h"
 #include "collision.h"
 #include "texture.h"
+#include "peckLine.h"
 
 //*****************************************************
 // 定数定義
@@ -65,7 +66,7 @@ vector<CPlayer*> CPlayer::s_apPlayer;	// 格納用の配列
 // コンストラクタ
 //=====================================================
 CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(STATE_NONE), m_pIceMoveDest(nullptr), m_bEnableInput(false), m_fTimerStartMove(0.0f),
-m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f), m_pLandSystemFlow(nullptr), m_pLandFlow(nullptr), m_nTimePeck(0), m_nID(0)
+m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f), m_pLandSystemFlow(nullptr), m_pLandFlow(nullptr), m_nTimePeck(0), m_nID(0), m_pPeckLine(nullptr)
 {
 	// デフォルトは入った順の番号
 	m_nID = (int)s_apPlayer.size();
@@ -115,7 +116,7 @@ HRESULT CPlayer::Init(void)
 	InitGridIdx();
 	
 	// 方向UI生成
-	//CreateDirUI();
+	CreateDirUI();
 
 	// 入力可能フラグを設定
 	m_bEnableInput = true;
@@ -151,6 +152,7 @@ void CPlayer::InitGridIdx(void)
 //=====================================================
 void CPlayer::CreateDirUI(void)
 {
+#if 0
 	// 生成
 	m_pDir = CPolygon3D::Create(GetPosition());
 	assert(m_pDir != nullptr);
@@ -166,6 +168,9 @@ void CPlayer::CreateDirUI(void)
 	// ライティングの設定
 	m_pDir->EnableLighting(false);
 	m_pDir->EnableZtest(true);
+#else
+	m_pPeckLine = CPeckLine::Create(this);
+#endif
 }
 
 //=====================================================
@@ -733,18 +738,33 @@ void CPlayer::InputPeck(void)
 
 	CIceManager::E_Direction dir;
 
-	if (pIceManager->CheckPeck(m_nGridV, m_nGridH, rot.y, pos, &dir))
+	CIce *pIcePeck = nullptr;
+
+	if (pIceManager->CheckPeck(m_nGridV, m_nGridH, rot.y, pos, &dir,&pIcePeck))
 	{// 突っつけるとき
 		// 方向UIの回転
 		RotationDirUI(dir);
 
 		if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_PECK))
 			SetMotion(MOTION::MOTION_PECK);
+
+		if (m_pPeckLine != nullptr)
+		{
+			if (pIcePeck != nullptr)
+			{
+				D3DXVECTOR3 posIce = pIcePeck->GetPosition();
+
+				m_pPeckLine->StartMove(posIce);
+			}
+		}
 	}
 	else
 	{// 突っつけないとき
 		if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_PECK))
 			SetMotion(MOTION::MOTION_CANNOTPECK);
+
+		if (m_pPeckLine != nullptr)
+			m_pPeckLine->EndMove();
 	}
 
 	CDebugProc::GetInstance()->Print("\nつっつく方向[%d]", dir);

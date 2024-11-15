@@ -28,13 +28,14 @@
 #include "inputManager.h"
 #include "debrisSpawner.h"
 #include "cameraState.h"
+#include "MyEffekseer.h"
 
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
 CCamera *CManager::m_pCamera = nullptr;	// カメラのポインタ
 CLight *CManager::m_pLight = nullptr;	// ライトのポインタ
-CEffekseer* CManager::m_pMyEffekseer = nullptr;  // エフェクシアのポインタ
+CMyEffekseer* CManager::m_pMyEffekseer = nullptr;  // エフェクシアのポインタ
 CScene *CManager::m_pScene = nullptr;	// シーンへのポインタ
 CScene::MODE CManager::m_mode = CScene::MODE_SELECTMODE;	// 現在のモード
 int CManager::m_nScore = 0;	// スコア保存用
@@ -101,6 +102,9 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	CParticle::Load();
 
 	SetMode(m_mode);
+
+	// エフェクシアの生成
+	CMyEffekseer::Create();
 
 	return S_OK;
 }
@@ -188,6 +192,10 @@ void CManager::Uninit(void)
 		delete pTexture;
 		pTexture = nullptr;
 	}
+
+	// エフェクシア破棄
+	if (CMyEffekseer::GetInstance() != nullptr)
+		CMyEffekseer::GetInstance()->Uninit();
 
 	// モデル破棄
 	CModel::Unload();

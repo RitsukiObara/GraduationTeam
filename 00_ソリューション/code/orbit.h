@@ -35,11 +35,17 @@ public:
 	void Update(void);
 	void Draw(void);
 
-	void SetOffset(D3DXMATRIX mtxWorld, D3DXCOLOR col);
-	static COrbit *Create(D3DXMATRIX mtxWorld, D3DXVECTOR3 posOffset1, D3DXVECTOR3 posOffset2, D3DXCOLOR col, int nNumEdge, int nIdxTexture);
+	void SetOffset(D3DXMATRIX mtxWorld);
 	bool IsEnd(void) { return m_bEnd; }
 	void SetEnd(bool bEnd) { m_bEnd = bEnd; }
 	int GetID(void) { return m_nID; }
+
+	// 変数取得・設定関数
+	void SetColor(D3DXCOLOR col, int nOffset = -1);	// 色
+	D3DXCOLOR GetColor(int nOffset);
+
+	// 静的メンバ関数
+	static COrbit *Create(D3DXMATRIX mtxWorld, D3DXVECTOR3 posOffset1, D3DXVECTOR3 posOffset2, int nNumEdge);
 
 private:
 	void UpdatePolygon(void);
