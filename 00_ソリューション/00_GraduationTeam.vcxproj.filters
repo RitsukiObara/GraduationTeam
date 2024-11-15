@@ -76,6 +76,9 @@
     <Filter Include="ソース ファイル\scene\game\resultSingle">
       <UniqueIdentifier>{b87aea4e-e401-4a55-b5a2-af66d41b2916}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI\peck">
+      <UniqueIdentifier>{6884db22-16ca-4c1f-be16-615e131cd15e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="code\scene.cpp">
@@ -393,11 +396,17 @@
     <ClCompile Include="code\rankingSingle.cpp">
       <Filter>ソース ファイル\scene\game\resultSingle</Filter>
     </ClCompile>
-    <ClCompile Include="code\peckLine.cpp">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClCompile>
     <ClCompile Include="code\selectmodepenguin.cpp">
       <Filter>ソース ファイル\character</Filter>
+    </ClCompile>
+    <ClCompile Include="code\peckLine.cpp">
+      <Filter>ソース ファイル\UI\peck</Filter>
+    </ClCompile>
+    <ClCompile Include="code\peckWave.cpp">
+      <Filter>ソース ファイル\UI\peck</Filter>
+    </ClCompile>
+    <ClCompile Include="code\MyEffekseer.cpp">
+      <Filter>ソース ファイル\lib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -722,11 +731,17 @@
     <ClInclude Include="code\rankingSingle.h">
       <Filter>ソース ファイル\scene\game\resultSingle</Filter>
     </ClInclude>
-    <ClInclude Include="code\peckLine.h">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClInclude>
     <ClInclude Include="code\selectmodepenguin.h">
       <Filter>ソース ファイル\character</Filter>
+    </ClInclude>
+    <ClInclude Include="code\peckLine.h">
+      <Filter>ソース ファイル\UI\peck</Filter>
+    </ClInclude>
+    <ClInclude Include="code\peckWave.h">
+      <Filter>ソース ファイル\UI\peck</Filter>
+    </ClInclude>
+    <ClInclude Include="code\MyEffekseer.h">
+      <Filter>ソース ファイル\lib</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
