@@ -19,6 +19,7 @@ class CPolygon3D;
 class CIce;
 class CInputManager;
 class CFlowIce;
+class CPeckLine;
 
 //*****************************************************
 // クラスの定義
@@ -152,6 +153,7 @@ private:
 	CFlowIce *m_pLandSystemFlow;	// 乗ってる流氷システム
 	int m_nTimePeck;				// 氷を突いた回数
 	CPolygon3D *m_pDir;				// 方向を示すポリゴン
+	CPeckLine *m_pPeckLine;			// つっつき線
 
 	S_FragMotion m_fragMotion;	// モーションフラグ
 

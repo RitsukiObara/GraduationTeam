@@ -108,6 +108,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>.\data\EFFEKSEER\Libraries\Effekseer\Lib;.\data\BULLETPHYSICS\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>Effekseerd.lib;EffekseerRendererDX9d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -144,6 +145,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>.\data\EFFEKSEER\Libraries\Effekseer\Lib;.\data\BULLETPHYSICS\lib\Release</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Effekseer.lib;EffekseerRendererDX9.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -182,8 +184,10 @@
     <ClCompile Include="code\gameManager.cpp" />
     <ClCompile Include="code\gameManagerMulti.cpp" />
     <ClCompile Include="code\gameManagerSingle.cpp" />
+    <ClCompile Include="code\MyEffekseer.cpp" />
     <ClCompile Include="code\nextflowice.cpp" />
     <ClCompile Include="code\peckLine.cpp" />
+    <ClCompile Include="code\peckWave.cpp" />
     <ClCompile Include="code\playerselect.cpp" />
     <ClCompile Include="code\rankingSingle.cpp" />
     <ClCompile Include="code\resultSingleLose.cpp" />
@@ -293,8 +297,10 @@
     <ClInclude Include="code\gameManager.h" />
     <ClInclude Include="code\gameManagerMulti.h" />
     <ClInclude Include="code\gameManagerSingle.h" />
+    <ClInclude Include="code\MyEffekseer.h" />
     <ClInclude Include="code\nextflowice.h" />
     <ClInclude Include="code\peckLine.h" />
+    <ClInclude Include="code\peckWave.h" />
     <ClInclude Include="code\playerselect.h" />
     <ClInclude Include="code\rankingSingle.h" />
     <ClInclude Include="code\resultSingleLose.h" />

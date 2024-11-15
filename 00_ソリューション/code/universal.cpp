@@ -481,6 +481,18 @@ void ParentMtx(D3DXMATRIX *pMtx, D3DXMATRIX mtxParent, D3DXVECTOR3 pos, D3DXVECT
 }
 
 //========================================
+// 放物線のyを求める
+//========================================
+float ParabolaY(float x, float a)
+{
+	float y = 0.0f;
+
+	y = a * x * x;
+
+	return y;
+}
+
+//========================================
 // オフセット設定処理
 //========================================
 void SetOffSet(D3DXMATRIX *pMtxWorldOffset, D3DXMATRIX mtxWorldOwner, D3DXVECTOR3 posOffset, D3DXVECTOR3 rot)

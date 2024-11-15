@@ -13,6 +13,7 @@
 #include "manager.h"
 #include "renderer.h"
 #include "blur.h"
+#include "MyEffekseer.h"
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -332,6 +333,12 @@ void CObject::DrawAll(void)
 
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+
+	if (CMyEffekseer::GetInstance() != nullptr)
+	{// エフェクシアの更新
+		CMyEffekseer::GetInstance()->Update();
+		CMyEffekseer::GetInstance()->Draw();
+	}
 
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
