@@ -108,6 +108,9 @@ HRESULT CSelectMode::Init(void)
 	if (FAILED(CScene::Init()))
 		return E_FAIL;
 
+	// カメラ
+	Camera::ChangeState(new CCameraStateSelectMode);
+
 	// 説明の生成
 	//m_pManual = CUI::Create();
 	//if (m_pManual != nullptr)
@@ -119,6 +122,7 @@ HRESULT CSelectMode::Init(void)
 	//	m_pManual->SetVtx();	// 頂点反映
 	//}
 
+	// モードボタンUI
 	for (int cnt = 0; cnt < MODE_MAX; cnt++)
 	{
 		m_apModeUI[cnt] = CUI::Create();
@@ -132,6 +136,15 @@ HRESULT CSelectMode::Init(void)
 		}
 	}
 	ChangeSelectMode(0);	// 何も選択しない（透明度設定のみする）
+
+	// メッシュフィールド
+	CMeshField* pMeshField = CMeshField::Create();
+	pMeshField->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+	// かまくら（仮）
+	CObjectX *pIgloo = CObjectX::Create();
+	pIgloo->BindModel(CModel::Load("data\\MODEL\\object\\temp_igloo.x"));
+	pIgloo->SetPosition(D3DXVECTOR3(800.0f, -10.0f, 600.0f));
 
 	// BGMの再生
 	CSound* pSound = CSound::GetInstance();
