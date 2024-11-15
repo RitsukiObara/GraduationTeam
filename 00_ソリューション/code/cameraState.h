@@ -103,5 +103,14 @@ private:
 	CResultSingle *m_pResult;	// リザルトのポインタ
 };
 
+class CCameraStateSelectMode : public CCameraState
+{
+public:
+	CCameraStateSelectMode(){}
+	void Init(CCamera* pCamera);
+	void Update(CCamera* pCamera) override;
+private:
+
+};
 
 #endif

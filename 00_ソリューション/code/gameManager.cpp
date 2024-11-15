@@ -78,13 +78,13 @@ HRESULT CGameManager::Init(void)
 	//海の生成
 	COcean::Create();
 
-#if 0
+//#if 0
 	//背景氷のロード
 	CBgIce::Load("data\\TEXT\\BG_Ice.txt");
 
 	//ゲームスタート告知UI
 	CUIready::Create();
-#endif
+//#endif
 
 	// カメラのステイト設定
 	Camera::ChangeState(new CFollowPlayer);

@@ -396,11 +396,8 @@
     <ClCompile Include="code\peckLine.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
-    <ClCompile Include="code\peckWave.cpp">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="code\MyEffekseer.cpp">
-      <Filter>ソース ファイル\lib</Filter>
+    <ClCompile Include="code\selectmodepenguin.cpp">
+      <Filter>ソース ファイル\character</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -728,11 +725,8 @@
     <ClInclude Include="code\peckLine.h">
       <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
-    <ClInclude Include="code\peckWave.h">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="code\MyEffekseer.h">
-      <Filter>ソース ファイル\lib</Filter>
+    <ClInclude Include="code\selectmodepenguin.h">
+      <Filter>ソース ファイル\character</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

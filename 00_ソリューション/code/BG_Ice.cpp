@@ -9,7 +9,8 @@
 // ƒCƒ“ƒNƒ‹[ƒh
 //*****************************************************
 #include "BG_Ice.h"
-#include "iceManager.h"
+#include "ice.h"
+#include "ocean.h"
 
 //*****************************************************
 // ƒ}ƒNƒ’è‹`
@@ -26,6 +27,8 @@
 namespace
 {
 	const char* MODEL[CBgIce::TYPE_MAX] = { "data\\MODEL\\block\\Drift_ice.x","data\\MODEL\\block\\Drift_ice_small.x" };
+	const float GRAVITY_SPEED = 0.1f;	// ”wŒi•X‚ª’¾‚ñ‚Å‚¢‚­‘¬“x
+	const float MAX_HEIGHT = -300.0f;	// •X‚ª’¾‚Þ‚‚³
 }
 
 //*****************************************************
@@ -38,6 +41,7 @@ namespace
 CBgIce::CBgIce()
 {
 	m_type = TYPE_BIG;
+	m_state = STATE_FLOW;
 }
 
 //====================================================
@@ -70,6 +74,17 @@ CBgIce* CBgIce::Create(D3DXVECTOR3 pos,D3DXVECTOR3 rot,TYPE type)
 //====================================================
 HRESULT CBgIce::Init(void)
 {
+	CIceManager* pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return S_OK;
+
+	// ŠC—¬‚ÌƒxƒNƒgƒ‹Žæ“¾
+	CIceManager::E_Stream dir = pIceManager->GetDirStream();
+
+	//Œ»Ý‚ÌŠC—¬î•ñŽæ“¾
+	m_streamOld = dir;
+
 	CObjectX::Init();
 
 	CObjectX::BindModel(CModel::Load(MODEL[m_type]));
@@ -90,6 +105,9 @@ void CBgIce::Uninit(void)
 //====================================================
 void CBgIce::Update(void)
 {
+	//ˆÚ“®ˆ—
+	Move();
+
 	CObjectX::Update();
 }
 
@@ -173,4 +191,82 @@ void CBgIce::Load(char* pPath)
 	}
 
 		fclose(pFile);
+}
+
+//====================================================
+// ˆÚ“®ˆ—
+//====================================================
+void CBgIce::Move(void)
+{
+	CIceManager* pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return;
+
+	// ŠC—¬‚ÌƒxƒNƒgƒ‹Žæ“¾
+	CIceManager::E_Stream dir = pIceManager->GetDirStream();
+	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[dir];
+
+	if (pIceManager->GetDirStream() != m_streamOld)
+	{
+		m_state = STATE_SINK;
+	}
+
+	//Œ»Ý‚ÌŠC—¬î•ñŽæ“¾
+	m_streamOld = dir;
+
+	// —¬‚ê‚é‘¬“x‚É³‹K‰»‚µ‚ÄˆÊ’u‚ð‰ÁŽZ
+	float fSpeedFlow = pIceManager->GetOceanLevel();
+
+	switch (m_state)
+	{
+	case STATE_FLOW:
+		D3DXVec3Normalize(&vecStream, &vecStream);
+		/*vecStream *= fSpeedFlow;*/
+		AddPosition(vecStream);
+
+		//ŠC–Ê‚É‰ˆ‚í‚¹‚é
+		Flow();
+
+		break;
+
+	case STATE_SINK:
+
+		D3DXVECTOR3 pos = GetPosition();
+
+		fgravity_speed += GRAVITY_SPEED;
+
+		pos.y -= fgravity_speed;
+
+		if (pos.y <= MAX_HEIGHT)
+		{
+			Uninit();
+		}
+
+		SetPosition(pos);
+
+		break;
+	}
+}
+
+//====================================================
+// ŠC–Ê‚É‰ˆ‚í‚¹‚éˆ—
+//====================================================
+void CBgIce::Flow(void)
+{
+	COcean* pOcean = COcean::GetInstance();
+
+	if (pOcean == nullptr)
+	{
+		return;
+	}
+
+	// ŠC‚Æˆê‚É•X‚ð“®‚©‚·ˆ—
+	D3DXVECTOR3 pos = GetPosition();
+
+	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+	pos.y = pOcean->GetHeight(pos, &move);
+
+	SetPosition(pos);
 }
