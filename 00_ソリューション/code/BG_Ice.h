@@ -28,14 +28,6 @@ public:
 		TYPE_MAX
 	}TYPE;
 
-	//背景氷の状態
-	typedef enum
-	{
-		STATE_FLOW = 0,
-		STATE_SINK,
-		STATE_MAX
-	}STATE;
-
 	CBgIce();	// コンストラクタ
 	~CBgIce();	// デストラクタ
 
@@ -52,10 +44,31 @@ public:
 	void Flow(void);
 
 private:
+
+	//背景氷の状態
+	typedef enum
+	{
+		STATE_FLOW = 0,
+		STATE_SINK,
+		STATE_MAX
+	}STATE;
+
+	//背景氷のデータ保存
+	struct S_SAVE
+	{
+		float fTime;	// 時間
+		TYPE type;	// 種類
+		D3DXVECTOR3 pos;	// 位置
+		D3DXVECTOR3 rot;	// 向き
+	};
+
 	TYPE m_type;	// タイプ分け変数
 	STATE m_state;	// 状態分け変数
 	CIceManager::E_Stream m_streamOld;	// 海流情報
-	float fgravity_speed;	//沈んでいく速度;
+	float fgravity_speed;	//	沈んでいく速度;
+	int m_nNumAll;	// 総数
+
+	vector<vector<S_SAVE>> m_aSave;	// データの配列
 };
 
 #endif

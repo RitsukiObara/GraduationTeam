@@ -18,7 +18,7 @@
 namespace
 {
 const std::string PATH_BODY = "data\\MOTION\\motionPenguin.txt";	// ボディのパス
-const float SCALE_BODY = 2.5f;	// 体のスケール
+const float SCALE_BODY = 1.8f;	// 体のスケール
 
 const float FACT_DECREASE_MOVE = 0.9f;	// 移動量の減衰係数
 const float ADD_MOVE = 4.0f;	// 移動の追加量
@@ -29,9 +29,10 @@ const float RADIUS_COLLISION = 200.0f;	// 球の判定の半径
 //=====================================================
 // コンストラクタ
 //=====================================================
-CSelectModePenguin::CSelectModePenguin(int nPriority) : CMotion(nPriority), m_move(), m_pClsnSphere(nullptr)
+CSelectModePenguin::CSelectModePenguin(int nPriority) : CMotion(nPriority)
 {
-
+	m_pCollisionSphere = nullptr;
+	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 }
 
 //=====================================================
@@ -45,18 +46,34 @@ CSelectModePenguin::~CSelectModePenguin()
 //=====================================================
 // 生成処理
 //=====================================================
-CSelectModePenguin* CSelectModePenguin::Create(void)
+CSelectModePenguin* CSelectModePenguin::Create(ISelectModePenguinState* pState)
 {
-	CSelectModePenguin *pSelectStagePenguin = nullptr;
+	CSelectModePenguin *pSelectModePenguin = nullptr;
 
-	pSelectStagePenguin = new CSelectModePenguin;
+	pSelectModePenguin = new CSelectModePenguin;
 
-	if (pSelectStagePenguin != nullptr)
+	if (pSelectModePenguin != nullptr)
 	{
-		pSelectStagePenguin->Init();
+		pSelectModePenguin->Init();
+		if (pState != nullptr)
+		{
+			pSelectModePenguin->SetState(pState);
+		}
 	}
 
-	return pSelectStagePenguin;
+	return pSelectModePenguin;
+}
+
+//=====================================================
+// ステート設定処理
+//=====================================================
+void CSelectModePenguin::SetState(ISelectModePenguinState* pState)
+{
+	m_pState = pState;
+	if (m_pState != nullptr)
+	{
+		m_pState->Init(this);
+	}
 }
 
 //=====================================================
@@ -76,12 +93,12 @@ HRESULT CSelectModePenguin::Init(void)
 	SetScale(SCALE_BODY);
 
 	// 球の判定生成
-	m_pClsnSphere = CCollisionSphere::Create(CCollision::TAG::TAG_PLAYER, CCollision::TYPE::TYPE_SPHERE, this);
+	m_pCollisionSphere = CCollisionSphere::Create(CCollision::TAG::TAG_PLAYER, CCollision::TYPE::TYPE_SPHERE, this);
 
-	if (m_pClsnSphere != nullptr)
+	if (m_pCollisionSphere != nullptr)
 	{
-		m_pClsnSphere->SetRadius(RADIUS_COLLISION);
-		m_pClsnSphere->SetPosition(GetPosition());
+		m_pCollisionSphere->SetRadius(RADIUS_COLLISION);
+		m_pCollisionSphere->SetPosition(GetPosition());
 	}
 
 	return S_OK;
@@ -92,6 +109,12 @@ HRESULT CSelectModePenguin::Init(void)
 //=====================================================
 void CSelectModePenguin::Uninit(void)
 {
+	if (m_pState != nullptr)
+	{
+		delete m_pState;
+		m_pState = nullptr;
+	}
+
 	// 継承クラスの終了
 	CMotion::Uninit();
 }
@@ -107,30 +130,23 @@ void CSelectModePenguin::Update(void)
 	// 移動量の減衰
 	m_move *= FACT_DECREASE_MOVE;
 
-	if (m_pClsnSphere != nullptr)
+	if (m_pCollisionSphere != nullptr)
 	{// 球の判定の追従
 		D3DXVECTOR3 pos = GetPosition();
 
-		m_pClsnSphere->SetPosition(pos);
+		m_pCollisionSphere->SetPosition(pos);
 
 		// ブロック判定
-		m_pClsnSphere->PushCollision(&pos, CCollision::TAG::TAG_BLOCK);
+		m_pCollisionSphere->PushCollision(&pos, CCollision::TAG::TAG_BLOCK);
 
 		// キャラの位置反映
 		SetPosition(pos);
 	}
 
-#ifdef _DEBUG
-	Debug();
-#endif
-}
-
-//=====================================================
-// デバッグ処理
-//=====================================================
-void CSelectModePenguin::Debug(void)
-{
-	CDebugProc::GetInstance()->Print("\n位置[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
+	if (m_pState != nullptr)
+	{
+		m_pState->Update(this);
+	}
 }
 
 //=====================================================
@@ -140,4 +156,22 @@ void CSelectModePenguin::Draw(void)
 {
 	// 継承クラスの描画
 	CMotion::Draw();
+}
+
+//*****************************************************
+// 立ってるだけステート
+//*****************************************************
+//=====================================================
+// 初期化処理
+//=====================================================
+HRESULT CSelectModePenguinState_Stand::Init(CSelectModePenguin* pPenguin)
+{
+	return S_OK;
+}
+
+//=====================================================
+// 更新処理
+//=====================================================
+void CSelectModePenguinState_Stand::Update(CSelectModePenguin* pPenguin)
+{
 }

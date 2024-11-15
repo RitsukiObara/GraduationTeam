@@ -52,6 +52,7 @@ public:
 	bool RayCheck(D3DXVECTOR3 pos, D3DXVECTOR3 vecDir, D3DXVECTOR3 posOwn);
 	void SetCol(D3DXCOLOR col);
 	void SetIdxTexture(int nIdxTexture) { m_nIdxTexture = nIdxTexture; }
+	void SetDivTex(int nDivTex);
 	void Reset(void);
 	void Wave(float fRot);
 

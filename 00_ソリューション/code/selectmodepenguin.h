@@ -16,10 +16,14 @@
 // 前方宣言
 //*****************************************************
 class CCollisionSphere;
+__interface ISelectModePenguinState;
 
 //*****************************************************
 // クラスの定義
 //*****************************************************
+//****************************************
+// モード選択画面の遊ぶペンギンオブジェクトクラス
+//****************************************
 class CSelectModePenguin : public CMotion
 {
 public:
@@ -33,15 +37,42 @@ public:
 	void Draw(void);
 
 	// 静的メンバ関数
-	static CSelectModePenguin* Create(void);	// 生成処理
+	static CSelectModePenguin* Create(ISelectModePenguinState* pState = nullptr);	// 生成処理
+
+	// 設定
+	void SetState(ISelectModePenguinState* pState);
 
 private:
-	// メンバ関数
-	void Debug(void);	// デバッグ処理
-
 	// メンバ変数
 	D3DXVECTOR3 m_move;	// 移動量
-	CCollisionSphere *m_pClsnSphere;	// 球の判定
+	CCollisionSphere *m_pCollisionSphere;	// 球の判定
+	ISelectModePenguinState* m_pState;	// 動きステート
+};
+
+//****************************************
+// 動きステート
+//****************************************
+//----------------------------------------
+// ペンギンの動きステート基底インターフェース
+//----------------------------------------
+__interface ISelectModePenguinState
+{
+	HRESULT Init(CSelectModePenguin *pPenguin) = 0;
+	void Update(CSelectModePenguin* pPenguin) = 0;
+};
+
+//****************************************
+//		↓↓↓↓↓ここからステート追加↓↓↓↓↓
+//****************************************
+//****************************************
+// 立ってるだけステート
+//****************************************
+class CSelectModePenguinState_Stand : public ISelectModePenguinState
+{
+public:
+	CSelectModePenguinState_Stand(){}
+	HRESULT Init(CSelectModePenguin* pPenguin);
+	void Update(CSelectModePenguin* pPenguin);
 };
 
 #endif

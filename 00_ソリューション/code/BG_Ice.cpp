@@ -42,6 +42,7 @@ CBgIce::CBgIce()
 {
 	m_type = TYPE_BIG;
 	m_state = STATE_FLOW;
+	m_nNumAll = 0;
 }
 
 //====================================================
@@ -74,6 +75,13 @@ CBgIce* CBgIce::Create(D3DXVECTOR3 pos,D3DXVECTOR3 rot,TYPE type)
 //====================================================
 HRESULT CBgIce::Init(void)
 {
+	//// 指定された数分だけグリッド配列をリサイズ
+	//// 縦のグリッド用意
+	//m_aSave.resize(1);
+
+	//for (int i = 0; i < m_nNumGridVirtical; i++)
+	//	m_aSave[i].resize(m_nNumGridHorizontal);
+
 	CIceManager* pIceManager = CIceManager::GetInstance();
 
 	if (pIceManager == nullptr)
@@ -176,7 +184,7 @@ void CBgIce::Load(char* pPath)
 										(void)fscanf(pFile, "%d", &type);
 									}
 								}
-						CBgIce::Create(pos, rot, type);
+						Create(pos, rot, type);
 					}
 
 					if (strcmp(cTemp, "END_SCRIPT") == 0)
@@ -222,7 +230,7 @@ void CBgIce::Move(void)
 	{
 	case STATE_FLOW:
 		D3DXVec3Normalize(&vecStream, &vecStream);
-		/*vecStream *= fSpeedFlow;*/
+		vecStream *= fSpeedFlow;
 		AddPosition(vecStream);
 
 		//海面に沿わせる
