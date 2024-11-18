@@ -50,7 +50,7 @@ public:
 	E_State GetState(void) { return m_state; }
 
 	// 静的メンバ関数
-	static CPeckLine *Create(D3DXCOLOR col);
+	static CPeckLine *Create(D3DXCOLOR col,D3DXVECTOR3 pos);
 
 private:
 	// 構造体定義

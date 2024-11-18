@@ -79,6 +79,7 @@ public:
 	CIce* GetLeftDownIdx(int *pNumV, int *pNumH);	// 右下の氷取得
 	void DisableFind(void);	// 探索フラグの無効化
 	void Load(const char* pPath);	// 初期配置読み込み
+	void BindRippleElements(void);	// さざ波の属性を割り当てる処理
 
 	// 変数取得・設定関数
 	D3DXVECTOR3 GetGridPosition(int *pNumV, int *pNumH);

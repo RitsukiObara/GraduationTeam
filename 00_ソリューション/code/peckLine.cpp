@@ -66,7 +66,7 @@ CPeckLine::~CPeckLine()
 //====================================================
 // 生成処理
 //====================================================
-CPeckLine *CPeckLine::Create(D3DXCOLOR col)
+CPeckLine *CPeckLine::Create(D3DXCOLOR col, D3DXVECTOR3 pos)
 {
 	CPeckLine *pPeckLine = nullptr;
 
@@ -74,6 +74,7 @@ CPeckLine *CPeckLine::Create(D3DXCOLOR col)
 
 	if (pPeckLine != nullptr)
 	{
+		pPeckLine->SetPosition(pos);
 		pPeckLine->Init();
 		pPeckLine->m_col = col;
 	}
@@ -127,8 +128,6 @@ void CPeckLine::CreateLine(void)
 
 	if (pInfo->pOrbit == nullptr)
 		return;
-
-	pInfo->pOrbit->ResetVtx(mtx);
 
 	// プレイヤーのIDに合わせた色に設定
 	pInfo->pOrbit->SetColor(m_col);
