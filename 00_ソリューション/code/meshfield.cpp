@@ -38,7 +38,7 @@ namespace
 	const float OCEAN_SPEED_UP = 0.01875f;		// 波の速度増加量（構造変更前0.3fの16分の1）
 	const float OCEAN_SPEED_DOWN = 0.03125f;	// 波の速度減少量（構造変更前0.5fの16分の1）
 	const float OCEAN_SPEED_MAX = 5.0f;			// 波の速度最大値（構造変更前80.0fの16分の1）
-	const float OCEAN_SPEED_MULTIPLY = 8.0f;	// 氷の流れる速度->波の速度にする際の速度倍率
+	const float OCEAN_SPEED_MULTIPLY = 5.0f;	// 氷の流れる速度->波の速度にする際の速度倍率
 }
 
 //*****************************************************
