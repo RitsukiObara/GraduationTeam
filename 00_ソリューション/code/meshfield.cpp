@@ -981,7 +981,6 @@ void CMeshField::Load(std::string path)
 		// ƒtƒ@ƒCƒ‹‚ð•Â‚¶‚é
 		fclose(pFile);
 	}
-
 }
 
 //=====================================================
