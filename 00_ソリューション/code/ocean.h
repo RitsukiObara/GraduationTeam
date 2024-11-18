@@ -48,10 +48,11 @@ public:
 private:
 
 	// メンバ関数
-	void OceanRotState(void); // 海流の向きとメッシュの向きを連動させる処理
+	void BgIceRotState(void); // 海流の向きとメッシュの向きを連動させる処理
 	void OceanCycleTimer(void); // 海流周期を時間で管理する処理
 	void OceanChangeCheck(void);	// 海流の向き変更時間か確認処理
-
+	void BgIceSetPosUp(void);	// 上方向から出てくる背景氷
+	void BgIceSetPosDown(void);	// 下方向から出てくる背景氷
 	float m_fSpeed;	// 海流のスピード
 	D3DXVECTOR3 m_fRot;	// 海流の向き
 	static COcean* m_pOcean;	// 自身のポインタ
@@ -61,5 +62,6 @@ private:
 	int m_nExecRotChangeTime;	// 向き変更をするまでのタイマー時間
 	bool m_bRandState;	// ランダム変数の状態
 	bool m_bUse;	// アホウドリが使われているか
+	int m_nBgiceCnt;	// 背景の氷が呼び出されるカウント
 };
 #endif

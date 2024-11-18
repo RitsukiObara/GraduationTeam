@@ -22,6 +22,7 @@
 #include "timer.h"
 #include "universal.h"
 #include "albatross.h"
+#include "BG_Ice.h"
 
 //*****************************************************
 // 定数定義
@@ -32,6 +33,14 @@ namespace
 	const int OCEAN_ROT_CHANGE_TIME_DEGREE = 10;	// 海流向き変更時間ぶれ幅
 	const float FLOW_LEVEL_MULTIPLY = 0.008f;		// 海流の速度の倍率
 	const int MAX_ALBATROSS = 2;					// アホウドリ最大数
+	const int MAX_RANGE_LEFT = -2800;				// ランダムレンジ左最大数
+	const int MIN_RANGE_LEFT = -2000;				// ランダムレンジ左最低数
+	const int MAX_RANGE_RIGHT = 2800;				// ランダムレンジ右最大数
+	const int MIN_RANGE_RIGHT = 2000;				// ランダムレンジ右最低数
+	const float Z_UP = 1500.0f;						// Z方向上方向
+	const float Z_DOWN = -1500.0f;					// Z方向下方向
+	const int BGICE_CREATE_CNT = 180;				// 背景氷が生成される秒
+
 }
 
 //*****************************************************
@@ -51,6 +60,7 @@ COcean::COcean()
 	m_fRot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_nSetRotTime = 0;
 	m_nExecRotChangeTime = 0;
+	m_nBgiceCnt = 0;
 }
 
 //=====================================================
@@ -84,6 +94,8 @@ COcean* COcean::Create(void)
 //=====================================================
 HRESULT COcean::Init(void)
 {
+	m_nBgiceCnt = 0;
+
 	CMeshField::Init();
 
 	CIceManager* pIceManager = CIceManager::GetInstance();
@@ -126,7 +138,7 @@ void COcean::Update(void)
 
 	m_fSpeed += FLOW_LEVEL_MULTIPLY * OceanFlowLevel;
 
-	//OceanRotState();
+	BgIceRotState();
 	//OceanCycleTimer();
 	OceanChangeCheck();
 
@@ -212,12 +224,14 @@ void COcean::OceanChangeCheck(void)
 //====================================================
 // 海流の向きとメッシュの向きを連動させる処理
 //====================================================
-void COcean::OceanRotState(void)
+void COcean::BgIceRotState(void)
 {
 	CIceManager* pIceManager = CIceManager::GetInstance();
 
 	if (pIceManager == nullptr)
 		return;
+
+	m_nBgiceCnt++;
 
 	int OceanFlowKeep = pIceManager->GetDirStream();
 	m_fRot = CMeshField::GetRotation();
@@ -225,25 +239,23 @@ void COcean::OceanRotState(void)
 	//	矢印が海流の向きに流れる処理
 	if (OceanFlowKeep == COcean::STREAM_UP)
 	{
-		m_fRot.y = 0.0f;
-	}
-
-	if (OceanFlowKeep == COcean::STREAM_RIGHT)
-	{
-		m_fRot.y = D3DX_PI * 0.5f;
+		if (m_nBgiceCnt >= BGICE_CREATE_CNT)
+		{
+			//下から背景氷を出す処理
+			BgIceSetPosDown();
+			m_nBgiceCnt = 0;
+		}
 	}
 
 	if (OceanFlowKeep == COcean::STREAM_DOWN)
 	{
-		m_fRot.y = D3DX_PI;
+		if (m_nBgiceCnt >= BGICE_CREATE_CNT)
+		{
+			//上から背景氷を出す処理
+			BgIceSetPosUp();
+			m_nBgiceCnt = 0;
+		}
 	}
-
-	if (OceanFlowKeep == COcean::STREAM_LEFT)
-	{
-		m_fRot.y = -D3DX_PI * 0.5f;
-	}
-
-	CMeshField::SetRotation(m_fRot);
 }
 
 //====================================================
@@ -284,4 +296,40 @@ void COcean::OceanCycleTimer(void)
 			pIceManager->SetDirStreamNext((COcean::E_Stream)(m_nRandNextKeep));	// 海流の向きをランダムにする
 		}
 	}
+}
+
+//====================================================
+// 上方向から背景氷が出てくる処理
+//====================================================
+void COcean::BgIceSetPosUp(void)
+{
+	float posX_L = (float)universal::RandRange(MAX_RANGE_LEFT, MIN_RANGE_LEFT);
+
+	// 背景氷のロード
+	CBgIce::Create(D3DXVECTOR3(posX_L, 0.0f, Z_UP), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CBgIce::TYPE_BIG);
+	CBgIce::Create(D3DXVECTOR3(posX_L, 0.0f, Z_UP), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CBgIce::TYPE_SMALL);
+
+	float posX_R = (float)universal::RandRange(MAX_RANGE_RIGHT, MIN_RANGE_RIGHT);
+
+	// 背景氷のロード
+	CBgIce::Create(D3DXVECTOR3(posX_R, 0.0f, Z_UP), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CBgIce::TYPE_BIG);
+	CBgIce::Create(D3DXVECTOR3(posX_R, 0.0f, Z_UP), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CBgIce::TYPE_SMALL);
+}
+
+//====================================================
+// 下方向から背景氷が出てくる処理
+//====================================================
+void COcean::BgIceSetPosDown(void)
+{
+	float posX_L = (float)universal::RandRange(MAX_RANGE_LEFT, MIN_RANGE_LEFT);
+
+	// 背景氷のロード
+	CBgIce::Create(D3DXVECTOR3(posX_L, 0.0f, Z_DOWN), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CBgIce::TYPE_BIG);
+	CBgIce::Create(D3DXVECTOR3(posX_L, 0.0f, Z_DOWN), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CBgIce::TYPE_SMALL);
+
+	float posX_R = (float)universal::RandRange(MAX_RANGE_RIGHT, MIN_RANGE_RIGHT);
+
+	// 背景氷のロード
+	CBgIce::Create(D3DXVECTOR3(posX_R, 0.0f, Z_DOWN), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CBgIce::TYPE_BIG);
+	CBgIce::Create(D3DXVECTOR3(posX_R, 0.0f, Z_DOWN), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CBgIce::TYPE_SMALL);
 }
