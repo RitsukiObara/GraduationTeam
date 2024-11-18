@@ -360,8 +360,15 @@ void CIce::Ripples(void)
 	if (!m_abRipleFrag[stream])
 		return;
 
+	// エフェクトのトランスフォーム設定
+	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[stream];
+
+	D3DXVECTOR3 posEffect = GetPosition() - vecStream * SIZE_INIT;
+	D3DXVECTOR3 rotEffect = { 0.0f,0.0f,0.0f };
+	rotEffect.y = atan2f(vecStream.x, vecStream.z);
+
 	// エフェクトの生成
-	MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_RIPPLES, GetPosition());
+	MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_RIPPLES, posEffect, rotEffect);
 
 	// タイマーの再設定
 	m_fTimerRipples = 0.0f;
