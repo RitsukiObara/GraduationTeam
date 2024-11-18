@@ -178,7 +178,7 @@ void CPlayer::CreateDirUI(void)
 	m_pDir->EnableLighting(false);
 	m_pDir->EnableZtest(true);
 #else
-	m_pPeckLine = CPeckLine::Create(COL_LINE[GetID()]);
+	m_pPeckLine = CPeckLine::Create(COL_LINE[GetID()], GetPosition());
 #endif
 }
 

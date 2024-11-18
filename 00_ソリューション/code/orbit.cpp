@@ -264,56 +264,45 @@ void COrbit::Draw()
 //==========================================
 // 生成処理
 //==========================================
-COrbit *COrbit::Create(D3DXMATRIX mtxWorld, D3DXVECTOR3 posOffset1, D3DXVECTOR3 posOffset2,int nNumEdge)
+COrbit *COrbit::Create(D3DXMATRIX mtxWorld, D3DXVECTOR3 posOffset1, D3DXVECTOR3 posOffset2, int nNumEdge)
 {
-	// デバイスの取得
-	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
-
-	// 計算用マトリックス
-	D3DXMATRIX mtxRot, mtxTrans;
-
-	// 変数宣言
-	int nCounterOrbit = -1;
 	COrbit *pOrbit = nullptr;
 
-	if (pOrbit == nullptr)
+	pOrbit = new COrbit;
+
+	if (pOrbit != nullptr)
 	{
-		pOrbit = new COrbit;
+		// 初期化
+		pOrbit->Init();
 
-		if (pOrbit != nullptr)
+		// オフセットの代入
+		pOrbit->m_posOffset[0] = posOffset1;
+		pOrbit->m_posOffset[1] = posOffset2;
+
+		// 辺の数の代入
+		pOrbit->m_nNumEdge = nNumEdge;
+
+		// 頂点のリセット
+		pOrbit->ResetVtx(mtxWorld);
+
+		VERTEX_3D *pVtx;		//頂点情報のポインタ
+
+		//頂点バッファをロックし、頂点情報へのポインタを取得
+		pOrbit->m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+		// 頂点座標のリセット
+		for (int nCntVtx = 0; nCntVtx < pOrbit->m_nNumEdge - 1; nCntVtx++)
 		{
-			// 初期化
-			pOrbit->Init();
-
-			// オフセットの代入
-			pOrbit->m_posOffset[0] = posOffset1;
-			pOrbit->m_posOffset[1] = posOffset2;
-
-			// 辺の数の代入
-			pOrbit->m_nNumEdge = nNumEdge;
-
-			// 頂点のリセット
-			pOrbit->ResetVtx(mtxWorld);
-
-			VERTEX_3D *pVtx;		//頂点情報のポインタ
-
-			//頂点バッファをロックし、頂点情報へのポインタを取得
-			pOrbit->m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-			// 頂点座標のリセット
-			for (int nCntVtx = 0; nCntVtx < pOrbit->m_nNumEdge; nCntVtx++)
+			for (int nCntOffset = 0; nCntOffset < NUM_OFFSET; nCntOffset++)
 			{
-				for (int nCntOffset = 0; nCntOffset < NUM_OFFSET; nCntOffset++)
-				{
-					pVtx[nCntOffset].pos = pOrbit->m_aPosPoint[nCntVtx][nCntOffset];
-				}
-
-				//ポインタを進める
-				pVtx += NUM_OFFSET;
+				pVtx[nCntOffset].pos = pOrbit->m_aPosPoint[nCntVtx][nCntOffset];
 			}
 
-			pOrbit->m_pVtxBuff->Unlock();
+			//ポインタを進める
+			pVtx += NUM_OFFSET;
 		}
+
+		pOrbit->m_pVtxBuff->Unlock();
 	}
 
 	return pOrbit;
@@ -326,17 +315,19 @@ void COrbit::ResetVtx(D3DXMATRIX mtx)
 {
 	for (int nCntVtx = 0; nCntVtx < m_nNumEdge; nCntVtx++)
 	{
-		D3DXMATRIX mtx;
+		D3DXMATRIX mtxTrans;
 
-		universal::SetOffSet(&mtx, mtx, m_posOffset[0]);
+		D3DXMatrixIdentity(&mtxTrans);
+		universal::SetOffSet(&mtxTrans, mtx, m_posOffset[0]);
 
-		D3DXVECTOR3 pos = { mtx._41,mtx._42 ,mtx._43 };
+		D3DXVECTOR3 pos = { mtxTrans._41,mtxTrans._42 ,mtxTrans._43 };
 
 		m_aPosPoint[nCntVtx][0] = pos;
 
-		universal::SetOffSet(&mtx, mtx, m_posOffset[1]);
+		D3DXMatrixIdentity(&mtxTrans);
+		universal::SetOffSet(&mtxTrans, mtx, m_posOffset[1]);
 
-		pos = { mtx._41,mtx._42 ,mtx._43 };
+		pos = { mtxTrans._41,mtxTrans._42 ,mtxTrans._43 };
 
 		m_aPosPoint[nCntVtx][1] = pos;
 	}

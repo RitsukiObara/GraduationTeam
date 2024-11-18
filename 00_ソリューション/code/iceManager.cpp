@@ -1436,3 +1436,23 @@ void CIceManager::Load(const char* pPath)
 		assert(("ファイルが開けませんでした", false));
 	}
 }
+
+//=====================================================
+// さざ波の属性を割り当てる処理
+//=====================================================
+void CIceManager::BindRippleElements(void)
+{
+	// 左端の検出
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		bool bLeft = false;
+
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			if (m_aGrid[i][j].pIce == nullptr)
+				continue;
+
+
+		}
+	}
+}
