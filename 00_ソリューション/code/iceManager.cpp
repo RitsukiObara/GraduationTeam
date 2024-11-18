@@ -165,8 +165,8 @@ void CIceManager::Update(void)
 
 	// •X‚Ìó‘ÔŠÇ—
 	ManageStateIce();
-
 	
+	// ‚³‚´”g‚Ì‘®«Š„‚è“–‚Ä
 	BindRippleElements();
 }
 
@@ -182,6 +182,16 @@ void CIceManager::ManageStateIce(void)
 	{
 		for (int j = 0; j < m_nNumGridHorizontal; j++)
 		{
+#ifdef _DEBUG
+			if (i == 0 ||
+				i == m_nNumGridVirtical - 1 ||
+				j == 0 ||
+				j == m_nNumGridHorizontal - 1)
+			{
+				CEffect3D::Create(m_aGrid[i][j].pos, 50.0f, 3, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+			}
+#endif
+
 			if (m_aGrid[i][j].pIce == nullptr)
 				continue;
 
@@ -584,7 +594,7 @@ void CIceManager::Collide(D3DXVECTOR3 *pPos, int nIdxV, int nIdxH)
 
 	D3DXVECTOR3 posGrid = m_aGrid[nIdxV][nIdxH].pos;
 
-	universal::LimitDistCylinderInSide(WIDTH_GRID * 0.7f, pPos, posGrid);
+	universal::LimitDistCylinderInSide(WIDTH_GRID * 0.65f, pPos, posGrid);
 }
 
 //=====================================================
