@@ -30,7 +30,7 @@ namespace
 {
 	const int OCEAN_ROT_CHANGE_TIME_DEFAULT = 10;	// デフォルトの海流向き変更時間
 	const int OCEAN_ROT_CHANGE_TIME_DEGREE = 10;	// 海流向き変更時間ぶれ幅
-	const float FLOW_LEVEL_MULTIPLY = 0.006f;		// 海流の速度の倍率
+	const float FLOW_LEVEL_MULTIPLY = 0.008f;		// 海流の速度の倍率
 	const int MAX_ALBATROSS = 2;					// アホウドリ最大数
 }
 
