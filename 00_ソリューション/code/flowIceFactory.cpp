@@ -266,7 +266,7 @@ void CFlowIceFct::DecideDefaultGridSpawnIce(int &nGridV, int &nGridH)
 	if (pIceMgr == nullptr)
 		return;
 
-	CIceManager::E_Stream dirStream = pIceMgr->GetDirStream();
+	COcean::E_Stream dirStream = pIceMgr->GetDirStream();
 
 	int nMaxV = m_apInfoFlowIce[m_nIdxNextIce]->aIdx.size();
 	int nMaxH = 0;
@@ -281,21 +281,21 @@ void CFlowIceFct::DecideDefaultGridSpawnIce(int &nGridV, int &nGridH)
 
 	switch (dirStream)
 	{
-	case CIceManager::E_Stream::STREAM_UP:
+	case COcean::E_Stream::STREAM_UP:
 		nGridV = 0;
 		nGridV -= ADD_CREATE_FLOWICE + nMaxV;
 		nGridH = universal::RandRange(nGridH - nMaxH, 0);
 		break;
-	case CIceManager::E_Stream::STREAM_RIGHT:
+	case COcean::E_Stream::STREAM_RIGHT:
 		nGridH = 0;
 		nGridH -= ADD_CREATE_FLOWICE + nMaxH;
 		nGridV = universal::RandRange(nGridV - nMaxV, 0);
 		break;
-	case CIceManager::E_Stream::STREAM_DOWN:
+	case COcean::E_Stream::STREAM_DOWN:
 		nGridV += ADD_CREATE_FLOWICE;
 		nGridH = universal::RandRange(nGridH - nMaxH, 0);
 		break;
-	case CIceManager::E_Stream::STREAM_LEFT:
+	case COcean::E_Stream::STREAM_LEFT:
 		nGridH += ADD_CREATE_FLOWICE;
 		nGridV = universal::RandRange(nGridV - nMaxV, 0);
 		break;

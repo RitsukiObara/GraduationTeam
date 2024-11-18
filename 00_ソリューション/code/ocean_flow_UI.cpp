@@ -142,22 +142,22 @@ void COceanFlowUI::OceanRotState(void)
 	D3DXVECTOR3 Rot = m_pArrow->GetRotation();
 
 	//	ñÓàÛÇ™äCó¨ÇÃå¸Ç´Ç…ó¨ÇÍÇÈèàóù
-	if (OceanFlowKeep == CIceManager::STREAM_UP)
+	if (OceanFlowKeep == COcean::STREAM_UP)
 	{
 		universal::FactingRot(&Rot.y, D3DX_PI * 0.5f, 0.02f);
 	}
 
-	if (OceanFlowKeep == CIceManager::STREAM_RIGHT)
+	if (OceanFlowKeep == COcean::STREAM_RIGHT)
 	{
 		universal::FactingRot(&Rot.y, D3DX_PI, 0.02f);
 	}
 
-	if (OceanFlowKeep == CIceManager::STREAM_DOWN)
+	if (OceanFlowKeep == COcean::STREAM_DOWN)
 	{
 		universal::FactingRot(&Rot.y, -D3DX_PI * 0.5f, 0.02f);
 	}
 
-	if (OceanFlowKeep == CIceManager::STREAM_LEFT)
+	if (OceanFlowKeep == COcean::STREAM_LEFT)
 	{
 		universal::FactingRot(&Rot.y, 0.0f, 0.02f);
 	}

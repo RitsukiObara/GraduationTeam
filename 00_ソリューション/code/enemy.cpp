@@ -679,7 +679,7 @@ void CEnemy::StayFlow(void)
 	}
 
 	// 海流のベクトル取得
-	CIceManager::E_Stream dir = pIceMgr->GetDirStream();
+	COcean::E_Stream dir = pIceMgr->GetDirStream();
 	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[dir];
 
 	// 流れる速度に正規化して位置を加算

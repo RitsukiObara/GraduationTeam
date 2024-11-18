@@ -52,7 +52,7 @@ CIceManager *CIceManager::s_pIceManager = nullptr;	// Ž©g‚Ìƒ|ƒCƒ“ƒ^
 //=====================================================
 // ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 //=====================================================
-CIceManager::CIceManager(int nPriority) : CObject(nPriority), m_nNumGridVirtical(0), m_nNumGridHorizontal(0), m_dirStream(E_Stream::STREAM_UP)
+CIceManager::CIceManager(int nPriority) : CObject(nPriority), m_nNumGridVirtical(0), m_nNumGridHorizontal(0), m_dirStream(COcean::STREAM_UP)
 {
 
 }
@@ -101,8 +101,8 @@ HRESULT CIceManager::Init(void)
 	SetGridPos();
 
 	// ŠC—¬‚ð‰Šú‰»
-	m_dirStream = E_Stream::STREAM_LEFT;
-	m_dirStreamNext = E_Stream::STREAM_LEFT;
+	m_dirStream = COcean::STREAM_LEFT;
+	m_dirStreamNext = COcean::STREAM_LEFT;
 	m_fOceanLevel = OCEAN_FLOW_MAX;
 
 	return S_OK;
@@ -166,8 +166,8 @@ void CIceManager::Update(void)
 	// •X‚Ìó‘ÔŠÇ—
 	ManageStateIce();
 
-	if (m_aGrid[0][0].pIce != nullptr)
-		int n = 0;
+	
+	BindRippleElements();
 }
 
 //=====================================================
@@ -1129,14 +1129,14 @@ void CIceManager::Debug(void)
 	{
 		COcean* pOcean = COcean::GetInstance();
 		pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);	// ŠC—¬‚Ì‘¬“x‚ð‰º‚°‚é
-		m_dirStreamNext = (E_Stream)((m_dirStreamNext + 1) % E_Stream::STREAM_MAX);	// ŽŸ‚ÌŠC—¬‚ÌŒü‚«‚É‚·‚é
+		m_dirStreamNext = (COcean::E_Stream)((m_dirStreamNext + 1) % COcean::E_Stream::STREAM_MAX);	// ŽŸ‚ÌŠC—¬‚ÌŒü‚«‚É‚·‚é
 	}
 
 	if (pKeyboard->GetTrigger(DIK_RIGHT))
 	{
 		COcean* pOcean = COcean::GetInstance();
 		pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);	// ŠC—¬‚Ì‘¬“x‚ð‰º‚°‚é
-		m_dirStreamNext = (E_Stream)((m_dirStreamNext + E_Stream::STREAM_MAX - 1) % E_Stream::STREAM_MAX);	// ŽŸ‚ÌŠC—¬‚ÌŒü‚«‚É‚·‚é
+		m_dirStreamNext = (COcean::E_Stream)((m_dirStreamNext + COcean::E_Stream::STREAM_MAX - 1) % COcean::E_Stream::STREAM_MAX);	// ŽŸ‚ÌŠC—¬‚ÌŒü‚«‚É‚·‚é
 	}
 
 	pDebugProc->Print("\nŒ»Ý‚ÌŠC—¬‚ÌŒü‚«[%d]", m_dirStreamNext);
@@ -1452,7 +1452,13 @@ void CIceManager::BindRippleElements(void)
 			if (m_aGrid[i][j].pIce == nullptr)
 				continue;
 
-
+			if (!bLeft)
+			{
+				m_aGrid[i][j].pIce->SetRippleFrag(COcean::E_Stream::STREAM_RIGHT, true);
+				bLeft = true;
+			}
+			else
+				m_aGrid[i][j].pIce->SetRippleFrag(COcean::E_Stream::STREAM_RIGHT, false);
 		}
 	}
 }

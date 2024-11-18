@@ -61,7 +61,7 @@ std::vector<CIce*> CIce::m_Vector = {};	// 自身のポインタ
 //=====================================================
 CIce::CIce(int nPriority) : CGameObject(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false), m_bPeck(false),
 m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false), m_bStop(nullptr), m_fHeightFromOcean(0.0f), m_shake(E_TypeShake::SHAKE_NONE),
-m_fHeightDestFromOcean(0.0f)
+m_fHeightDestFromOcean(0.0f), m_abRipleFrag()
 {
 	s_nNumAll++;
 	m_Vector.push_back(this);
@@ -679,7 +679,7 @@ void CIceStateFlow::UpdateSearchIce(CIce *pIce)
 		return;
 
 	// 海流のベクトル取得
-	CIceManager::E_Stream dir = pIceManager->GetDirStream();
+	COcean::E_Stream dir = pIceManager->GetDirStream();
 	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[dir];
 
 	// 流れる速度に正規化して位置を加算
@@ -757,7 +757,7 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 	}
 
 	// 海流の方向に合わせた判定関数の呼び出し
-	DirectionFunc directionFuncs[CIceManager::E_Stream::STREAM_MAX] = 
+	DirectionFunc directionFuncs[COcean::E_Stream::STREAM_MAX] = 
 	{
 		&CIceStateFlow::CheckUp,
 		&CIceStateFlow::CheckRight,
@@ -765,7 +765,7 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 		&CIceStateFlow::CheckLeft
 	};
 
-	CIceManager::E_Stream stream = pIceManager->GetDirStream();
+	COcean::E_Stream stream = pIceManager->GetDirStream();
 	
 	// 漂着する氷があったら、フラグを立てて漂着グリッド番号を保存
 	vector<CIce*> apIceHit;

@@ -138,7 +138,7 @@ void CGame::Update(void)
 	CInputManager* pInputManager = CInputManager::GetInstance();
 	CInputKeyboard* pKeyboard = CInputKeyboard::GetInstance();
 	CSound* pSound = CSound::GetInstance();
-	CIceManager::E_Stream OceanFlow = CIceManager::GetInstance()->GetDirStreamNext();
+	COcean::E_Stream OceanFlow = CIceManager::GetInstance()->GetDirStreamNext();
 
 	if (!m_bStop)
 	{

@@ -12,6 +12,7 @@
 //*****************************************************
 #include "object.h"
 #include "ice.h"
+#include "ocean.h"
 
 //*****************************************************
 // 前方宣言
@@ -35,14 +36,6 @@ public:
 		DIRECTION_LEFT,	// 左
 		DIRECTION_LEFTUP,	// 左上
 		DIRECTION_MAX
-	};
-	enum E_Stream
-	{// 流れる方向
-		STREAM_UP,	// 上
-		STREAM_RIGHT,	// 右
-		STREAM_DOWN,	// 下
-		STREAM_LEFT,	// 左
-		STREAM_MAX
 	};
 	enum E_Pecker
 	{// 突っついてくる人の番号
@@ -87,13 +80,13 @@ public:
 	int GetNumGridV(void) { return m_nNumGridVirtical; }	// 縦のグリッド数
 	int GetNumGridH(void) { return m_nNumGridHorizontal; }	// 横のグリッド数
 	float GetOceanLevel(void) { return m_fOceanLevel; }	// 海流レベルの取得
-	E_Stream GetDirStream(void) { return m_dirStream; }	// 海流の方向取得
-	E_Stream GetDirStreamNext(void) { return m_dirStreamNext; }	// 次の海流の方向取得
+	COcean::E_Stream GetDirStream(void) { return m_dirStream; }	// 海流の方向取得
+	COcean::E_Stream GetDirStreamNext(void) { return m_dirStreamNext; }	// 次の海流の方向取得
 	vector<CIce*> GetFlows(void);	// 流れてる氷の取得
 
 	void SetOceanLevel(float level) { m_fOceanLevel = level; }
-	void SetDirStream(E_Stream direction) { m_dirStream = direction; }	// 海流の方向
-	void SetDirStreamNext(E_Stream directionNext) { m_dirStreamNext = directionNext; }	// 次の海流の方向
+	void SetDirStream(COcean::E_Stream direction) { m_dirStream = direction; }	// 海流の方向
+	void SetDirStreamNext(COcean::E_Stream directionNext) { m_dirStreamNext = directionNext; }	// 次の海流の方向
 
 	// 静的メンバ関数
 	static CIceManager *Create(int nNumV, int nNumH);
@@ -139,8 +132,8 @@ private:
 	int m_nNumGridHorizontal;	// 横グリッドの数
 	float m_fOceanLevel;	//	海流の強さ
 	vector<vector<S_Grid>> m_aGrid;	// グリッドの配列
-	E_Stream m_dirStream;	// 海流の方向
-	E_Stream m_dirStreamNext;	// 次の海流の方向
+	COcean::E_Stream m_dirStream;	// 海流の方向
+	COcean::E_Stream m_dirStreamNext;	// 次の海流の方向
 
 	// 静的メンバ変数
 	static CIceManager *s_pIceManager;	// 自身のポインタ
@@ -180,7 +173,7 @@ inline void CalcAroundGrids(int nNumV, int nNumH, int* aV, int* aH)
 
 namespace stream
 {
-const D3DXVECTOR3 VECTOR_STREAM[CIceManager::E_Stream::STREAM_MAX] =
+const D3DXVECTOR3 VECTOR_STREAM[COcean::E_Stream::STREAM_MAX] =
 {
 	{ 0.0f, 0.0f, 1.0f },   // 上
 	{ 1.0f, 0.0f, 0.0f },   // 右

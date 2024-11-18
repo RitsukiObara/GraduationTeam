@@ -64,7 +64,7 @@ private:
 
 	TYPE m_type;	// タイプ分け変数
 	STATE m_state;	// 状態分け変数
-	CIceManager::E_Stream m_streamOld;	// 海流情報
+	COcean::E_Stream m_streamOld;	// 海流情報
 	float fgravity_speed;	//	沈んでいく速度;
 	int m_nNumAll;	// 総数
 

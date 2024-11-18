@@ -36,7 +36,7 @@ public:
 	void ManageMotion(void);	// モーション管理
 
 	// 静的メンバ関数
-	static CAlbatross* Create(CIceManager::E_Stream dir);
+	static CAlbatross* Create(COcean::E_Stream dir);
 
 private:
 	enum E_Motion
@@ -45,7 +45,7 @@ private:
 		MOTION_MAX
 	};
 
-	void Stream(CIceManager::E_Stream dir);
+	void Stream(COcean::E_Stream dir);
 
 	D3DXVECTOR3 m_Move; // 移動量
 };
