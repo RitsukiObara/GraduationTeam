@@ -20,8 +20,9 @@
 //***********************************************************
 const char* CMyEffekseer::m_apEfkName[CMyEffekseer::TYPE_MAX] =		// エフェクトのパス
 {
-	"",											// なんもない
-	"data\\EFFEKSEER\\Effect\\peckWave.efkefc",	// つっつきの波紋
+	"",												// なんもない
+	"data\\EFFEKSEER\\Effect\\peckWave.efkefc",		// つっつきの波紋
+	"data\\EFFEKSEER\\Effect\\splashwater.efkefc",	// さざ波
 };
 CMyEffekseer *CMyEffekseer::s_pMyEffekseer = nullptr;	// 自身のポインタ
 
@@ -108,6 +109,15 @@ void CMyEffekseer::Uninit(void)
 //===========================================================
 void CMyEffekseer::Update(void)
 {
+	// レイヤーパラメータの設定
+	Effekseer::Manager::LayerParameter layerParameter;
+	layerParameter.ViewerPosition = viewerPosition;
+	m_efkManager->SetLayerParameter(0, layerParameter);
+
+	// マネージャーの更新
+	Effekseer::Manager::UpdateParameter updateParameter;
+	m_efkManager->Update(updateParameter);
+
 	for (auto it = m_listEffect.begin(); it != m_listEffect.end(); )
 	{
 		// エフェクトの移動
@@ -123,15 +133,6 @@ void CMyEffekseer::Update(void)
 		Effekseer::Vector3D scale = (*it)->GetScale();
 		m_efkManager->SetScale(handle, scale.X, scale.Y, scale.Z);
 
-		// レイヤーパラメータの設定
-		Effekseer::Manager::LayerParameter layerParameter;
-		layerParameter.ViewerPosition = viewerPosition;
-		m_efkManager->SetLayerParameter(0, layerParameter);
-
-		// マネージャーの更新
-		Effekseer::Manager::UpdateParameter updateParameter;
-		m_efkManager->Update(updateParameter);
-
 		// 停止フラグの取得
 		bool bStop = false;
 		CGame *pGame = CGame::GetInstance();
@@ -145,12 +146,15 @@ void CMyEffekseer::Update(void)
 		}
 		else
 		{
-			// 再生時間を進める
-			int32_t time = (*it)->GetTime();
-			time++;
-			(*it)->SetTime(time);
+			if (it == m_listEffect.begin())
+			{
+				// 再生時間を進める
+				int32_t time = (*it)->GetTime();
+				time++;
+				(*it)->SetTime(time);
 
-			m_efkManager->SetPaused(handle, false); // 再生を再開
+				m_efkManager->SetPaused(handle, false); // 再生を再開
+			}
 		}
 
 		// 毎フレーム、エフェクトが再生終了しているか確認する

@@ -1442,23 +1442,37 @@ void CIceManager::Load(const char* pPath)
 //=====================================================
 void CIceManager::BindRippleElements(void)
 {
-	// 左端の検出
+	// 全氷のチェック
 	for (int i = 0; i < m_nNumGridVirtical; i++)
 	{
-		bool bLeft = false;
-
 		for (int j = 0; j < m_nNumGridHorizontal; j++)
 		{
 			if (m_aGrid[i][j].pIce == nullptr)
 				continue;
 
-			if (!bLeft)
-			{
+			// 左端の検出
+			if (j == 0)
 				m_aGrid[i][j].pIce->SetRippleFrag(COcean::E_Stream::STREAM_RIGHT, true);
-				bLeft = true;
-			}
 			else
-				m_aGrid[i][j].pIce->SetRippleFrag(COcean::E_Stream::STREAM_RIGHT, false);
+				m_aGrid[i][j].pIce->SetRippleFrag(COcean::E_Stream::STREAM_RIGHT, m_aGrid[i][j - 1].pIce == nullptr);
+
+			// 右端の検出
+			if (j == m_nNumGridHorizontal - 1)
+				m_aGrid[i][j].pIce->SetRippleFrag(COcean::E_Stream::STREAM_LEFT, true);
+			else
+				m_aGrid[i][j].pIce->SetRippleFrag(COcean::E_Stream::STREAM_LEFT, m_aGrid[i][j + 1].pIce == nullptr);
+
+			// 下端の検出
+			if (i == 0)
+				m_aGrid[i][j].pIce->SetRippleFrag(COcean::E_Stream::STREAM_UP, true);
+			else
+				m_aGrid[i][j].pIce->SetRippleFrag(COcean::E_Stream::STREAM_UP, m_aGrid[i - 1][j].pIce == nullptr);
+
+			// 上端の検出
+			if (i == m_nNumGridVirtical - 1)
+				m_aGrid[i][j].pIce->SetRippleFrag(COcean::E_Stream::STREAM_DOWN, true);
+			else
+				m_aGrid[i][j].pIce->SetRippleFrag(COcean::E_Stream::STREAM_DOWN, m_aGrid[i + 1][j].pIce == nullptr);
 		}
 	}
 }

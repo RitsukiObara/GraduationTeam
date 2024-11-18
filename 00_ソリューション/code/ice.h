@@ -93,26 +93,34 @@ public:
 
 private:
 	// メンバ関数
-	void FollowWave(void);	// 波に追従する処理
-	void SearchOnThis(void);	// 自身に乗ってるものの検出
+	void FollowWave(void);								// 波に追従する処理
+	void SearchOnThis(void);							// 自身に乗ってるものの検出
 	void GetOnTopObject(vector<CGameObject*> &rVector);	// 上に乗ってるものの検出
-	void Shake(void);	// 揺れの処理
+	void Shake(void);									// 揺れの処理
+	void Ripples(void);									// さざ波の処理
 
 	// メンバ変数
 	E_State m_state;	// 状態
 	bool m_bCanFind;	// 探索できるフラグ
-	bool m_bBreak;	// 壊れるフラグ
-	bool m_bPeck;	// 突っつかれたフラグ
-	bool m_bSink;	// 沈むフラグ
-	bool m_bStop;	// 停止しているかどうか
-	float m_fHeightFromOcean;	// 海からの高さ
-	float m_fHeightDestFromOcean;	// 海からの高さ
-	E_TypeShake m_shake;	// 揺れのタイプ
+	bool m_bBreak;		// 壊れるフラグ
+	bool m_bPeck;		// 突っつかれたフラグ
+	bool m_bSink;		// 沈むフラグ
+	bool m_bStop;		// 停止しているかどうか
+
+	float m_fHeightFromOcean;		// 海からの高さ
+	float m_fHeightDestFromOcean;	// 海からの目標高さ
+
+	E_TypeShake m_shake;		// 揺れのタイプ
 	float m_fTimerReturnShake;	// 揺れから戻るタイマー
-	CFan3D *m_pUp;	// 上側に貼る扇ポリゴン
+	
+	CFan3D *m_pUp;			// 上側に貼る扇ポリゴン
 	CMeshCylinder *m_pSide;	// サイドのシリンダー
+
 	CIceState *m_pState;	// ステイトのポインタ
+
 	bool m_abRipleFrag[COcean::E_Stream::STREAM_MAX];	// 流れごとのフラグ
+	float m_fTimerRipples;								// さざ波のタイマー
+	float m_fSpawnTimeRipples;							// さざ波の制限時間
 
 	// 静的メンバ変数
 	static int s_nNumAll;	// 総数

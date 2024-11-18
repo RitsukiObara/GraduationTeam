@@ -23,6 +23,7 @@
 #include "effect3D.h"
 #include "enemy.h"
 #include "player.h"
+#include "MyEffekseer.h"
 
 //*****************************************************
 // 定数定義
@@ -48,6 +49,15 @@ const float HEIGHT_NORMALSINK_FROM_OCEAN = 10.0f;	// 海からの通常沈む高さ
 const float LINE_STOP_ICE = 1.0f;	// 氷が止まるしきい値
 
 const float SPEED_SHAKE_SINK_NORMAL = 0.1f;	// 通常の揺れの沈む速度
+
+//------------------------------
+// さざ波の定数
+//------------------------------
+namespace ripple
+{
+const int MAX_TIME = 7;	// 生成にかかる最大時間
+const int MIN_TIME = 2;	// 生成にかかる最小時間
+}
 }
 
 //*****************************************************
@@ -213,6 +223,9 @@ void CIce::Update(void)
 
 	// 揺れの処理
 	Shake();
+
+	// さざ波の処理
+	Ripples();
 }
 
 //=====================================================
@@ -323,6 +336,39 @@ void CIce::GetOnTopObject(vector<CGameObject*> &rVector)
 void CIce::Shake(void)
 {
 	m_fHeightFromOcean += (m_fHeightDestFromOcean - m_fHeightFromOcean) * SPEED_SHAKE_SINK_NORMAL;
+}
+
+//=====================================================
+// さざ波の処理
+//=====================================================
+void CIce::Ripples(void)
+{
+	// タイマーでのせき止め
+	m_fTimerRipples += CManager::GetDeltaTime();
+
+	if (m_fTimerRipples <= m_fSpawnTimeRipples)
+		return;
+
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	COcean::E_Stream stream = pIceMgr->GetDirStream();
+
+	// 流れに合った方向のフラグが立ってたら処理を通る
+	if (!m_abRipleFrag[stream])
+		return;
+
+	// エフェクトの生成
+	MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_RIPPLES, GetPosition());
+
+	// タイマーの再設定
+	m_fTimerRipples = 0.0f;
+
+	int nRand = universal::RandRange(ripple::MAX_TIME, ripple::MIN_TIME);
+
+	m_fSpawnTimeRipples = (float)nRand;
 }
 
 //=====================================================
