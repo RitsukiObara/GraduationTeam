@@ -31,6 +31,7 @@ public:
 	static CPeckWave *Create(D3DXVECTOR3 pos,D3DXCOLOR col);
 
 private:
+	float m_fTimer;	// タイマー
 };
 
 #endif

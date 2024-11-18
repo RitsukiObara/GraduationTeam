@@ -112,7 +112,7 @@ void CSelectStagePenguin::Update(void)
 		Input();	// “ü—Íˆ—
 
 	// ˆÚ“®—Ê•ªˆÚ“®
-	AddPosition(m_move);
+	Translate(m_move);
 
 	// ˆÚ“®—Ê‚ÌŒ¸Š
 	m_move *= FACT_DECREASE_MOVE;

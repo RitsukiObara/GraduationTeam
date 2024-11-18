@@ -22,7 +22,7 @@ class COrbit;
 //*****************************************************
 // クラス定義
 //*****************************************************
-class CPeckLine : public CObject
+class CPeckLine : public CGameObject
 {
 public:
 	// 列挙型定義
@@ -50,7 +50,7 @@ public:
 	E_State GetState(void) { return m_state; }
 
 	// 静的メンバ関数
-	static CPeckLine *Create(CPlayer *pPlayer);
+	static CPeckLine *Create(D3DXCOLOR col);
 
 private:
 	// 構造体定義
@@ -71,11 +71,11 @@ private:
 	void UpdateAllLine(void);	// 全ての線の更新
 
 	// メンバ変数
-	CPlayer *m_pPlayer;					// プレイヤーのポインタ
 	vector<S_InfoLine*> m_aInfoLine;	// 線の配列
 	float m_fTimerWait;					// 待機タイマー
 	E_State m_state;					// 状態
 	D3DXVECTOR3 m_posDest;				// 目標位置
+	D3DXCOLOR m_col;					// 色
 
 	// 状態更新の関数ポインタ型エイリアス定義
 	typedef void (CPeckLine::*FuncUpdateState)(void);

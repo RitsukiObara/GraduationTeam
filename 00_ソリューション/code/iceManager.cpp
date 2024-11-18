@@ -453,7 +453,7 @@ bool CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos)
 }
 
 //=====================================================
-// 突っつける氷化のチェック
+// 突っつける氷かのチェック
 //=====================================================
 bool CIceManager::CanPeck(CIce* pIce, int nNumV, int nNumH)
 {

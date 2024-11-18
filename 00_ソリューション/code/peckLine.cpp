@@ -14,7 +14,7 @@
 #include "orbit.h"
 #include "manager.h"
 #include "effect3D.h"
-#include "MyEffekseer.h"
+#include "peckWave.h"
 #include "debugproc.h"
 
 //*****************************************************
@@ -50,7 +50,7 @@ CPeckLine::FuncUpdateState CPeckLine::s_aFuncUpdateState[] =
 //====================================================
 // コンストラクタ
 //====================================================
-CPeckLine::CPeckLine() : m_pPlayer(nullptr), m_posDest(), m_state(E_State::STATE_NONE), m_fTimerWait(0.0f)
+CPeckLine::CPeckLine() : m_posDest(), m_state(E_State::STATE_NONE), m_fTimerWait(0.0f), m_col()
 {
 
 }
@@ -66,7 +66,7 @@ CPeckLine::~CPeckLine()
 //====================================================
 // 生成処理
 //====================================================
-CPeckLine *CPeckLine::Create(CPlayer *pPlayer)
+CPeckLine *CPeckLine::Create(D3DXCOLOR col)
 {
 	CPeckLine *pPeckLine = nullptr;
 
@@ -74,8 +74,8 @@ CPeckLine *CPeckLine::Create(CPlayer *pPlayer)
 
 	if (pPeckLine != nullptr)
 	{
-		pPeckLine->m_pPlayer = pPlayer;
 		pPeckLine->Init();
+		pPeckLine->m_col = col;
 	}
 
 	return pPeckLine;
@@ -86,8 +86,6 @@ CPeckLine *CPeckLine::Create(CPlayer *pPlayer)
 //====================================================
 HRESULT CPeckLine::Init(void)
 {
-	assert(m_pPlayer != nullptr);	// プレイヤー渡し忘れ用
-
 	return S_OK;
 }
 
@@ -101,7 +99,7 @@ void CPeckLine::CreateLine(void)
 		return;
 
 	pInfo->posDest = m_posDest;
-	pInfo->posInit = m_pPlayer->GetPosition();
+	pInfo->posInit = GetPosition();
 
 	//---------------------------------
 	// 軌跡先端用3Dオブジェクトの生成
@@ -111,7 +109,7 @@ void CPeckLine::CreateLine(void)
 	if (pInfo->pPosOrbit == nullptr)
 		return;
 
-	D3DXVECTOR3 posPlayer = m_pPlayer->GetPosition();
+	D3DXVECTOR3 posPlayer = GetPosition();
 	D3DXVECTOR3 vecDiff = m_posDest - posPlayer;
 
 	float fRot = atan2f(vecDiff.x, vecDiff.z);
@@ -131,6 +129,9 @@ void CPeckLine::CreateLine(void)
 		return;
 
 	pInfo->pOrbit->ResetVtx(mtx);
+
+	// プレイヤーのIDに合わせた色に設定
+	pInfo->pOrbit->SetColor(m_col);
 
 	// 配列に追加
 	m_aInfoLine.push_back(pInfo);
@@ -222,7 +223,7 @@ void CPeckLine::UpdateAllLine(void)
 			pInfo->fTimer = 0.0f;
 
 			// 波紋エフェクトの生成
-			MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_PECKWAVE, pInfo->posDest);
+			CPeckWave::Create(pInfo->posDest, pInfo->pOrbit->GetColor(0));
 
 			// 軌跡を独立させる
 			pInfo->pOrbit->SetEnd(true);
@@ -262,7 +263,6 @@ void CPeckLine::UpdateAllLine(void)
 		//---------------------------------
 		D3DXMATRIX mtx = pInfo->pPosOrbit->GetMatrix();
 		pInfo->pOrbit->SetOffset(mtx);
-		pInfo->pOrbit->SetColor(orbit::COL_INIT);
 
 		++it; // ループを進める
 	}

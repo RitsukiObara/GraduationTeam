@@ -474,7 +474,7 @@ void CIceStaeteNormal::MoveToGrid(CIce *pIce)
 	vecDiff *= fSpeedFlow;
 
 	// 氷の位置に移動量を加算
-	pIce->AddPosition(vecDiff);
+	pIce->Translate(vecDiff);
 
 	// 上のオブジェクトを動かす
 	MoveObjectOnIce(vecDiff,pIce);
@@ -506,7 +506,7 @@ void CIceStaeteNormal::MoveObjectOnIce(D3DXVECTOR3 vecMove,CIce *pIce)
 		D3DXVECTOR3 pos = pIce->GetPosition();
 
 		if (universal::DistCmpFlat(pos, posObject, SIZE_INIT, nullptr))
-			object->AddPosition(vecMove); // 何かが乗ってるので動かす
+			object->Translate(vecMove); // 何かが乗ってるので動かす
 	}
 }
 
@@ -686,7 +686,7 @@ void CIceStateFlow::UpdateSearchIce(CIce *pIce)
 	float fSpeedFlow = pIceManager->GetOceanLevel();
 	D3DXVec3Normalize(&vecStream, &vecStream);
 	vecStream *= fSpeedFlow;
-	pIce->AddPosition(vecStream);
+	pIce->Translate(vecStream);
 
 	// 氷との判定
 	CollideIce(pIce);
@@ -717,7 +717,7 @@ void CIceStateFlow::UpdateDriftIce(CIce *pIce)
 	float fSpeedFlow = pIceManager->GetOceanLevel();
 	D3DXVec3Normalize(&vecDiff, &vecDiff);
 	vecDiff *= fSpeedFlow;
-	pIce->AddPosition(vecDiff);
+	pIce->Translate(vecDiff);
 
 	// グリッドの位置との距離がしきい値を下回ったら止める
 	bool bStop = universal::DistCmpFlat(posIce, posDrift, LINE_STOP_ICE, nullptr);

@@ -125,7 +125,7 @@ void CSelectModePenguin::Uninit(void)
 void CSelectModePenguin::Update(void)
 {
 	// ˆÚ“®—Ê•ªˆÚ“®
-	AddPosition(m_move);
+	Translate(m_move);
 
 	// ˆÚ“®—Ê‚ÌŒ¸Š
 	m_move *= FACT_DECREASE_MOVE;

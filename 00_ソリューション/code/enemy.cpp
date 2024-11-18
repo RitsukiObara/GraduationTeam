@@ -193,7 +193,7 @@ void CEnemy::Update(void)
 		(this->*updateFuncs[m_state])();
 
 	// ˆÚ“®—Ê‚ðˆÊ’u‚É‰ÁŽZ
-	AddPosition(m_move);
+	Translate(m_move);
 
 	// •Y—¬ŠJŽn‚Ì”»’è
 	StartFlows();
@@ -686,7 +686,7 @@ void CEnemy::StayFlow(void)
 	float fSpeedFlow = pIceMgr->GetOceanLevel();
 	D3DXVec3Normalize(&vecStream, &vecStream);
 	vecStream *= fSpeedFlow;
-	AddPosition(vecStream);
+	Translate(vecStream);
 }
 
 //=====================================================

@@ -330,7 +330,7 @@ void CSelectStageManager::SetParticle(int nIdx)
 	universal::VecConvertLength(&move, SPEED_PARTICLE);
 
 	// 移動量を反映
-	m_aParticlePos[nIdx]->AddPosition(move);
+	m_aParticlePos[nIdx]->Translate(move);
 
 	// パーティクルを発生
 	D3DXVECTOR3 posParticle = m_aParticlePos[nIdx]->GetPosition();

@@ -247,7 +247,7 @@ void CIcon::UpdateFall(void)
 	m_move.y += GRAVITY_ICON;
 
 	// 位置の加算
-	AddPosition(m_move);
+	Translate(m_move);
 	SetVtx();
 
 	// 画面外に出たら終了

@@ -231,7 +231,7 @@ void CBgIce::Move(void)
 	case STATE_FLOW:
 		D3DXVec3Normalize(&vecStream, &vecStream);
 		vecStream *= fSpeedFlow;
-		AddPosition(vecStream);
+		Translate(vecStream);
 
 		//ŠC–Ê‚É‰ˆ‚í‚¹‚é
 		Flow();

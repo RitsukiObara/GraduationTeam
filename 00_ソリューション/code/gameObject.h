@@ -30,7 +30,8 @@ public:
 	// •Ï”æ“¾Eİ’èŠÖ”
 	D3DXVECTOR3 GetPosition(void) { return m_pos; }	// ˆÊ’u
 	virtual void SetPosition(D3DXVECTOR3 pos) { m_pos = pos; }
-	void AddPosition(D3DXVECTOR3 pos) { m_pos += pos; }
+	void Translate(D3DXVECTOR3 pos) { m_pos += pos; }
+	void Rotate(D3DXVECTOR3 rot) { m_rot += rot; universal::LimitRot(&m_rot.x); universal::LimitRot(&m_rot.y);universal::LimitRot(&m_rot.z);}
 	D3DXVECTOR3 GetRotation(void) { return m_rot; }	// Œü‚«
 	void SetRotation(D3DXVECTOR3 rot) { m_rot = rot; }
 

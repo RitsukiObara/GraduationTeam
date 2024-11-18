@@ -55,6 +55,15 @@ const float WIDTH = 70.0f;		// •
 const float HEIGHT = 130.0f;	// ‚‚³
 const float FACT_ROT = 0.6f;	// ‰ñ“]ŒW”
 }
+
+const D3DXCOLOR COL_LINE[NUM_PLAYER] =									// F
+{
+	D3DXCOLOR(1.0f,0.0f,0.0f,1.0f),
+	D3DXCOLOR(0.0f,0.0f,1.0f,1.0f),
+	D3DXCOLOR(0.0f,1.0f,0.0f,1.0f),
+	D3DXCOLOR(0.0f,1.0f,1.0f,1.0f),
+};
+
 }
 
 //*****************************************************
@@ -169,7 +178,7 @@ void CPlayer::CreateDirUI(void)
 	m_pDir->EnableLighting(false);
 	m_pDir->EnableZtest(true);
 #else
-	m_pPeckLine = CPeckLine::Create(this);
+	m_pPeckLine = CPeckLine::Create(COL_LINE[GetID()]);
 #endif
 }
 
@@ -221,6 +230,9 @@ void CPlayer::Update(void)
 
 	// •ûŒüUI‚Ì’Ç]
 	FollowDirUI();
+
+	if (m_pPeckLine != nullptr)
+		m_pPeckLine->SetPosition(GetPosition());
 
 #ifdef _DEBUG
 	Debug();
@@ -374,7 +386,7 @@ void CPlayer::Forward(void)
 	SetMove(move);
 
 	// ˆÚ“®—Ê‚Ì”½‰f
-	AddPosition(move);
+	Translate(move);
 }
 
 //=====================================================
@@ -642,7 +654,7 @@ void CPlayer::StayFlow(void)
 	float fSpeedFlow = pIceMgr->GetOceanLevel();
 	D3DXVec3Normalize(&vecStream, &vecStream);
 	vecStream *= fSpeedFlow;
-	AddPosition(vecStream);
+	Translate(vecStream);
 
 	// —¬•X“à‚ÉˆÊ’u‚ð§ŒÀ
 	LimitInSideFlowIce();
@@ -951,6 +963,7 @@ void CPlayer::Debug(void)
 		return;
 
 	pDebugProc->Print("\nƒvƒŒƒCƒ„[î•ñ==========================");
+	pDebugProc->Print("\n”Ô†[%d]", m_nID);
 	pDebugProc->Print("\nc[%d]‰¡[%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\nˆÊ’u[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
 

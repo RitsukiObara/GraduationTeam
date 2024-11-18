@@ -405,6 +405,9 @@
     <ClCompile Include="code\MyEffekseer.cpp">
       <Filter>ソース ファイル\lib</Filter>
     </ClCompile>
+    <ClCompile Include="code\peckWave.cpp">
+      <Filter>ソース ファイル\UI\peck</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\scene.h">
@@ -736,6 +739,9 @@
     </ClInclude>
     <ClInclude Include="code\MyEffekseer.h">
       <Filter>ソース ファイル\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="code\peckWave.h">
+      <Filter>ソース ファイル\UI\peck</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
