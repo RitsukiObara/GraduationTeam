@@ -36,7 +36,7 @@ const float FACT_ROTATION = 0.1f;	// 回転係数
 
 const float LINE_INPUT_MOVE = 0.3f;	// 移動するまでのスティック入力のしきい値
 const float RANGE_SELECT_ICE = D3DX_PI * 2 / 6;	// 氷を選択するときの角度の範囲
-const float RATE_CHANGE_GRID = 0.6f;	// 次のグリッドに移る判定の割合
+const float RATE_CHANGE_GRID = 0.5f;	// 次のグリッドに移る判定の割合
 
 const float TIME_MAX_SPEED = 1.0f;	// 最大速度に達するまでにかかる時間
 const float SPEED_MOVE_MAX = 2.5f;	// 最大移動速度
@@ -44,6 +44,17 @@ const float SPEED_MOVE_MAX = 2.5f;	// 最大移動速度
 const float LINE_STOP_TURN = 0.2f;	// 振り向きを停止するしきい値
 const float LINE_START_TURN = D3DX_PI * 0.6f;	// 振り向きを開始するしきい値
 const float FACT_ROTATION_TURN = 0.2f;	// 振り向き回転係数
+
+//-------------------------------
+// ジャンプの定数
+//-------------------------------
+namespace jump
+{
+const float RANGE_JUMP = 0.3f;	// ジャンプ先の目標にする角度の範囲
+const float FACT_MOVE = 0.07f;	// 移動係数
+const float LINE_END = 10.0f;	// 終了と示すしきい値
+const float HEIGHT = 100.0f;	// 高さ
+}
 
 //-------------------------------
 // 方向UIの定数
@@ -63,7 +74,6 @@ const D3DXCOLOR COL_LINE[NUM_PLAYER] =									// 色
 	D3DXCOLOR(0.0f,1.0f,0.0f,1.0f),
 	D3DXCOLOR(0.0f,1.0f,1.0f,1.0f),
 };
-
 }
 
 //*****************************************************
@@ -75,7 +85,8 @@ vector<CPlayer*> CPlayer::s_apPlayer;	// 格納用の配列
 // コンストラクタ
 //=====================================================
 CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(STATE_NONE), m_pIceMoveDest(nullptr), m_bEnableInput(false), m_fTimerStartMove(0.0f),
-m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f), m_pLandSystemFlow(nullptr), m_pLandFlow(nullptr), m_nTimePeck(0), m_nID(0), m_pPeckLine(nullptr)
+m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f), m_pLandSystemFlow(nullptr), m_pLandFlow(nullptr), m_nTimePeck(0), m_nID(0), m_pPeckLine(nullptr),
+m_bEnableJump(false), m_pIceDestJump(nullptr), m_posInitJump()
 {
 	// デフォルトは入った順の番号
 	m_nID = (int)s_apPlayer.size();
@@ -551,14 +562,26 @@ bool CPlayer::CheckGridChange(void)
 	if (!pIceMgr->GetIdxGridFromPosition(pos, &nIdxV, &nIdxH, RATE_CHANGE_GRID))
 		return false;	// グリッド番号取得失敗で偽を返す
 
-	if (m_state != E_State::STATE_INVINCIBLE &&
-		pIceMgr->GetGridIce(&nIdxV, &nIdxH) == nullptr)
+	CIce *pIce = pIceMgr->GetGridIce(&nIdxV, &nIdxH);
+
+	if (m_state != E_State::STATE_INVINCIBLE && pIce == nullptr)
 	{// 無敵状態でない場合、氷がないグリッドの上に行っても番号を変えない
 		// 漂流を開始
 		StartFlows();
 
 		return false;
 	}
+
+	// 突っついている氷に接していたらジャンプできる
+	m_bEnableJump = pIce->IsPeck();
+
+	if (pIce->IsPeck())
+	{// 突っついた氷に接している判定
+		m_apIceJump = pIceMgr->GetAroundIce(nIdxV, nIdxH);
+		return false;
+	}
+	else
+		m_apIceJump.clear();
 
 	if ((nIdxV == m_nGridV &&
 		nIdxH == m_nGridH) ||
@@ -811,11 +834,15 @@ void CPlayer::RotationDirUI(int nDir)
 //=====================================================
 void CPlayer::InputJump(void)
 {
-	//if (m_pInputMgr == nullptr)
-		//return;
+	if (m_pInputMgr == nullptr)
+		return;
 
-	//if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_JUMP))
-	//	SarchJumpIce();	// ジャンプ先の氷を探す
+	if (!m_bEnableJump)
+		return;
+
+	CEffect3D::Create(GetPosition(), 50.0f, 3, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+
+	SarchJumpIce();	// ジャンプ先の氷を探す
 }
 
 //=====================================================
@@ -823,9 +850,36 @@ void CPlayer::InputJump(void)
 //=====================================================
 void CPlayer::SarchJumpIce(void)
 {
-	// プレイヤーの先から扇で判定をとる
+	CIce *pIceTarget = nullptr;
 
-	if (true)
+	for (int i = 0; i < (int)m_apIceJump.size(); i++)
+	{
+		if (m_apIceJump[i] == nullptr)
+			continue;
+
+		D3DXVECTOR3 posPlayer = GetPosition();
+		D3DXVECTOR3 rotPlayer = GetRotation();
+		D3DXVECTOR3 posIce = m_apIceJump[i]->GetPosition();
+
+		rotPlayer.y += D3DX_PI;
+		universal::LimitRot(&rotPlayer.y);
+
+		// 扇内にあったらターゲットにする
+		if (universal::IsInFanTargetYFlat(posPlayer, posIce, rotPlayer.y, jump::RANGE_JUMP))
+		{
+			pIceTarget = m_apIceJump[i];
+			break;
+		}
+	}
+
+	m_pIceDestJump = pIceTarget;
+
+	if (pIceTarget == nullptr)
+		return;	// 何も見つからなかったら処理を通らない
+
+	CEffect3D::Create(pIceTarget->GetPosition(), 50.0f, 3, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+
+	if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_JUMP))
 		StartJump();	// 流れてる氷があればジャンプを開始
 }
 
@@ -835,10 +889,13 @@ void CPlayer::SarchJumpIce(void)
 void CPlayer::StartJump(void)
 {
 	// ジャンプモーションフラグを立てる
-
+	m_fragMotion.bJump = true;
 
 	// 入力を無効化
 	EnableInput(false);
+
+	// ジャンプ初期位置の保存
+	m_posInitJump = GetPosition();
 }
 
 //=====================================================
@@ -846,11 +903,40 @@ void CPlayer::StartJump(void)
 //=====================================================
 void CPlayer::StayJump(void)
 {
+	if (m_pIceDestJump == nullptr)
+		return;
+
 	// 目標の氷に向かって移動
+	D3DXVECTOR3 posPlayer = GetPosition();
+	D3DXVECTOR3 posIce = m_pIceDestJump->GetPosition();
+	universal::MoveToDest(&posPlayer, posIce, jump::FACT_MOVE);
 
+	SetPosition(posPlayer);
 
-	// 氷に着地したらジャンプを終了
-	EndJump();
+	// 高さの管理
+	D3DXVECTOR3 vecDiffMax = posIce - m_posInitJump;
+	float fLengthMax = sqrtf(vecDiffMax.x * vecDiffMax.x + vecDiffMax.z * vecDiffMax.z);
+
+	D3DXVECTOR3 vecDiff = posPlayer - m_posInitJump;
+	float fLength = sqrtf(vecDiff.x * vecDiff.x + vecDiff.z * vecDiff.z);
+
+	float fRate = fLength / fLengthMax;
+
+	float fHeight = universal::ParabolaY(fRate - 0.5f, 10.0f);
+
+	fHeight *= -jump::HEIGHT;
+	fHeight += jump::HEIGHT * 2;
+
+	CDebugProc::GetInstance()->Print("\nジャンプの高さ[%f]", fHeight);
+
+	D3DXVECTOR3 pos = posPlayer;
+	pos.y = m_posInitJump.y + fHeight;
+	SetPosition(pos);
+
+	if (universal::DistCmpFlat(posPlayer, posIce, jump::LINE_END, nullptr))
+	{// 氷に着地したらジャンプを終了
+		EndJump();
+	}
 }
 
 //=====================================================
@@ -859,7 +945,7 @@ void CPlayer::StayJump(void)
 void CPlayer::EndJump(void)
 {
 	// ジャンプモーションフラグを折る
-
+	m_fragMotion.bJump = false;
 
 	// 入力を有効化
 	EnableInput(true);
@@ -886,7 +972,29 @@ void CPlayer::ManageMotion(void)
 	int nMotion = GetMotion();
 	bool bFinish = IsFinish();
 
-	if ((nMotion == MOTION_PECK || nMotion == MOTION_CANNOTPECK) && !bFinish)
+	if (m_fragMotion.bJump)
+	{// ジャンプ中
+		if (nMotion == MOTION::MOTION_LANDING)
+		{// 着地モーション終了でジャンプ終了
+			if(bFinish)
+				EndJump();
+		}
+		else if (nMotion == MOTION::MOTION_STAYJUMP)
+		{// 滞空モーション中
+			// 滞空中の処理
+			StayJump();
+		}
+		else if (nMotion == MOTION::MOTION_STARTJUMP)
+		{// ジャンプ開始モーション終了からの遷移
+			if (bFinish)
+			{
+				SetMotion(MOTION::MOTION_STAYJUMP);
+			}
+		}
+		else if (nMotion != MOTION::MOTION_STARTJUMP)	// ジャンプ開始モーションの開始
+			SetMotion(MOTION::MOTION_STARTJUMP);
+	}
+	else if ((nMotion == MOTION_PECK || nMotion == MOTION_CANNOTPECK) && !bFinish)
 	{
 
 	}

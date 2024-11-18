@@ -90,8 +90,9 @@ private:
 	// 構造体定義
 	struct S_FragMotion
 	{// モーションフラグの構造体
-		bool bWalk;	// 歩行
-		bool bPeck;	// 突っつき
+		bool bWalk;		// 歩行
+		bool bPeck;		// 突っつき
+		bool bJump;		// ジャンプ
 	};
 
 	// メンバ関数
@@ -100,13 +101,13 @@ private:
 
 	void Input(void);	// 入力
 	
-	void MoveAnalog(void);	// アナログ移動
+	void MoveAnalog(void);		// アナログ移動
 	void InputMoveAnalog(void);	// アナログ移動入力
-	void DisableTurn(void);	// 振り返りの無効化
-	void Forward(void);	// 前進処理
+	void DisableTurn(void);		// 振り返りの無効化
+	void Forward(void);			// 前進処理
 	void DecreaseMove(void);	// 移動量の減衰
-	void FactingRot(void);	// 向きの補正
-	void JudgeTurn(void);	// 振り向きの検出
+	void FactingRot(void);		// 向きの補正
+	void JudgeTurn(void);		// 振り向きの検出
 	
 	void CollideIce(void);	// 氷との判定
 
@@ -114,7 +115,7 @@ private:
 	void RotationDirUI(int nDir);	// 方向UIの回転
 	
 	CIce *SelectIceByRot(float fRot);	// 氷を向きで取得
-	bool CheckGridChange(void);	// グリッドが変わったかどうかの判定
+	bool CheckGridChange(void);			// グリッドが変わったかどうかの判定
 	
 	void StartFlows(void);	// 漂流開始
 	bool FindFlowIce(void);	// 漂流する氷の検出
@@ -147,6 +148,11 @@ private:
 	D3DXVECTOR3 m_move;			// 移動量
 	float m_fTimerStartMove;	// 移動の立ち上がりのタイマー
 	E_State m_state;			// プレイヤー状態
+
+	vector<CIce*> m_apIceJump;	// ジャンプ先の候補の氷
+	CIce *m_pIceDestJump;		// ジャンプ目標の氷
+	bool m_bEnableJump;			// ジャンプ可能フラグ
+	D3DXVECTOR3 m_posInitJump;	// ジャンプ初期位置
 
 	CIce *m_pIceMoveDest;			// 移動目標の氷
 	CIce *m_pLandFlow;				// 漂流時に乗ってる氷のポインタ
