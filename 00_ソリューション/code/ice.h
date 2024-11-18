@@ -93,10 +93,11 @@ public:
 
 private:
 	// メンバ関数
-	void FollowWave(void);	// 波に追従する処理
-	void SearchOnThis(void);	// 自身に乗ってるものの検出
+	void FollowWave(void);								// 波に追従する処理
+	void SearchOnThis(void);							// 自身に乗ってるものの検出
 	void GetOnTopObject(vector<CGameObject*> &rVector);	// 上に乗ってるものの検出
-	void Shake(void);	// 揺れの処理
+	void Shake(void);									// 揺れの処理
+	void Ripples(void);									// さざ波の処理
 
 	// メンバ変数
 	E_State m_state;	// 状態

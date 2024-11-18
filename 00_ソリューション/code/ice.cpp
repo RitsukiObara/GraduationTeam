@@ -213,6 +213,9 @@ void CIce::Update(void)
 
 	// —h‚ê‚Ìˆ—
 	Shake();
+
+	// ‚³‚´”g‚Ìˆ—
+	Ripples();
 }
 
 //=====================================================
@@ -323,6 +326,25 @@ void CIce::GetOnTopObject(vector<CGameObject*> &rVector)
 void CIce::Shake(void)
 {
 	m_fHeightFromOcean += (m_fHeightDestFromOcean - m_fHeightFromOcean) * SPEED_SHAKE_SINK_NORMAL;
+}
+
+//=====================================================
+// ‚³‚´”g‚Ìˆ—
+//=====================================================
+void CIce::Ripples(void)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	COcean::E_Stream stream = pIceMgr->GetDirStream();
+
+	// —¬‚ê‚É‡‚Á‚½•ûŒü‚Ìƒtƒ‰ƒO‚ª—§‚Á‚Ä‚½‚çˆ—‚ğ’Ê‚é
+	if (!m_abRipleFrag[stream])
+		return;
+
+	CEffect3D::Create(GetPosition(), 50.0f, 2, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 //=====================================================
