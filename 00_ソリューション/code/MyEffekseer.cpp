@@ -20,8 +20,9 @@
 //***********************************************************
 const char* CMyEffekseer::m_apEfkName[CMyEffekseer::TYPE_MAX] =		// エフェクトのパス
 {
-	"",											// なんもない
-	"data\\EFFEKSEER\\Effect\\peckWave.efkefc",	// つっつきの波紋
+	"",												// なんもない
+	"data\\EFFEKSEER\\Effect\\peckWave.efkefc",		// つっつきの波紋
+	"data\\EFFEKSEER\\Effect\\splashwater.efkefc",	// さざ波
 };
 CMyEffekseer *CMyEffekseer::s_pMyEffekseer = nullptr;	// 自身のポインタ
 

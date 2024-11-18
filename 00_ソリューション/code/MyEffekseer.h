@@ -19,8 +19,9 @@ public:
 
 	enum TYPE
 	{// Ží—Þ
-		TYPE_NONE = 0,  // ‚È‚ñ‚à‚È‚¢
-		TYPE_PECKWAVE,  // ‚Â‚Á‚Â‚«”g–ä
+		TYPE_NONE = 0,	// ‚È‚ñ‚à‚È‚¢
+		TYPE_PECKWAVE,	// ‚Â‚Á‚Â‚«”g–ä
+		TYPE_RIPPLES,	// ‚³‚´”g
 		TYPE_MAX
 	};
 
