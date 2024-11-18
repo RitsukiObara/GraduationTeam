@@ -46,7 +46,7 @@ CAlbatross::~CAlbatross()
 //=====================================================
 // 生成処理
 //=====================================================
-CAlbatross* CAlbatross::Create(CIceManager::E_Stream dir)
+CAlbatross* CAlbatross::Create(COcean::E_Stream dir)
 {
 	CAlbatross* pAlbatross = nullptr;
 
@@ -83,22 +83,22 @@ HRESULT CAlbatross::Init(void)
 
 	switch (COcean::GetInstance()->GetNextDirStream())
 	{
-	case CIceManager::STREAM_UP:	// 上
+	case COcean::STREAM_UP:	// 上
 
 		pos = D3DXVECTOR3(0.0f, POS_Y, -POS_Z);
 
 		break;
-	case CIceManager::STREAM_RIGHT:	// 右
+	case COcean::STREAM_RIGHT:	// 右
 
 		pos = D3DXVECTOR3(-POS_X, POS_Y, 0.0f);
 
 		break;
-	case CIceManager::STREAM_DOWN:	// 下
+	case COcean::STREAM_DOWN:	// 下
 
 		pos = D3DXVECTOR3(0.0f, POS_Y, POS_Z);
 
 		break;
-	case CIceManager::STREAM_LEFT:	// 左
+	case COcean::STREAM_LEFT:	// 左
 
 		pos = D3DXVECTOR3(POS_X, POS_Y, 0.0f);
 
@@ -119,28 +119,28 @@ HRESULT CAlbatross::Init(void)
 //=====================================================
 // アホウドリの向きを決める処理
 //=====================================================
-void CAlbatross::Stream(CIceManager::E_Stream dir)
+void CAlbatross::Stream(COcean::E_Stream dir)
 {
 	D3DXVECTOR3 rot = CAlbatross::GetRotation();
 
 	switch (dir)
 	{
-	case CIceManager::STREAM_UP:	// 上
+	case COcean::STREAM_UP:	// 上
 
 		rot = D3DXVECTOR3(0.0f, D3DX_PI, 0.0f);
 
 		break;
-	case CIceManager::STREAM_RIGHT:	// 右
+	case COcean::STREAM_RIGHT:	// 右
 
 		rot = D3DXVECTOR3(0.0f, -D3DX_PI * 0.5f, 0.0f);
 
 		break;
-	case CIceManager::STREAM_DOWN:	// 下
+	case COcean::STREAM_DOWN:	// 下
 
 		rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
 		break;
-	case CIceManager::STREAM_LEFT:	// 左
+	case COcean::STREAM_LEFT:	// 左
 
 		rot = D3DXVECTOR3(0.0f, D3DX_PI * 0.5f, 0.0f);
 

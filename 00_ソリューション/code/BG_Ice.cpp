@@ -88,7 +88,7 @@ HRESULT CBgIce::Init(void)
 		return S_OK;
 
 	// ŠC—¬‚ÌƒxƒNƒgƒ‹Žæ“¾
-	CIceManager::E_Stream dir = pIceManager->GetDirStream();
+	COcean::E_Stream dir = pIceManager->GetDirStream();
 
 	//Œ»Ý‚ÌŠC—¬î•ñŽæ“¾
 	m_streamOld = dir;
@@ -212,7 +212,7 @@ void CBgIce::Move(void)
 		return;
 
 	// ŠC—¬‚ÌƒxƒNƒgƒ‹Žæ“¾
-	CIceManager::E_Stream dir = pIceManager->GetDirStream();
+	COcean::E_Stream dir = pIceManager->GetDirStream();
 	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[dir];
 
 	if (pIceManager->GetDirStream() != m_streamOld)

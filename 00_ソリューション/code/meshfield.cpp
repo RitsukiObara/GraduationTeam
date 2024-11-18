@@ -824,8 +824,8 @@ void CMeshField::Wave(float fRot)
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	int nCountV, nCountU;
-	CIceManager::E_Stream nOceanRot = pIceManager->GetDirStream();	// ŠC—¬‚ÌŒü‚«‚ğæ“¾
-	CIceManager::E_Stream nOceanRotNext = pIceManager->GetDirStreamNext();	// Ÿ‚ÌŠC—¬‚ÌŒü‚«‚ğæ“¾
+	COcean::E_Stream nOceanRot = pIceManager->GetDirStream();	// ŠC—¬‚ÌŒü‚«‚ğæ“¾
+	COcean::E_Stream nOceanRotNext = pIceManager->GetDirStreamNext();	// Ÿ‚ÌŠC—¬‚ÌŒü‚«‚ğæ“¾
 	float oceanSpeed = pIceManager->GetOceanLevel();	// •X‚Ì—¬‚ê‚é‘¬“xæ“¾
 
 	// ŠC—¬‚Ì‘¬“x‚ªã‚ª‚Á‚Ä‚¢‚éó‘Ô‚Ì
@@ -864,35 +864,35 @@ void CMeshField::Wave(float fRot)
 		for (nCountU = 0; nCountU < m_nDivNumU + 1; nCountU++)
 		{
 			//	–îˆó‚ªŠC—¬‚ÌŒü‚«‚É—¬‚ê‚éˆ—
-			if (nOceanRot == CIceManager::STREAM_UP)
+			if (nOceanRot == COcean::STREAM_UP)
 			{// ŠC—¬‚ªãŒü‚«
 				pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.y = sinf(fRot) * oceanSpeed * OCEAN_SPEED_MULTIPLY;
 			}
 
-			if (nOceanRot == CIceManager::STREAM_RIGHT)
+			if (nOceanRot == COcean::STREAM_RIGHT)
 			{// ŠC—¬‚ª‰EŒü‚«
 				pVtx[nCountU * (m_nDivNumV + 1) + nCountV].pos.y = sinf(fRot) * oceanSpeed * OCEAN_SPEED_MULTIPLY;
 			}
 
-			if (nOceanRot == CIceManager::STREAM_DOWN)
+			if (nOceanRot == COcean::STREAM_DOWN)
 			{// ŠC—¬‚ª‰ºŒü‚«
 				pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.y = sinf(fRot) * oceanSpeed * OCEAN_SPEED_MULTIPLY;
 			}
 
-			if (nOceanRot == CIceManager::STREAM_LEFT)
+			if (nOceanRot == COcean::STREAM_LEFT)
 			{// ŠC—¬‚ª¶Œü‚«
 				pVtx[nCountU * (m_nDivNumV + 1) + nCountV].pos.y = sinf(fRot) * oceanSpeed * OCEAN_SPEED_MULTIPLY;
 			}
 		}
 
-		if (nOceanRot == CIceManager::STREAM_UP ||
-			nOceanRot == CIceManager::STREAM_LEFT)
+		if (nOceanRot == COcean::STREAM_UP ||
+			nOceanRot == COcean::STREAM_LEFT)
 		{// ŠC—¬‚ªãŒü‚«
 			fRot += 1.0f;
 		}
 
-		if (nOceanRot == CIceManager::STREAM_DOWN ||
-			nOceanRot == CIceManager::STREAM_RIGHT)
+		if (nOceanRot == COcean::STREAM_DOWN ||
+			nOceanRot == COcean::STREAM_RIGHT)
 		{// ŠC—¬‚ª‰ºŒü‚«
 			fRot -= 1.0f;
 		}

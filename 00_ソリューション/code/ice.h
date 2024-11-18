@@ -4,7 +4,6 @@
 // Author:髙山桃也
 //
 //*****************************************************
-
 #ifndef _ICE_H_
 #define _ICE_H_
 
@@ -12,6 +11,7 @@
 // インクルード
 //*****************************************************
 #include "gameObject.h"
+#include "ocean.h"
 
 //*****************************************************
 // 前方宣言
@@ -83,6 +83,8 @@ public:
 	CFan3D *GetFan3D(void) { return m_pUp; }	// 上側の扇ポリゴン取得
 	void SetShake(E_TypeShake shake) { m_shake = shake; }	// 揺れ
 	E_TypeShake GetShake(void) { return m_shake; }
+	void SetRippleFrag(COcean::E_Stream stream, bool bValue) { m_abRipleFrag[stream] = bValue; }	// 流れごとのフラグ取得
+	bool GetRippleFrag(COcean::E_Stream stream) { return m_abRipleFrag[stream]; }
 
 	// 静的メンバ関数
 	static CIce *Create(E_Type type = E_Type::TYPE_NORMAL, E_State state = E_State::STATE_FLOWS);	// 生成処理
@@ -110,6 +112,7 @@ private:
 	CFan3D *m_pUp;	// 上側に貼る扇ポリゴン
 	CMeshCylinder *m_pSide;	// サイドのシリンダー
 	CIceState *m_pState;	// ステイトのポインタ
+	bool m_abRipleFrag[COcean::E_Stream::STREAM_MAX];	// 流れごとのフラグ
 
 	// 静的メンバ変数
 	static int s_nNumAll;	// 総数

@@ -52,7 +52,7 @@ CIceManager *CIceManager::s_pIceManager = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CIceManager::CIceManager(int nPriority) : CObject(nPriority), m_nNumGridVirtical(0), m_nNumGridHorizontal(0), m_dirStream(E_Stream::STREAM_UP)
+CIceManager::CIceManager(int nPriority) : CObject(nPriority), m_nNumGridVirtical(0), m_nNumGridHorizontal(0), m_dirStream(COcean::STREAM_UP)
 {
 
 }
@@ -101,8 +101,8 @@ HRESULT CIceManager::Init(void)
 	SetGridPos();
 
 	// 海流を初期化
-	m_dirStream = E_Stream::STREAM_LEFT;
-	m_dirStreamNext = E_Stream::STREAM_LEFT;
+	m_dirStream = COcean::STREAM_LEFT;
+	m_dirStreamNext = COcean::STREAM_LEFT;
 	m_fOceanLevel = OCEAN_FLOW_MAX;
 
 	return S_OK;
@@ -166,8 +166,8 @@ void CIceManager::Update(void)
 	// 氷の状態管理
 	ManageStateIce();
 
-	if (m_aGrid[0][0].pIce != nullptr)
-		int n = 0;
+	
+	BindRippleElements();
 }
 
 //=====================================================
@@ -1129,14 +1129,14 @@ void CIceManager::Debug(void)
 	{
 		COcean* pOcean = COcean::GetInstance();
 		pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);	// 海流の速度を下げる
-		m_dirStreamNext = (E_Stream)((m_dirStreamNext + 1) % E_Stream::STREAM_MAX);	// 次の海流の向きにする
+		m_dirStreamNext = (COcean::E_Stream)((m_dirStreamNext + 1) % COcean::E_Stream::STREAM_MAX);	// 次の海流の向きにする
 	}
 
 	if (pKeyboard->GetTrigger(DIK_RIGHT))
 	{
 		COcean* pOcean = COcean::GetInstance();
 		pOcean->SetOceanSpeedState(pOcean->OCEAN_STATE_DOWN);	// 海流の速度を下げる
-		m_dirStreamNext = (E_Stream)((m_dirStreamNext + E_Stream::STREAM_MAX - 1) % E_Stream::STREAM_MAX);	// 次の海流の向きにする
+		m_dirStreamNext = (COcean::E_Stream)((m_dirStreamNext + COcean::E_Stream::STREAM_MAX - 1) % COcean::E_Stream::STREAM_MAX);	// 次の海流の向きにする
 	}
 
 	pDebugProc->Print("\n現在の海流の向き[%d]", m_dirStreamNext);
@@ -1434,5 +1434,31 @@ void CIceManager::Load(const char* pPath)
 	else
 	{
 		assert(("ファイルが開けませんでした", false));
+	}
+}
+
+//=====================================================
+// さざ波の属性を割り当てる処理
+//=====================================================
+void CIceManager::BindRippleElements(void)
+{
+	// 左端の検出
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		bool bLeft = false;
+
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			if (m_aGrid[i][j].pIce == nullptr)
+				continue;
+
+			if (!bLeft)
+			{
+				m_aGrid[i][j].pIce->SetRippleFrag(COcean::E_Stream::STREAM_RIGHT, true);
+				bLeft = true;
+			}
+			else
+				m_aGrid[i][j].pIce->SetRippleFrag(COcean::E_Stream::STREAM_RIGHT, false);
+		}
 	}
 }

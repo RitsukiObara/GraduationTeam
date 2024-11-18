@@ -161,7 +161,7 @@ void COcean::SetNextOceanRot(void)
 	// 向き変更
 	do
 	{
-		m_nRandNextKeep = universal::RandRange(CIceManager::E_Stream::STREAM_MAX, CIceManager::E_Stream::STREAM_UP);
+		m_nRandNextKeep = universal::RandRange(COcean::E_Stream::STREAM_MAX, COcean::E_Stream::STREAM_UP);
 	} while (m_nRandKeep == m_nRandNextKeep);	// 次の向きが変わるまで乱数を回す
 
 	// 変更時間設定
@@ -181,14 +181,14 @@ void COcean::OceanChangeCheck(void)
 	if (pOcean == nullptr || pIceManager == nullptr || pGame == nullptr)
 		return;
 
-	CIceManager::E_Stream OceanFlow = pIceManager->GetDirStreamNext();
+	COcean::E_Stream OceanFlow = pIceManager->GetDirStreamNext();
 
 	int nNowTime = pGame->GetTimeSecond();	 // 現在のタイムを取得
 
 	if (m_nSetRotTime - nNowTime >= m_nExecRotChangeTime)
 	{// 変更時間になった
 		pOcean->SetOceanSpeedState(COcean::OCEAN_STATE_DOWN);	// 海流の速度を下げる
-		pIceManager->SetDirStreamNext((CIceManager::E_Stream)(m_nRandNextKeep));	// 海流の向きをランダムにする
+		pIceManager->SetDirStreamNext((COcean::E_Stream)(m_nRandNextKeep));	// 海流の向きをランダムにする
 		m_nRandKeep = m_nRandNextKeep;	// 現在の向きに設定
 		SetNextOceanRot();	// 次の向き設定
 		m_bRandState = false;	// ランダムの状態を false にする
@@ -201,7 +201,7 @@ void COcean::OceanChangeCheck(void)
 			for (int nCnt = 0; nCnt < MAX_ALBATROSS; nCnt++)
 			{
 				// アホウドリ生成
-				CAlbatross::Create((CIceManager::E_Stream)(m_nRandNextKeep));
+				CAlbatross::Create((COcean::E_Stream)(m_nRandNextKeep));
 			}
 
 			m_bRandState = true;
@@ -223,22 +223,22 @@ void COcean::OceanRotState(void)
 	m_fRot = CMeshField::GetRotation();
 
 	//	矢印が海流の向きに流れる処理
-	if (OceanFlowKeep == CIceManager::STREAM_UP)
+	if (OceanFlowKeep == COcean::STREAM_UP)
 	{
 		m_fRot.y = 0.0f;
 	}
 
-	if (OceanFlowKeep == CIceManager::STREAM_RIGHT)
+	if (OceanFlowKeep == COcean::STREAM_RIGHT)
 	{
 		m_fRot.y = D3DX_PI * 0.5f;
 	}
 
-	if (OceanFlowKeep == CIceManager::STREAM_DOWN)
+	if (OceanFlowKeep == COcean::STREAM_DOWN)
 	{
 		m_fRot.y = D3DX_PI;
 	}
 
-	if (OceanFlowKeep == CIceManager::STREAM_LEFT)
+	if (OceanFlowKeep == COcean::STREAM_LEFT)
 	{
 		m_fRot.y = -D3DX_PI * 0.5f;
 	}
@@ -274,14 +274,14 @@ void COcean::OceanCycleTimer(void)
 		// 現状と次の向きが同じとき数値をリセット
 		if (m_nRandKeep == m_nRandNextKeep)
 		{
-			m_nRandNextKeep = universal::RandRange(CIceManager::E_Stream::STREAM_MAX, CIceManager::E_Stream::STREAM_UP);
+			m_nRandNextKeep = universal::RandRange(COcean::E_Stream::STREAM_MAX, COcean::E_Stream::STREAM_UP);
 		}
 
 		// 現状と次の向きが同じじゃないとき
 		if (m_nRandKeep != m_nRandNextKeep)
 		{
 			pOcean->SetOceanSpeedState(COcean::OCEAN_STATE_DOWN);	// 海流の速度を下げる
-			pIceManager->SetDirStreamNext((CIceManager::E_Stream)(m_nRandNextKeep));	// 海流の向きをランダムにする
+			pIceManager->SetDirStreamNext((COcean::E_Stream)(m_nRandNextKeep));	// 海流の向きをランダムにする
 		}
 	}
 }

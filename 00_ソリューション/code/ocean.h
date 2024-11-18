@@ -12,7 +12,6 @@
 // インクルード
 //*****************************************************
 #include "meshfield.h"
-#include "iceManager.h"
 
 //*****************************************************
 // クラス定義
@@ -20,6 +19,16 @@
 class COcean : public CMeshField
 {
 public:
+	// 列挙型定義
+	enum E_Stream
+	{// 流れる方向
+		STREAM_UP,	// 上
+		STREAM_RIGHT,	// 右
+		STREAM_DOWN,	// 下
+		STREAM_LEFT,	// 左
+		STREAM_MAX
+	};
+
 	COcean();	// コンストラクタ
 	~COcean();	// デストラクタ
 
@@ -31,8 +40,8 @@ public:
 	void Draw(void);
 
 	// 変数取得・設定関数
-	CIceManager::E_Stream GetNowDirStream(void) { return (CIceManager::E_Stream)m_nRandKeep; }
-	CIceManager::E_Stream GetNextDirStream(void) { return (CIceManager::E_Stream)m_nRandNextKeep; }
+	E_Stream GetNowDirStream(void) { return (COcean::E_Stream)m_nRandKeep; }
+	E_Stream GetNextDirStream(void) { return (COcean::E_Stream)m_nRandNextKeep; }
 
 	void SetNextOceanRot(void);	// 次の海流の向き設定
 
