@@ -27,7 +27,7 @@ __interface ISelectModePenguinState;
 class CSelectModePenguin : public CMotion
 {
 public:
-		// モーション列挙
+	// モーション列挙
 	enum MOTION
 	{
 		MOTION_NEUTRAL = 0,
@@ -40,18 +40,14 @@ public:
 		MOTION_VICTORY,
 		MOTION_FAIL,
 		MOTION_GUTS,
-		MOTION_NECKSHAKE,
-		MOTION_UNYO,
+		MOTION_NECKSHAKE,	
+		MOTION_UNYO,	// 首うね
 		MOTION_CANNOTPECK,
+		MOTION_MULTIAPPEAR,
+		MOTION_WINGPTPT,	// 羽根パタパタ
+		MOTION_STOMACH,	// 腹ベタ
+		MOTION_FALL,
 		MOTION_MAX
-	};
-
-	// 構造体定義
-	struct S_FragMotion
-	{// モーションフラグの構造体
-		bool bWalk;		// 歩行
-		bool bPeck;		// 突っつき
-		bool bJump;		// ジャンプ
 	};
 
 	CSelectModePenguin(int nPriority = 4);	// コンストラクタ
@@ -68,18 +64,16 @@ public:
 
 	// 設定
 	void SetState(ISelectModePenguinState* pState);
-	void EnableInput(bool bEnable) { m_bEnableInput = bEnable; }	// 入力可能フラグ
+	void MotionState(void);	// モーション状態
 
 private:
-	void ManageMotion(void);			// モーションの管理
-	void EndJump(void);				// ジャンプの終了
 
 	// メンバ変数
 	D3DXVECTOR3 m_move;	// 移動量
 	CCollisionSphere *m_pCollisionSphere;	// 球の判定
 	ISelectModePenguinState* m_pState;	// 動きステート
-	S_FragMotion m_fragMotion;	// モーションフラグ
-	bool m_bEnableInput;	// 入力可能フラグ
+
+	int nCntMove;	// 移動のカウント
 };
 
 //****************************************
@@ -104,6 +98,72 @@ class CSelectModePenguinState_Stand : public ISelectModePenguinState
 {
 public:
 	CSelectModePenguinState_Stand(){}
+	HRESULT Init(CSelectModePenguin* pPenguin);
+	void Update(CSelectModePenguin* pPenguin);
+};
+
+//****************************************
+// 移動ステート
+//****************************************
+class CSelectModePenguinState_Move : public ISelectModePenguinState
+{
+public:
+	CSelectModePenguinState_Move() {}
+	HRESULT Init(CSelectModePenguin* pPenguin);
+	void Update(CSelectModePenguin* pPenguin);
+};
+
+//****************************************
+// 転びステート
+//****************************************
+class CSelectModePenguinState_Fall : public ISelectModePenguinState
+{
+public:
+	CSelectModePenguinState_Fall() {}
+	HRESULT Init(CSelectModePenguin* pPenguin);
+	void Update(CSelectModePenguin* pPenguin);
+};
+
+//****************************************
+// 首振りステート
+//****************************************
+class CSelectModePenguinState_ShakeHead : public ISelectModePenguinState
+{
+public:
+	CSelectModePenguinState_ShakeHead() {}
+	HRESULT Init(CSelectModePenguin* pPenguin);
+	void Update(CSelectModePenguin* pPenguin);
+};
+
+//****************************************
+// 腹ベタステート
+//****************************************
+class CSelectModePenguinState_Stomach : public ISelectModePenguinState
+{
+public:
+	CSelectModePenguinState_Stomach() {}
+	HRESULT Init(CSelectModePenguin* pPenguin);
+	void Update(CSelectModePenguin* pPenguin);
+};
+
+//****************************************
+// うにょんステート
+//****************************************
+class CSelectModePenguinState_UNYO : public ISelectModePenguinState
+{
+public:
+	CSelectModePenguinState_UNYO() {}
+	HRESULT Init(CSelectModePenguin* pPenguin);
+	void Update(CSelectModePenguin* pPenguin);
+};
+
+//****************************************
+// 羽パタパタステート
+//****************************************
+class CSelectModePenguinState_WingPTPT : public ISelectModePenguinState
+{
+public:
+	CSelectModePenguinState_WingPTPT() {}
 	HRESULT Init(CSelectModePenguin* pPenguin);
 	void Update(CSelectModePenguin* pPenguin);
 };
