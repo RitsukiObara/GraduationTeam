@@ -94,7 +94,7 @@ HRESULT CUIready::Init(void)
 	// 数字の生成
 	for (int i = 0; i < E_Number::NUMBER_MAX; i++)
 	{
-		m_aNumber[i] = CNumber::Create(aDigit[i], 0);	// 数字の生成
+		m_aNumber[i] = CNumber::Create(aDigit[i], 0);
 	}
 
 	// 数字のトランスフォームの設定

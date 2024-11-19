@@ -121,6 +121,9 @@ void CGameManager::ManageGameState(void)
 
 	switch (state)
 	{
+	case CGame::STATE_READY:
+
+		break;
 	case CGame::STATE_START:
 		UpdateStart();
 		break;
