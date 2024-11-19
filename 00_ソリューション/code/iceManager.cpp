@@ -600,14 +600,14 @@ void CIceManager::Collide(D3DXVECTOR3 *pPos, int nIdxV, int nIdxH, float fRate)
 //=====================================================
 // ŠO‚Éo‚³‚È‚¢‚æ‚¤‚É‚·‚é”»’è
 //=====================================================
-void CIceManager::Collide(D3DXVECTOR3 *pPos, CIce *pIce)
+void CIceManager::Collide(D3DXVECTOR3 *pPos, CIce *pIce, float fRate)
 {
 	if (pPos == nullptr)
 		return;
 
 	D3DXVECTOR3 posGrid = pIce->GetPosition();
 
-	universal::LimitDistCylinderInSide(WIDTH_GRID * 0.7f, pPos, posGrid);
+	universal::LimitDistCylinderInSide(WIDTH_GRID * fRate, pPos, posGrid);
 }
 
 //=====================================================
