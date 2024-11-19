@@ -22,6 +22,7 @@
 #include "timer.h"
 #include "universal.h"
 #include "albatross.h"
+#include "BG_Ice.h"
 
 //*****************************************************
 // íËêîíËã`
@@ -32,6 +33,15 @@ namespace
 	const int OCEAN_ROT_CHANGE_TIME_DEGREE = 10;	// äCó¨å¸Ç´ïœçXéûä‘Ç‘ÇÍïù
 	const float FLOW_LEVEL_MULTIPLY = 0.008f;		// äCó¨ÇÃë¨ìxÇÃî{ó¶
 	const int MAX_ALBATROSS = 2;					// ÉAÉzÉEÉhÉäç≈ëÂêî
+	const int MAX_RANGE_LEFT = -2800;				// ÉâÉìÉ_ÉÄÉåÉìÉWç∂ç≈ëÂêî
+	const int MIN_RANGE_LEFT = -2000;				// ÉâÉìÉ_ÉÄÉåÉìÉWç∂ç≈í·êî
+	const int MAX_RANGE_RIGHT = 2000;				// ÉâÉìÉ_ÉÄÉåÉìÉWâEç≈ëÂêî
+	const int MIN_RANGE_RIGHT = 1200;				// ÉâÉìÉ_ÉÄÉåÉìÉWâEç≈í·êî
+	const float Z_UP = 1500.0f;						// Zï˚å¸è„ï˚å¸
+	const float Z_DOWN = -1500.0f;					// Zï˚å¸â∫ï˚å¸
+	const int BGICE_CREATE_CNT_L = 250;				// îwåiïXÇ™ê∂ê¨Ç≥ÇÍÇÈïb(ç∂)
+	const int BGICE_CREATE_CNT_R = 300;				// îwåiïXÇ™ê∂ê¨Ç≥ÇÍÇÈïb(âE)
+
 }
 
 //*****************************************************
@@ -51,6 +61,8 @@ COcean::COcean()
 	m_fRot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_nSetRotTime = 0;
 	m_nExecRotChangeTime = 0;
+	m_nBgiceCnt_L = 0;
+	m_nBgiceCnt_R = 0;
 }
 
 //=====================================================
@@ -84,6 +96,9 @@ COcean* COcean::Create(void)
 //=====================================================
 HRESULT COcean::Init(void)
 {
+	m_nBgiceCnt_L = 0;
+	m_nBgiceCnt_R = 0;
+
 	CMeshField::Init();
 
 	CIceManager* pIceManager = CIceManager::GetInstance();
@@ -126,7 +141,7 @@ void COcean::Update(void)
 
 	m_fSpeed += FLOW_LEVEL_MULTIPLY * OceanFlowLevel;
 
-	//OceanRotState();
+	BgIceRotState();
 	//OceanCycleTimer();
 	OceanChangeCheck();
 
@@ -212,7 +227,7 @@ void COcean::OceanChangeCheck(void)
 //====================================================
 // äCó¨ÇÃå¸Ç´Ç∆ÉÅÉbÉVÉÖÇÃå¸Ç´ÇòAìÆÇ≥ÇπÇÈèàóù
 //====================================================
-void COcean::OceanRotState(void)
+void COcean::BgIceRotState(void)
 {
 	CIceManager* pIceManager = CIceManager::GetInstance();
 
@@ -225,25 +240,15 @@ void COcean::OceanRotState(void)
 	//	ñÓàÛÇ™äCó¨ÇÃå¸Ç´Ç…ó¨ÇÍÇÈèàóù
 	if (OceanFlowKeep == COcean::STREAM_UP)
 	{
-		m_fRot.y = 0.0f;
-	}
-
-	if (OceanFlowKeep == COcean::STREAM_RIGHT)
-	{
-		m_fRot.y = D3DX_PI * 0.5f;
+		//â∫Ç©ÇÁîwåiïXÇèoÇ∑èàóù
+		BgIceSetPosDown();
 	}
 
 	if (OceanFlowKeep == COcean::STREAM_DOWN)
 	{
-		m_fRot.y = D3DX_PI;
+		//è„Ç©ÇÁîwåiïXÇèoÇ∑èàóù
+		BgIceSetPosUp();
 	}
-
-	if (OceanFlowKeep == COcean::STREAM_LEFT)
-	{
-		m_fRot.y = -D3DX_PI * 0.5f;
-	}
-
-	CMeshField::SetRotation(m_fRot);
 }
 
 //====================================================
@@ -283,5 +288,67 @@ void COcean::OceanCycleTimer(void)
 			pOcean->SetOceanSpeedState(COcean::OCEAN_STATE_DOWN);	// äCó¨ÇÃë¨ìxÇâ∫Ç∞ÇÈ
 			pIceManager->SetDirStreamNext((COcean::E_Stream)(m_nRandNextKeep));	// äCó¨ÇÃå¸Ç´ÇÉâÉìÉ_ÉÄÇ…Ç∑ÇÈ
 		}
+	}
+}
+
+//====================================================
+// è„ï˚å¸Ç©ÇÁîwåiïXÇ™èoÇƒÇ≠ÇÈèàóù
+//====================================================
+void COcean::BgIceSetPosUp(void)
+{
+	float posX_L = (float)universal::RandRange(MAX_RANGE_LEFT, MIN_RANGE_LEFT);
+	CBgIce::TYPE type = (CBgIce::TYPE)universal::RandRange(CBgIce::TYPE_MAX, CBgIce::TYPE_BIG);
+
+	m_nBgiceCnt_L++;
+	m_nBgiceCnt_R++;
+
+	if (m_nBgiceCnt_L >= BGICE_CREATE_CNT_L)
+	{
+		// îwåiïXÇÃÉçÅ[Éh
+		CBgIce::Create(D3DXVECTOR3(posX_L, 0.0f, Z_UP), D3DXVECTOR3(0.0f, 0.0f, 0.0f), type);
+
+		m_nBgiceCnt_L = 0;
+	}
+
+	float posX_R = (float)universal::RandRange(MAX_RANGE_RIGHT, MIN_RANGE_RIGHT);
+	type = (CBgIce::TYPE)universal::RandRange(CBgIce::TYPE_MAX, CBgIce::TYPE_BIG);
+
+	if (m_nBgiceCnt_R >= BGICE_CREATE_CNT_R)
+	{
+		// îwåiïXÇÃÉçÅ[Éh
+		CBgIce::Create(D3DXVECTOR3(posX_R, 0.0f, Z_UP), D3DXVECTOR3(0.0f, 0.0f, 0.0f), type);
+
+		m_nBgiceCnt_R = 0;
+	}
+}
+
+//====================================================
+// â∫ï˚å¸Ç©ÇÁîwåiïXÇ™èoÇƒÇ≠ÇÈèàóù
+//====================================================
+void COcean::BgIceSetPosDown(void)
+{
+	float posX_L = (float)universal::RandRange(MAX_RANGE_LEFT, MIN_RANGE_LEFT);
+	CBgIce::TYPE type = (CBgIce::TYPE)universal::RandRange(CBgIce::TYPE_MAX, CBgIce::TYPE_BIG);
+
+	m_nBgiceCnt_L++;
+	m_nBgiceCnt_R++;
+
+	if (m_nBgiceCnt_L >= BGICE_CREATE_CNT_L)
+	{
+		// îwåiïXÇÃÉçÅ[Éh
+		CBgIce::Create(D3DXVECTOR3(posX_L, 0.0f, Z_DOWN), D3DXVECTOR3(0.0f, 0.0f, 0.0f), type);
+
+		m_nBgiceCnt_L = 0;
+	}
+
+	float posX_R = (float)universal::RandRange(MAX_RANGE_RIGHT, MIN_RANGE_RIGHT);
+	type = (CBgIce::TYPE)universal::RandRange(CBgIce::TYPE_MAX, CBgIce::TYPE_BIG);
+
+	if (m_nBgiceCnt_R >= BGICE_CREATE_CNT_R)
+	{
+		// îwåiïXÇÃÉçÅ[Éh
+		CBgIce::Create(D3DXVECTOR3(posX_R, 0.0f, Z_DOWN), D3DXVECTOR3(0.0f, 0.0f, 0.0f), type);
+
+		m_nBgiceCnt_R = 0;
 	}
 }

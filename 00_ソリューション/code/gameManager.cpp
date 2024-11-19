@@ -79,9 +79,6 @@ HRESULT CGameManager::Init(void)
 	COcean::Create();
 
 //#if 0
-	// 背景氷のロード
-	CBgIce::Load("data\\TEXT\\BG_Ice.txt");
-
 	//ゲームスタート告知UI
 	CUIready::Create();
 //#endif
