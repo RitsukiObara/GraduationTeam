@@ -24,11 +24,10 @@ namespace
 	const int STATE_COUNT_MAX = 60;	// ステートのカウント最大値
 	const float DIST_NUMBER = 0.03f;	// 数字間の距離
 	const D3DXVECTOR2 SIZE_NORMAL_NUM = { 0.05f, 0.09f };	// 通常数字のサイズ
-	const D3DXVECTOR2 SIZE_MINI_NUM = { 0.014f, 0.028f };	// ミニ数字のサイズ
-	const float SIZE_NUM = 0.5f;	// Go数字のサイズ
+	const float SIZE_NUM = 0.2f;	// Go数字のサイズ
 	const D3DXVECTOR3 POS_INITIAL = { 0.6f,0.5f,0.0f };	// 初期位置
 	const D3DXVECTOR3 POS_GO = { 0.5f,0.5f,0.0f };	// 初期位置
-	const string PATH_TEX_OK = "data\\TEXTURE\\UI\\ready.png";	// コロンのテクスチャパス
+	const string PATH_TEX_OK = "data\\TEXTURE\\UI\\start.png";	// コロンのテクスチャパス
 	const D3DXCOLOR NORMAL_COL = { 1.0f,1.0f,1.0f,1.0f };		//基準色
 	const int FRAME_CNT = 60;		// フレーム秒数
 	const int SECOND_ELAPSED = 1;		// 秒数経過
@@ -142,21 +141,21 @@ void CUIready::Update(void)
 {
 	// 秒数をもらう
 	m_nSecond = GetSecond();
-	
-	// サイズ移動量
-	m_fmove = 0.002f;
-
-	// サイズを拡大
-	m_fsize += m_fmove;
-
-	for (int i = 0; i < E_Number::NUMBER_MAX; i++)
-	{
-		m_aNumber[i]->SetSizeAll(m_fsize, m_fsize);
-	}
 
 	switch (m_state)
 	{
 	case STATE_NUMBER:
+
+		for (int i = 0; i < E_Number::NUMBER_MAX; i++)
+		{
+			m_aNumber[i]->SetSizeAll(m_fsize, m_fsize);
+		}
+
+		// サイズ移動量
+		m_fmove = 0.002f;
+
+		// サイズを拡大
+		m_fsize += m_fmove;
 
 		if (m_nSecond <= 0)
 		{
@@ -173,7 +172,8 @@ void CUIready::Update(void)
 			m_Go->SetPosition(POS_GO);
 			int nIdxTexture = Texture::GetIdx(&PATH_TEX_OK[0]);
 			m_Go->SetIdxTexture(nIdxTexture);
-			m_Go->SetSize(SIZE_NUM, SIZE_NUM);
+			m_Go->SetSize(m_fsize, m_fsize);
+			m_Go->SetCol(D3DXCOLOR(1.0f, 0.8f, 0.0f, 1.0f));
 
 			m_Go->SetVtx();
 		}
@@ -187,8 +187,23 @@ void CUIready::Update(void)
 			return;
 		}	
 		
+		for (int i = 0; i < E_Number::NUMBER_MAX; i++)
+		{
+			m_aNumber[i]->SetSizeAll(m_fsize, m_fsize);
+		}
+
+		// サイズ移動量
+		m_fmove = 0.002f;
+
+		// サイズを拡大
+		m_fsize += m_fmove;
+
 		//ステートカウント加算
 		m_nStateCnt++;
+
+		m_Go->SetSize(m_fsize, m_fsize);
+
+		m_Go->SetVtx();
 
 		if (m_nStateCnt >= STATE_COUNT_MAX)
 		{
