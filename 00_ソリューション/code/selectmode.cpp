@@ -146,9 +146,9 @@ HRESULT CSelectMode::Init(void)
 	pMeshField->SetIdxTexture(CTexture::GetInstance()->Regist("data\\TEXTURE\\MATERIAL\\ice000.jpg"));
 	pMeshField->SetDivTex(128);
 
-	// Ç©Ç‹Ç≠ÇÁÅiâºÅj
+	// Ç©Ç‹Ç≠ÇÁ
 	CObjectX *pIgloo = CObjectX::Create();
-	pIgloo->BindModel(CModel::Load("data\\MODEL\\object\\temp_igloo.x"));
+	pIgloo->BindModel(CModel::Load("data\\MODEL\\object\\Snowdome.x"));
 	pIgloo->SetPosition(D3DXVECTOR3(800.0f, -10.0f, 600.0f));
 
 	// BGMÇÃçƒê∂
