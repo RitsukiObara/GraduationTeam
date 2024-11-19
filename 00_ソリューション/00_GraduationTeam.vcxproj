@@ -102,6 +102,7 @@
       </DisableSpecificWarnings>
       <PrecompiledHeaderFile>precompile.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>precompile.h</ForcedIncludeFiles>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -300,6 +301,7 @@
     <ClInclude Include="code\gameManager.h" />
     <ClInclude Include="code\gameManagerMulti.h" />
     <ClInclude Include="code\gameManagerSingle.h" />
+    <ClInclude Include="code\magic_enum.hpp" />
     <ClInclude Include="code\MyEffekseer.h" />
     <ClInclude Include="code\nextflowice.h" />
     <ClInclude Include="code\peckLine.h" />
