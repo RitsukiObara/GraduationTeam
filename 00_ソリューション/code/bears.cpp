@@ -469,26 +469,18 @@ void CBears::ManageMotion(void)
 	// 移動状態のモーション管理
 	if (IsTurn())
 	{// 振り向きモーション
-		if (nMotion != E_Motion::MOTION_TURN || bFinish)
-			SetMotion(E_Motion::MOTION_TURN);
+		//if (nMotion != E_Motion::MOTION_TURN || bFinish)
+			//SetMotion(E_Motion::MOTION_TURN);
 	}
 	else if (!IsEnableMove())
 	{// 移動不可の時は待機モーション
-		if (nMotion != E_Motion::MOTION_NEUTRAL)
-			SetMotion(E_Motion::MOTION_NEUTRAL);
+		//if (nMotion != E_Motion::MOTION_NEUTRAL)
+			//SetMotion(E_Motion::MOTION_NEUTRAL);
 	}
 	else if (GetState() == CEnemy::E_State::STATE_MOVE)
 	{
-		if (m_pPlayerTarget == nullptr)
-		{// ゆっくり歩き
-			if (nMotion != E_Motion::MOTION_NEUTRAL)
-				SetMotion(E_Motion::MOTION_NEUTRAL);
-		}
-		else
-		{// 早歩き
-			if (nMotion != E_Motion::MOTION_WALK)
-				SetMotion(E_Motion::MOTION_WALK);
-		}
+		if (nMotion != E_Motion::MOTION_WALK)
+			SetMotion(E_Motion::MOTION_WALK);
 	}
 }
 
@@ -540,11 +532,11 @@ void CBears::Event(EVENT_INFO* pEventInfo)
 		SetSpeedMove(fSpeed);
 	}
 
-	if (nMotion == E_Motion::MOTION_TURN)
-	{// 方向転換時、跳ねるタイミングのみ回転させる
-		// 振り向きの無効化
-		DisableTurn();
-	}
+	//if (nMotion == E_Motion::MOTION_TURN)
+	//{// 方向転換時、跳ねるタイミングのみ回転させる
+	//	// 振り向きの無効化
+	//	DisableTurn();
+	//}
 }
 
 //=====================================================

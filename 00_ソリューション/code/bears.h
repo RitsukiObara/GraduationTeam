@@ -47,13 +47,11 @@ public:
 private:
 	enum E_Motion
 	{// モーション
-		MOTION_NEUTRAL = 0,	// 待機
-		MOTION_WALK,		// 歩き
+		MOTION_WALK = 0,	// 歩き
+		MOTION_CHARGE,		// 突撃
 		MOTION_STARTJUMP,	// ジャンプ開始
 		MOTION_STAYJUMP,	// ジャンプ中
 		MOTION_LANDING,		// 着地
-		MOTION_SWIM,		// 泳ぎ
-		MOTION_TURN,		// 方向転換
 		MOTION_MAX
 	};
 

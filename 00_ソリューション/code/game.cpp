@@ -159,6 +159,11 @@ void CGame::Update(void)
 		CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
 	}
 
+	if (pKeyboard->GetTrigger(DIK_K))
+	{// シロクマ生成
+		CEnemy::Create((int)CEnemy::TYPE::TYPE_BEARS);
+	}
+
 	if (pKeyboard->GetTrigger(DIK_O))
 	{// アホウドリ生成
 		CAlbatross::Create(OceanFlow);

@@ -28,7 +28,8 @@ public:
 	// 列挙型定義
 	enum TYPE
 	{// 種類
-		TYPE_SEALS = 0,
+		TYPE_SEALS = 0,	// アザラシ
+		TYPE_BEARS,		// シロクマ
 		TYPE_MAX
 	};
 	enum E_State

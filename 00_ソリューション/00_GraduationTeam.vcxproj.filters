@@ -79,6 +79,9 @@
     <Filter Include="ソース ファイル\UI\peck">
       <UniqueIdentifier>{6884db22-16ca-4c1f-be16-615e131cd15e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\character\enemy">
+      <UniqueIdentifier>{64787448-4dde-45bd-aaf0-22ea192e686a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="code\scene.cpp">
@@ -291,12 +294,6 @@
     <ClCompile Include="code\score.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
-    <ClCompile Include="code\enemy.cpp">
-      <Filter>ソース ファイル\character</Filter>
-    </ClCompile>
-    <ClCompile Include="code\seals.cpp">
-      <Filter>ソース ファイル\character</Filter>
-    </ClCompile>
     <ClCompile Include="code\UI_enemy.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
@@ -408,8 +405,14 @@
     <ClCompile Include="code\peckWave.cpp">
       <Filter>ソース ファイル\UI\peck</Filter>
     </ClCompile>
+    <ClCompile Include="code\enemy.cpp">
+      <Filter>ソース ファイル\character\enemy</Filter>
+    </ClCompile>
     <ClCompile Include="code\bears.cpp">
-      <Filter>ソース ファイル\character</Filter>
+      <Filter>ソース ファイル\character\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="code\seals.cpp">
+      <Filter>ソース ファイル\character\enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -626,12 +629,6 @@
     <ClInclude Include="code\score.h">
       <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
-    <ClInclude Include="code\enemy.h">
-      <Filter>ソース ファイル\character</Filter>
-    </ClInclude>
-    <ClInclude Include="code\seals.h">
-      <Filter>ソース ファイル\character</Filter>
-    </ClInclude>
     <ClInclude Include="code\UI_enemy.h">
       <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
@@ -746,8 +743,14 @@
     <ClInclude Include="code\peckWave.h">
       <Filter>ソース ファイル\UI\peck</Filter>
     </ClInclude>
+    <ClInclude Include="code\enemy.h">
+      <Filter>ソース ファイル\character\enemy</Filter>
+    </ClInclude>
     <ClInclude Include="code\bears.h">
-      <Filter>ソース ファイル\character</Filter>
+      <Filter>ソース ファイル\character\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="code\seals.h">
+      <Filter>ソース ファイル\character\enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
