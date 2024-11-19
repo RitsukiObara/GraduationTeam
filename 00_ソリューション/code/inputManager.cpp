@@ -187,7 +187,6 @@ void CInputManager::Update(void)
 	m_info.abTrigger[BUTTON_ENTER] =
 	(
 		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_A, m_nID) ||
-		pMouse->GetTrigger(CInputMouse::BUTTON_LMB) ||
 		pKeyboard->GetTrigger(DIK_RETURN)
 	);
 
