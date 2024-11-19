@@ -643,8 +643,8 @@ void CBears::ManageMotion(void)
 	// 移動状態のモーション管理
 	if (IsTurn())
 	{// 振り向きモーション
-		//if (nMotion != E_Motion::MOTION_TURN || bFinish)
-			//SetMotion(E_Motion::MOTION_TURN);
+		if (nMotion != E_Motion::MOTION_TURN || bFinish)
+			SetMotion(E_Motion::MOTION_TURN);
 	}
 	else if (!IsEnableMove())
 	{// 移動不可の時は待機モーション
@@ -711,11 +711,11 @@ void CBears::Event(EVENT_INFO* pEventInfo)
 		SetSpeedMove(fSpeed);
 	}
 
-	//if (nMotion == E_Motion::MOTION_TURN)
-	//{// 方向転換時、跳ねるタイミングのみ回転させる
-	//	// 振り向きの無効化
-	//	DisableTurn();
-	//}
+	if (nMotion == E_Motion::MOTION_TURN)
+	{// 方向転換時、跳ねるタイミングのみ回転させる
+		// 振り向きの無効化
+		DisableTurn();
+	}
 }
 
 //=====================================================

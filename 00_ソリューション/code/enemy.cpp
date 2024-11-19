@@ -40,7 +40,7 @@ const float LINE_ENABLE_MOVE = 0.1f;	// 移動開始できる角度のしきい値
 
 const float RATE_STOP_FLOW_ICE_RADIUS = 1.0f;	// 漂流停止する際に検出する氷の半径の割合
 
-const float RATE_STOP_CHARGE = 0.6f;	// 突進を止めるときの氷のサイズの割合
+const float RATE_STOP_CHARGE = 0.55f;	// 突進を止めるときの氷のサイズの割合
 }
 
 //*****************************************************
