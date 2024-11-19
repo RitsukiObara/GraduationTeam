@@ -84,9 +84,9 @@ private:
 	// サウンドの情報
 	SOUNDINFO m_aSoundInfo[LABEL_MAX] =
 	{
-		{ "data/SOUND/BGM/BGM_Title00.wav",-1 },		// タイトル画面BGM
+		{ "data/SOUND/BGM/BGM_Title.wav",-1 },			// タイトル画面BGM
 		{ "data/SOUND/BGM/BGM_Game04.wav",-1 },			// ゲーム画面BGM01
-		{ "data/SOUND/BGM/BGM_Result00.wav",-1 },			// ゲーム画面BGM01
+		{ "data/SOUND/BGM/BGM_Result.wav",-1 },			// ゲーム画面BGM01
 
 		{ "data/SOUND/SE/pause.wav",0 },				// ポーズ
 		{ "data/SOUND/SE/SE_ENTER00.wav",0 },			// 選択

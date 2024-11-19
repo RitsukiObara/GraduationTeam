@@ -25,13 +25,15 @@ namespace
 	const float DIST_NUMBER = 0.03f;	// 数字間の距離
 	const D3DXVECTOR2 SIZE_NORMAL_NUM = { 0.05f, 0.09f };	// 通常数字のサイズ
 	const D3DXVECTOR2 SIZE_MINI_NUM = { 0.014f, 0.028f };	// ミニ数字のサイズ
-	const float SIZE_NUM = 0.5;	// Go数字のサイズ
+	const float SIZE_NUM = 0.5f;	// Go数字のサイズ
 	const D3DXVECTOR3 POS_INITIAL = { 0.6f,0.5f,0.0f };	// 初期位置
 	const D3DXVECTOR3 POS_GO = { 0.5f,0.5f,0.0f };	// 初期位置
 	const string PATH_TEX_OK = "data\\TEXTURE\\UI\\ready.png";	// コロンのテクスチャパス
 	const D3DXCOLOR NORMAL_COL = { 1.0f,1.0f,1.0f,1.0f };		//基準色
 	const int FRAME_CNT = 60;		// フレーム秒数
 	const int SECOND_ELAPSED = 1;		// 秒数経過
+	const float SIZE_WIDTH = 0.05f;		// サイズの幅
+	const float SIZE_HEIGHT = 0.09f;		// サイズの幅
 }
 
 //=====================================================
@@ -42,7 +44,9 @@ CUIready::CUIready()
 	m_nSecond = 0;
 	m_nFrame = 0;
 	m_state = STATE_NUMBER;
-	m_StateCnt = 0;
+	m_nStateCnt = 0;
+	m_fsize = 0.0f;
+	m_fmove = 0.0f;
 }
 
 //=====================================================
@@ -75,9 +79,11 @@ CUIready* CUIready::Create(void)
 //=====================================================
 HRESULT CUIready::Init(void)
 {
-	m_nSecond = 0;	// 秒の初期化
-	m_nFrame = 0;		//フレーム数初期化
-	m_StateCnt = 0;		//状態遷移カウントの初期化
+	m_nSecond = 0;		// 秒の初期化
+	m_nFrame = 0;		// フレーム数初期化
+	m_nStateCnt = 0;	// 状態遷移カウントの初期化
+	m_fsize = 0.0f;		// サイズの初期化	
+	m_fmove = 0;		// 移動量初期化
 
 	// 初期位置の設定
 	SetPosition(POS_INITIAL);
@@ -136,6 +142,17 @@ void CUIready::Update(void)
 {
 	// 秒数をもらう
 	m_nSecond = GetSecond();
+	
+	// サイズ移動量
+	m_fmove = 0.002f;
+
+	// サイズを拡大
+	m_fsize += m_fmove;
+
+	for (int i = 0; i < E_Number::NUMBER_MAX; i++)
+	{
+		m_aNumber[i]->SetSizeAll(m_fsize, m_fsize);
+	}
 
 	switch (m_state)
 	{
@@ -171,9 +188,9 @@ void CUIready::Update(void)
 		}	
 		
 		//ステートカウント加算
-		m_StateCnt++;
+		m_nStateCnt++;
 
-		if (m_StateCnt >= STATE_COUNT_MAX)
+		if (m_nStateCnt >= STATE_COUNT_MAX)
 		{
 			// ゲームの開始
 			StartGame();
@@ -185,11 +202,6 @@ void CUIready::Update(void)
 
 	UpdateNumber();
 
-#ifdef _DEBUG
-#if 1
-
-#endif
-#endif
 }
 
 //=====================================================
@@ -213,6 +225,14 @@ void CUIready::UpdateNumber()
 		m_nSecond = m_nSecond - SECOND_ELAPSED;
 
 		m_nFrame = 0;
+
+		//数字サイズ初期化
+		for (int i = 0; i < E_Number::NUMBER_MAX; i++)
+		{
+			m_aNumber[i]->SetSizeAll(SIZE_WIDTH, SIZE_HEIGHT);
+
+			m_fsize = 0.0f;
+		}
 	}
 
 	for (int i = 0; i < E_Number::NUMBER_MAX; i++)
