@@ -321,10 +321,9 @@ void CBears::SarchTarget(void)
 		if (it->GetState() == CPlayer::E_State::STATE_DEATH)
 			continue;
 
-		if (universal::DistCmpFlat(pos, posPlayer, fLengthMin, &fDiff))
-		{// 最小距離より近かったら保存
-			//pPlayer = it;
-			//fLengthMin = fDiff;
+		if (CanCharge(posPlayer))
+		{// 突撃できたらターゲットにして突撃開始
+
 		}
 	}
 
@@ -336,6 +335,16 @@ void CBears::SarchTarget(void)
 
 		SetMotion(E_Motion::MOTION_WALK);
 	}
+}
+
+//=====================================================
+// 突撃できるかの判定
+//=====================================================
+bool CBears::CanCharge(D3DXVECTOR3 pos)
+{
+
+
+	return true;
 }
 
 //=====================================================
