@@ -1,7 +1,7 @@
 //*****************************************************
 //
 // ゲームスタート告知UI処理[UI_ready.h]
-// Author:森川駿弥
+// Author:早川友貴
 //
 //*****************************************************
 #ifndef _UI_READY_H_
@@ -53,27 +53,16 @@ public:
 	int GetSecond() { return m_nSecond; }	// 秒
 	void SetSecond(int nSecond) { m_nSecond = nSecond; }
 	void AddSecond(int nSecond) { m_nSecond += nSecond; }
-	bool GetFlag() { return m_bStop; }	// 動作フラグ
-	void SetFlag(bool bStop) { m_bStop = bStop; }
 	void SetPosition(D3DXVECTOR3 pos) override;	// 位置
-	void SetScaleNumber(float fScale);	// 数字のスケール
-	float GetScaleNumber(void) { return m_fScaleNumber; }
-	void SetColor(E_Number number, D3DXCOLOR col);	// 色
-	D3DXCOLOR GetColor(E_Number number);
-
-	// 静的メンバ関数
-	static void SaveSecond(int nSecond);	// 時間保存
-	static int LoadSecond(void);	// 時間読込
 
 private:
 	// メンバ関数
-	void UpdateNumber();	// 数字の更新
-	void TransformNumber();	// 数字のトランスフォーム設定
+	void UpdateNumber(void);	// 数字の更新
+	void TransformNumber(void);	// 数字のトランスフォーム設定
+	void StartGame(void);		// ゲームの開始
 
 	// メンバ変数
 	int m_nSecond;			// 現在の時間(秒)
-	float m_fScaleNumber;	// 数字のスケール
-	bool m_bStop;				// タイマー停止のフラグ
 	vector<CNumber*> m_aNumber;	// 数字の配列
 	int m_nFrame;				//フレーム計算
 	STATE m_state;				//状態変数

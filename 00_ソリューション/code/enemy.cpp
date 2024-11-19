@@ -15,6 +15,7 @@
 #include "flowIce.h"
 #include "debugproc.h"
 #include "seals.h"
+#include "bears.h"
 #include "ocean.h"
 #include "destroy_score.h"
 #include "UI_combo.h"
@@ -72,15 +73,13 @@ CEnemy* CEnemy::Create(int nType, int nGridV, int nGridH)
 	switch (nType)
 	{
 	case CEnemy::TYPE_SEALS:
-
 		pEnemy = new CSeals;
-
 		break;
-	
+	case CEnemy::TYPE_BEARS:
+		pEnemy = new CBears;
+		break;
 	default:
-
 		assert(false);
-
 		break;
 	}
 

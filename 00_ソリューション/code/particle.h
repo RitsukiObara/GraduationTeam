@@ -33,6 +33,8 @@ public:
 		TYPE_ENTER_MAP,	// マップに入ったときのエフェクト
 		TYPE_STAR_HIT,	// ヒット時の星パーティクル
 		TYPE_STICK_ICE,	// 氷がくっつく時のパーティクル
+		TYPE_SNOW_STORM,// 雪が舞ったときのパーティクル
+		TYPE_STAGESELECT_SNOW,	// ステージセレクトの雪の軌道
 		TYPE_MAX
 	}TYPE;
 

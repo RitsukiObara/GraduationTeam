@@ -83,8 +83,9 @@ public:
 	int GetID(void) { return m_nID; }
 
 	// 静的メンバ関数
-	static CPlayer* Create(void);	// 生成処理
+	static CPlayer* Create(void);										// 生成処理
 	static vector<CPlayer*> GetInstance(void) { return s_apPlayer; }	// インスタンスの取得
+	static void EnableInputAll(bool bValue);							// 全プレイヤーの入力フラグ
 
 private:
 	// 構造体定義
@@ -99,7 +100,8 @@ private:
 	void InitGridIdx(void);	// グリッド番号の初期化
 	void CreateDirUI(void);	// 方向UIの生成
 
-	void Input(void);	// 入力
+	void FollowIce(void);	// 氷に追従
+	void Input(void);		// 入力
 	
 	void MoveAnalog(void);		// アナログ移動
 	void InputMoveAnalog(void);	// アナログ移動入力
@@ -110,6 +112,7 @@ private:
 	void JudgeTurn(void);		// 振り向きの検出
 	
 	void CollideIce(void);	// 氷との判定
+	bool CheckAnyIceForward(void);	// 前方に氷があるかの判定
 
 	void InputPeck(void);			// 突っつきの入力
 	void RotationDirUI(int nDir);	// 方向UIの回転

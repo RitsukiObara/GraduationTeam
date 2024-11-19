@@ -1,6 +1,6 @@
 //*****************************************************
 //
-// 敵の処理[enemy.cpp]
+// シロクマの処理[bears.cpp]
 // Author:髙山桃也
 //
 //*****************************************************
@@ -8,7 +8,7 @@
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "seals.h"
+#include "bears.h"
 #include "inputManager.h"
 #include "inputkeyboard.h"
 #include "iceManager.h"
@@ -22,7 +22,7 @@
 //*****************************************************
 namespace
 {
-const std::string PATH_BODY = "data\\MOTION\\motionSeals.txt";	// ボディのパス
+const std::string PATH_BODY = "data\\MOTION\\motionWhitebear.txt";	// ボディのパス
 
 const float HEIGHT_APPER = -400.0f;	// 出現時の高さ
 const float WIDTH_APPER = -340.0f;	// 出現時の横のずれ
@@ -41,7 +41,7 @@ const float RADIUS_HIT = 150.0f;	// ヒット判定の半径
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
-CSeals::CSeals(int nPriority) : CEnemy(nPriority), m_pPlayerTarget(nullptr)
+CBears::CBears(int nPriority) : CEnemy(nPriority), m_pPlayerTarget(nullptr)
 {
 
 }
@@ -49,7 +49,7 @@ CSeals::CSeals(int nPriority) : CEnemy(nPriority), m_pPlayerTarget(nullptr)
 //=====================================================
 // デストラクタ
 //=====================================================
-CSeals::~CSeals()
+CBears::~CBears()
 {
 
 }
@@ -57,24 +57,24 @@ CSeals::~CSeals()
 //=====================================================
 // 生成処理
 //=====================================================
-CSeals* CSeals::Create(void)
+CBears* CBears::Create(void)
 {
-	CSeals* pSeals = nullptr;
+	CBears* pBears = nullptr;
 
-	pSeals = new CSeals;
+	pBears = new CBears;
 
-	if (pSeals != nullptr)
+	if (pBears != nullptr)
 	{
-		pSeals->Init();
+		pBears->Init();
 	}
 
-	return pSeals;
+	return pBears;
 }
 
 //=====================================================
 // 初期化処理
 //=====================================================
-HRESULT CSeals::Init(void)
+HRESULT CBears::Init(void)
 {
 	// 読込
 	Load((char*)&PATH_BODY[0]);
@@ -105,7 +105,7 @@ HRESULT CSeals::Init(void)
 //=====================================================
 // 出現時のトランスフォーム設定
 //=====================================================
-void CSeals::SetApperTransform(void)
+void CBears::SetApperTransform(void)
 {
 	CIceManager *pIceMgr = CIceManager::GetInstance();
 
@@ -148,7 +148,7 @@ void CSeals::SetApperTransform(void)
 //=====================================================
 // 終了処理
 //=====================================================
-void CSeals::Uninit(void)
+void CBears::Uninit(void)
 {
 	CEnemy::Uninit();
 }
@@ -156,7 +156,7 @@ void CSeals::Uninit(void)
 //=====================================================
 // 更新処理
 //=====================================================
-void CSeals::Update(void)
+void CBears::Update(void)
 {
 	// 継承クラスの更新
 	CEnemy::Update();
@@ -171,7 +171,7 @@ void CSeals::Update(void)
 //=====================================================
 // 出現状態の更新
 //=====================================================
-void CSeals::UpdateApper(void)
+void CBears::UpdateApper(void)
 {
 	int nMotion = GetMotion();
 	bool bFinish = IsFinish();
@@ -201,7 +201,7 @@ void CSeals::UpdateApper(void)
 //=====================================================
 // 着地判定
 //=====================================================
-bool CSeals::CollideLand(void)
+bool CBears::CollideLand(void)
 {
 	if (GetMotion() != MOTION_STAYJUMP)
 		return false;	// ジャンプ中モーションになるまで入らない
@@ -237,7 +237,7 @@ bool CSeals::CollideLand(void)
 //=====================================================
 // 氷に向かって移動する
 //=====================================================
-void CSeals::MoveToIce(void)
+void CBears::MoveToIce(void)
 {
 	CIceManager *pIceMgr = CIceManager::GetInstance();
 
@@ -269,7 +269,7 @@ void CSeals::MoveToIce(void)
 //=====================================================
 // 移動量の減衰
 //=====================================================
-void CSeals::Decreasemove(void)
+void CBears::Decreasemove(void)
 {
 	float fSpeed = GetSpeedMove();
 
@@ -281,7 +281,7 @@ void CSeals::Decreasemove(void)
 //=====================================================
 // 停止状態の更新
 //=====================================================
-void CSeals::UpdateStop(void)
+void CBears::UpdateStop(void)
 {
 	// プレイヤーとの判定
 	CollidePlayer();
@@ -297,7 +297,7 @@ void CSeals::UpdateStop(void)
 //=====================================================
 // ターゲットの探索
 //=====================================================
-void CSeals::SarchTarget(void)
+void CBears::SarchTarget(void)
 {
 	// プレイヤーインスタンスの取得
 	vector<CPlayer*> apPlayer = CPlayer::GetInstance();
@@ -340,7 +340,7 @@ void CSeals::SarchTarget(void)
 //=====================================================
 // 移動状態の更新
 //=====================================================
-void CSeals::UpdateMove(void)
+void CBears::UpdateMove(void)
 {
 	if (m_pPlayerTarget == nullptr)
 	{// プレイヤー未発見時の処理
@@ -363,7 +363,7 @@ void CSeals::UpdateMove(void)
 //=====================================================
 // プレイヤーグリッドの発見
 //=====================================================
-void CSeals::FindPlayerGrid(void)
+void CBears::FindPlayerGrid(void)
 {
 	if (m_pPlayerTarget == nullptr)
 		return;
@@ -378,7 +378,7 @@ void CSeals::FindPlayerGrid(void)
 //=====================================================
 // 目標グリッドに到着したときの処理
 //=====================================================
-void CSeals::AliveDestGrid(void)
+void CBears::AliveDestGrid(void)
 {
 	if (m_pPlayerTarget == nullptr)
 	{// プレイヤー未発見時は次の散歩先を探す
@@ -389,7 +389,7 @@ void CSeals::AliveDestGrid(void)
 //=====================================================
 // 次の散歩先を探す処理
 //=====================================================
-void CSeals::DecideNextStrollGrid(void)
+void CBears::DecideNextStrollGrid(void)
 {
 	vector<CIce*> apIce = CIce::GetInstance();
 
@@ -425,7 +425,7 @@ void CSeals::DecideNextStrollGrid(void)
 //=====================================================
 // 死亡時の処理
 //=====================================================
-void CSeals::Death(void)
+void CBears::Death(void)
 {
 	// 敵UIの敵数を減算
 	CUIEnemy *pUIEnemy = CUIEnemy::GetInstance();
@@ -439,7 +439,7 @@ void CSeals::Death(void)
 //=====================================================
 // 攻撃状態の更新
 //=====================================================
-void CSeals::UpdateAttack(void)
+void CBears::UpdateAttack(void)
 {
 
 }
@@ -447,7 +447,7 @@ void CSeals::UpdateAttack(void)
 //=====================================================
 // 漂流状態の更新
 //=====================================================
-void CSeals::UpdateDrift(void)
+void CBears::UpdateDrift(void)
 {
 	CEnemy::UpdateDrift();
 }
@@ -455,7 +455,7 @@ void CSeals::UpdateDrift(void)
 //=====================================================
 // モーションの管理
 //=====================================================
-void CSeals::ManageMotion(void)
+void CBears::ManageMotion(void)
 {
 	int nMotion = GetMotion();
 	bool bFinish = IsFinish();
@@ -469,33 +469,25 @@ void CSeals::ManageMotion(void)
 	// 移動状態のモーション管理
 	if (IsTurn())
 	{// 振り向きモーション
-		if (nMotion != E_Motion::MOTION_TURN || bFinish)
-			SetMotion(E_Motion::MOTION_TURN);
+		//if (nMotion != E_Motion::MOTION_TURN || bFinish)
+			//SetMotion(E_Motion::MOTION_TURN);
 	}
 	else if (!IsEnableMove())
 	{// 移動不可の時は待機モーション
-		if (nMotion != E_Motion::MOTION_NEUTRAL)
-			SetMotion(E_Motion::MOTION_NEUTRAL);
+		//if (nMotion != E_Motion::MOTION_NEUTRAL)
+			//SetMotion(E_Motion::MOTION_NEUTRAL);
 	}
 	else if (GetState() == CEnemy::E_State::STATE_MOVE)
 	{
-		if (m_pPlayerTarget == nullptr)
-		{// ゆっくり歩き
-			if (nMotion != E_Motion::MOTION_NEUTRAL)
-				SetMotion(E_Motion::MOTION_NEUTRAL);
-		}
-		else
-		{// 早歩き
-			if (nMotion != E_Motion::MOTION_WALK)
-				SetMotion(E_Motion::MOTION_WALK);
-		}
+		if (nMotion != E_Motion::MOTION_WALK)
+			SetMotion(E_Motion::MOTION_WALK);
 	}
 }
 
 //=====================================================
 // プレイヤーとの判定
 //=====================================================
-void CSeals::CollidePlayer(void)
+void CBears::CollidePlayer(void)
 {
 	// プレイヤーインスタンス取得
 	vector<CPlayer*> apPlayer = CPlayer::GetInstance();
@@ -527,11 +519,11 @@ void CSeals::CollidePlayer(void)
 //=====================================================
 // モーションイベント
 //=====================================================
-void CSeals::Event(EVENT_INFO* pEventInfo)
+void CBears::Event(EVENT_INFO* pEventInfo)
 {
 	int nMotion = GetMotion();
 
-	if (nMotion == CSeals::E_Motion::MOTION_WALK)
+	if (nMotion == CBears::E_Motion::MOTION_WALK)
 	{// 歩きの時、イベント発生でスピードを出す
 		float fSpeed = GetSpeedMove();
 
@@ -540,17 +532,17 @@ void CSeals::Event(EVENT_INFO* pEventInfo)
 		SetSpeedMove(fSpeed);
 	}
 
-	if (nMotion == E_Motion::MOTION_TURN)
-	{// 方向転換時、跳ねるタイミングのみ回転させる
-		// 振り向きの無効化
-		DisableTurn();
-	}
+	//if (nMotion == E_Motion::MOTION_TURN)
+	//{// 方向転換時、跳ねるタイミングのみ回転させる
+	//	// 振り向きの無効化
+	//	DisableTurn();
+	//}
 }
 
 //=====================================================
 // 描画処理
 //=====================================================
-void CSeals::Draw(void)
+void CBears::Draw(void)
 {
 	// 継承クラスの描画
 	CEnemy::Draw();

@@ -1,7 +1,7 @@
 //*****************************************************
 //
-// タイムの処理[timer.cpp]
-// Author:森川駿弥
+// ゲームスタート告知UI処理[UI_ready.cpp]
+// Author:早川友貴
 //
 //*****************************************************
 
@@ -11,7 +11,8 @@
 #include "UI_ready.h"
 #include "UI.h"
 #include "texture.h"
-#include "debugproc.h"
+#include "game.h"
+#include "player.h"
 
 //*****************************************************
 // 定数定義
@@ -39,8 +40,6 @@ namespace
 CUIready::CUIready()
 {
 	m_nSecond = 0;
-	m_fScaleNumber = 0;
-	m_bStop = false;
 	m_nFrame = 0;
 	m_state = STATE_NUMBER;
 	m_StateCnt = 0;
@@ -72,67 +71,16 @@ CUIready* CUIready::Create(void)
 }
 
 //=====================================================
-// 時間保存処理
-//=====================================================
-void CUIready::SaveSecond(int fSecond)
-{
-	//// ファイルを開く
-	//std::ofstream file("data\\TEMP\\time.bin", std::ios_base::binary);	// ファイルストリーム
-	//if (file.fail())
-	//{ // ファイルが開けなかった場合
-
-	//	// エラーメッセージボックス
-	//	MessageBox(nullptr, "時間の書き出しに失敗！", "警告！", MB_ICONWARNING);
-	//	return;
-	//}
-
-	//// 引数の時間を書き出し
-	//file.write((char*)&fSecond, sizeof(float));
-
-	//// ファイルを閉じる
-	//file.close();
-}
-
-////=====================================================
-//// 時間読込処理
-////=====================================================
-//int CUIready::LoadSecond(void)
-//{
-//	//// ファイルを開く
-//	//std::ifstream file("data\\TEMP\\time.bin", std::ios_base::binary);	// ファイルストリーム
-//	//if (file.fail())
-//	//{ // ファイルが開けなかった場合
-//
-//	//	// エラーメッセージボックス
-//	//	MessageBox(nullptr, "時間の読み込みに失敗！", "警告！", MB_ICONWARNING);
-//	//	return 0;
-//	//}
-//
-//	//// 引数の時間を読み込み
-//	//int nTime = 0;
-//	//file.read((char*)&nTime, sizeof(float));
-//
-//	//// ファイルを閉じる
-//	//file.close();
-//
-//	//// 読み込んだ時間を返す
-//	//return nTime;
-//}
-
-//=====================================================
 // 初期化処理
 //=====================================================
 HRESULT CUIready::Init(void)
 {
 	m_nSecond = 0;	// 秒の初期化
-	m_fScaleNumber = 1.0f;	// 初期スケール設定
-	m_bStop = false;	// タイマー停止のフラグ
 	m_nFrame = 0;		//フレーム数初期化
 	m_StateCnt = 0;		//状態遷移カウントの初期化
 
 	// 初期位置の設定
 	SetPosition(POS_INITIAL);
-
 	SetSecond(TIME_SECOND);
 
 	// 数字の配列のリサイズ
@@ -146,11 +94,17 @@ HRESULT CUIready::Init(void)
 	// 数字の生成
 	for (int i = 0; i < E_Number::NUMBER_MAX; i++)
 	{
-		m_aNumber[i] = CNumber::Create(aDigit[i], 0);	// 数字の生成
+		m_aNumber[i] = CNumber::Create(aDigit[i], 0);
 	}
 
 	// 数字のトランスフォームの設定
 	TransformNumber();
+
+	// 全プレイヤーが操作不能になる
+	CPlayer::EnableInputAll(false);
+
+	// ゲームを準備状態にする
+	CGame::SetState(CGame::E_State::STATE_READY);
 
 	return S_OK;
 }
@@ -221,8 +175,9 @@ void CUIready::Update(void)
 
 		if (m_StateCnt >= STATE_COUNT_MAX)
 		{
-			// 終了
-			Uninit();
+			// ゲームの開始
+			StartGame();
+			return;
 		}
 
 		break;
@@ -232,8 +187,7 @@ void CUIready::Update(void)
 
 #ifdef _DEBUG
 #if 1
-	CDebugProc::GetInstance()->Print("\n現在の秒：[%d]", m_nSecond);
-	//CDebugProc::GetInstance()->Print("\nスコアの位置：[%f,%f,%f]", pos.x, pos.y, pos.z);
+
 #endif
 #endif
 }
@@ -261,17 +215,6 @@ void CUIready::UpdateNumber()
 		m_nFrame = 0;
 	}
 
-	// 値の用意
-	int aValue[E_Number::NUMBER_MAX] =
-	{
-#if 1
-
-#else
-		(int)((DWORD)(m_nSecond * 1000) / 60000),
-		(int)((DWORD)(m_nSecond * 1000) / 1000 % 60),
-#endif
-	};
-
 	for (int i = 0; i < E_Number::NUMBER_MAX; i++)
 	{
 		m_aNumber[i]->SetValue(m_nSecond);
@@ -293,7 +236,7 @@ void CUIready::TransformNumber()
 
 	D3DXVECTOR2 aSize[E_Number::NUMBER_MAX] =
 	{// 数字のサイズ
-		SIZE_NORMAL_NUM * m_fScaleNumber,
+		SIZE_NORMAL_NUM,
 	};
 
 	D3DXVECTOR3 posBase = GetPosition();
@@ -311,7 +254,7 @@ void CUIready::TransformNumber()
 			nIdx--;	// 0番目でなければ前回のサイズを参照する
 
 		// パラメーター設定
-		float fWidth = aSize[nIdx].x * aDigit[nIdx] * 2 + DIST_NUMBER * m_fScaleNumber;	// サイズに応じて数字間のスペースをあける
+		float fWidth = aSize[nIdx].x * aDigit[nIdx] * 2 + DIST_NUMBER;	// サイズに応じて数字間のスペースをあける
 		D3DXVECTOR3 pos = { posBase.x + fWidth * (i - 1), posBase.y, 0.0f };
 		m_aNumber[i]->SetPosition(pos);
 		m_aNumber[i]->SetSizeAll(aSize[i].x, aSize[i].y);
@@ -319,6 +262,22 @@ void CUIready::TransformNumber()
 		if (i == 0)	// 0以上のときしか入らない処理
 			continue;
 	}
+}
+
+//=====================================================
+// ゲームの開始
+//=====================================================
+void CUIready::StartGame(void)
+{
+	CGame *pGame = CGame::GetInstance();
+
+	if (pGame == nullptr)
+		return;
+
+	pGame->StartGame();
+
+	// 自身を破棄
+	Uninit();
 }
 
 //=====================================================
@@ -330,49 +289,6 @@ void CUIready::SetPosition(D3DXVECTOR3 pos)
 
 	// 数字のトランスフォームの設定
 	TransformNumber();
-}
-
-//=====================================================
-// 数字のスケールの設定
-//=====================================================
-void CUIready::SetScaleNumber(float fScale)
-{
-	m_fScaleNumber = fScale;
-
-	// 数字のトランスフォームの設定
-	TransformNumber();
-}
-
-//=====================================================
-// 色の設定
-//=====================================================
-void CUIready::SetColor(E_Number number, D3DXCOLOR col)
-{
-	if (number < 0 || number > E_Number::NUMBER_MAX)
-		return;
-
-	if (number == E_Number::NUMBER_MAX)
-	{// 全数字の色設定
-		for (auto it : m_aNumber)	// 数字
-			it->SetColor(col);
-
-			m_Go->SetCol(col);
-	}
-	else
-	{// 各数字の色設定
-		m_aNumber[number]->SetColor(col);
-	}
-}
-
-//=====================================================
-// 色の取得
-//=====================================================
-D3DXCOLOR CUIready::GetColor(E_Number number)
-{
-	if (number < 0 || number >= E_Number::NUMBER_MAX)
-		return D3DXCOLOR(NORMAL_COL);
-
-	return m_aNumber[number]->GetColor();
 }
 
 //=====================================================

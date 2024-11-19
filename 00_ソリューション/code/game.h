@@ -37,6 +37,7 @@ public:
 	enum E_State
 	{// 状態
 		STATE_NONE,		// 何もしていない状態
+		STATE_READY,	// 準備状態
 		STATE_START,	// 開始状態
 		STATE_NORMAL,	// 通常状態 
 		STATE_RESULT,	// リザルト状態
@@ -65,6 +66,7 @@ public:
 	bool GetStop(void) { return m_bStop; }
 	void ReleasePause(void) { m_pPause = nullptr; };	// ポーズの解放
 	void CreateScore(void);	// スコアの生成
+	void StartGame(void);	// ゲームの開始
 
 	// 変数取得・設定関数
 	int GetTimeSecond(void) { if (m_pTimer != nullptr) { return m_pTimer->GetSecond(); } return 0; }

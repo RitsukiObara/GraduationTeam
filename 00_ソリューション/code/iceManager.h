@@ -63,7 +63,7 @@ public:
 	bool FindIce(int nNumV, int nNumH, int nIdx,CIce *pIceStand,vector<CIce*> apIceLast,bool bBreak);	// アイスの発見
 	vector<CIce*> GetAroundIce(int nNumV, int nNumH);	// 周辺の氷を取得
 	void DeleteIce(CIce *pIce);	// 指定したポインタと同じ氷を削除する
-	void Collide(D3DXVECTOR3 *pPos, int nIdxV, int nIdxH);	// 外に出さない判定処理
+	void Collide(D3DXVECTOR3 *pPos, int nIdxV, int nIdxH,float fRate);	// 外に出さない判定処理
 	void Collide(D3DXVECTOR3 *pPos, CIce *pice);	// 外に出さない判定処理
 	bool GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH,float fRate = 0.7f);	// グリッド番号を位置から取得する処理
 	bool IsInIce(D3DXVECTOR3 pos, CIce *pIce, float fRate = 0.7f);	// 氷に乗ってるかの判定
@@ -73,6 +73,7 @@ public:
 	void DisableFind(void);	// 探索フラグの無効化
 	void Load(const char* pPath);	// 初期配置読み込み
 	void BindRippleElements(void);	// さざ波の属性を割り当てる処理
+	CIce *GetNearestIce(D3DXVECTOR3 pos, int *pNumV = nullptr, int *pNumH = nullptr);	// 最も近い氷の取得
 
 	// 変数取得・設定関数
 	D3DXVECTOR3 GetGridPosition(int *pNumV, int *pNumH);

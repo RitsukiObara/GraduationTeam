@@ -23,6 +23,7 @@
 #include "camera.h"
 #include "cameraState.h"
 #include "debugproc.h"
+#include "player.h"
 
 //*****************************************************
 // 定数定義
@@ -125,6 +126,9 @@ HRESULT CResultSingle::Init(void)
 
 	// 2Dオブジェクトの生成
 	Create2D(m_bWin);
+
+	// プレイヤーを操作不能にする
+	CPlayer::EnableInputAll(false);
 
 	return S_OK;
 }
