@@ -334,7 +334,7 @@ void CSelectStageManager::SetParticle(int nIdx)
 
 	// パーティクルを発生
 	D3DXVECTOR3 posParticle = m_aParticlePos[nIdx]->GetPosition();
-	CParticle::Create(posParticle, CParticle::TYPE::TYPE_STAR_HIT);
+	CParticle::Create(posParticle, CParticle::TYPE::TYPE_STAGESELECT_SNOW);
 
 	// 次の位置に一定以上近づいたら元の位置に戻す
 	if (universal::DistCmpFlat(posParticle, posNext, RADIUS_COLLISION_PUSHOUT * RATE_SELECT_COLLISION, nullptr))
