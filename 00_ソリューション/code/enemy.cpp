@@ -50,7 +50,8 @@ std::vector<CEnemy*> CEnemy::s_vector = {};	// 自身のポインタ
 // 優先順位を決めるコンストラクタ
 //=====================================================
 CEnemy::CEnemy(int nPriority) : m_nGridV(0), m_nGridH(0),m_state(E_State::STATE_NONE), m_pIceLand(nullptr), m_bFollowIce(false),
-m_move(),m_nGridVDest(0), m_nGridHDest(0), m_fSpeedMove(0.0f), m_fTimerDeath(0.0f), m_bTurn(false), m_bEnableMove(false), m_pLandSystemFlow(nullptr)
+m_move(),m_nGridVDest(0), m_nGridHDest(0), m_fSpeedMove(0.0f), m_fTimerDeath(0.0f), m_bTurn(false), m_bEnableMove(false), m_pLandSystemFlow(nullptr),
+m_bMoveByGrid(false)
 {
 	s_vector.push_back(this);
 }
@@ -116,6 +117,7 @@ HRESULT CEnemy::Init(void)
 	// フラグを設定
 	m_bFollowIce = false;
 	m_bEnableMove = true;
+	m_bMoveByGrid = true;
 
 	// 移動速度の初期設定
 	m_fSpeedMove = SPPED_MOVE_INIT;
@@ -240,6 +242,17 @@ void CEnemy::UpdateStop(void)
 //=====================================================
 void CEnemy::UpdateMove(void)
 {
+	if (m_bMoveByGrid)
+		MoveByGrid();		// グリッド基準の移動
+	else
+		MoveByNotGrid();	// グリッド基準じゃない移動
+}
+
+//=====================================================
+// グリッド基準の移動
+//=====================================================
+void CEnemy::MoveByGrid(void)
+{
 	// 目標に近い氷を探す
 	SarchNearIceToDest();
 
@@ -251,6 +264,14 @@ void CEnemy::UpdateMove(void)
 
 	// グリッドを移ったかのチェック
 	CheckChangeGrid();
+}
+
+//=====================================================
+// グリッド基準じゃない移動
+//=====================================================
+void CEnemy::MoveByNotGrid(void)
+{
+
 }
 
 //=====================================================
