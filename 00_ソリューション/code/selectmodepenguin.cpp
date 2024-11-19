@@ -11,6 +11,7 @@
 #include "selectmodepenguin.h"
 #include "collision.h"
 #include "debugproc.h"
+#include "motion.h"
 
 //*****************************************************
 // 定数定義
@@ -130,6 +131,12 @@ void CSelectModePenguin::Update(void)
 	// 移動量の減衰
 	m_move *= FACT_DECREASE_MOVE;
 
+	// モーションの管理
+	ManageMotion();
+
+	// モーション更新
+	CMotion::Update();
+
 	if (m_pCollisionSphere != nullptr)
 	{// 球の判定の追従
 		D3DXVECTOR3 pos = GetPosition();
@@ -156,6 +163,59 @@ void CSelectModePenguin::Draw(void)
 {
 	// 継承クラスの描画
 	CMotion::Draw();
+}
+
+//=====================================================
+// ジャンプの終了
+//=====================================================
+void CSelectModePenguin::EndJump(void)
+{
+	// ジャンプモーションフラグを折る
+	m_fragMotion.bJump = false;
+
+	// 入力を有効化
+	EnableInput(true);
+}
+
+//=====================================================
+// モーションの管理
+//=====================================================
+void CSelectModePenguin::ManageMotion(void)
+{
+	int nMotion = GetMotion();
+	bool bFinish = IsFinish();
+
+	if (m_fragMotion.bJump)
+	{// ジャンプ中
+		if (nMotion == MOTION::MOTION_LANDING)
+		{// 着地モーション終了でジャンプ終了
+			if (bFinish)
+				EndJump();
+		}
+		else if (nMotion == MOTION::MOTION_STARTJUMP)
+		{// ジャンプ開始モーション終了からの遷移
+			if (bFinish)
+			{
+				SetMotion(MOTION::MOTION_STAYJUMP);
+			}
+		}
+		else if (nMotion != MOTION::MOTION_STARTJUMP)	// ジャンプ開始モーションの開始
+			SetMotion(MOTION::MOTION_STARTJUMP);
+	}
+	else if ((nMotion == MOTION_PECK || nMotion == MOTION_CANNOTPECK) && !bFinish)
+	{
+
+	}
+	else if (m_fragMotion.bWalk)
+	{// 歩きモーションフラグ有効
+		if (nMotion != MOTION::MOTION_WALK)
+			SetMotion(MOTION::MOTION_WALK);
+	}
+	else
+	{// 何もフラグが立っていない状態
+		if (nMotion != MOTION::MOTION_NEUTRAL)
+			SetMotion(MOTION::MOTION_NEUTRAL);
+	}
 }
 
 //*****************************************************
