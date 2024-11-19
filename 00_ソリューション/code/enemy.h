@@ -63,7 +63,8 @@ public:
 
 	virtual void UpdateStop(void);		// 停止状態の更新
 
-	virtual void UpdateMove(void);		// 移動状態の更新
+	virtual void UpdateMove(void);	// 移動状態の更新
+	void MoveToNextGrid(void);		// 次のグリッドに向かって移動する
 
 	virtual void UpdateAttack(void) = 0;	// 攻撃状態の更新
 
@@ -112,7 +113,6 @@ private:
 	virtual void SetApperTransform(void) = 0;	// 出現時のトランスフォーム設定
 	void SarchNearIceToDest(void);	// 目標に近い氷を探す
 	bool PathFind(int nIdxV, int nIdxH, vector<CIce*>& apIce);	// 探索の再帰関数
-	void MoveToNextGrid(void);	// 次のグリッドに向かって移動する
 	void JudgeTurn(void);	// 反転するかの判定
 	void JudgeCanMove(void);	// 移動できるかの判断
 	void CheckChangeGrid(void);	// グリッドが変わったかの確認
@@ -135,7 +135,7 @@ private:
 	int m_nGridHDest;	// 目標のグリッドの横番号
 
 	bool m_bEnableMove;	// 移動可能フラグ
-	bool m_bTurn;	// 振り向きのフラグ
+	bool m_bTurn;		// 振り向きのフラグ
 	float m_fRotTurn;	// 振り向き角度
 	float m_fTimerDeath;	// 死亡までのタイマー
 	float m_fSpeedMove;	// 移動速度
