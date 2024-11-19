@@ -29,8 +29,8 @@ const float RATE_HEX_Z = 0.18f;	// 六角形の割合Z
 
 const float WIDTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_X;	// グリッドの幅
 const float DEPTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_Z;	// グリッドの奥行き
-const float OCEAN_FLOW_MIN = 1.00f;		// 海流の速度最小
-const float OCEAN_FLOW_MAX = 5.00f;	// 海流の速度最大
+const float OCEAN_FLOW_MIN = 1.00f;								// 海流の速度最小
+const float OCEAN_FLOW_MAX = 5.00f;								// 海流の速度最大
 
 const float RANGE_SELECT_ICE = D3DX_PI / 6;	// 氷を選択するときの角度の範囲
 

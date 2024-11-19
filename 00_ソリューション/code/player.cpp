@@ -304,12 +304,11 @@ void CPlayer::MoveAnalog(void)
 	// アナログ移動入力
 	InputMoveAnalog();
 
-	if(m_state != E_State::STATE_INVINCIBLE && m_state != E_State::STATE_FLOW)	// 無敵時は行わない
-		CollideIce();	// 氷との判定
-
-		// 今いるグリッド番号の取得
+	// 今いるグリッド番号の取得
 	CheckGridChange();
 
+	if(m_state != E_State::STATE_INVINCIBLE && m_state != E_State::STATE_FLOW)	// 無敵時は行わない
+		CollideIce();	// 氷との判定
 }
 
 //=====================================================
@@ -517,6 +516,9 @@ void CPlayer::JudgeTurn(void)
 //=====================================================
 void CPlayer::CollideIce(void)
 {
+	if (m_state != E_State::STATE_NORMAL)
+		return;
+
 	CIceManager* pIceMgr = CIceManager::GetInstance();
 
 	if (pIceMgr == nullptr)
