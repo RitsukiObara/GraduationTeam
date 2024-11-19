@@ -16,6 +16,7 @@
 #include "particle.h"
 #include "debugproc.h"
 #include "UI_enemy.h"
+#include "effect3D.h"
 
 //*****************************************************
 // 定数定義
@@ -24,10 +25,10 @@ namespace
 {
 const std::string PATH_BODY = "data\\MOTION\\motionWhitebear.txt";	// ボディのパス
 
-const float HEIGHT_APPER = -400.0f;	// 出現時の高さ
-const float WIDTH_APPER = -340.0f;	// 出現時の横のずれ
-const float POW_APPER_JUMP = 45.0f;	// 出現時のジャンプ力
-const float APPER_GRAVITY = -0.98f;	// 出現時の重力
+const float HEIGHT_APPER = -400.0f;		// 出現時の高さ
+const float WIDTH_APPER = -340.0f;		// 出現時の横のずれ
+const float POW_APPER_JUMP = 45.0f;		// 出現時のジャンプ力
+const float APPER_GRAVITY = -0.98f;		// 出現時の重力
 const float FACT_MOVE_APPER = 0.04f;	// 出現時の移動係数
 
 const float RANGE_FIND_PLAYER = 1000.0f;	// プレイヤー発見範囲
@@ -322,8 +323,8 @@ void CBears::SarchTarget(void)
 
 		if (universal::DistCmpFlat(pos, posPlayer, fLengthMin, &fDiff))
 		{// 最小距離より近かったら保存
-			pPlayer = it;
-			fLengthMin = fDiff;
+			//pPlayer = it;
+			//fLengthMin = fDiff;
 		}
 	}
 
@@ -358,6 +359,9 @@ void CBears::UpdateMove(void)
 
 	// 継承クラスの更新
 	CEnemy::UpdateMove();
+
+	if (IsTurn())
+		MoveToNextGrid();
 }
 
 //=====================================================
@@ -403,6 +407,10 @@ void CBears::DecideNextStrollGrid(void)
 	int nRand = universal::RandRange((int)apIce.size() - 1, 0);
 
 	CIce *pIce = apIce[nRand];
+
+#ifdef _DEBUG
+	CEffect3D::Create(apIce[nRand]->GetPosition(), 200.0f, 120, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+#endif
 
 	if (pIce == nullptr)
 		return;	// もし選んだ氷がなかったら処理を終了
