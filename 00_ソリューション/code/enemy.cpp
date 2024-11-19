@@ -39,6 +39,8 @@ const float FACT_ROTATION_TURN = 0.07f;	// U‚èŒü‚«‰ñ“]ŒW”
 const float LINE_ENABLE_MOVE = 0.1f;	// ˆÚ“®ŠJŽn‚Å‚«‚éŠp“x‚Ì‚µ‚«‚¢’l
 
 const float RATE_STOP_FLOW_ICE_RADIUS = 1.0f;	// •Y—¬’âŽ~‚·‚éÛ‚ÉŒŸo‚·‚é•X‚Ì”¼Œa‚ÌŠ„‡
+
+const float RATE_STOP_CHARGE = 0.55f;	// “Ëi‚ðŽ~‚ß‚é‚Æ‚«‚Ì•X‚ÌƒTƒCƒY‚ÌŠ„‡
 }
 
 //*****************************************************
@@ -271,7 +273,41 @@ void CEnemy::MoveByGrid(void)
 //=====================================================
 void CEnemy::MoveByNotGrid(void)
 {
+	CIceManager *pIceMgr = CIceManager::GetInstance();
 
+	if (pIceMgr == nullptr)
+		return;
+
+	// ˆê”Ô‹ß‚¢•X‚ÌŽæ“¾
+	D3DXVECTOR3 pos = GetPosition();
+	
+	CIce *pIce = pIceMgr->GetNearestIce(pos, &m_nGridV, &m_nGridH);
+
+	if (pIce == nullptr)
+		return;
+
+	// •X‚ÌŠO‚Éo‚½‚çˆÚ“®‚ðŽ~‚ß‚é
+	if (!pIceMgr->IsInIce(pos, pIce, RATE_STOP_CHARGE))
+		StopMoveByNotGrid(pIce);
+}
+
+//=====================================================
+// ƒOƒŠƒbƒhŠî€‚¶‚á‚È‚¢ˆÚ“®‚ðŽ~‚ß‚é
+//=====================================================
+void CEnemy::StopMoveByNotGrid(CIce *pIce)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	// ˆÚ“®—Ê‚ÌƒŠƒZƒbƒg
+	SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+	// ˆÊ’u‚ð•â³
+	D3DXVECTOR3 pos = GetPosition();
+	pIceMgr->Collide(&pos, pIce, RATE_STOP_CHARGE);
+	SetPosition(pos);
 }
 
 //=====================================================

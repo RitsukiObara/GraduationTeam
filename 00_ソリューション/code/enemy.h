@@ -56,8 +56,10 @@ public:
 	void Draw(void);	// 描画
 	void TranslateByGrid(int nIdxV,int nIdxH);	// グリッドによる移動
 	void FollowIce(void);	// 氷に追従
-	virtual void Death(void);	// 死亡時の処理
 	void DisableTurn(void);	// 振り返りの無効化
+
+	virtual void Death(void);				// 死亡時の処理
+	virtual void StopMoveByNotGrid(CIce *pIce);	// グリッド基準じゃない移動を止める
 
 	virtual void UpdateApper(void) = 0;		// 出現状態の更新
 
@@ -97,6 +99,9 @@ public:
 
 	void EnableMove(bool bValue) { m_bEnableMove = bValue; }	// 移動可能フラグ
 	bool IsEnableMove(void) { return m_bEnableMove; }
+
+	void EnableMoveByGrid(bool bValue) { m_bMoveByGrid = bValue; }	// グリッド基準移動フラグ
+	bool IsEnableMoveByGrid(void) { return m_bMoveByGrid; }
 
 	void SetState(E_State state) { m_state = state; }	// 状態
 	E_State GetState(void) { return m_state; }
@@ -139,7 +144,7 @@ private:
 	int m_nGridHNext;	// 次行くグリッドの横番号
 	int m_nGridVDest;	// 目標のグリッドの縦番号
 	int m_nGridHDest;	// 目標のグリッドの横番号
-
+	
 	bool m_bEnableMove;		// 移動可能フラグ
 	bool m_bTurn;			// 振り向きのフラグ
 	float m_fRotTurn;		// 振り向き角度

@@ -77,7 +77,7 @@ MOTIONSET
         KEY = 0
         FRAME = 10
         NUM_FRAME = 3.0
-        RADIUS = 100.500000
+        RADIUS = 1.500000
         PARENT = 0
         POS = 0.000000 0.0 0.0
     END_EVENTSET
@@ -86,7 +86,7 @@ MOTIONSET
         KEY = 2
         FRAME = 10
         NUM_FRAME = 3.0
-        RADIUS = 200.500000
+        RADIUS = 1.500000
         PARENT = 0
         POS = 0.000000 0.0 0.0
     END_EVENTSET
@@ -504,5 +504,76 @@ MOTIONSET
     END_KEYSET
 END_MOTIONSET
 
+#===============================
+# [5]番目のモーション(振り向き)
+#===============================
+MOTIONSET
+    LOOP = 0
+    NUM_KEY = 2
+	NUM_EVENT = 1
 
+    EVENTSET
+        KEY = 0
+        FRAME = 8
+        NUM_FRAME = 3.0
+        RADIUS = 1.500000
+        PARENT = 0
+        POS = 0.000000 0.0 0.0
+    END_EVENTSET
+    
+    KEYSET     #---<< 0 / 2 >>
+        FRAME = 10
+        KEY # -----[0]----
+            POS = 0.00 -4.80 0.00
+            ROT = 0.51 0.00 0.00
+        END_KEY
+        KEY # -----[1]----
+            POS = 0.00 0.00 0.00
+            ROT = 0.00 0.00 0.00
+        END_KEY
+        KEY # -----[2]----
+            POS = 0.00 0.00 0.00
+            ROT = 0.00 0.00 0.00
+        END_KEY
+        KEY # -----[3]----
+            POS = 0.00 0.00 0.00
+            ROT = 0.00 0.00 0.00
+        END_KEY
+        KEY # -----[4]----
+            POS = 0.00 0.00 0.00
+            ROT = -0.60 0.00 0.00
+        END_KEY
+        KEY # -----[5]----
+            POS = 0.00 1.00 0.00
+            ROT = -0.55 0.00 0.00
+        END_KEY
+    END_KEYSET
+    KEYSET     #---<< 1 / 2 >>
+        FRAME = 10
+        KEY # -----[0]----
+            POS = 0.00 -9.30 0.00
+            ROT = 0.91 0.00 0.00
+        END_KEY
+        KEY # -----[1]----
+            POS = 0.00 0.00 0.00
+            ROT = 0.00 0.00 0.00
+        END_KEY
+        KEY # -----[2]----
+            POS = 0.00 0.00 0.00
+            ROT = 1.35 0.00 0.00
+        END_KEY
+        KEY # -----[3]----
+            POS = 0.00 0.00 0.00
+            ROT = 1.44 0.00 0.00
+        END_KEY
+        KEY # -----[4]----
+            POS = 0.00 0.00 0.00
+            ROT = -1.01 0.00 0.00
+        END_KEY
+        KEY # -----[5]----
+            POS = 0.00 1.00 0.00
+            ROT = -1.00 0.00 0.00
+        END_KEY
+    END_KEYSET
+END_MOTIONSET
 END_SCRIPT		# この行は絶対消さないこと！
