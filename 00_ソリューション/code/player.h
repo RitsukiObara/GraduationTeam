@@ -83,8 +83,9 @@ public:
 	int GetID(void) { return m_nID; }
 
 	// 静的メンバ関数
-	static CPlayer* Create(void);	// 生成処理
+	static CPlayer* Create(void);										// 生成処理
 	static vector<CPlayer*> GetInstance(void) { return s_apPlayer; }	// インスタンスの取得
+	static void EnableInputAll(bool bValue);							// 全プレイヤーの入力フラグ
 
 private:
 	// 構造体定義

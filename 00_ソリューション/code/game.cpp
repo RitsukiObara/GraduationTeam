@@ -88,17 +88,6 @@ HRESULT CGame::Init(void)
 	m_state = STATE_NORMAL;
 	m_bStop = false;
 
-	// フォグをかける
-	CRenderer *pRenderer = CRenderer::GetInstance();
-
-	if (pRenderer != nullptr)
-	{
-		pRenderer->EnableFog(true);
-		pRenderer->SetStart(50000);
-		pRenderer->SetEnd(70000);
-		pRenderer->SetCol(D3DXCOLOR(0.7f, 0.7f, 0.7f, 1.0f));
-	}
-
 	// モードの取得
 	vector<bool> abFrag;
 	gameManager::LoadMode(&m_GameMode, abFrag);
@@ -339,6 +328,18 @@ void CGame::CreateScore(void)
 {
 	if (m_pScore == nullptr)
 		m_pScore = CScore::Create();
+}
+
+//=====================================================
+// ゲームの開始
+//=====================================================
+void CGame::StartGame(void)
+{
+	// ゲームの開始
+	m_state = E_State::STATE_NORMAL;
+
+	// 全プレイヤーが操作可能になる
+	CPlayer::EnableInputAll(true);
 }
 
 namespace game

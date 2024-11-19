@@ -524,8 +524,6 @@ void CPlayer::CollideIce(void)
 
 	D3DXVECTOR3 pos = GetPosition();
 
-	CEffect3D::Create(GetPosition(), 50.0f, 5, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-
 	// グリッドの位置に合わせる
 	pIceMgr->Collide(&pos, m_nGridV, m_nGridH);
 
@@ -577,7 +575,6 @@ bool CPlayer::CheckAnyIceForward(void)
 		// 扇内にあったらターゲットにする
 		if (universal::IsInFanTargetYFlat(posPlayer, posIce, fRotInput, RANGE_ROT_FORWARD))
 		{
-			CEffect3D::Create(posIce, 100.0f, 4, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 			return true;
 		}
 	}
@@ -959,8 +956,6 @@ void CPlayer::SarchJumpIce(void)
 
 		universal::LimitRot(&rotPlayer.y);
 
-		CEffect3D::Create(apIce[i]->GetPosition(), 50.0f, 5, D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
-
 		// 扇内にあったらターゲットにする
 		if (universal::IsInFanTargetYFlat(pIceStand->GetPosition(), posIce, rotPlayer.y, jump::RANGE_JUMP))
 		{
@@ -1239,7 +1234,7 @@ void CPlayer::Debug(void)
 	if (pIceMgr == nullptr)
 		return;
 
-	CEffect3D::Create(pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH), 100.0f, 5, D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
+	//CEffect3D::Create(pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH), 100.0f, 5, D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
 }
 
 //=====================================================
@@ -1249,4 +1244,13 @@ void CPlayer::Draw(void)
 {
 	// 継承クラスの描画
 	CMotion::Draw();
+}
+
+//=====================================================
+// 全プレイヤーの入力フラグ設定
+//=====================================================
+void CPlayer::EnableInputAll(bool bValue)
+{
+	for (CPlayer *pPlayer : s_apPlayer)
+		pPlayer->EnableInput(bValue);
 }

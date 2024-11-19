@@ -78,10 +78,10 @@ HRESULT CGameManager::Init(void)
 	//海の生成
 	COcean::Create();
 
-//#if 0
+#if 1
 	//ゲームスタート告知UI
 	CUIready::Create();
-//#endif
+#endif
 
 	// カメラのステイト設定
 	Camera::ChangeState(new CFollowPlayer);

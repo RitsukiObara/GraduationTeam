@@ -27,9 +27,6 @@ CGameManagerSingle::CGameManagerSingle()
 //=====================================================
 HRESULT CGameManagerSingle::Init(void)
 {
-	// 基底クラスの初期化
-	CGameManager::Init();
-
 	// 敵数表示UI生成
 	CUIEnemy::Create();
 
@@ -48,6 +45,9 @@ HRESULT CGameManagerSingle::Init(void)
 
 	if (pGame != nullptr)
 		pGame->CreateScore();
+
+	// 基底クラスの初期化
+	CGameManager::Init();
 
 	return S_OK;
 }
