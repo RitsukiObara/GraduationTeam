@@ -39,6 +39,8 @@ const float FACT_ROTATION_TURN = 0.07f;	// 振り向き回転係数
 const float LINE_ENABLE_MOVE = 0.1f;	// 移動開始できる角度のしきい値
 
 const float RATE_STOP_FLOW_ICE_RADIUS = 1.0f;	// 漂流停止する際に検出する氷の半径の割合
+
+const float RATE_STOP_CHARGE = 0.55f;	// 突進を止めるときの氷のサイズの割合
 }
 
 //*****************************************************
@@ -50,7 +52,8 @@ std::vector<CEnemy*> CEnemy::s_vector = {};	// 自身のポインタ
 // 優先順位を決めるコンストラクタ
 //=====================================================
 CEnemy::CEnemy(int nPriority) : m_nGridV(0), m_nGridH(0),m_state(E_State::STATE_NONE), m_pIceLand(nullptr), m_bFollowIce(false),
-m_move(),m_nGridVDest(0), m_nGridHDest(0), m_fSpeedMove(0.0f), m_fTimerDeath(0.0f), m_bTurn(false), m_bEnableMove(false), m_pLandSystemFlow(nullptr)
+m_move(),m_nGridVDest(0), m_nGridHDest(0), m_fSpeedMove(0.0f), m_fTimerDeath(0.0f), m_bTurn(false), m_bEnableMove(false), m_pLandSystemFlow(nullptr),
+m_bMoveByGrid(false)
 {
 	s_vector.push_back(this);
 }
@@ -116,6 +119,7 @@ HRESULT CEnemy::Init(void)
 	// フラグを設定
 	m_bFollowIce = false;
 	m_bEnableMove = true;
+	m_bMoveByGrid = true;
 
 	// 移動速度の初期設定
 	m_fSpeedMove = SPPED_MOVE_INIT;
@@ -240,6 +244,17 @@ void CEnemy::UpdateStop(void)
 //=====================================================
 void CEnemy::UpdateMove(void)
 {
+	if (m_bMoveByGrid)
+		MoveByGrid();		// グリッド基準の移動
+	else
+		MoveByNotGrid();	// グリッド基準じゃない移動
+}
+
+//=====================================================
+// グリッド基準の移動
+//=====================================================
+void CEnemy::MoveByGrid(void)
+{
 	// 目標に近い氷を探す
 	SarchNearIceToDest();
 
@@ -251,6 +266,48 @@ void CEnemy::UpdateMove(void)
 
 	// グリッドを移ったかのチェック
 	CheckChangeGrid();
+}
+
+//=====================================================
+// グリッド基準じゃない移動
+//=====================================================
+void CEnemy::MoveByNotGrid(void)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	// 一番近い氷の取得
+	D3DXVECTOR3 pos = GetPosition();
+	
+	CIce *pIce = pIceMgr->GetNearestIce(pos, &m_nGridV, &m_nGridH);
+
+	if (pIce == nullptr)
+		return;
+
+	// 氷の外に出たら移動を止める
+	if (!pIceMgr->IsInIce(pos, pIce, RATE_STOP_CHARGE))
+		StopMoveByNotGrid(pIce);
+}
+
+//=====================================================
+// グリッド基準じゃない移動を止める
+//=====================================================
+void CEnemy::StopMoveByNotGrid(CIce *pIce)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	// 移動量のリセット
+	SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+	// 位置を補正
+	D3DXVECTOR3 pos = GetPosition();
+	pIceMgr->Collide(&pos, pIce, RATE_STOP_CHARGE);
+	SetPosition(pos);
 }
 
 //=====================================================

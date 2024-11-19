@@ -27,8 +27,9 @@
 namespace
 {
 	const char* MODEL[CBgIce::TYPE_MAX] = { "data\\MODEL\\block\\Drift_ice.x","data\\MODEL\\block\\Drift_ice_small.x" };
-	const float GRAVITY_SPEED = 0.1f;	// ”wŒi•X‚ª’¾‚ñ‚Å‚¢‚­‘¬“x
 	const float MAX_HEIGHT = -300.0f;	// •X‚ª’¾‚Þ‚‚³
+	const int MAX_FLOWTIMING = 12;	// •X‚ª’¾‚ÞÅ‘åƒ^ƒCƒ~ƒ“ƒO
+	const int MIN_FLOWTIMING = 1;	// •X‚ª’¾‚ÞÅ¬ƒ^ƒCƒ~ƒ“ƒO
 }
 
 //*****************************************************
@@ -42,7 +43,7 @@ CBgIce::CBgIce()
 {
 	m_type = TYPE_BIG;
 	m_state = STATE_FLOW;
-	m_nNumAll = 0;
+	m_fspeed = 0.0f;
 }
 
 //====================================================
@@ -66,6 +67,8 @@ CBgIce* CBgIce::Create(D3DXVECTOR3 pos,D3DXVECTOR3 rot,TYPE type)
 	pBgIce->m_type = type;
 
 	pBgIce->Init();
+
+	pBgIce->m_fspeed = (float)universal::RandRange(MAX_FLOWTIMING, MIN_FLOWTIMING) * 0.01f;
 
 	return pBgIce;
 }
@@ -242,7 +245,7 @@ void CBgIce::Move(void)
 
 		D3DXVECTOR3 pos = GetPosition();
 
-		fgravity_speed += GRAVITY_SPEED;
+		fgravity_speed += m_fspeed;
 
 		pos.y -= fgravity_speed;
 

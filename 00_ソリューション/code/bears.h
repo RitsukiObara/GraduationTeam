@@ -52,23 +52,34 @@ private:
 		MOTION_STARTJUMP,	// ジャンプ開始
 		MOTION_STAYJUMP,	// ジャンプ中
 		MOTION_LANDING,		// 着地
+		MOTION_TURN,		// 振り向き
 		MOTION_MAX
 	};
 
 	// メンバ関数
 	void SetApperTransform(void) override;
-	void CollidePlayer(void);	// プレイヤーとの判定
-	void MoveToIce(void);	// 氷に向かって移動
-	void Decreasemove(void);	// 移動量の減衰
-	void SarchTarget(void);	// ターゲットの探索
-	void FindPlayerGrid(void);	// プレイヤーグリッドの発見
-	void AliveDestGrid(void) override;	// グリッドに到着したときの処理
-	void DecideNextStrollGrid(void);	// 次の散歩先を決める
-	void Death(void) override;	// 死亡時の処理
+	void CollidePlayer(void);						// プレイヤーとの判定
+	void MoveToIce(void);							// 氷に向かって移動
+	void Decreasemove(void);						// 移動量の減衰
+	void SarchTarget(void);							// ターゲットの探索
+	void StopMoveByNotGrid(CIce *pIce) override;	// グリッド基準じゃない移動を止める
+
+	bool CanCharge(D3DXVECTOR3 pos, int nIdxTargetV, int nIdxTargetH);							// 突撃できるかの判定
+	bool IsAliveTarget(int nIdxV, int nIdxH,float fRot,int nIdxTargetV, int nIdxTargetH);		// ターゲットに到達したかの再帰関数
+
+	void StartCharge(void);	// 突撃の開始
+	void Charge(void);		// 突撃中の処理
+	void EndCharge(void);	// 突撃の終了
+
+	void AliveDestGrid(void) override;				// グリッドに到着したときの処理
+	void DecideNextStrollGrid(void);				// 次の散歩先を決める
+	void Death(void) override;						// 死亡時の処理
 	void Event(EVENT_INFO* pEventInfo) override;	// モーションイベント
 
 	// メンバ変数
 	CPlayer *m_pPlayerTarget;	// ターゲットプレイヤー
+	D3DXVECTOR3 m_vecCharge;	// 突進するベクトル
+	float m_fTimerAcceleCharge;	// 突進加速カウンター
 };
 
 #endif

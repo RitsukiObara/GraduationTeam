@@ -57,17 +57,19 @@ public:
 
 private:
 	// メンバ関数
-	void UpdateNumber(void);	// 数字の更新
-	void TransformNumber(void);	// 数字のトランスフォーム設定
-	void StartGame(void);		// ゲームの開始
+	void UpdateNumber(void);		// 数字の更新
+	void TransformNumber(void);		// 数字のトランスフォーム設定
+	void StartGame(void);			// ゲームの開始
 
 	// メンバ変数
-	int m_nSecond;			// 現在の時間(秒)
-	vector<CNumber*> m_aNumber;	// 数字の配列
-	int m_nFrame;				//フレーム計算
-	STATE m_state;				//状態変数
-	CUI* m_Go;	// GOの配列
-	int m_StateCnt;	//状態遷移カウント
+	int m_nSecond;					// 現在の時間(秒)
+	vector<CNumber*> m_aNumber;		// 数字の配列
+	int m_nFrame;					// フレーム計算
+	STATE m_state;					// 状態変数
+	CUI* m_Go;						// GOの変数
+	int m_nStateCnt;				// 状態遷移カウント
+	float m_fsize;					// サイズ変数
+	float m_fmove;					// 移動量
 };
 
 #endif

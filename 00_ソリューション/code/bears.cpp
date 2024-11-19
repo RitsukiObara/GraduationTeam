@@ -16,6 +16,8 @@
 #include "particle.h"
 #include "debugproc.h"
 #include "UI_enemy.h"
+#include "effect3D.h"
+#include "manager.h"
 
 //*****************************************************
 // 定数定義
@@ -24,24 +26,35 @@ namespace
 {
 const std::string PATH_BODY = "data\\MOTION\\motionWhitebear.txt";	// ボディのパス
 
-const float HEIGHT_APPER = -400.0f;	// 出現時の高さ
-const float WIDTH_APPER = -340.0f;	// 出現時の横のずれ
-const float POW_APPER_JUMP = 45.0f;	// 出現時のジャンプ力
-const float APPER_GRAVITY = -0.98f;	// 出現時の重力
+const float HEIGHT_APPER = -400.0f;		// 出現時の高さ
+const float WIDTH_APPER = -340.0f;		// 出現時の横のずれ
+const float POW_APPER_JUMP = 45.0f;		// 出現時のジャンプ力
+const float APPER_GRAVITY = -0.98f;		// 出現時の重力
 const float FACT_MOVE_APPER = 0.04f;	// 出現時の移動係数
 
 const float RANGE_FIND_PLAYER = 1000.0f;	// プレイヤー発見範囲
 
-const float SPEED_ONESTEP = 1.7f;	// 一歩のスピード
+const float SPEED_ONESTEP = 1.1f;	// 一歩のスピード
 const float FACT_DECMOVE = 0.9f;	// 移動減衰係数
 
 const float RADIUS_HIT = 150.0f;	// ヒット判定の半径
+
+//-----------------------------
+// 突進の定数
+//-----------------------------
+namespace charge
+{
+const float RATE_START = 0.4f;	// 突進を開始するのに氷に近づいてる割合
+const float RATE_RANGE = D3DX_PI / CIceManager::E_Direction::DIRECTION_MAX;	// 突撃の角度範囲
+const float TIME_MAX_SPEED = 10.4f;	// 最大速度になるのにかかる時間
+const float SPEED_MAX = 5.0f;		// 最大速度
+}
 }
 
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
-CBears::CBears(int nPriority) : CEnemy(nPriority), m_pPlayerTarget(nullptr)
+CBears::CBears(int nPriority) : CEnemy(nPriority), m_pPlayerTarget(nullptr), m_vecCharge(), m_fTimerAcceleCharge(0.0f)
 {
 
 }
@@ -291,7 +304,7 @@ void CBears::UpdateStop(void)
 
 	CEnemy::UpdateStop();
 
-	SetState(E_State::STATE_MOVE);
+	SetState(CEnemy::E_State::STATE_MOVE);
 }
 
 //=====================================================
@@ -299,6 +312,26 @@ void CBears::UpdateStop(void)
 //=====================================================
 void CBears::SarchTarget(void)
 {
+	//------------------------------
+	// 突進するかの判定
+	//------------------------------
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	// 現在の氷を取得
+	int nIdxV = GetGridV();
+	int nIdxH = GetGridH();
+	CIce *pIce = pIceMgr->GetGridIce(&nIdxV, &nIdxH);
+	D3DXVECTOR3 pos = GetPosition();
+
+	if (!pIceMgr->IsInIce(pos, pIce, charge::RATE_START))
+		return;	// 一定以上氷に近くなければ、突進しない
+
+	//------------------------------
+	// プレイヤーを探す処理
+	//------------------------------
 	// プレイヤーインスタンスの取得
 	vector<CPlayer*> apPlayer = CPlayer::GetInstance();
 
@@ -306,8 +339,6 @@ void CBears::SarchTarget(void)
 		return;	// 配列が空なら終了
 
 	float fLengthMin = RANGE_FIND_PLAYER;
-
-	D3DXVECTOR3 pos = GetPosition();
 
 	CPlayer *pPlayer = nullptr;	// 発見したプレイヤー
 
@@ -320,13 +351,30 @@ void CBears::SarchTarget(void)
 		if (it->GetState() == CPlayer::E_State::STATE_DEATH)
 			continue;
 
-		if (universal::DistCmpFlat(pos, posPlayer, fLengthMin, &fDiff))
-		{// 最小距離より近かったら保存
+		int nIdxPlayerV = it->GetGridV();
+		int nIdxPlayerH = it->GetGridH();
+
+		if (CanCharge(posPlayer, nIdxPlayerV, nIdxPlayerH))
+		{// 突撃できたらターゲットにして突撃開始
+#ifdef _DEBUG
+			CEffect3D::Create(GetPosition(), 200.0f, 4, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
+#endif
+			// 突撃の開始
+			StartCharge();
+
+			// 突進ベクトルの保存
+			m_vecCharge = posPlayer - pos;
+			D3DXVec3Normalize(&m_vecCharge, &m_vecCharge);
+
+			// プレイヤーを保存してfor文を終了
 			pPlayer = it;
-			fLengthMin = fDiff;
+			break;
 		}
 	}
 
+	//------------------------------
+	// 結果を保存
+	//------------------------------
 	m_pPlayerTarget = pPlayer;
 
 	if (m_pPlayerTarget != nullptr)	// ターゲットが見つかったら移動状態に移行
@@ -338,6 +386,114 @@ void CBears::SarchTarget(void)
 }
 
 //=====================================================
+// グリッド基準じゃない移動を止める
+//=====================================================
+void CBears::StopMoveByNotGrid(CIce *pIce)
+{
+	// 突進の終了
+	EndCharge();
+
+	// 継承クラスの処理
+	CEnemy::StopMoveByNotGrid(pIce);
+}
+
+//=====================================================
+// 突撃できるかの判定
+//=====================================================
+bool CBears::CanCharge(D3DXVECTOR3 posTarget, int nIdxTargetV, int nIdxTargetH)
+{
+	// 差分の角度を取得
+	D3DXVECTOR3 pos = GetPosition();
+	D3DXVECTOR3 vecDiff = posTarget - pos;
+
+	float fRot = atan2f(vecDiff.x, vecDiff.z);
+
+	int nIdxV = GetGridV();
+	int nIdxH = GetGridH();
+
+	return IsAliveTarget(nIdxV, nIdxH, fRot, nIdxTargetV, nIdxTargetH);
+}
+
+//=====================================================
+// ターゲットに到達したかの再帰関数
+//=====================================================
+bool CBears::IsAliveTarget(int nIdxV, int nIdxH, float fRot, int nIdxTargetV, int nIdxTargetH)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return false;
+
+	// 周辺の氷の取得
+	vector<CIce*> apIce = pIceMgr->GetAroundIce(nIdxV, nIdxH);
+
+	D3DXVECTOR3 posCurrentGrid = pIceMgr->GetGridPosition(&nIdxV, &nIdxH);
+
+	for (int i = 0; i < (int)apIce.size(); i++)
+	{
+		if (apIce[i] == nullptr)
+			continue;	// 氷がなければスキップ
+
+		if (apIce[i]->IsPeck())
+			continue;	// つっついた氷ならスキップ
+
+		// 氷の番号取得
+		int nIdxIceV;
+		int nIdxIceH;
+		pIceMgr->GetIceIndex(apIce[i], &nIdxIceV, &nIdxIceH);
+
+		D3DXVECTOR3 posIce = apIce[i]->GetPosition();
+
+		// 角度の設定
+		D3DXVECTOR3 posTarget = pIceMgr->GetGridPosition(&nIdxTargetV, &nIdxTargetH);
+		D3DXVECTOR3 vecDiff = posTarget - posCurrentGrid;
+		fRot = atan2f(vecDiff.x, vecDiff.z);
+
+		// 突進方向に氷があるなら通る
+		if (universal::IsInFanTargetYFlat(posCurrentGrid, posIce, fRot, charge::RATE_RANGE))
+		{// 進める場合は、進む先の氷に再帰関数を進める
+#ifdef _DEBUG
+			CEffect3D::Create(posIce, 100.0f, 4, D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f));
+#endif
+			if (nIdxIceV == nIdxTargetV && nIdxIceH == nIdxTargetH)
+				return true;	// 到達したら真を返す
+
+			if (IsAliveTarget(nIdxIceV, nIdxIceH, fRot, nIdxTargetV, nIdxTargetH))
+				return true;
+		}
+	}
+
+	return false;
+}
+
+//=====================================================
+// 突撃の開始
+//=====================================================
+void CBears::StartCharge(void)
+{
+	// グリッド基準じゃない移動にする
+	EnableMoveByGrid(false);
+}
+
+//=====================================================
+// 突撃の終了
+//=====================================================
+void CBears::EndCharge(void)
+{
+	// グリッド基準の移動にする
+	EnableMoveByGrid(true);
+
+	// ターゲットのプレイヤーをnullにする
+	m_pPlayerTarget = nullptr;
+
+	// 加速タイマーリセット
+	m_fTimerAcceleCharge = 0.0f;
+
+	// 次の散歩先を探す
+	DecideNextStrollGrid();
+}
+
+//=====================================================
 // 移動状態の更新
 //=====================================================
 void CBears::UpdateMove(void)
@@ -346,11 +502,14 @@ void CBears::UpdateMove(void)
 	{// プレイヤー未発見時の処理
 		// ターゲットの探索
 		SarchTarget();
+
+		// 次のグリッドに進む
+		MoveToNextGrid();
 	}
 	else
 	{// プレイヤー発見時はプレイヤーを追いかける
-		// プレイヤーグリッドの発見
-		FindPlayerGrid();
+		// 突進処理
+		Charge();
 	}
 
 	// プレイヤーとの判定
@@ -361,18 +520,29 @@ void CBears::UpdateMove(void)
 }
 
 //=====================================================
-// プレイヤーグリッドの発見
+// 突進中の処理
 //=====================================================
-void CBears::FindPlayerGrid(void)
+void CBears::Charge(void)
 {
-	if (m_pPlayerTarget == nullptr)
-		return;
+	// プレイヤーに向かって移動量を加算
+	D3DXVECTOR3 move = GetMove();
 
-	int nGridV = m_pPlayerTarget->GetGridV();
-	int nGridH = m_pPlayerTarget->GetGridH();
+	if (m_fTimerAcceleCharge < charge::TIME_MAX_SPEED)
+		m_fTimerAcceleCharge += CManager::GetDeltaTime();
 
-	SetGridVDest(nGridV);
-	SetGridHDest(nGridH);
+	// タイマーのイージング
+	float fTime = m_fTimerAcceleCharge / charge::TIME_MAX_SPEED;
+	float fRate = easing::EaseOutExpo(fTime);
+	universal::LimitValuefloat(&fRate, 1.0f, 0.0f);
+
+	// 割合で速度を設定
+	move = m_vecCharge * charge::SPEED_MAX * fRate;
+
+	SetMove(move);
+
+#ifdef _DEBUG
+	CEffect3D::Create(GetPosition(), 200.0f, 5, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+#endif
 }
 
 //=====================================================
@@ -403,6 +573,10 @@ void CBears::DecideNextStrollGrid(void)
 	int nRand = universal::RandRange((int)apIce.size() - 1, 0);
 
 	CIce *pIce = apIce[nRand];
+
+#ifdef _DEBUG
+	CEffect3D::Create(apIce[nRand]->GetPosition(), 200.0f, 120, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+#endif
 
 	if (pIce == nullptr)
 		return;	// もし選んだ氷がなかったら処理を終了
@@ -469,8 +643,8 @@ void CBears::ManageMotion(void)
 	// 移動状態のモーション管理
 	if (IsTurn())
 	{// 振り向きモーション
-		//if (nMotion != E_Motion::MOTION_TURN || bFinish)
-			//SetMotion(E_Motion::MOTION_TURN);
+		if (nMotion != E_Motion::MOTION_TURN || bFinish)
+			SetMotion(E_Motion::MOTION_TURN);
 	}
 	else if (!IsEnableMove())
 	{// 移動不可の時は待機モーション
@@ -508,10 +682,15 @@ void CBears::CollidePlayer(void)
 
 		if (universal::DistCmpFlat(pos, posPlayer,RADIUS_HIT,nullptr))
 		{// 自身のグリッド番号と縦横が一致する場合、相手のヒット処理を呼ぶ
-			it->Hit(0.0f);	// 即死なのでダメージは0
+			// 即死なのでダメージは0
+			it->Hit(0.0f);
+
 			// 停止して目標のリセット
 			SetState(CEnemy::E_State::STATE_STOP);
-			m_pPlayerTarget = nullptr;	
+			m_pPlayerTarget = nullptr;
+
+			// 突進の終了
+			EndCharge();
 		}
 	}
 }
@@ -532,11 +711,11 @@ void CBears::Event(EVENT_INFO* pEventInfo)
 		SetSpeedMove(fSpeed);
 	}
 
-	//if (nMotion == E_Motion::MOTION_TURN)
-	//{// 方向転換時、跳ねるタイミングのみ回転させる
-	//	// 振り向きの無効化
-	//	DisableTurn();
-	//}
+	if (nMotion == E_Motion::MOTION_TURN)
+	{// 方向転換時、跳ねるタイミングのみ回転させる
+		// 振り向きの無効化
+		DisableTurn();
+	}
 }
 
 //=====================================================

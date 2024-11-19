@@ -56,14 +56,17 @@ public:
 	void Draw(void);	// 描画
 	void TranslateByGrid(int nIdxV,int nIdxH);	// グリッドによる移動
 	void FollowIce(void);	// 氷に追従
-	virtual void Death(void);	// 死亡時の処理
 	void DisableTurn(void);	// 振り返りの無効化
+
+	virtual void Death(void);				// 死亡時の処理
+	virtual void StopMoveByNotGrid(CIce *pIce);	// グリッド基準じゃない移動を止める
 
 	virtual void UpdateApper(void) = 0;		// 出現状態の更新
 
 	virtual void UpdateStop(void);		// 停止状態の更新
 
-	virtual void UpdateMove(void);		// 移動状態の更新
+	virtual void UpdateMove(void);	// 移動状態の更新
+	void MoveToNextGrid(void);		// 次のグリッドに向かって移動する
 
 	virtual void UpdateAttack(void) = 0;	// 攻撃状態の更新
 
@@ -97,6 +100,9 @@ public:
 	void EnableMove(bool bValue) { m_bEnableMove = bValue; }	// 移動可能フラグ
 	bool IsEnableMove(void) { return m_bEnableMove; }
 
+	void EnableMoveByGrid(bool bValue) { m_bMoveByGrid = bValue; }	// グリッド基準移動フラグ
+	bool IsEnableMoveByGrid(void) { return m_bMoveByGrid; }
+
 	void SetState(E_State state) { m_state = state; }	// 状態
 	E_State GetState(void) { return m_state; }
 	void SetMove(D3DXVECTOR3 move) { m_move = move; }	// 移動量
@@ -110,21 +116,26 @@ private:
 	// メンバ関数
 	void InitGridIdx(void);	// グリッド番号の初期化
 	virtual void SetApperTransform(void) = 0;	// 出現時のトランスフォーム設定
-	void SarchNearIceToDest(void);	// 目標に近い氷を探す
-	bool PathFind(int nIdxV, int nIdxH, vector<CIce*>& apIce);	// 探索の再帰関数
-	void MoveToNextGrid(void);	// 次のグリッドに向かって移動する
-	void JudgeTurn(void);	// 反転するかの判定
-	void JudgeCanMove(void);	// 移動できるかの判断
-	void CheckChangeGrid(void);	// グリッドが変わったかの確認
-	virtual void AliveDestGrid(void) {};	// 目的地に着いた時の仮想関数
-	void DriftDeath(void);	// 漂流中の死亡関数
-	void Debug(void);	// デバッグ処理
 
-	void StartFlows(void);	// 漂流開始
-	bool FindFlowIce(void);	// 漂流する氷の検出
-	void StayFlow(void);	// 漂流中の処理
+	void SarchNearIceToDest(void);								// 目標に近い氷を探す
+	bool PathFind(int nIdxV, int nIdxH, vector<CIce*>& apIce);	// 探索の再帰関数
+
+	void JudgeTurn(void);		// 反転するかの判定
+	void JudgeCanMove(void);	// 移動できるかの判断
+
+	void MoveByGrid(void);					// グリッド基準の移動
+	void MoveByNotGrid(void);				// グリッド基準じゃない移動
+	void CheckChangeGrid(void);				// グリッドが変わったかの確認
+	virtual void AliveDestGrid(void) {};	// 目的地に着いた時の仮想関数
+
+	void Debug(void);		// デバッグ処理
+
+	void StartFlows(void);		// 漂流開始
+	bool FindFlowIce(void);		// 漂流する氷の検出
+	void StayFlow(void);		// 漂流中の処理
 	void JudgeEndFlow(void);	// 漂流の終了分岐
-	void EndFlows(void);	// 漂流終了
+	void EndFlows(void);		// 漂流終了
+	void DriftDeath(void);		// 漂流中の死亡関数
 
 	// メンバ変数
 	int m_nGridV;	// 今いるグリッドの縦番号
@@ -133,17 +144,20 @@ private:
 	int m_nGridHNext;	// 次行くグリッドの横番号
 	int m_nGridVDest;	// 目標のグリッドの縦番号
 	int m_nGridHDest;	// 目標のグリッドの横番号
-
-	bool m_bEnableMove;	// 移動可能フラグ
-	bool m_bTurn;	// 振り向きのフラグ
-	float m_fRotTurn;	// 振り向き角度
+	
+	bool m_bEnableMove;		// 移動可能フラグ
+	bool m_bTurn;			// 振り向きのフラグ
+	float m_fRotTurn;		// 振り向き角度
 	float m_fTimerDeath;	// 死亡までのタイマー
-	float m_fSpeedMove;	// 移動速度
-	bool m_bFollowIce;	// 氷追従フラグ
-	E_State m_state;	// 状態
-	CIce *m_pIceLand;	// 乗っている氷
+	float m_fSpeedMove;		// 移動速度
+	bool m_bFollowIce;		// 氷追従フラグ
+	bool m_bMoveByGrid;		// グリッド基準の移動フラグ
+	E_State m_state;		// 状態
+	
+	CIce *m_pIceLand;				// 乗っている氷
 	CFlowIce *m_pLandSystemFlow;	// 乗ってる流氷システム
-	D3DXVECTOR3 m_move;	// 移動量
+
+	D3DXVECTOR3 m_move;		// 移動量
 	
 	// 静的メンバ変数
 	static std::vector<CEnemy*> s_vector;	// 自身のポインタ
