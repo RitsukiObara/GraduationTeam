@@ -641,6 +641,9 @@ CIce *CIceManager::GetNearestIce(D3DXVECTOR3 pos, int *pNumV, int *pNumH)
 			if (m_aGrid[i][j].pIce == nullptr)
 				continue;
 
+			if (m_aGrid[i][j].pIce->IsPeck())
+				continue;
+
 			CIce *pIce = m_aGrid[i][j].pIce;
 
 			float fDiff = 0.0f;
