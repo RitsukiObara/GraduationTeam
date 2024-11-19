@@ -36,7 +36,7 @@ const float FACT_ROTATION = 0.1f;	// 回転係数
 
 const float LINE_INPUT_MOVE = 0.3f;	// 移動するまでのスティック入力のしきい値
 const float RANGE_SELECT_ICE = D3DX_PI * 2 / 6;	// 氷を選択するときの角度の範囲
-const float RATE_CHANGE_GRID = 0.5f;	// 次のグリッドに移る判定の割合
+const float RATE_CHANGE_GRID = 0.6f;	// 次のグリッドに移る判定の割合
 
 const float TIME_MAX_SPEED = 1.0f;	// 最大速度に達するまでにかかる時間
 const float SPEED_MOVE_MAX = 2.5f;	// 最大移動速度
@@ -44,6 +44,8 @@ const float SPEED_MOVE_MAX = 2.5f;	// 最大移動速度
 const float LINE_STOP_TURN = 0.2f;	// 振り向きを停止するしきい値
 const float LINE_START_TURN = D3DX_PI * 0.6f;	// 振り向きを開始するしきい値
 const float FACT_ROTATION_TURN = 0.2f;	// 振り向き回転係数
+
+const float RANGE_ROT_FORWARD = D3DX_PI * 2 / CIceManager::E_Direction::DIRECTION_MAX;	// 前進するのに判断する角度
 
 //-------------------------------
 // ジャンプの定数
@@ -245,9 +247,32 @@ void CPlayer::Update(void)
 	if (m_pPeckLine != nullptr)
 		m_pPeckLine->SetPosition(GetPosition());
 
+	// 氷の追従
+	FollowIce();
+
 #ifdef _DEBUG
 	Debug();
 #endif
+}
+
+//=====================================================
+// 氷の追従
+//=====================================================
+void CPlayer::FollowIce(void)
+{
+	CIceManager* pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	CIce *pIceStand = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
+
+	if (pIceStand != nullptr)
+	{
+		D3DXVECTOR3 pos = GetPosition();
+		pos.y = pIceStand->GetPosition().y;
+		SetPosition(pos);
+	}
 }
 
 //=====================================================
@@ -281,6 +306,10 @@ void CPlayer::MoveAnalog(void)
 
 	if(m_state != E_State::STATE_INVINCIBLE && m_state != E_State::STATE_FLOW)	// 無敵時は行わない
 		CollideIce();	// 氷との判定
+
+		// 今いるグリッド番号の取得
+	CheckGridChange();
+
 }
 
 //=====================================================
@@ -307,9 +336,6 @@ void CPlayer::InputMoveAnalog(void)
 
 	// 移動量の減衰
 	DecreaseMove();
-
-	// 今いるグリッド番号の取得
-	CheckGridChange();
 }
 
 //=====================================================
@@ -498,16 +524,65 @@ void CPlayer::CollideIce(void)
 
 	D3DXVECTOR3 pos = GetPosition();
 
+	CEffect3D::Create(GetPosition(), 50.0f, 5, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+
 	// グリッドの位置に合わせる
 	pIceMgr->Collide(&pos, m_nGridV, m_nGridH);
 
-	// 氷の高さに合わせる
-	CIce *pIceStand = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
-		
-	if (pIceStand != nullptr)
-		pos.y = pIceStand->GetPosition().y;
-
 	SetPosition(pos);
+}
+
+//=====================================================
+// 前方に氷があるかの判定
+//=====================================================
+bool CPlayer::CheckAnyIceForward(void)
+{
+	CIceManager* pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return false;
+
+	// 周辺の氷の取得
+	vector<CIce*> apIce = pIceMgr->GetAroundIce(m_nGridV, m_nGridH);
+
+	CIce *pIceStand = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
+
+	if (m_pInputMgr == nullptr)
+		return false;
+
+	// 目標方向の設定
+	CInputManager::S_Axis axis = m_pInputMgr->GetAxis();
+	D3DXVECTOR3 axisMove = axis.axisMove;
+
+	float fRotInput = atan2f(axisMove.x, axisMove.z);
+	universal::LimitRot(&fRotInput);
+
+	CDebugProc::GetInstance()->Print("\nスティック角度[%f]", fRotInput);
+
+	for (int i = 0; i < (int)apIce.size(); i++)
+	{
+		if (apIce[i] == nullptr)
+			continue;
+
+		if (apIce[i]->IsPeck())
+			continue;
+
+		D3DXVECTOR3 posPlayer = GetPosition();
+		D3DXVECTOR3 rotPlayer = GetRotation();
+		D3DXVECTOR3 posIce = apIce[i]->GetPosition();
+
+		rotPlayer.y += D3DX_PI;
+		universal::LimitRot(&rotPlayer.y);
+
+		// 扇内にあったらターゲットにする
+		if (universal::IsInFanTargetYFlat(posPlayer, posIce, fRotInput, RANGE_ROT_FORWARD))
+		{
+			CEffect3D::Create(posIce, 100.0f, 4, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+			return true;
+		}
+	}
+
+	return false;
 }
 
 //=====================================================
@@ -530,6 +605,9 @@ CIce *CPlayer::SelectIceByRot(float fRot)
 
 		D3DXVECTOR3 posCurrentGrid = pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH);
 		D3DXVECTOR3 posIce = it->GetPosition();
+
+		//fRot -= D3DX_PI * 0.5f;
+		//universal::LimitRot(&fRot);
 
 		// 氷とスティック角度の比較
 		bool bSelect = universal::IsInFanTargetYFlat(posCurrentGrid, posIce, fRot, RANGE_SELECT_ICE);
@@ -558,8 +636,8 @@ bool CPlayer::CheckGridChange(void)
 	int nIdxH = -1;
 
 	// グリッド番号の取得
-	D3DXVECTOR3 pos = GetPosition();
-	if (!pIceMgr->GetIdxGridFromPosition(pos, &nIdxV, &nIdxH, RATE_CHANGE_GRID))
+	D3DXVECTOR3 posNext = GetPosition() + GetMove();
+	if (!pIceMgr->GetIdxGridFromPosition(posNext, &nIdxV, &nIdxH, RATE_CHANGE_GRID))
 		return false;	// グリッド番号取得失敗で偽を返す
 
 	CIce *pIce = pIceMgr->GetGridIce(&nIdxV, &nIdxH);
@@ -572,16 +650,8 @@ bool CPlayer::CheckGridChange(void)
 		return false;
 	}
 
-	// 突っついている氷に接していたらジャンプできる
-	m_bEnableJump = pIce->IsPeck();
-
 	if (pIce->IsPeck())
-	{// 突っついた氷に接している判定
-		m_apIceJump = pIceMgr->GetAroundIce(nIdxV, nIdxH);
 		return false;
-	}
-	else
-		m_apIceJump.clear();
 
 	if ((nIdxV == m_nGridV &&
 		nIdxH == m_nGridH) ||
@@ -595,9 +665,6 @@ bool CPlayer::CheckGridChange(void)
 		m_nGridV = nIdxV;
 		m_nGridH = nIdxH;
 
-#ifdef _DEBUG
-		//CEffect3D::Create(pIceMgr->GetGridPosition(&nIdxV, &nIdxH), 50.0f, 120, D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
-#endif
 		return true;
 	}
 }
@@ -837,11 +904,6 @@ void CPlayer::InputJump(void)
 	if (m_pInputMgr == nullptr)
 		return;
 
-	if (!m_bEnableJump)
-		return;
-
-	CEffect3D::Create(GetPosition(), 50.0f, 3, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-
 	SarchJumpIce();	// ジャンプ先の氷を探す
 }
 
@@ -850,34 +912,70 @@ void CPlayer::InputJump(void)
 //=====================================================
 void CPlayer::SarchJumpIce(void)
 {
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
 	CIce *pIceTarget = nullptr;
 
-	for (int i = 0; i < (int)m_apIceJump.size(); i++)
+	//-------------------------------
+	// 向いている方向の氷を取得
+	//-------------------------------
+	D3DXVECTOR3 rotPlayer = GetRotation();
+
+	rotPlayer.y += D3DX_PI;
+	universal::LimitRot(&rotPlayer.y);
+
+	CIce *pIceForward = SelectIceByRot(rotPlayer.y);
+
+	if (pIceForward == nullptr)
+		return;
+
+	if (!pIceForward->IsPeck())
+		return;
+
+	// 氷の番号取得
+	int nIdxV;
+	int nIdxH;
+	pIceMgr->GetIceIndex(pIceForward, &nIdxV, &nIdxH);
+
+	vector<CIce*> apIce = pIceMgr->GetAroundIce(nIdxV, nIdxH);
+
+	//-------------------------------
+	// 向いている氷の周辺をチェック
+	//-------------------------------
+	CIce *pIceStand = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
+	for (int i = 0; i < (int)apIce.size(); i++)
 	{
-		if (m_apIceJump[i] == nullptr)
+		if (apIce[i] == nullptr)
+			continue;
+
+		if (pIceStand == apIce[i])
 			continue;
 
 		D3DXVECTOR3 posPlayer = GetPosition();
-		D3DXVECTOR3 rotPlayer = GetRotation();
-		D3DXVECTOR3 posIce = m_apIceJump[i]->GetPosition();
+		D3DXVECTOR3 posIce = apIce[i]->GetPosition();
 
-		rotPlayer.y += D3DX_PI;
 		universal::LimitRot(&rotPlayer.y);
 
+		CEffect3D::Create(apIce[i]->GetPosition(), 50.0f, 5, D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+
 		// 扇内にあったらターゲットにする
-		if (universal::IsInFanTargetYFlat(posPlayer, posIce, rotPlayer.y, jump::RANGE_JUMP))
+		if (universal::IsInFanTargetYFlat(pIceStand->GetPosition(), posIce, rotPlayer.y, jump::RANGE_JUMP))
 		{
-			pIceTarget = m_apIceJump[i];
+			pIceTarget = apIce[i];
 			break;
 		}
 	}
 
+	//-------------------------------
+	// ジャンプの操作
+	//-------------------------------
 	m_pIceDestJump = pIceTarget;
 
 	if (pIceTarget == nullptr)
 		return;	// 何も見つからなかったら処理を通らない
-
-	CEffect3D::Create(pIceTarget->GetPosition(), 50.0f, 3, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 
 	if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_JUMP))
 		StartJump();	// 流れてる氷があればジャンプを開始
@@ -906,14 +1004,19 @@ void CPlayer::StayJump(void)
 	if (m_pIceDestJump == nullptr)
 		return;
 
+	//--------------------------------
 	// 目標の氷に向かって移動
+	//--------------------------------
 	D3DXVECTOR3 posPlayer = GetPosition();
 	D3DXVECTOR3 posIce = m_pIceDestJump->GetPosition();
 	universal::MoveToDest(&posPlayer, posIce, jump::FACT_MOVE);
 
 	SetPosition(posPlayer);
 
+	//--------------------------------
 	// 高さの管理
+	//--------------------------------
+	// 初期位置から目標位置までの距離で現在の割合を計算
 	D3DXVECTOR3 vecDiffMax = posIce - m_posInitJump;
 	float fLengthMax = sqrtf(vecDiffMax.x * vecDiffMax.x + vecDiffMax.z * vecDiffMax.z);
 
@@ -922,17 +1025,21 @@ void CPlayer::StayJump(void)
 
 	float fRate = fLength / fLengthMax;
 
+	// 放物線の計算
 	float fHeight = universal::ParabolaY(fRate - 0.5f, 10.0f);
 
+	// 放物線の補正
 	fHeight *= -jump::HEIGHT;
 	fHeight += jump::HEIGHT * 2;
 
-	CDebugProc::GetInstance()->Print("\nジャンプの高さ[%f]", fHeight);
-
+	// 高さを反映
 	D3DXVECTOR3 pos = posPlayer;
 	pos.y = m_posInitJump.y + fHeight;
 	SetPosition(pos);
 
+	//--------------------------------
+	// 終了の判定
+	//--------------------------------
 	if (universal::DistCmpFlat(posPlayer, posIce, jump::LINE_END, nullptr))
 	{// 氷に着地したらジャンプを終了
 		EndJump();
@@ -949,6 +1056,13 @@ void CPlayer::EndJump(void)
 
 	// 入力を有効化
 	EnableInput(true);
+
+	CIceManager* pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	pIceMgr->GetIceIndex(m_pIceDestJump, &m_nGridV, &m_nGridH);
 }
 
 //=====================================================
@@ -1074,6 +1188,7 @@ void CPlayer::Debug(void)
 	pDebugProc->Print("\n番号[%d]", m_nID);
 	pDebugProc->Print("\n縦[%d]横[%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\n位置[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
+	pDebugProc->Print("\n移動量[%f,%f,%f]", GetMove().x, GetMove().y, GetMove().z);
 
 	if (pInputMgr->GetTrigger(CInputManager::BUTTON_SETICE))
 	{
@@ -1124,7 +1239,7 @@ void CPlayer::Debug(void)
 	if (pIceMgr == nullptr)
 		return;
 
-	//CEffect3D::Create(pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH), 50.0f, 5, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+	CEffect3D::Create(pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH), 100.0f, 5, D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
 }
 
 //=====================================================
