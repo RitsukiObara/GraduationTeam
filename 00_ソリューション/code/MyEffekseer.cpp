@@ -8,6 +8,11 @@
 //***********************************************************
 // インクルード
 //***********************************************************
+#define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
+#include <codecvt>
+#include <locale>
+#include <string>
+
 #include "manager.h"
 #include "renderer.h"
 #include "MyEffekseer.h"
