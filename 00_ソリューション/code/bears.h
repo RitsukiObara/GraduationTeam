@@ -1,11 +1,11 @@
 //*****************************************************
 //
-// アザラシの処理[seals.h]
+// シロクマの処理[bears.h]
 // Author:髙山桃也
 //
 //*****************************************************
-#ifndef _SEALS_H_
-#define _SEALS_H_
+#ifndef _BEARS_H_
+#define _BEARS_H_
 
 //*****************************************************
 // インクルード
@@ -14,18 +14,13 @@
 #include "enemy.h"
 
 //*****************************************************
-// 前方宣言
-//*****************************************************
-class CPolygon3D;
-
-//*****************************************************
 // クラスの定義
 //*****************************************************
-class CSeals : public CEnemy
+class CBears : public CEnemy
 {
 public:
-	CSeals(int nPriority = 4);	// コンストラクタ
-	~CSeals();	// デストラクタ
+	CBears(int nPriority = 4);	// コンストラクタ
+	~CBears();	// デストラクタ
 
 	// メンバ関数
 	HRESULT Init(void);
@@ -47,7 +42,7 @@ public:
 	void ManageMotion(void);	// モーション管理
 
 	// 静的メンバ関数
-	static CSeals* Create(void);
+	static CBears* Create(void);
 
 private:
 	enum E_Motion

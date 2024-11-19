@@ -25,7 +25,7 @@
 namespace
 {
 const float RATE_HEX_X = 0.13f;	// 六角形の割合X
-const float RATE_HEX_Z = 0.13f;	// 六角形の割合Z
+const float RATE_HEX_Z = 0.18f;	// 六角形の割合Z
 
 const float WIDTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_X;	// グリッドの幅
 const float DEPTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_Z;	// グリッドの奥行き
@@ -587,14 +587,14 @@ void CIceManager::DeleteIce(CIce *pIce)
 //=====================================================
 // 外に出さないようにする判定
 //=====================================================
-void CIceManager::Collide(D3DXVECTOR3 *pPos, int nIdxV, int nIdxH)
+void CIceManager::Collide(D3DXVECTOR3 *pPos, int nIdxV, int nIdxH, float fRate)
 {
 	if (pPos == nullptr)
 		return;
 
 	D3DXVECTOR3 posGrid = m_aGrid[nIdxV][nIdxH].pos;
 
-	universal::LimitDistCylinderInSide(WIDTH_GRID * 0.6f, pPos, posGrid);
+	universal::LimitDistCylinderInSide(WIDTH_GRID * fRate, pPos, posGrid);
 }
 
 //=====================================================
