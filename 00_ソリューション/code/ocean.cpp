@@ -35,11 +35,12 @@ namespace
 	const int MAX_ALBATROSS = 2;					// ÉAÉzÉEÉhÉäç≈ëÂêî
 	const int MAX_RANGE_LEFT = -2800;				// ÉâÉìÉ_ÉÄÉåÉìÉWç∂ç≈ëÂêî
 	const int MIN_RANGE_LEFT = -2000;				// ÉâÉìÉ_ÉÄÉåÉìÉWç∂ç≈í·êî
-	const int MAX_RANGE_RIGHT = 2800;				// ÉâÉìÉ_ÉÄÉåÉìÉWâEç≈ëÂêî
-	const int MIN_RANGE_RIGHT = 2000;				// ÉâÉìÉ_ÉÄÉåÉìÉWâEç≈í·êî
+	const int MAX_RANGE_RIGHT = 2000;				// ÉâÉìÉ_ÉÄÉåÉìÉWâEç≈ëÂêî
+	const int MIN_RANGE_RIGHT = 1200;				// ÉâÉìÉ_ÉÄÉåÉìÉWâEç≈í·êî
 	const float Z_UP = 1500.0f;						// Zï˚å¸è„ï˚å¸
 	const float Z_DOWN = -1500.0f;					// Zï˚å¸â∫ï˚å¸
-	const int BGICE_CREATE_CNT = 180;				// îwåiïXÇ™ê∂ê¨Ç≥ÇÍÇÈïb
+	const int BGICE_CREATE_CNT_L = 250;				// îwåiïXÇ™ê∂ê¨Ç≥ÇÍÇÈïb(ç∂)
+	const int BGICE_CREATE_CNT_R = 300;				// îwåiïXÇ™ê∂ê¨Ç≥ÇÍÇÈïb(âE)
 
 }
 
@@ -60,7 +61,8 @@ COcean::COcean()
 	m_fRot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_nSetRotTime = 0;
 	m_nExecRotChangeTime = 0;
-	m_nBgiceCnt = 0;
+	m_nBgiceCnt_L = 0;
+	m_nBgiceCnt_R = 0;
 }
 
 //=====================================================
@@ -94,7 +96,8 @@ COcean* COcean::Create(void)
 //=====================================================
 HRESULT COcean::Init(void)
 {
-	m_nBgiceCnt = 0;
+	m_nBgiceCnt_L = 0;
+	m_nBgiceCnt_R = 0;
 
 	CMeshField::Init();
 
@@ -231,30 +234,20 @@ void COcean::BgIceRotState(void)
 	if (pIceManager == nullptr)
 		return;
 
-	m_nBgiceCnt++;
-
 	int OceanFlowKeep = pIceManager->GetDirStream();
 	m_fRot = CMeshField::GetRotation();
 
 	//	ñÓàÛÇ™äCó¨ÇÃå¸Ç´Ç…ó¨ÇÍÇÈèàóù
 	if (OceanFlowKeep == COcean::STREAM_UP)
 	{
-		if (m_nBgiceCnt >= BGICE_CREATE_CNT)
-		{
-			//â∫Ç©ÇÁîwåiïXÇèoÇ∑èàóù
-			BgIceSetPosDown();
-			m_nBgiceCnt = 0;
-		}
+		//â∫Ç©ÇÁîwåiïXÇèoÇ∑èàóù
+		BgIceSetPosDown();
 	}
 
 	if (OceanFlowKeep == COcean::STREAM_DOWN)
 	{
-		if (m_nBgiceCnt >= BGICE_CREATE_CNT)
-		{
-			//è„Ç©ÇÁîwåiïXÇèoÇ∑èàóù
-			BgIceSetPosUp();
-			m_nBgiceCnt = 0;
-		}
+		//è„Ç©ÇÁîwåiïXÇèoÇ∑èàóù
+		BgIceSetPosUp();
 	}
 }
 
@@ -304,16 +297,29 @@ void COcean::OceanCycleTimer(void)
 void COcean::BgIceSetPosUp(void)
 {
 	float posX_L = (float)universal::RandRange(MAX_RANGE_LEFT, MIN_RANGE_LEFT);
+	CBgIce::TYPE type = (CBgIce::TYPE)universal::RandRange(CBgIce::TYPE_MAX, CBgIce::TYPE_BIG);
 
-	// îwåiïXÇÃÉçÅ[Éh
-	CBgIce::Create(D3DXVECTOR3(posX_L, 0.0f, Z_UP), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CBgIce::TYPE_BIG);
-	CBgIce::Create(D3DXVECTOR3(posX_L, 0.0f, Z_UP), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CBgIce::TYPE_SMALL);
+	m_nBgiceCnt_L++;
+	m_nBgiceCnt_R++;
+
+	if (m_nBgiceCnt_L >= BGICE_CREATE_CNT_L)
+	{
+		// îwåiïXÇÃÉçÅ[Éh
+		CBgIce::Create(D3DXVECTOR3(posX_L, 0.0f, Z_UP), D3DXVECTOR3(0.0f, 0.0f, 0.0f), type);
+
+		m_nBgiceCnt_L = 0;
+	}
 
 	float posX_R = (float)universal::RandRange(MAX_RANGE_RIGHT, MIN_RANGE_RIGHT);
+	type = (CBgIce::TYPE)universal::RandRange(CBgIce::TYPE_MAX, CBgIce::TYPE_BIG);
 
-	// îwåiïXÇÃÉçÅ[Éh
-	CBgIce::Create(D3DXVECTOR3(posX_R, 0.0f, Z_UP), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CBgIce::TYPE_BIG);
-	CBgIce::Create(D3DXVECTOR3(posX_R, 0.0f, Z_UP), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CBgIce::TYPE_SMALL);
+	if (m_nBgiceCnt_R >= BGICE_CREATE_CNT_R)
+	{
+		// îwåiïXÇÃÉçÅ[Éh
+		CBgIce::Create(D3DXVECTOR3(posX_R, 0.0f, Z_UP), D3DXVECTOR3(0.0f, 0.0f, 0.0f), type);
+
+		m_nBgiceCnt_R = 0;
+	}
 }
 
 //====================================================
@@ -322,14 +328,27 @@ void COcean::BgIceSetPosUp(void)
 void COcean::BgIceSetPosDown(void)
 {
 	float posX_L = (float)universal::RandRange(MAX_RANGE_LEFT, MIN_RANGE_LEFT);
+	CBgIce::TYPE type = (CBgIce::TYPE)universal::RandRange(CBgIce::TYPE_MAX, CBgIce::TYPE_BIG);
 
-	// îwåiïXÇÃÉçÅ[Éh
-	CBgIce::Create(D3DXVECTOR3(posX_L, 0.0f, Z_DOWN), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CBgIce::TYPE_BIG);
-	CBgIce::Create(D3DXVECTOR3(posX_L, 0.0f, Z_DOWN), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CBgIce::TYPE_SMALL);
+	m_nBgiceCnt_L++;
+	m_nBgiceCnt_R++;
+
+	if (m_nBgiceCnt_L >= BGICE_CREATE_CNT_L)
+	{
+		// îwåiïXÇÃÉçÅ[Éh
+		CBgIce::Create(D3DXVECTOR3(posX_L, 0.0f, Z_DOWN), D3DXVECTOR3(0.0f, 0.0f, 0.0f), type);
+
+		m_nBgiceCnt_L = 0;
+	}
 
 	float posX_R = (float)universal::RandRange(MAX_RANGE_RIGHT, MIN_RANGE_RIGHT);
+	type = (CBgIce::TYPE)universal::RandRange(CBgIce::TYPE_MAX, CBgIce::TYPE_BIG);
 
-	// îwåiïXÇÃÉçÅ[Éh
-	CBgIce::Create(D3DXVECTOR3(posX_R, 0.0f, Z_DOWN), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CBgIce::TYPE_BIG);
-	CBgIce::Create(D3DXVECTOR3(posX_R, 0.0f, Z_DOWN), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CBgIce::TYPE_SMALL);
+	if (m_nBgiceCnt_R >= BGICE_CREATE_CNT_R)
+	{
+		// îwåiïXÇÃÉçÅ[Éh
+		CBgIce::Create(D3DXVECTOR3(posX_R, 0.0f, Z_DOWN), D3DXVECTOR3(0.0f, 0.0f, 0.0f), type);
+
+		m_nBgiceCnt_R = 0;
+	}
 }

@@ -594,7 +594,7 @@ void CIceManager::Collide(D3DXVECTOR3 *pPos, int nIdxV, int nIdxH)
 
 	D3DXVECTOR3 posGrid = m_aGrid[nIdxV][nIdxH].pos;
 
-	universal::LimitDistCylinderInSide(WIDTH_GRID * 0.65f, pPos, posGrid);
+	universal::LimitDistCylinderInSide(WIDTH_GRID * 0.6f, pPos, posGrid);
 }
 
 //=====================================================
@@ -624,6 +624,43 @@ void CIceManager::LimitInIce(D3DXVECTOR3 *pPos, int nNumV, int nNumH)
 	D3DXVECTOR3 posIce = m_aGrid[nNumV][nNumH].pIce->GetPosition();
 
 	pPos->y = posIce.y;
+}
+
+//=====================================================
+// ç≈Ç‡ãﬂÇ¢ïXÇÃéÊìæ
+//=====================================================
+CIce *CIceManager::GetNearestIce(D3DXVECTOR3 pos, int *pNumV, int *pNumH)
+{
+	float fDistMin = FLT_MAX;
+	CIce *pIceNearest = nullptr;
+
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			if (m_aGrid[i][j].pIce == nullptr)
+				continue;
+
+			CIce *pIce = m_aGrid[i][j].pIce;
+
+			float fDiff = 0.0f;
+
+			if (universal::DistCmpFlat(pos, pIce->GetPosition(), fDistMin, &fDiff))
+			{
+				fDistMin = fDiff;
+
+				pIceNearest = pIce;
+
+				if (pNumV != nullptr && pNumH != nullptr)
+				{
+					*pNumV = i;
+					*pNumH = j;
+				}
+			}
+		}
+	}
+
+	return pIceNearest;
 }
 
 //=====================================================
@@ -1238,14 +1275,14 @@ bool CIceManager::GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH
 	if (pIdxV == nullptr || pIdxH == nullptr)
 		return false;
 
-	pos.y = 10.0f;
-
 	for (int i = 0; i < m_nNumGridVirtical; i++)
 	{
 		for (int j = 0; j < m_nNumGridHorizontal; j++)
 		{
 			// ãóó£ÇÃåvéZ
 			D3DXVECTOR3 posGrid = m_aGrid[i][j].pos;
+
+			pos.y = posGrid.y;
 
 			D3DXVECTOR3 vecDiff = posGrid - pos;
 

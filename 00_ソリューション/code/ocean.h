@@ -62,6 +62,7 @@ private:
 	int m_nExecRotChangeTime;	// 向き変更をするまでのタイマー時間
 	bool m_bRandState;	// ランダム変数の状態
 	bool m_bUse;	// アホウドリが使われているか
-	int m_nBgiceCnt;	// 背景の氷が呼び出されるカウント
+	int m_nBgiceCnt_L;	// 背景の氷が呼び出されるカウント(左)
+	int m_nBgiceCnt_R;	// 背景の氷が呼び出されるカウント(右)
 };
 #endif
