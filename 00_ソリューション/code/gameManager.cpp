@@ -21,6 +21,7 @@
 #include "flowIceFactory.h"
 #include "gameManagerSingle.h"
 #include "gameManagerMulti.h"
+#include "sound.h"
 
 //*****************************************************
 // 定数定義
@@ -29,6 +30,7 @@ namespace
 {
 const string PATH_TEX = "data\\TEMP\\mode.txt";	// モードのパス
 const string PATH_IDXMAP = "data\\TEMP\\mapIdx.bin";	// マップ番号のパス
+const int PLAY_SOUND_SEA_COUNT = 60 * 24;	// 静かな海サウンド再生時間（右側変更で秒数変更）
 }
 
 //=====================================================
@@ -36,7 +38,7 @@ const string PATH_IDXMAP = "data\\TEMP\\mapIdx.bin";	// マップ番号のパス
 //=====================================================
 CGameManager::CGameManager()
 {
-
+	m_nCounterSoundSea = 0;
 }
 
 //=====================================================
@@ -155,7 +157,12 @@ void CGameManager::UpdateStart(void)
 //=====================================================
 void CGameManager::UpdateNormal(void)
 {
-
+	m_nCounterSoundSea++;
+	if (m_nCounterSoundSea >= PLAY_SOUND_SEA_COUNT)
+	{// 音を流す
+		m_nCounterSoundSea = 0;
+		CSound::GetInstance()->Play(CSound::LABEL_SE_SEA);
+	}
 }
 
 //=====================================================
