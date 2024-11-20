@@ -31,8 +31,12 @@ namespace
 	const D3DXCOLOR NORMAL_COL = { 1.0f,1.0f,1.0f,1.0f };		//基準色
 	const int FRAME_CNT = 60;		// フレーム秒数
 	const int SECOND_ELAPSED = 1;		// 秒数経過
-	const float SIZE_WIDTH = 0.05f;		// サイズの幅
-	const float SIZE_HEIGHT = 0.09f;		// サイズの幅
+	const float SIZE_WIDTH = 0.5f;		// サイズの幅
+	const float SIZE_HEIGHT = 0.9f;		// サイズの幅
+	const float SIZE_READY_INIT = 0.9f;		// READYの初期サイズ
+	const float SIZE_READY_MOVE = -0.04f;		// READYの初期サイズ
+	const float SIZE_READY_LIMIT = 0.3f;		// READYのサイズ制限
+	const D3DXCOLOR READY_COLOR = { 1.0f, 0.8f, 0.0f, 1.0f };		// READYの色
 }
 
 //=====================================================
@@ -172,10 +176,9 @@ void CUIready::Update(void)
 			m_Go->SetPosition(POS_GO);
 			int nIdxTexture = Texture::GetIdx(&PATH_TEX_OK[0]);
 			m_Go->SetIdxTexture(nIdxTexture);
-			m_Go->SetSize(m_fsize, m_fsize);
-			m_Go->SetCol(D3DXCOLOR(1.0f, 0.8f, 0.0f, 1.0f));
 
-			m_Go->SetVtx();
+			// サイズリセット
+			m_fsize = SIZE_READY_INIT;
 		}
 
 		break;
@@ -185,22 +188,27 @@ void CUIready::Update(void)
 		if (m_Go == nullptr)
 		{
 			return;
-		}	
-		
-		for (int i = 0; i < E_Number::NUMBER_MAX; i++)
+		}
+
+		// サイズ縮小の制限
+		if (m_fsize <= SIZE_READY_LIMIT)
 		{
-			m_aNumber[i]->SetSizeAll(m_fsize, m_fsize);
+			m_fsize = SIZE_READY_LIMIT;
 		}
 
 		// サイズ移動量
-		m_fmove = 0.002f;
+		m_fmove = SIZE_READY_MOVE;
 
-		// サイズを拡大
+		// サイズを縮小
 		m_fsize += m_fmove;
 
 		//ステートカウント加算
 		m_nStateCnt++;
 
+		// 色指定
+		m_Go->SetCol(READY_COLOR);
+
+		// サイズ指定
 		m_Go->SetSize(m_fsize, m_fsize);
 
 		m_Go->SetVtx();
@@ -240,9 +248,9 @@ void CUIready::UpdateNumber()
 		m_nSecond = m_nSecond - SECOND_ELAPSED;
 
 		m_nFrame = 0;
-
+		
 		m_fsize = 0.0f;
-
+		
 		//数字サイズ初期化
 		for (int i = 0; i < E_Number::NUMBER_MAX; i++)
 		{
