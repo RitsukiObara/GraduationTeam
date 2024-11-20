@@ -18,6 +18,7 @@
 #include "UI_enemy.h"
 #include "effect3D.h"
 #include "manager.h"
+#include "MyEffekseer.h"
 
 //*****************************************************
 // 定数定義
@@ -773,6 +774,9 @@ void CBears::Event(EVENT_INFO* pEventInfo)
 		fSpeed += charge::SPEED_ONESTEP;
 
 		SetSpeedMove(fSpeed);
+
+		// エフェクトの発生
+		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_BEARSTEP, GetPosition());
 	}
 }
 

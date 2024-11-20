@@ -63,18 +63,6 @@ HRESULT CTexture::Load(void)
 	// ÉtÉ@ÉCÉãñºÇÃê›íË
 	char *apFileName[MAX_TEX] = 
 	{
-		"data\\TEXTURE\\EFFECT\\muzzleFlush.png",
-		"data\\TEXTURE\\EFFECT\\beam.png",
-		"data\\TEXTURE\\EFFECT\\hit00.png",
-		"data\\TEXTURE\\UI\\pause_quit.png",
-		"data\\TEXTURE\\UI\\pause_restart.png",
-		"data\\TEXTURE\\UI\\pause_resume.png",
-		"data\\TEXTURE\\EFFECT\\energy00.png",
-		"data\\TEXTURE\\EFFECT\\blade.png",
-		"data\\TEXTURE\\EFFECT\\explosion.png",
-		"data\\TEXTURE\\UI\\menu_resume.png",
-		"data\\TEXTURE\\UI\\menu_retry.png",
-		"data\\TEXTURE\\UI\\menu_quit.png",
 		"data\\TEXTURE\\BG\\sky01.jpg",
 	};
 

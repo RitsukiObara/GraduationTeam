@@ -28,6 +28,7 @@ const char* CMyEffekseer::m_apEfkName[CMyEffekseer::TYPE_MAX] =		// エフェクトの
 	"",												// なんもない
 	"data\\EFFEKSEER\\Effect\\peckWave.efkefc",		// つっつきの波紋
 	"data\\EFFEKSEER\\Effect\\splashwater.efkefc",	// さざ波
+	"data\\EFFEKSEER\\Effect\\bearstep.efkefc",		// シロクマの足煙
 };
 CMyEffekseer *CMyEffekseer::s_pMyEffekseer = nullptr;	// 自身のポインタ
 
@@ -72,7 +73,7 @@ void CMyEffekseer::Init(void)
 	m_efkManager = ::Effekseer::Manager::Create(8000);
 
 	// 視点位置を確定
-	viewerPosition = ::Effekseer::Vector3D(0.0f, 0.0f, 0.0f);
+	m_viewerPosition = ::Effekseer::Vector3D(0.0f, 0.0f, 0.0f);
 
 	// 座標系を設定する。アプリケーションと一致させる必要がある。
 	m_efkManager->SetCoordinateSystem(Effekseer::CoordinateSystem::LH);
@@ -81,10 +82,10 @@ void CMyEffekseer::Init(void)
 	SetupEffekseerModules(m_efkManager);
 
 	// 投影行列を設定
-	projectionMatrix.PerspectiveFovLH(90.0f / 180.0f * 3.14f, (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 1.0f, 500.0f);
+	m_projectionMatrix.PerspectiveFovLH(90.0f / 180.0f * 3.14f, (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 1.0f, 500.0f);
 
 	// カメラ行列を設定
-	cameraMatrix.LookAtLH(viewerPosition, ::Effekseer::Vector3D(0.0f, 0.0f, 0.0f), ::Effekseer::Vector3D(0.0f, 1.0f, 0.0f));
+	m_cameraMatrix.LookAtLH(m_viewerPosition, ::Effekseer::Vector3D(0.0f, 0.0f, 0.0f), ::Effekseer::Vector3D(0.0f, 1.0f, 0.0f));
 }
 
 //===========================================================
@@ -116,7 +117,7 @@ void CMyEffekseer::Update(void)
 {
 	// レイヤーパラメータの設定
 	Effekseer::Manager::LayerParameter layerParameter;
-	layerParameter.ViewerPosition = viewerPosition;
+	layerParameter.ViewerPosition = m_viewerPosition;
 	m_efkManager->SetLayerParameter(0, layerParameter);
 
 	// マネージャーの更新
@@ -127,7 +128,7 @@ void CMyEffekseer::Update(void)
 	{
 		// エフェクトの移動
 		Effekseer::Handle handle = (*it)->GetHandle();
-		Effekseer::Vector3D pos = (*it)->GetPosition();
+		Effekseer::Vector3D pos = (*it)->GetPositionVector3();
 		m_efkManager->SetLocation(handle, pos);
 
 		// エフェクトの向き反映
@@ -183,7 +184,7 @@ void CMyEffekseer::Draw(void)
 	if (m_efkRenderer != nullptr)
 	{
 		// 投影行列を設定
-		m_efkRenderer->SetProjectionMatrix(projectionMatrix);
+		m_efkRenderer->SetProjectionMatrix(m_projectionMatrix);
 
 		// カメラの情報取得
 		CCamera* pCamera = CManager::GetCamera();
@@ -198,13 +199,13 @@ void CMyEffekseer::Draw(void)
 		{
 			for (int j = 0; j < 4; j++)
 			{
-				projectionMatrix.Values[i][j] = Projection.m[i][j];
-				cameraMatrix.Values[i][j] = ViewMatrix.m[i][j];
+				m_projectionMatrix.Values[i][j] = Projection.m[i][j];
+				m_cameraMatrix.Values[i][j] = ViewMatrix.m[i][j];
 			}
 		}
 
 		// カメラ行列を設定
-		m_efkRenderer->SetCameraMatrix(cameraMatrix);
+		m_efkRenderer->SetCameraMatrix(m_cameraMatrix);
 
 		// エフェクトの描画開始処理を行う。
 		m_efkRenderer->BeginRendering();
@@ -321,7 +322,7 @@ const char* CMyEffekseer::GetPathEffect(CMyEffekseer::TYPE type)
 //===========================================================
 // コンストラクタ
 //===========================================================
-CEffekseerEffect::CEffekseerEffect()
+CEffekseerEffect::CEffekseerEffect(int nPriority) : CObject(nPriority)
 {
 
 }
@@ -337,7 +338,7 @@ CEffekseerEffect::~CEffekseerEffect()
 //===========================================================
 // 初期化
 //===========================================================
-void CEffekseerEffect::Init(::Effekseer::Vector3D pos, ::Effekseer::Vector3D rot, ::Effekseer::Vector3D scale)
+HRESULT CEffekseerEffect::Init(::Effekseer::Vector3D pos, ::Effekseer::Vector3D rot, ::Effekseer::Vector3D scale)
 {
 	m_pos = pos;
 	m_rot = rot;
@@ -347,7 +348,7 @@ void CEffekseerEffect::Init(::Effekseer::Vector3D pos, ::Effekseer::Vector3D rot
 	CMyEffekseer *pEffekseer = CManager::GetMyEffekseer();
 
 	if (pEffekseer == nullptr)
-		return;
+		return E_FAIL;
 
 	Effekseer::ManagerRef manager = pEffekseer->GetEfkManager();
 
@@ -355,6 +356,8 @@ void CEffekseerEffect::Init(::Effekseer::Vector3D pos, ::Effekseer::Vector3D rot
 	manager->SetLocation(m_efkHandle, m_pos);
 	manager->SetRotation(m_efkHandle, { 0.0f, 1.0f, 0.0f }, rot.Y);
 	manager->SetScale(m_efkHandle, m_scale.X, m_scale.Y, m_scale.Z);
+
+	return S_OK;
 }
 
 //===========================================================
@@ -371,6 +374,79 @@ void CEffekseerEffect::Uninit()
 
 	// エフェクトの解放
 	efkManager->StopEffect(m_efkHandle);
+}
+
+//===========================================================
+// 更新処理
+//===========================================================
+void CEffekseerEffect::Update(void)
+{
+
+}
+
+//===========================================================
+// 描画
+//===========================================================
+void CEffekseerEffect::Draw(void)
+{
+	//CMyEffekseer *pEffekseer = CManager::GetMyEffekseer();
+
+	//if (pEffekseer == nullptr)
+	//	return;
+
+	//EffekseerRendererDX9::RendererRef renderer = pEffekseer->GetEffekseerRenderer();
+	//Effekseer::ManagerRef manager = pEffekseer->GetEfkManager();
+
+	//LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
+
+	////-----------------------------------------
+	//// カメラの設定
+	////-----------------------------------------
+	//// 投影行列を設定
+	//renderer->SetProjectionMatrix(m_projectionMatrix);
+
+	//// カメラの情報取得
+	//CCamera* pCamera = CManager::GetCamera();
+
+	//// ビューマトリックス
+	//auto ViewMatrix = pCamera->GetCamera()->mtxView;
+
+	//// プロジェクションマトリックス
+	//auto Projection = pCamera->GetCamera()->mtxProjection;
+
+	//for (int i = 0; i < 4; i++)
+	//{
+	//	for (int j = 0; j < 4; j++)
+	//	{
+	//		m_projectionMatrix.Values[i][j] = Projection.m[i][j];
+	//		m_cameraMatrix.Values[i][j] = ViewMatrix.m[i][j];
+	//	}
+	//}
+
+	//// カメラ行列を設定
+	//renderer->SetCameraMatrix(m_cameraMatrix);
+
+	////-----------------------------------------
+	//// 描画
+	////-----------------------------------------
+	//pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+	//pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+
+	//// エフェクトの描画開始処理を行う。
+	//renderer->BeginRendering();
+
+	//// エフェクトの描画を行う。
+	//Effekseer::Manager::DrawParameter drawParameter;
+	//drawParameter.ZNear = 0.0f;
+	//drawParameter.ZFar = 1.0f;
+	//drawParameter.ViewProjectionMatrix = renderer->GetCameraProjectionMatrix();
+	//manager->Draw(drawParameter);
+
+	//// エフェクトの描画終了処理を行う。
+	//renderer->EndRendering();
+
+	//pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+	//pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 }
 
 //===========================================================

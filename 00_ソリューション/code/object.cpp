@@ -306,19 +306,19 @@ void CObject::DrawAll(void)
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
 
-	// ブラーの取得
-	CBlur * pBlur = CBlur::GetInstance();
+	//// ブラーの取得
+	//CBlur * pBlur = CBlur::GetInstance();
 
-	if (pBlur != nullptr)
-	{
-		pBlur->SaveRenderInfo();	// 描画の情報を保存
-		pBlur->ChangeTarget();	// レンダーターゲットの変更
+	//if (pBlur != nullptr)
+	//{
+	//	pBlur->SaveRenderInfo();	// 描画の情報を保存
+	//	pBlur->ChangeTarget();	// レンダーターゲットの変更
 
-		// クリアする
-		pDevice->Clear(0, nullptr,
-			(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-			COLOR_CLEAR, 1.0f, 0);
-	}
+	//	// クリアする
+	//	pDevice->Clear(0, nullptr,
+	//		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+	//		COLOR_CLEAR, 1.0f, 0);
+	//}
 
 	// カメラの取得
 	CCamera *pCamera = CManager::GetCamera();
@@ -331,26 +331,20 @@ void CObject::DrawAll(void)
 	// オブジェクトの描画
 	DrawObject(true);	// ブラーするオブジェクトを全て描き切ってから
 
-	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
-	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
-
 	if (CMyEffekseer::GetInstance() != nullptr)
 	{// エフェクシアの更新
 		CMyEffekseer::GetInstance()->Update();
 		CMyEffekseer::GetInstance()->Draw();
 	}
 
-	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
-	
-	if (pBlur != nullptr)
-	{
-		pBlur->OverlapLastTexture();	// 前回のテクスチャを重ねる
-		pBlur->RestoreTarget();	// レンダーターゲットの復元
-		pBlur->DrawBuckBuffer();	// バックバッファへの描画
-		pBlur->SwapBuffer();	// バッファーの入れ替え
-		pBlur->ClearNotBlur();	// ブラーしないレンダラーのクリア
-	}
+	//if (pBlur != nullptr)
+	//{
+	//	pBlur->OverlapLastTexture();	// 前回のテクスチャを重ねる
+	//	pBlur->RestoreTarget();	// レンダーターゲットの復元
+	//	pBlur->DrawBuckBuffer();	// バックバッファへの描画
+	//	pBlur->SwapBuffer();	// バッファーの入れ替え
+	//	pBlur->ClearNotBlur();	// ブラーしないレンダラーのクリア
+	//}
 	
 	// 死亡フラグのたったオブジェクトの破棄
 	DeleteAll();
