@@ -85,6 +85,7 @@ private:
 __interface ISelectModePenguinState
 {
 	HRESULT Init(CSelectModePenguin *pPenguin) = 0;
+	void Uninit(void) = 0;
 	void Update(CSelectModePenguin* pPenguin) = 0;
 };
 
@@ -92,25 +93,33 @@ __interface ISelectModePenguinState
 //		↓↓↓↓↓ここからステート追加↓↓↓↓↓
 //****************************************
 //****************************************
-// 立ってるだけステート
+// 待機ステート
 //****************************************
 class CSelectModePenguinState_Stand : public ISelectModePenguinState
 {
 public:
-	CSelectModePenguinState_Stand(){}
+	CSelectModePenguinState_Stand(){ m_nCounter = 0; }
+	~CSelectModePenguinState_Stand(){}
 	HRESULT Init(CSelectModePenguin* pPenguin);
+	void Uninit(void);
 	void Update(CSelectModePenguin* pPenguin);
+private:
+	int m_nCounter;	// ステート実行カウンタ
 };
 
 //****************************************
-// 移動ステート
+// 歩きステート
 //****************************************
 class CSelectModePenguinState_Move : public ISelectModePenguinState
 {
 public:
-	CSelectModePenguinState_Move() {}
+	CSelectModePenguinState_Move() { m_nCounter = 0; }
+	~CSelectModePenguinState_Move() {}
 	HRESULT Init(CSelectModePenguin* pPenguin);
+	void Uninit(void);
 	void Update(CSelectModePenguin* pPenguin);
+private:
+	int m_nCounter;	// ステート実行カウンタ
 };
 
 //****************************************
@@ -120,7 +129,9 @@ class CSelectModePenguinState_Fall : public ISelectModePenguinState
 {
 public:
 	CSelectModePenguinState_Fall() {}
+	~CSelectModePenguinState_Fall() {}
 	HRESULT Init(CSelectModePenguin* pPenguin);
+	void Uninit(void);
 	void Update(CSelectModePenguin* pPenguin);
 };
 
@@ -130,9 +141,13 @@ public:
 class CSelectModePenguinState_ShakeHead : public ISelectModePenguinState
 {
 public:
-	CSelectModePenguinState_ShakeHead() {}
+	CSelectModePenguinState_ShakeHead() { m_nCounter = 0; }
+	~CSelectModePenguinState_ShakeHead() {}
 	HRESULT Init(CSelectModePenguin* pPenguin);
+	void Uninit(void);
 	void Update(CSelectModePenguin* pPenguin);
+private:
+	int m_nCounter;	// ステート実行カウンタ
 };
 
 //****************************************
@@ -141,9 +156,13 @@ public:
 class CSelectModePenguinState_Stomach : public ISelectModePenguinState
 {
 public:
-	CSelectModePenguinState_Stomach() {}
+	CSelectModePenguinState_Stomach() { m_nCounter = 0; }
+	~CSelectModePenguinState_Stomach() {}
 	HRESULT Init(CSelectModePenguin* pPenguin);
+	void Uninit(void);
 	void Update(CSelectModePenguin* pPenguin);
+private:
+	int m_nCounter;	// ステート実行カウンタ
 };
 
 //****************************************
@@ -153,7 +172,9 @@ class CSelectModePenguinState_UNYO : public ISelectModePenguinState
 {
 public:
 	CSelectModePenguinState_UNYO() {}
+	~CSelectModePenguinState_UNYO() {}
 	HRESULT Init(CSelectModePenguin* pPenguin);
+	void Uninit(void);
 	void Update(CSelectModePenguin* pPenguin);
 };
 
@@ -164,7 +185,9 @@ class CSelectModePenguinState_WingPTPT : public ISelectModePenguinState
 {
 public:
 	CSelectModePenguinState_WingPTPT() {}
+	~CSelectModePenguinState_WingPTPT() {}
 	HRESULT Init(CSelectModePenguin* pPenguin);
+	void Uninit(void);
 	void Update(CSelectModePenguin* pPenguin);
 };
 
