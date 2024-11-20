@@ -34,7 +34,7 @@
 #endif
 #define SCRN_MID (D3DXVECTOR3(SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f))	// 画面中心
 #define FVF_VERTEX_2D			(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)		// 頂点フォーマット設定
-#define FVF_VERTEX_3D			(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1)		//頂点フォーマット設定
+#define FVF_VERTEX_3D			(D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1 | D3DFVF_TEX2)		//頂点フォーマット設定
 #define NUM_PLAYER (4)	// プレイヤーの最大数
 #define MAX_STRING (256)	// 文字数の最大
 #define CLASS_NAME				"WindowClass"					// ウィンドウクラスの名前
@@ -61,11 +61,12 @@ typedef struct
 }VERTEX_2D;
 
 typedef struct
-{// ３Dの頂点情報
+{// 3Dの頂点情報
 	D3DXVECTOR3 pos;			//頂点座標
 	D3DXVECTOR3 nor;			//法線ベクトル
 	D3DCOLOR col;				//頂点カラー
 	D3DXVECTOR2 tex;			//テクスチャ座標
+	D3DXVECTOR2 tex2;			//テクスチャ座標2
 }VERTEX_3D;
 
 //*****************************************************

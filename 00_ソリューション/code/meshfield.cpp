@@ -385,9 +385,9 @@ void CMeshField::SetNormal(void)
 			else if (nCntVtx == m_nDivNumU + nCountV * (m_nDivNumU + 1))
 			{// 右の辺で面三つ================================================
 			 // 左上の法線をもらう
-				nor1 = pVtx[nCntVtx - m_nDivNumU - 2].nor;
+				nor1 = pVtx[nCntVtx - m_nDivNumU * nCountV - 2].nor;
 				// 上の法線をもらう
-				nor2 = pVtx[nCntVtx - m_nDivNumU - 1].nor;
+				nor2 = pVtx[nCntVtx - m_nDivNumU * nCountV - 1].nor;
 				// 左の法線をもらう
 				nor3 = pVtx[nCntVtx - 1].nor;
 
@@ -971,8 +971,17 @@ void CMeshField::Load(std::string path)
 		// 頂点バッファをロックし、頂点情報へのポインタを取得
 		m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-		// 頂点の位置情報を保存
-		fread(&pVtx[0].pos, sizeof(D3DXVECTOR3), m_MeshField.nNumVtx * 4, pFile);
+		for (int i = 0; i < m_MeshField.nNumVtx; i++)
+		{
+			D3DXVECTOR3 temp;
+
+			// 頂点の位置情報を読込
+			fread(&pVtx[0].pos, sizeof(D3DXVECTOR3), 1, pFile);
+			fread(&temp, sizeof(D3DXVECTOR3), 1, pFile);
+			fread(&temp, sizeof(D3DXVECTOR3), 1, pFile);
+
+			pVtx++;
+		}
 
 		// 頂点バッファをアンロック
 		m_pVtxBuff->Unlock();
@@ -1006,8 +1015,13 @@ void CMeshField::Save(std::string path)
 		// 頂点バッファをロックし、頂点情報へのポインタを取得
 		m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-		// 頂点の位置情報を保存
-		fwrite(&pVtx[0].pos, sizeof(D3DXVECTOR3),(m_nDivNumU + 1) * (m_nDivNumV + 1) * 4, pFile);
+		for (int i = 0; i < m_MeshField.nNumVtx; i++)
+		{
+			// 頂点の位置情報を読込
+			fwrite(&pVtx[0].pos, sizeof(D3DXVECTOR3), 1, pFile);
+
+			pVtx++;
+		}
 
 		// 頂点バッファをアンロック
 		m_pVtxBuff->Unlock();

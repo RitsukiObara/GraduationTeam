@@ -967,6 +967,9 @@ void CPlayer::SarchJumpIce(void)
 		if (apIce[i] == nullptr)
 			continue;
 
+		if (apIce[i]->IsPeck())
+			continue;
+
 		if (pIceStand == apIce[i])
 			continue;
 

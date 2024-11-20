@@ -104,11 +104,6 @@ void CFan::Draw(void)
 
 	if (pDevice != nullptr && m_pVtxBuff != nullptr)
 	{
-		// テクスチャ設定
-		int nIdxTexture = GetIdxTexture();
-		LPDIRECT3DTEXTURE9 pTexture = CTexture::GetInstance()->GetAddress(nIdxTexture);
-		pDevice->SetTexture(0, pTexture);
-
 		// 描画
 		int nNumVtx = GetNumVtx();
 		pDevice->DrawPrimitive(D3DPT_TRIANGLEFAN, 0, nNumVtx);

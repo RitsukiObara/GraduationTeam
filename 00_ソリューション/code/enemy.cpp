@@ -173,9 +173,7 @@ void CEnemy::Uninit(void)
 	{
 		//íœ‘ÎÛ‚¶‚á‚È‚¢ê‡
 		if (*itr != this)
-		{
 			continue;
-		}
 
 		//Vector‚©‚çíœ
 		s_vector.erase(itr);

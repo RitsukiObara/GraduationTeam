@@ -267,6 +267,11 @@ void CFan3D::Draw(void)
 		// カリングを無効化
 		pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
+		// テクスチャ設定
+		int nIdxTexture = GetIdxTexture();
+		LPDIRECT3DTEXTURE9 pTexture = CTexture::GetInstance()->GetAddress(nIdxTexture);
+		pDevice->SetTexture(0, pTexture);
+
 		// ポリゴンの描画
 		CFan::Draw();
 
