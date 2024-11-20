@@ -16,6 +16,7 @@
 #include "particle.h"
 #include "debugproc.h"
 #include "UI_enemy.h"
+#include "sound.h"
 
 //*****************************************************
 // 定数定義
@@ -186,6 +187,7 @@ void CSeals::UpdateApper(void)
 		{
 			SetMotion(E_Motion::MOTION_LANDING); // 着地した判定に入ったら着地モーションへ移行
 			EnableFollowIce(true);	// 氷に追従するようにする
+			CSound::GetInstance()->Play(CSound::LABEL_SE_SEAL_CRY);	// 鳴き声
 		}
 	}
 
@@ -434,6 +436,8 @@ void CSeals::Death(void)
 		pUIEnemy->DeleteEnemy();
 
 	CEnemy::Death();
+
+	CSound::GetInstance()->Play(CSound::LABEL_SE_SEAL_CRY);	// 鳴き声
 }
 
 //=====================================================

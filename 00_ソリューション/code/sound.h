@@ -100,7 +100,7 @@ private:
 		{ "data/SOUND/BGM/BGM_Option.wav",-1 },			// オプション画面BGM
 
 		{ "data/SOUND/SE/SE_Penguin_Jump.wav",0 },		// ペンギンジャンプ
-		{ "data/SOUND/SE/SE_ENTER00.wav",0 },			// 静かな海（未）
+		{ "data/SOUND/SE/SE_Sea.wav",0 },				// 静かな海
 		{ "data/SOUND/SE/SE_Break_Ice.wav",0 },			// 氷破壊
 		{ "data/SOUND/SE/SE_Seal_Cry.wav",0 },			// アザラシ鳴き声
 		{ "data/SOUND/SE/SE_SeaSplash_01.wav",0 },		// 敵が海から上がってきた（重ねその1）

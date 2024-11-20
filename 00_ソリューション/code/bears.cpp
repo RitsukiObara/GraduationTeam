@@ -19,6 +19,7 @@
 #include "effect3D.h"
 #include "manager.h"
 #include "MyEffekseer.h"
+#include "sound.h"
 
 //*****************************************************
 // 定数定義
@@ -199,6 +200,7 @@ void CBears::UpdateApper(void)
 		{
 			SetMotion(E_Motion::MOTION_LANDING); // 着地した判定に入ったら着地モーションへ移行
 			EnableFollowIce(true);	// 氷に追従するようにする
+			CSound::GetInstance()->Play(CSound::LABEL_SE_POLARBEAR_VOICE);	// 鳴き声
 		}
 	}
 
@@ -627,6 +629,8 @@ void CBears::Death(void)
 		pUIEnemy->DeleteEnemy();
 
 	CEnemy::Death();
+
+	CSound::GetInstance()->Play(CSound::LABEL_SE_POLARBEAR_VOICE);	// 鳴き声
 }
 
 //=====================================================

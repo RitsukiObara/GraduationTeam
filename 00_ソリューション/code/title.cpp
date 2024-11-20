@@ -23,6 +23,7 @@
 #include "skybox.h"
 #include "polygon2D.h"
 #include "UI.h"
+#include "effect2D.h"
 
 //*****************************************************
 // マクロ定義
@@ -35,6 +36,7 @@
 //*****************************************************
 namespace
 {
+	const string PATH_TEX = "data\\TEXTURE\\MATERIAL\\ice001.jpg";	// テクスチャパス
 	const D3DXCOLOR COL_INITIAL_MENU = { 0.4f,0.4f,0.4f,1.0f };	// メニュー項目の初期色
 	const D3DXCOLOR COL_CURRENT_MENU = { 1.0f,1.0f,1.0f,1.0f };	// メニュー項目の選択色
 	const D3DXVECTOR3 UI_POS[CTitle::TITLE_UI_MAX] =  // UIの初期位置
@@ -298,19 +300,23 @@ void CTitle::Update(void)
 		break;
 	case CTitle::TITLESTATE_LOGO:
 
-		// ロゴをだす処理
+		// ロゴを出して動かす処理
 		LogoState();
 
 		break;
 	case CTitle::TITLESTATE_PICKAXE:
 
-		// ピッケル動かす処理
-		PickaxeState();
+		// ロゴを出して動かす処理
+		LogoState();
 
 		break;
 	default:
 		break;
 	}
+
+	CEffect2D* pEffect2D = CEffect2D::Create(D3DXVECTOR3(500.0f, 400.0f, 0.0f), 60.0f, 120, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+	pEffect2D->SetIdxTexture(Texture::GetIdx(&PATH_TEX[0]));
 
 	// シーンの更新
 	CScene::Update();
@@ -327,6 +333,58 @@ void CTitle::Update(void)
 void CTitle::Draw(void)
 {
 	CScene::Draw();
+}
+
+//=====================================================
+// 入力処理
+//=====================================================
+void CTitle::Input(void)
+{
+	CInputManager *pInput = CInputManager::GetInstance();
+
+	if (pInput == nullptr)
+		return;
+
+	D3DXVECTOR3 rot = m_apTitle_UI[TITLE_UI_PICKAXE]->GetRotation();
+
+	if (m_TitleState == TITLESTATE_LOGO)
+	{
+		if (m_bFade == true)
+		{
+			if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))	// ENTER押したとき
+			{
+				m_nCntState = 0;
+				m_TitleState = TITLESTATE_PICKAXE;
+			}
+		}
+	}
+
+	if (m_TitleState == TITLESTATE_PICKAXE)
+	{
+		m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(0.0f);	// 透明度を0にする
+
+		rot.z += 0.07f;	// つるはしの向きを傾ける
+
+		if (rot.z > 0.5f)
+		{
+			rot.z = 0.5f;
+
+			m_apMenu_UI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));	// スタートロゴの透明度を0にする
+		}
+
+		m_apTitle_UI[TITLE_UI_PICKAXE]->SetRotation(rot);
+
+		if (m_bFade == true)
+		{
+			m_nCntState++;
+
+			if (m_nCntState > 70)
+			{
+				// フェード処理
+				Fade();
+			}
+		}
+	}
 }
 
 //=====================================================
@@ -362,11 +420,20 @@ void CTitle::IceFlowState(void)
 	pos_left.x += 0.003f;
 	pos_right.x -= 0.003f;
 
-	// 目的の位置に現在の位置が近い時
-	if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))
+	if (m_TitleState == TITLESTATE_ICEFLOW)
 	{
-		CSound::GetInstance()->Play(CSound::LABEL_SE_DECISION);
-		IceConnect(&pos_left, &pos_right);
+		// 目的の位置に現在の位置が近い時
+		if (m_aPosDest[TITLE_UI_LEFT].x + 0.01f < pos_left.x ||
+			pInput->GetTrigger(CInputManager::BUTTON_ENTER))
+		{
+			pos_left = m_aPosDest[TITLE_UI_LEFT];	// 現在の位置に目標の位置を入れる
+			pos_right = m_aPosDest[TITLE_UI_RIGHT];
+
+			m_apTitle_UI[TITLE_UI_LEFT]->SetAlpha(0.0f);	// 透明度調整
+			m_apTitle_UI[TITLE_UI_RIGHT]->SetAlpha(0.0f);
+			m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(1.0f);
+			m_TitleState = TITLESTATE_LOGO;
+		}
 	}
 	if (m_aPosDest[TITLE_UI_LEFT].x + 0.01f < pos_left.x)
 	{
@@ -378,21 +445,7 @@ void CTitle::IceFlowState(void)
 }
 
 //====================================================
-// 氷をすぐくっつける処理
-//====================================================
-void CTitle::IceConnect(D3DXVECTOR3* left, D3DXVECTOR3* right)
-{
-	*left = m_aPosDest[TITLE_UI_LEFT];	// 現在の位置に目標の位置を入れる
-	*right = m_aPosDest[TITLE_UI_RIGHT];
-
-	m_apTitle_UI[TITLE_UI_LEFT]->SetAlpha(0.0f);	// 透明度調整
-	m_apTitle_UI[TITLE_UI_RIGHT]->SetAlpha(0.0f);
-	m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(1.0f);
-	m_TitleState = TITLESTATE_LOGO;
-}
-
-//====================================================
-// ロゴをだす処理
+// ロゴを出して動かす処理
 //====================================================
 void CTitle::LogoState(void)
 {
@@ -406,6 +459,7 @@ void CTitle::LogoState(void)
 
 	float fAlpha = m_apTitle_UI[TITLE_UI_FLASH]->GetAlpha();
 	fAlpha -= 0.004f;
+	m_bFade = true;
 
 	for (int nCntUI = TITLE_UI_ICEBLOCK; nCntUI < TITLE_UI_PICKAXE; nCntUI++)
 	{

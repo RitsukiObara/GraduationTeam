@@ -22,6 +22,7 @@
 #include "collision.h"
 #include "texture.h"
 #include "peckLine.h"
+#include "sound.h"
 
 //*****************************************************
 // 定数定義
@@ -1107,6 +1108,7 @@ void CPlayer::ManageMotion(void)
 			if (bFinish)
 			{
 				SetMotion(MOTION::MOTION_STAYJUMP);
+				CSound::GetInstance()->Play(CSound::LABEL_SE_PENGUIN_JUMP);
 			}
 		}
 		else if (nMotion != MOTION::MOTION_STARTJUMP)	// ジャンプ開始モーションの開始
