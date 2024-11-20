@@ -880,6 +880,13 @@ void CEnemy::Debug(void)
 	pDebugProc->Print("\n—¬•XƒVƒXƒeƒ€‚ ‚é[%d]", m_pLandSystemFlow != nullptr);
 
 	pDebugProc->Print("\nŒ»Ý‚Ìó‘Ô[%d]", m_state);
+
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	debug::Effect3DShort(pIceMgr->GetGridPosition(&m_nGridVDest, &m_nGridHDest), D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
 }
 
 //=====================================================

@@ -50,6 +50,7 @@ const float LINE_START = 0.1f;		// 開始するまでの角度のしきい値
 const float TIME_MAX_SPEED = 2.0f;	// 最大速度になるのにかかる時間
 const float SPEED_MAX = 4.0f;		// 最大速度
 const float RATE_RANGE = D3DX_PI / CIceManager::E_Direction::DIRECTION_MAX;	// 突撃の角度範囲
+const float SPEED_ONESTEP = 2.5f;	// 一歩の速度
 }
 }
 
@@ -365,6 +366,9 @@ void CBears::SarchTarget(void)
 			m_vecCharge = posPlayer - pos;
 			D3DXVec3Normalize(&m_vecCharge, &m_vecCharge);
 
+			// 振り向きフラグを立てる
+			EnableTurn(true);
+
 			// プレイヤーを保存してfor文を終了
 			pPlayer = it;
 			break;
@@ -491,14 +495,14 @@ void CBears::ReadyCharge(void)
 //=====================================================
 void CBears::StartCharge(void)
 {
-	// グリッド基準じゃない移動にする
-	EnableMoveByGrid(false);
-
-	// 振り向きフラグを立てる
-	EnableTurn(true);
+	// 振り向きフラグを折る
+	EnableTurn(false);
 
 	// 突撃フラグを立てる
 	m_bCharge = true;
+
+	// プレイヤーグリッドの発見
+	FindPlayerGrid();
 }
 
 //=====================================================
@@ -506,8 +510,8 @@ void CBears::StartCharge(void)
 //=====================================================
 void CBears::EndCharge(void)
 {
-	// グリッド基準の移動にする
-	EnableMoveByGrid(true);
+	// 仮で探索状態にする
+	SetState(CEnemy::E_State::STATE_STOP);
 
 	// ターゲットのプレイヤーをnullにする
 	m_pPlayerTarget = nullptr;
@@ -544,7 +548,7 @@ void CBears::UpdateMove(void)
 	// 継承クラスの更新
 	CEnemy::UpdateMove();
 
-	if(IsTurn())
+	if(!IsTurn())
 		MoveToNextGrid(); // 次のグリッドに進む
 
 }
@@ -554,25 +558,22 @@ void CBears::UpdateMove(void)
 //=====================================================
 void CBears::Charge(void)
 {
-	// プレイヤーに向かって移動量を加算
-	D3DXVECTOR3 move = GetMove();
 
-	if (m_fTimerAcceleCharge < charge::TIME_MAX_SPEED)
-		m_fTimerAcceleCharge += CManager::GetDeltaTime();
+}
 
-	// タイマーのイージング
-	float fTime = m_fTimerAcceleCharge / charge::TIME_MAX_SPEED;
-	float fRate = easing::EaseOutExpo(fTime);
-	universal::LimitValuefloat(&fRate, 1.0f, 0.0f);
+//=====================================================
+// プレイヤーグリッドの発見
+//=====================================================
+void CBears::FindPlayerGrid(void)
+{
+	if (m_pPlayerTarget == nullptr)
+		return;
+	
+	int nGridV = m_pPlayerTarget->GetGridV();
+	int nGridH = m_pPlayerTarget->GetGridH();
 
-	// 割合で速度を設定
-	move = m_vecCharge * charge::SPEED_MAX * fRate;
-
-	SetMove(move);
-
-#ifdef _DEBUG
-	CEffect3D::Create(GetPosition(), 200.0f, 5, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-#endif
+	SetGridVDest(nGridV);
+	SetGridHDest(nGridH);
 }
 
 //=====================================================
@@ -583,6 +584,10 @@ void CBears::AliveDestGrid(void)
 	if (m_pPlayerTarget == nullptr)
 	{// プレイヤー未発見時は次の散歩先を探す
 		DecideNextStrollGrid();
+	}
+	else
+	{// 突進していた時はオーバーヒート状態にする
+		EndCharge();
 	}
 }
 
@@ -771,6 +776,15 @@ void CBears::Event(EVENT_INFO* pEventInfo)
 	if (nMotion == E_Motion::MOTION_TURNCHARGE)
 	{// 突進前の回転
 		ReadyCharge();
+	}
+
+	if (nMotion == E_Motion::MOTION_CHARGE)
+	{// 突進中はイベント発生でスピード発生
+		float fSpeed = GetSpeedMove();
+
+		fSpeed += charge::SPEED_ONESTEP;
+
+		SetSpeedMove(fSpeed);
 	}
 }
 
