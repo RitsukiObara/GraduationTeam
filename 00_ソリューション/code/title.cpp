@@ -437,7 +437,7 @@ void CTitle::IceFlowState(void)
 	}
 	if (m_aPosDest[TITLE_UI_LEFT].x + 0.01f < pos_left.x)
 	{
-		IceConnect(&pos_left, &pos_right);
+		//IceConnect(&pos_left, &pos_right);
 	}
 
 	m_apTitle_UI[TITLE_UI_LEFT]->SetPosition(pos_left);
