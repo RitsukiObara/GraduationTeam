@@ -23,8 +23,8 @@
 //*****************************************************
 // マクロ定義
 //*****************************************************
-#define MENU_WIDTH	(0.12f)	// 項目の幅
-#define MENU_HEIGHT	(0.2f)	// 項目の高さ
+#define MENU_WIDTH	(0.11f)	// 項目の幅
+#define MENU_HEIGHT	(0.18f)	// 項目の高さ
 #define MOVE_FACT	(0.08f)	// 移動速度
 #define LINE_ARRIVAL	(0.05f)	// 到着したとされるしきい値
 #define LINE_UNINIT	(0.2f)	// 終了するまでのしきい値
@@ -124,31 +124,31 @@ HRESULT CPause::Init(void)
 				if (nCntMenu == MENU_RESUME)
 				{//	ゲームに戻る
 					// ポリゴンの設定
-					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-2.5f, 0.4f + MENU_HEIGHT * nCntMenu, 0.0f));
+					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-2.5f, 0.45f + MENU_HEIGHT * nCntMenu, 0.0f));
 					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
 					m_apMenu[nCntMenu]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
 					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
-					m_aPosDest[nCntMenu].x = 0.25f;
+					m_aPosDest[nCntMenu].x = 0.35f;
 				}
 
 				else if (nCntMenu == MENU_RESTART)
 				{//	ゲームのリスタート
 					// ポリゴンの設定
-					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(2.5f, 0.4f + MENU_HEIGHT * nCntMenu, 0.0f));
+					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(2.5f, 0.45f + MENU_HEIGHT * nCntMenu, 0.0f));
 					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
 					m_apMenu[nCntMenu]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
 					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
-					m_aPosDest[nCntMenu].x = 0.75f;
+					m_aPosDest[nCntMenu].x = 0.65f;
 				}
 
 				else if (nCntMenu == MENU_QUIT)
 				{//	タイトルに戻る
 					// ポリゴンの設定
-					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-2.5f, 0.4f + MENU_HEIGHT * nCntMenu, 0.0f));
+					m_apMenu[nCntMenu]->SetPosition(D3DXVECTOR3(-2.5f, 0.45f + MENU_HEIGHT * nCntMenu, 0.0f));
 					m_apMenu[nCntMenu]->SetSize(MENU_WIDTH, MENU_HEIGHT);
 					m_apMenu[nCntMenu]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
 					m_aPosDest[nCntMenu] = m_apMenu[nCntMenu]->GetPosition();
-					m_aPosDest[nCntMenu].x = 0.25f;
+					m_aPosDest[nCntMenu].x = 0.35f;
 				}
 
 				else if (nCntMenu == MENU_PAUSE)
@@ -453,7 +453,7 @@ void CPause::OffPosition(void)
 
 			else if (nCntMenu == MENU_RESTART)
 			{
-				m_aPosDest[nCntMenu].x = 1.75f;
+				m_aPosDest[nCntMenu].x = 1.25f;
 			}
 
 			else if (nCntMenu == MENU_QUIT)
@@ -463,7 +463,7 @@ void CPause::OffPosition(void)
 
 			else if (nCntMenu == MENU_PAUSE)
 			{
-				m_aPosDest[nCntMenu].x = 1.5f;
+				m_aPosDest[nCntMenu].y = -0.25f;
 			}
 		}
 	}
@@ -481,22 +481,22 @@ void CPause::SelectMove(void)
 	if (m_menu == MENU_RESUME)
 	{
 		//	ほかの項目を初期値に戻す
-		if (m_aPosDest[MENU_RESTART].x < 0.75f)
+		if (m_aPosDest[MENU_RESTART].x < 0.65f)
 		{
 			m_aPosDest[MENU_RESTART].x += 0.001f;
 		}
 
-		else if (m_aPosDest[MENU_RESTART].x > 0.75f)
+		else if (m_aPosDest[MENU_RESTART].x > 0.65f)
 		{
 			m_aPosDest[MENU_RESTART].x -= 0.001f;
 		}
 
-		if (m_aPosDest[MENU_QUIT].x < 0.25f)
+		if (m_aPosDest[MENU_QUIT].x < 0.35f)
 		{
 			m_aPosDest[MENU_QUIT].x += 0.001f;
 		}
 
-		else if (m_aPosDest[MENU_QUIT].x > 0.25f)
+		else if (m_aPosDest[MENU_QUIT].x > 0.35f)
 		{
 			m_aPosDest[MENU_QUIT].x -= 0.001f;
 		}
@@ -506,22 +506,22 @@ void CPause::SelectMove(void)
 	else if (m_menu == MENU_RESTART)
 	{
 		//	ほかの項目を初期値に戻す
-		if (m_aPosDest[MENU_RESUME].x < 0.25f)
+		if (m_aPosDest[MENU_RESUME].x < 0.35f)
 		{
 			m_aPosDest[MENU_RESUME].x += 0.001f;
 		}
 
-		else if (m_aPosDest[MENU_RESUME].x > 0.25f)
+		else if (m_aPosDest[MENU_RESUME].x > 0.35f)
 		{
 			m_aPosDest[MENU_RESUME].x -= 0.001f;
 		}
 
-		if (m_aPosDest[MENU_QUIT].x < 0.25f)
+		if (m_aPosDest[MENU_QUIT].x < 0.35f)
 		{
 			m_aPosDest[MENU_QUIT].x += 0.001f;
 		}
 
-		else if (m_aPosDest[MENU_QUIT].x > 0.25f)
+		else if (m_aPosDest[MENU_QUIT].x > 0.35f)
 		{
 			m_aPosDest[MENU_QUIT].x -= 0.001f;
 		}
@@ -531,22 +531,22 @@ void CPause::SelectMove(void)
 	else if (m_menu == MENU_QUIT)
 	{
 		//	ほかの項目を初期値に戻す
-		if (m_aPosDest[MENU_RESUME].x < 0.25f)
+		if (m_aPosDest[MENU_RESUME].x < 0.35f)
 		{
 			m_aPosDest[MENU_RESUME].x += 0.001f;
 		}
 
-		else if (m_aPosDest[MENU_RESUME].x > 0.25f)
+		else if (m_aPosDest[MENU_RESUME].x > 0.35f)
 		{
 			m_aPosDest[MENU_RESUME].x -= 0.001f;
 		}
 
-		if (m_aPosDest[MENU_RESTART].x < 0.75f)
+		if (m_aPosDest[MENU_RESTART].x < 0.65f)
 		{
 			m_aPosDest[MENU_RESTART].x += 0.001f;
 		}
 
-		else if (m_aPosDest[MENU_RESTART].x > 0.75f)
+		else if (m_aPosDest[MENU_RESTART].x > 0.65f)
 		{
 			m_aPosDest[MENU_RESTART].x -= 0.001f;
 		}

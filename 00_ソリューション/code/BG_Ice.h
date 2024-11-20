@@ -53,11 +53,11 @@ private:
 		STATE_MAX
 	}STATE;
 
-	TYPE m_type;	// タイプ分け変数
-	STATE m_state;	// 状態分け変数
-	COcean::E_Stream m_streamOld;	// 海流情報
+	TYPE m_type;			// タイプ分け変数
+	STATE m_state;			// 状態分け変数
 	float fgravity_speed;	// 沈んでいく速度;
 	float m_fspeed;			// 沈み始める速度
+	bool m_binscrean;		// 画面内に入ったかチェックする変数
 };
 
 #endif

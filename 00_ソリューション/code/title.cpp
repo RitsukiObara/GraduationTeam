@@ -23,6 +23,7 @@
 #include "skybox.h"
 #include "polygon2D.h"
 #include "UI.h"
+#include "effect2D.h"
 
 //*****************************************************
 // マクロ定義
@@ -35,6 +36,7 @@
 //*****************************************************
 namespace
 {
+	const string PATH_TEX = "data\\TEXTURE\\MATERIAL\\ice001.jpg";	// テクスチャパス
 	const D3DXCOLOR COL_INITIAL_MENU = { 0.4f,0.4f,0.4f,1.0f };	// メニュー項目の初期色
 	const D3DXCOLOR COL_CURRENT_MENU = { 1.0f,1.0f,1.0f,1.0f };	// メニュー項目の選択色
 	const D3DXVECTOR3 UI_POS[CTitle::TITLE_UI_MAX] =  // UIの初期位置
@@ -50,14 +52,14 @@ namespace
 	};
 	const D3DXVECTOR2 UI_SIZE[CTitle::TITLE_UI_MAX] =  // UIの初期サイズ
 	{
-		D3DXVECTOR2 (0.2f,0.2f),
-		D3DXVECTOR2 (0.2f,0.2f),
-		D3DXVECTOR2 (0.3f,0.3f),
-		D3DXVECTOR2 (0.1f,0.1f),
-		D3DXVECTOR2 (0.1f,0.15f),
+		D3DXVECTOR2(0.2f,0.2f),
+		D3DXVECTOR2(0.2f,0.2f),
+		D3DXVECTOR2(0.3f,0.3f),
+		D3DXVECTOR2(0.1f,0.1f),
+		D3DXVECTOR2(0.1f,0.15f),
 		D3DXVECTOR2(0.4f,0.1f),
-		D3DXVECTOR2 (0.08f,0.15f),
-		D3DXVECTOR2 (0.5f,0.5f),
+		D3DXVECTOR2(0.08f,0.15f),
+		D3DXVECTOR2(0.5f,0.5f),
 	};
 }
 
@@ -111,7 +113,7 @@ HRESULT CTitle::Init(void)
 	};
 
 	// フォグをかけない
-	CRenderer *pRenderer = CRenderer::GetInstance();
+	CRenderer* pRenderer = CRenderer::GetInstance();
 
 	if (pRenderer != nullptr)
 	{
@@ -132,12 +134,12 @@ HRESULT CTitle::Init(void)
 	}
 
 	// カメラ位置の設定
-	CCamera *pCamera = CManager::GetCamera();
+	CCamera* pCamera = CManager::GetCamera();
 
 	if (pCamera == nullptr)
 		return E_FAIL;
 
-	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+	CCamera::Camera* pInfoCamera = pCamera->GetCamera();
 
 	pInfoCamera->posV = { 45.38f,84.71f,270.10f };
 	pInfoCamera->posR = { -454.28f,331.03f,878.09f };
@@ -298,19 +300,26 @@ void CTitle::Update(void)
 		break;
 	case CTitle::TITLESTATE_LOGO:
 
-		// ロゴをだす処理
+		// ロゴを出して動かす処理
 		LogoState();
+
+		// 入力
+		Input();
 
 		break;
 	case CTitle::TITLESTATE_PICKAXE:
 
-		// ピッケル動かす処理
+		// ピッケルを動かす処理
 		PickaxeState();
 
 		break;
 	default:
 		break;
 	}
+
+	CEffect2D* pEffect2D = CEffect2D::Create(D3DXVECTOR3(500.0f, 400.0f, 0.0f), 60.0f, 120, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+	pEffect2D->SetIdxTexture(Texture::GetIdx(&PATH_TEX[0]));
 
 	// シーンの更新
 	CScene::Update();
@@ -330,11 +339,34 @@ void CTitle::Draw(void)
 }
 
 //=====================================================
+// 入力処理
+//=====================================================
+void CTitle::Input(void)
+{
+	CInputManager* pInput = CInputManager::GetInstance();
+
+	if (pInput == nullptr)
+		return;
+
+	if (m_bFade == true)
+	{
+		if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))	// ENTER押したとき
+		{
+			// 決定音を鳴らす
+			CSound::GetInstance()->Play(CSound::LABEL_SE_DECISION);
+
+			m_nCntState = 0;
+			m_TitleState = TITLESTATE_PICKAXE;
+		}
+	}
+}
+
+//=====================================================
 // フェード処理
 //=====================================================
 void CTitle::Fade(void)
 {// 各種フェード
-	CFade *pFade = CFade::GetInstance();
+	CFade* pFade = CFade::GetInstance();
 
 	if (pFade == nullptr)
 		return;
@@ -363,13 +395,17 @@ void CTitle::IceFlowState(void)
 	pos_right.x -= 0.003f;
 
 	// 目的の位置に現在の位置が近い時
-	if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))
-	{
-		CSound::GetInstance()->Play(CSound::LABEL_SE_DECISION);
-		IceConnect(&pos_left, &pos_right);
-	}
 	if (m_aPosDest[TITLE_UI_LEFT].x + 0.01f < pos_left.x)
 	{
+		// 氷をくっつける処理
+		IceConnect(&pos_left, &pos_right);
+	}
+	if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))
+	{
+		// 決定音を鳴らす
+		CSound::GetInstance()->Play(CSound::LABEL_SE_DECISION);
+
+		// 氷をくっつける処理
 		IceConnect(&pos_left, &pos_right);
 	}
 
@@ -378,7 +414,7 @@ void CTitle::IceFlowState(void)
 }
 
 //====================================================
-// 氷をすぐくっつける処理
+// 氷をくっつける処理
 //====================================================
 void CTitle::IceConnect(D3DXVECTOR3* left, D3DXVECTOR3* right)
 {
@@ -392,20 +428,16 @@ void CTitle::IceConnect(D3DXVECTOR3* left, D3DXVECTOR3* right)
 }
 
 //====================================================
-// ロゴをだす処理
+// ロゴを出して動かす処理
 //====================================================
 void CTitle::LogoState(void)
 {
-	CInputManager* pInput = CInputManager::GetInstance();
-
-	if (pInput == nullptr)
-		return;
-
 	// 画面にフラッシュが入る状態になった時
 	m_nCntMove++;
 
 	float fAlpha = m_apTitle_UI[TITLE_UI_FLASH]->GetAlpha();
 	fAlpha -= 0.004f;
+	m_bFade = true;
 
 	for (int nCntUI = TITLE_UI_ICEBLOCK; nCntUI < TITLE_UI_PICKAXE; nCntUI++)
 	{
@@ -441,7 +473,7 @@ void CTitle::LogoState(void)
 	}
 
 	// フラッシュの位置と透明度調整
-	m_apTitle_UI[TITLE_UI_FLASH]->SetPosition(D3DXVECTOR3(0.5f, 0.5f, 0.0f));		
+	m_apTitle_UI[TITLE_UI_FLASH]->SetPosition(D3DXVECTOR3(0.5f, 0.5f, 0.0f));
 	m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(fAlpha);
 
 	// UIの透明度調整
@@ -451,17 +483,6 @@ void CTitle::LogoState(void)
 	m_apTitle_UI[TITLE_UI_PENGUIN]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_apTitle_UI[TITLE_UI_PICKAXE]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_apTitle_UI[TITLE_UI_LOGO]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-
-	if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))	// ENTER押したとき
-	{
-		m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(0.0f);	// 透明度を0にする
-
-		m_bFade = true;
-		m_nCntState = 0;
-		m_TitleState = TITLESTATE_PICKAXE;
-
-		CSound::GetInstance()->Play(CSound::LABEL_SE_DECISION);
-	}
 }
 
 //====================================================
@@ -470,6 +491,8 @@ void CTitle::LogoState(void)
 void CTitle::PickaxeState(void)
 {
 	D3DXVECTOR3 rot = m_apTitle_UI[TITLE_UI_PICKAXE]->GetRotation();
+
+	m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(0.0f);	// 透明度を0にする
 
 	rot.z += 0.07f;	// つるはしの向きを傾ける
 

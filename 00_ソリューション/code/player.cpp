@@ -23,6 +23,7 @@
 #include "texture.h"
 #include "peckLine.h"
 #include "sound.h"
+#include "shadow.h"
 
 //*****************************************************
 // íËêîíËã`
@@ -89,7 +90,7 @@ vector<CPlayer*> CPlayer::s_apPlayer;	// äiî[ópÇÃîzóÒ
 //=====================================================
 CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(STATE_NONE), m_pIceMoveDest(nullptr), m_bEnableInput(false), m_fTimerStartMove(0.0f),
 m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f), m_pLandSystemFlow(nullptr), m_pLandFlow(nullptr), m_nTimePeck(0), m_nID(0), m_pPeckLine(nullptr),
-m_bEnableJump(false), m_pIceDestJump(nullptr), m_posInitJump()
+m_bEnableJump(false), m_pIceDestJump(nullptr), m_posInitJump(), m_pShadow(nullptr)
 {
 	// ÉfÉtÉHÉãÉgÇÕì¸Ç¡ÇΩèáÇÃî‘çÜ
 	m_nID = (int)s_apPlayer.size();
@@ -151,6 +152,9 @@ HRESULT CPlayer::Init(void)
 	m_state = STATE_NORMAL;
 #endif // _DEBUG
 
+	// âeÇÃê∂ê¨
+	m_pShadow = CShadow::Create();
+
 	return S_OK;
 }
 
@@ -203,6 +207,7 @@ void CPlayer::Uninit(void)
 {
 	Object::DeleteObject((CObject**)&m_pDir);
 	Object::DeleteObject((CObject**)&m_pPeckLine);
+	Object::DeleteObject((CObject**)&m_pShadow);
 
 	for (auto itr = s_apPlayer.begin(); itr < s_apPlayer.end(); itr++)
 	{
@@ -251,6 +256,10 @@ void CPlayer::Update(void)
 
 	// ïXÇÃí«è]
 	FollowIce();
+
+	// âeÇÃí«è]
+	if (m_pShadow != nullptr)
+		m_pShadow->SetPosition(GetPosition());
 
 #ifdef _DEBUG
 	Debug();

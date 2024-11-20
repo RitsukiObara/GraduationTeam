@@ -44,6 +44,7 @@ CBgIce::CBgIce()
 	m_type = TYPE_BIG;
 	m_state = STATE_FLOW;
 	m_fspeed = 0.0f;
+	m_binscrean = false;
 }
 
 //====================================================
@@ -65,6 +66,7 @@ CBgIce* CBgIce::Create(D3DXVECTOR3 pos,D3DXVECTOR3 rot,TYPE type)
 	pBgIce->SetRotation(rot);
 
 	pBgIce->m_type = type;
+	pBgIce->m_binscrean = false;
 
 	pBgIce->Init();
 
@@ -89,12 +91,6 @@ HRESULT CBgIce::Init(void)
 
 	if (pIceManager == nullptr)
 		return S_OK;
-
-	// ŠC—¬‚ÌƒxƒNƒgƒ‹Žæ“¾
-	COcean::E_Stream dir = pIceManager->GetDirStream();
-
-	//Œ»Ý‚ÌŠC—¬î•ñŽæ“¾
-	m_streamOld = dir;
 
 	CObjectX::Init();
 
@@ -218,13 +214,17 @@ void CBgIce::Move(void)
 	COcean::E_Stream dir = pIceManager->GetDirStream();
 	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[dir];
 
-	if (pIceManager->GetDirStream() != m_streamOld)
+	D3DXVECTOR3 pos = GetPosition();
+
+	if (universal::IsInScreen(pos))
+	{
+		m_binscrean = true;
+	}
+	
+	if (!universal::IsInScreen(pos) && m_binscrean)
 	{
 		m_state = STATE_SINK;
 	}
-
-	//Œ»Ý‚ÌŠC—¬î•ñŽæ“¾
-	m_streamOld = dir;
 
 	// —¬‚ê‚é‘¬“x‚É³‹K‰»‚µ‚ÄˆÊ’u‚ð‰ÁŽZ
 	float fSpeedFlow = pIceManager->GetOceanLevel();
@@ -243,7 +243,7 @@ void CBgIce::Move(void)
 
 	case STATE_SINK:
 
-		D3DXVECTOR3 pos = GetPosition();
+		m_binscrean = false;
 
 		fgravity_speed += m_fspeed;
 

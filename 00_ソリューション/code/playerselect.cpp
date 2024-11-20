@@ -289,7 +289,7 @@ void CPlayerSelect::StartFade(void)
 	gameManager::SaveMode(CGame::E_GameMode::MODE_MULTI, abEnter);
 
 	// ƒQ[ƒ€‚É‘JˆÚ
-	pFade->SetFade(CScene::MODE_GAME);
+	pFade->SetFade(CScene::MODE_SELECTSTAGE);
 }
 
 //=====================================================
