@@ -755,5 +755,8 @@
     <ClInclude Include="code\magic_enum.hpp">
       <Filter>ソース ファイル\base</Filter>
     </ClInclude>
+    <ClInclude Include="code\debug.h">
+      <Filter>ソース ファイル\base</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

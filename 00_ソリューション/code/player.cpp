@@ -951,6 +951,9 @@ void CPlayer::SarchJumpIce(void)
 	CIce *pIceStand = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
 	for (int i = 0; i < (int)apIce.size(); i++)
 	{
+		if (pIceStand == nullptr)
+			return;
+
 		if (apIce[i] == nullptr)
 			continue;
 

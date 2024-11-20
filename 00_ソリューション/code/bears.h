@@ -53,6 +53,7 @@ private:
 		MOTION_STAYJUMP,	// ジャンプ中
 		MOTION_LANDING,		// 着地
 		MOTION_TURN,		// 振り向き
+		MOTION_TURNCHARGE,	// 突進振り向き
 		MOTION_MAX
 	};
 
@@ -64,12 +65,14 @@ private:
 	void SarchTarget(void);							// ターゲットの探索
 	void StopMoveByNotGrid(CIce *pIce) override;	// グリッド基準じゃない移動を止める
 
-	bool CanCharge(D3DXVECTOR3 pos, int nIdxTargetV, int nIdxTargetH);							// 突撃できるかの判定
-	bool IsAliveTarget(int nIdxV, int nIdxH,float fRot,int nIdxTargetV, int nIdxTargetH);		// ターゲットに到達したかの再帰関数
+	bool CanCharge(D3DXVECTOR3 pos, int nIdxTargetV, int nIdxTargetH);						// 突撃できるかの判定
+	bool IsAliveTarget(int nIdxV, int nIdxH,float fRot,int nIdxTargetV, int nIdxTargetH);	// ターゲットに到達したかの再帰関数
 
-	void StartCharge(void);	// 突撃の開始
-	void Charge(void);		// 突撃中の処理
-	void EndCharge(void);	// 突撃の終了
+	void ReadyCharge(void);		// 突撃の準備
+	void StartCharge(void);		// 突撃の開始
+	void Charge(void);			// 突撃中の処理
+	void EndCharge(void);		// 突撃の終了
+	void FindPlayerGrid(void);	// プレイヤーグリッドの発見
 
 	void AliveDestGrid(void) override;				// グリッドに到着したときの処理
 	void DecideNextStrollGrid(void);				// 次の散歩先を決める
@@ -78,8 +81,9 @@ private:
 
 	// メンバ変数
 	CPlayer *m_pPlayerTarget;	// ターゲットプレイヤー
-	D3DXVECTOR3 m_vecCharge;	// 突進するベクトル
-	float m_fTimerAcceleCharge;	// 突進加速カウンター
+	D3DXVECTOR3 m_vecCharge;	// 突撃するベクトル
+	float m_fTimerAcceleCharge;	// 突撃加速カウンター
+	bool m_bCharge;				// 突撃フラグ
 };
 
 #endif

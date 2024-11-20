@@ -297,6 +297,7 @@
     <ClInclude Include="code\cameraState.h" />
     <ClInclude Include="code\collision.h" />
     <ClInclude Include="code\container.h" />
+    <ClInclude Include="code\debug.h" />
     <ClInclude Include="code\fade_fallice.h" />
     <ClInclude Include="code\gameManager.h" />
     <ClInclude Include="code\gameManagerMulti.h" />
