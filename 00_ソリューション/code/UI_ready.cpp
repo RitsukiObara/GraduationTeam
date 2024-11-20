@@ -241,12 +241,12 @@ void CUIready::UpdateNumber()
 
 		m_nFrame = 0;
 
+		m_fsize = 0.0f;
+
 		//”šƒTƒCƒY‰Šú‰»
 		for (int i = 0; i < E_Number::NUMBER_MAX; i++)
 		{
-			m_aNumber[i]->SetSizeAll(SIZE_WIDTH, SIZE_HEIGHT);
-
-			m_fsize = 0.0f;
+			m_aNumber[i]->SetSizeAll(m_fsize, m_fsize);
 		}
 	}
 
