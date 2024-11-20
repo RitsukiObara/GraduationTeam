@@ -18,13 +18,41 @@
 //*****************************************************
 namespace
 {
-const std::string PATH_BODY = "data\\MOTION\\motionPenguin.txt";	// ボディのパス
-const float SCALE_BODY = 1.8f;	// 体のスケール
-
-const float FACT_DECREASE_MOVE = 0.9f;	// 移動量の減衰係数
-const float ADD_MOVE = 4.0f;	// 移動の追加量
-
-const float RADIUS_COLLISION = 200.0f;	// 球の判定の半径
+	const std::string PATH_BODY = "data\\MOTION\\motionPenguin.txt";	// ボディのパス
+	const float SCALE_BODY = 1.8f;	// 体のスケール
+	
+	const float FACT_DECREASE_MOVE = 0.9f;	// 移動量の減衰係数
+	const float ADD_MOVE = 4.0f;	// 移動の追加量
+	
+	const float RADIUS_COLLISION = 200.0f;	// 球の判定の半径
+	namespace Stand
+	{
+		const int MOTION_COUNT = 60 * 3;	// モーションをする時間
+		const vector<CSelectModePenguin::MOTION> NEXT_MOTION_PATTERN =
+		{
+			CSelectModePenguin::MOTION_WALK,		// 移動
+			CSelectModePenguin::MOTION_WALK,		// 移動
+			CSelectModePenguin::MOTION_WALK,		// 移動
+			CSelectModePenguin::MOTION_NECKSHAKE,	// 首振り
+			CSelectModePenguin::MOTION_STOMACH,		// 腹ベタァ
+			CSelectModePenguin::MOTION_UNYO,		// 首うにょん
+			CSelectModePenguin::MOTION_WINGPTPT		// 羽パタ
+		};
+	}
+	namespace Move
+	{
+		const int MOTION_COUNT = 60 * 6;	// モーションをする時間
+		const int FALL_CHANCE = 15;			// 転ぶ確立（値：％）
+		const float MOVE_SPEED = 2.5f;		// 移動速度
+	}
+	namespace ShakeHead
+	{
+		const int MOTION_COUNT = 60 * 2;	// モーションをする時間
+	}
+	namespace Stomach
+	{
+		const int MOTION_COUNT = 60 * 3;	// モーションをする時間
+	}
 }
 
 //=====================================================
@@ -33,7 +61,6 @@ const float RADIUS_COLLISION = 200.0f;	// 球の判定の半径
 CSelectModePenguin::CSelectModePenguin(int nPriority) : CMotion(nPriority)
 {
 	m_pCollisionSphere = nullptr;
-	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	nCntMove = 0;
 }
 
@@ -73,7 +100,7 @@ void CSelectModePenguin::SetState(ISelectModePenguinState* pState)
 {
 	if (m_pState != nullptr)
 	{
-		delete m_pState;
+		m_pState->Uninit();
 		m_pState = nullptr;
 	}
 	
@@ -119,7 +146,7 @@ void CSelectModePenguin::Uninit(void)
 {
 	if (m_pState != nullptr)
 	{
-		delete m_pState;
+		m_pState->Uninit();
 		m_pState = nullptr;
 	}
 
@@ -132,12 +159,6 @@ void CSelectModePenguin::Uninit(void)
 //=====================================================
 void CSelectModePenguin::Update(void)
 {
-	// 移動量分移動
-	Translate(m_move);
-
-	// 移動量の減衰
-	m_move *= FACT_DECREASE_MOVE;
-
 	// モーション更新
 	CMotion::Update();
 
@@ -204,11 +225,45 @@ HRESULT CSelectModePenguinState_Stand::Init(CSelectModePenguin* pPenguin)
 }
 
 //=====================================================
+// 終了処理
+//=====================================================
+void CSelectModePenguinState_Stand::Uninit(void)
+{
+	delete this;
+}
+
+//=====================================================
 // 更新処理
 //=====================================================
 void CSelectModePenguinState_Stand::Update(CSelectModePenguin* pPenguin)
 {
-
+	m_nCounter++;
+	if (m_nCounter >= Stand::MOTION_COUNT)
+	{// ステート時間終了
+		// どのステートに遷移するか抽選
+		CSelectModePenguin::MOTION rnd = Stand::NEXT_MOTION_PATTERN[(rand() % (int)Stand::NEXT_MOTION_PATTERN.size())];
+		switch (rnd)
+		{
+		case CSelectModePenguin::MOTION_WALK:
+			pPenguin->SetState(new CSelectModePenguinState_Move);
+			break;
+		case CSelectModePenguin::MOTION_NECKSHAKE:
+			pPenguin->SetState(new CSelectModePenguinState_ShakeHead);
+			break;
+		case CSelectModePenguin::MOTION_STOMACH:
+			pPenguin->SetState(new CSelectModePenguinState_Stomach);
+			break;
+		case CSelectModePenguin::MOTION_UNYO:
+			pPenguin->SetState(new CSelectModePenguinState_UNYO);
+			break;
+		case CSelectModePenguin::MOTION_WINGPTPT:
+			pPenguin->SetState(new CSelectModePenguinState_WingPTPT);
+			break;
+		default:
+			m_nCounter = 0;
+			break;
+		}
+	}
 }
 
 //*****************************************************
@@ -225,11 +280,46 @@ HRESULT CSelectModePenguinState_Move::Init(CSelectModePenguin* pPenguin)
 }
 
 //=====================================================
+// 終了処理
+//=====================================================
+void CSelectModePenguinState_Move::Uninit(void)
+{
+	delete this;
+}
+
+//=====================================================
 // 更新処理
 //=====================================================
 void CSelectModePenguinState_Move::Update(CSelectModePenguin* pPenguin)
 {
+	// 移動
+	D3DXVECTOR3 rot = pPenguin->GetRotation();
+	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
 
+	move.x = -sinf(rot.y) * Move::MOVE_SPEED;
+	move.z = -cosf(rot.y) * Move::MOVE_SPEED;
+
+	pPenguin->Translate(move);
+
+	// 回る
+	rot.y += 0.005f * D3DX_PI;
+	pPenguin->SetRotation(rot);
+
+	// ステート終了カウント
+	m_nCounter++;
+	if (m_nCounter >= Move::MOTION_COUNT)
+	{// ステート時間終了
+		// コケチャンス
+		int rnd = rand() % 100;
+		if (rnd < Move::FALL_CHANCE)
+		{// コケ
+			pPenguin->SetState(new CSelectModePenguinState_Fall);
+		}
+		else
+		{// 普通に立つ
+			pPenguin->SetState(new CSelectModePenguinState_Stand);
+		}
+	}
 }
 
 //*****************************************************
@@ -240,9 +330,17 @@ void CSelectModePenguinState_Move::Update(CSelectModePenguin* pPenguin)
 //=====================================================
 HRESULT CSelectModePenguinState_Fall::Init(CSelectModePenguin* pPenguin)
 {
-	pPenguin->SetMotion(CSelectModePenguin::MOTION::MOTION_WALK);
+	pPenguin->SetMotion(CSelectModePenguin::MOTION::MOTION_FALL);
 
 	return S_OK;
+}
+
+//=====================================================
+// 終了処理
+//=====================================================
+void CSelectModePenguinState_Fall::Uninit(void)
+{
+	delete this;
 }
 
 //=====================================================
@@ -250,7 +348,10 @@ HRESULT CSelectModePenguinState_Fall::Init(CSelectModePenguin* pPenguin)
 //=====================================================
 void CSelectModePenguinState_Fall::Update(CSelectModePenguin* pPenguin)
 {
-
+	if (pPenguin->IsFinish())
+	{// コケ終わった
+		pPenguin->SetState(new CSelectModePenguinState_Stand);
+	}
 }
 
 //*****************************************************
@@ -261,9 +362,17 @@ void CSelectModePenguinState_Fall::Update(CSelectModePenguin* pPenguin)
 //=====================================================
 HRESULT CSelectModePenguinState_ShakeHead::Init(CSelectModePenguin* pPenguin)
 {
-	pPenguin->SetMotion(CSelectModePenguin::MOTION::MOTION_WALK);
+	pPenguin->SetMotion(CSelectModePenguin::MOTION::MOTION_NECKSHAKE);
 
 	return S_OK;
+}
+
+//=====================================================
+// 終了処理
+//=====================================================
+void CSelectModePenguinState_ShakeHead::Uninit(void)
+{
+	delete this;
 }
 
 //=====================================================
@@ -271,7 +380,11 @@ HRESULT CSelectModePenguinState_ShakeHead::Init(CSelectModePenguin* pPenguin)
 //=====================================================
 void CSelectModePenguinState_ShakeHead::Update(CSelectModePenguin* pPenguin)
 {
-
+	m_nCounter++;
+	if (m_nCounter >= ShakeHead::MOTION_COUNT)
+	{// ステート時間終了
+		pPenguin->SetState(new CSelectModePenguinState_Stand);
+	}
 }
 
 //*****************************************************
@@ -282,9 +395,17 @@ void CSelectModePenguinState_ShakeHead::Update(CSelectModePenguin* pPenguin)
 //=====================================================
 HRESULT CSelectModePenguinState_Stomach::Init(CSelectModePenguin* pPenguin)
 {
-	pPenguin->SetMotion(CSelectModePenguin::MOTION::MOTION_WALK);
+	pPenguin->SetMotion(CSelectModePenguin::MOTION::MOTION_STOMACH);
 
 	return S_OK;
+}
+
+//=====================================================
+// 終了処理
+//=====================================================
+void CSelectModePenguinState_Stomach::Uninit(void)
+{
+	delete this;
 }
 
 //=====================================================
@@ -292,7 +413,11 @@ HRESULT CSelectModePenguinState_Stomach::Init(CSelectModePenguin* pPenguin)
 //=====================================================
 void CSelectModePenguinState_Stomach::Update(CSelectModePenguin* pPenguin)
 {
-
+	m_nCounter++;
+	if (m_nCounter >= Stomach::MOTION_COUNT)
+	{// ステート時間終了
+		pPenguin->SetState(new CSelectModePenguinState_Stand);
+	}
 }
 
 //*****************************************************
@@ -303,9 +428,17 @@ void CSelectModePenguinState_Stomach::Update(CSelectModePenguin* pPenguin)
 //=====================================================
 HRESULT CSelectModePenguinState_UNYO::Init(CSelectModePenguin* pPenguin)
 {
-	pPenguin->SetMotion(CSelectModePenguin::MOTION::MOTION_WALK);
+	pPenguin->SetMotion(CSelectModePenguin::MOTION::MOTION_UNYO);
 
 	return S_OK;
+}
+
+//=====================================================
+// 終了処理
+//=====================================================
+void CSelectModePenguinState_UNYO::Uninit(void)
+{
+	delete this;
 }
 
 //=====================================================
@@ -313,7 +446,10 @@ HRESULT CSelectModePenguinState_UNYO::Init(CSelectModePenguin* pPenguin)
 //=====================================================
 void CSelectModePenguinState_UNYO::Update(CSelectModePenguin* pPenguin)
 {
-
+	if (pPenguin->IsFinish())
+	{// 首うにょん終わった
+		pPenguin->SetState(new CSelectModePenguinState_Stand);
+	}
 }
 
 //*****************************************************
@@ -324,9 +460,17 @@ void CSelectModePenguinState_UNYO::Update(CSelectModePenguin* pPenguin)
 //=====================================================
 HRESULT CSelectModePenguinState_WingPTPT::Init(CSelectModePenguin* pPenguin)
 {
-	pPenguin->SetMotion(CSelectModePenguin::MOTION::MOTION_WALK);
+	pPenguin->SetMotion(CSelectModePenguin::MOTION::MOTION_WINGPTPT);
 
 	return S_OK;
+}
+
+//=====================================================
+// 終了処理
+//=====================================================
+void CSelectModePenguinState_WingPTPT::Uninit(void)
+{
+	delete this;
 }
 
 //=====================================================
@@ -334,5 +478,8 @@ HRESULT CSelectModePenguinState_WingPTPT::Init(CSelectModePenguin* pPenguin)
 //=====================================================
 void CSelectModePenguinState_WingPTPT::Update(CSelectModePenguin* pPenguin)
 {
-
+	if (pPenguin->IsFinish())
+	{// 羽パタ終わった
+		pPenguin->SetState(new CSelectModePenguinState_Stand);
+	}
 }

@@ -52,14 +52,14 @@ namespace
 	};
 	const D3DXVECTOR2 UI_SIZE[CTitle::TITLE_UI_MAX] =  // UIの初期サイズ
 	{
-		D3DXVECTOR2 (0.2f,0.2f),
-		D3DXVECTOR2 (0.2f,0.2f),
-		D3DXVECTOR2 (0.3f,0.3f),
-		D3DXVECTOR2 (0.1f,0.1f),
-		D3DXVECTOR2 (0.1f,0.15f),
+		D3DXVECTOR2(0.2f,0.2f),
+		D3DXVECTOR2(0.2f,0.2f),
+		D3DXVECTOR2(0.3f,0.3f),
+		D3DXVECTOR2(0.1f,0.1f),
+		D3DXVECTOR2(0.1f,0.15f),
 		D3DXVECTOR2(0.4f,0.1f),
-		D3DXVECTOR2 (0.08f,0.15f),
-		D3DXVECTOR2 (0.5f,0.5f),
+		D3DXVECTOR2(0.08f,0.15f),
+		D3DXVECTOR2(0.5f,0.5f),
 	};
 }
 
@@ -113,7 +113,7 @@ HRESULT CTitle::Init(void)
 	};
 
 	// フォグをかけない
-	CRenderer *pRenderer = CRenderer::GetInstance();
+	CRenderer* pRenderer = CRenderer::GetInstance();
 
 	if (pRenderer != nullptr)
 	{
@@ -134,12 +134,12 @@ HRESULT CTitle::Init(void)
 	}
 
 	// カメラ位置の設定
-	CCamera *pCamera = CManager::GetCamera();
+	CCamera* pCamera = CManager::GetCamera();
 
 	if (pCamera == nullptr)
 		return E_FAIL;
 
-	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+	CCamera::Camera* pInfoCamera = pCamera->GetCamera();
 
 	pInfoCamera->posV = { 45.38f,84.71f,270.10f };
 	pInfoCamera->posR = { -454.28f,331.03f,878.09f };
@@ -290,14 +290,6 @@ void CTitle::Uninit(void)
 //=====================================================
 void CTitle::Update(void)
 {
-	CInputManager *pInput = CInputManager::GetInstance();
-
-	if (pInput == nullptr)
-		return;
-
-	if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))	// ENTER押したとき
-		CFade::GetInstance()->SetFade(CScene::MODE::MODE_SELECTMODE);
-
 	switch (m_TitleState)
 	{
 	case CTitle::TITLESTATE_ICEFLOW:
@@ -311,11 +303,14 @@ void CTitle::Update(void)
 		// ロゴを出して動かす処理
 		LogoState();
 
+		// 入力
+		Input();
+
 		break;
 	case CTitle::TITLESTATE_PICKAXE:
 
-		// ロゴを出して動かす処理
-		LogoState();
+		// ピッケルを動かす処理
+		PickaxeState();
 
 		break;
 	default:
@@ -348,49 +343,20 @@ void CTitle::Draw(void)
 //=====================================================
 void CTitle::Input(void)
 {
-	CInputManager *pInput = CInputManager::GetInstance();
+	CInputManager* pInput = CInputManager::GetInstance();
 
 	if (pInput == nullptr)
 		return;
 
-	D3DXVECTOR3 rot = m_apTitle_UI[TITLE_UI_PICKAXE]->GetRotation();
-
-	if (m_TitleState == TITLESTATE_LOGO)
+	if (m_bFade == true)
 	{
-		if (m_bFade == true)
+		if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))	// ENTER押したとき
 		{
-			if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))	// ENTER押したとき
-			{
-				m_nCntState = 0;
-				m_TitleState = TITLESTATE_PICKAXE;
-			}
-		}
-	}
+			// 決定音を鳴らす
+			CSound::GetInstance()->Play(CSound::LABEL_SE_DECISION);
 
-	if (m_TitleState == TITLESTATE_PICKAXE)
-	{
-		m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(0.0f);	// 透明度を0にする
-
-		rot.z += 0.07f;	// つるはしの向きを傾ける
-
-		if (rot.z > 0.5f)
-		{
-			rot.z = 0.5f;
-
-			m_apMenu_UI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));	// スタートロゴの透明度を0にする
-		}
-
-		m_apTitle_UI[TITLE_UI_PICKAXE]->SetRotation(rot);
-
-		if (m_bFade == true)
-		{
-			m_nCntState++;
-
-			if (m_nCntState > 70)
-			{
-				// フェード処理
-				Fade();
-			}
+			m_nCntState = 0;
+			m_TitleState = TITLESTATE_PICKAXE;
 		}
 	}
 }
@@ -400,7 +366,7 @@ void CTitle::Input(void)
 //=====================================================
 void CTitle::Fade(void)
 {// 各種フェード
-	CFade *pFade = CFade::GetInstance();
+	CFade* pFade = CFade::GetInstance();
 
 	if (pFade == nullptr)
 		return;
@@ -428,24 +394,19 @@ void CTitle::IceFlowState(void)
 	pos_left.x += 0.003f;
 	pos_right.x -= 0.003f;
 
-	if (m_TitleState == TITLESTATE_ICEFLOW)
-	{
-		// 目的の位置に現在の位置が近い時
-		if (m_aPosDest[TITLE_UI_LEFT].x + 0.01f < pos_left.x ||
-			pInput->GetTrigger(CInputManager::BUTTON_ENTER))
-		{
-			pos_left = m_aPosDest[TITLE_UI_LEFT];	// 現在の位置に目標の位置を入れる
-			pos_right = m_aPosDest[TITLE_UI_RIGHT];
-
-			m_apTitle_UI[TITLE_UI_LEFT]->SetAlpha(0.0f);	// 透明度調整
-			m_apTitle_UI[TITLE_UI_RIGHT]->SetAlpha(0.0f);
-			m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(1.0f);
-			m_TitleState = TITLESTATE_LOGO;
-		}
-	}
+	// 目的の位置に現在の位置が近い時
 	if (m_aPosDest[TITLE_UI_LEFT].x + 0.01f < pos_left.x)
 	{
-		//IceConnect(&pos_left, &pos_right);
+		// 氷をくっつける処理
+		IceConnect(&pos_left, &pos_right);
+	}
+	if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))
+	{
+		// 決定音を鳴らす
+		CSound::GetInstance()->Play(CSound::LABEL_SE_DECISION);
+
+		// 氷をくっつける処理
+		IceConnect(&pos_left, &pos_right);
 	}
 
 	m_apTitle_UI[TITLE_UI_LEFT]->SetPosition(pos_left);
@@ -453,15 +414,24 @@ void CTitle::IceFlowState(void)
 }
 
 //====================================================
+// 氷をくっつける処理
+//====================================================
+void CTitle::IceConnect(D3DXVECTOR3* left, D3DXVECTOR3* right)
+{
+	*left = m_aPosDest[TITLE_UI_LEFT];	// 現在の位置に目標の位置を入れる
+	*right = m_aPosDest[TITLE_UI_RIGHT];
+
+	m_apTitle_UI[TITLE_UI_LEFT]->SetAlpha(0.0f);	// 透明度調整
+	m_apTitle_UI[TITLE_UI_RIGHT]->SetAlpha(0.0f);
+	m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(1.0f);
+	m_TitleState = TITLESTATE_LOGO;
+}
+
+//====================================================
 // ロゴを出して動かす処理
 //====================================================
 void CTitle::LogoState(void)
 {
-	CInputManager* pInput = CInputManager::GetInstance();
-
-	if (pInput == nullptr)
-		return;
-
 	// 画面にフラッシュが入る状態になった時
 	m_nCntMove++;
 
@@ -503,7 +473,7 @@ void CTitle::LogoState(void)
 	}
 
 	// フラッシュの位置と透明度調整
-	m_apTitle_UI[TITLE_UI_FLASH]->SetPosition(D3DXVECTOR3(0.5f, 0.5f, 0.0f));		
+	m_apTitle_UI[TITLE_UI_FLASH]->SetPosition(D3DXVECTOR3(0.5f, 0.5f, 0.0f));
 	m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(fAlpha);
 
 	// UIの透明度調整
@@ -513,17 +483,6 @@ void CTitle::LogoState(void)
 	m_apTitle_UI[TITLE_UI_PENGUIN]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_apTitle_UI[TITLE_UI_PICKAXE]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_apTitle_UI[TITLE_UI_LOGO]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-
-	if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))	// ENTER押したとき
-	{
-		m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(0.0f);	// 透明度を0にする
-
-		m_bFade = true;
-		m_nCntState = 0;
-		m_TitleState = TITLESTATE_PICKAXE;
-
-		CSound::GetInstance()->Play(CSound::LABEL_SE_DECISION);
-	}
 }
 
 //====================================================
@@ -532,6 +491,8 @@ void CTitle::LogoState(void)
 void CTitle::PickaxeState(void)
 {
 	D3DXVECTOR3 rot = m_apTitle_UI[TITLE_UI_PICKAXE]->GetRotation();
+
+	m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(0.0f);	// 透明度を0にする
 
 	rot.z += 0.07f;	// つるはしの向きを傾ける
 

@@ -47,6 +47,7 @@ private:
 	void ManageGameState(void);	// ゲームの状態管理
 
 	// メンバ変数
+	int m_nCounterSoundSea;	// 静かな海の音を流す用のカウンタ
 
 	// 静的メンバ変数
 };

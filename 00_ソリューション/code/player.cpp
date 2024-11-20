@@ -1187,6 +1187,9 @@ void CPlayer::Hit(float fDamage)
 
 	// 操作可能フラグを折る
 	m_bEnableInput = false;
+
+	// ペンギンの鳴き声
+	CSound::GetInstance()->Play(CSound::LABEL_SE_PENGUIN_VOICE);
 }
 
 //=====================================================
