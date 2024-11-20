@@ -304,6 +304,8 @@ void CTitle::Update(void)
 		break;
 	case CTitle::TITLESTATE_PICKAXE:
 
+		// ピッケル動かす処理
+		PickaxeState();
 
 		break;
 	default:
@@ -312,9 +314,6 @@ void CTitle::Update(void)
 
 	// シーンの更新
 	CScene::Update();
-
-	// 入力
-	Input();
 
 	for (int nCntUI = 0; nCntUI < TITLE_UI_MAX; nCntUI++)
 	{
@@ -328,56 +327,6 @@ void CTitle::Update(void)
 void CTitle::Draw(void)
 {
 	CScene::Draw();
-}
-
-//=====================================================
-// 入力処理
-//=====================================================
-void CTitle::Input(void)
-{
-	CInputManager *pInput = CInputManager::GetInstance();
-
-	if (pInput == nullptr)
-		return;
-
-	D3DXVECTOR3 rot = m_apTitle_UI[TITLE_UI_PICKAXE]->GetRotation();
-
-	if (m_TitleState == TITLESTATE_LOGO)
-	{
-		if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))	// ENTER押したとき
-		{
-			m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(0.0f);	// 透明度を0にする
-
-			m_bFade = true;
-			m_nCntState = 0;
-			m_TitleState = TITLESTATE_PICKAXE;
-		}
-	}
-
-	if (m_TitleState == TITLESTATE_PICKAXE)
-	{
-		rot.z += 0.07f;	// つるはしの向きを傾ける
-
-		if (rot.z > 0.5f)
-		{
-			rot.z = 0.5f;
-
-			m_apMenu_UI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));	// スタートロゴの透明度を0にする
-		}
-
-		m_apTitle_UI[TITLE_UI_PICKAXE]->SetRotation(rot);
-
-		if (m_bFade == true)
-		{
-			m_nCntState++;
-
-			if (m_nCntState > 70)
-			{
-				// フェード処理
-				Fade();
-			}
-		}
-	}
 }
 
 //=====================================================
@@ -414,16 +363,14 @@ void CTitle::IceFlowState(void)
 	pos_right.x -= 0.003f;
 
 	// 目的の位置に現在の位置が近い時
-	if (m_aPosDest[TITLE_UI_LEFT].x + 0.01f < pos_left.x ||
-		pInput->GetTrigger(CInputManager::BUTTON_ENTER))
+	if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))
 	{
-		pos_left = m_aPosDest[TITLE_UI_LEFT];	// 現在の位置に目標の位置を入れる
-		pos_right = m_aPosDest[TITLE_UI_RIGHT];
-
-		m_apTitle_UI[TITLE_UI_LEFT]->SetAlpha(0.0f);	// 透明度調整
-		m_apTitle_UI[TITLE_UI_RIGHT]->SetAlpha(0.0f);
-		m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(1.0f);
-		m_TitleState = TITLESTATE_LOGO;
+		CSound::GetInstance()->Play(CSound::LABEL_SE_DECISION);
+		IceConnect(&pos_left, &pos_right);
+	}
+	if (m_aPosDest[TITLE_UI_LEFT].x + 0.01f < pos_left.x)
+	{
+		IceConnect(&pos_left, &pos_right);
 	}
 
 	m_apTitle_UI[TITLE_UI_LEFT]->SetPosition(pos_left);
@@ -431,10 +378,29 @@ void CTitle::IceFlowState(void)
 }
 
 //====================================================
+// 氷をすぐくっつける処理
+//====================================================
+void CTitle::IceConnect(D3DXVECTOR3* left, D3DXVECTOR3* right)
+{
+	*left = m_aPosDest[TITLE_UI_LEFT];	// 現在の位置に目標の位置を入れる
+	*right = m_aPosDest[TITLE_UI_RIGHT];
+
+	m_apTitle_UI[TITLE_UI_LEFT]->SetAlpha(0.0f);	// 透明度調整
+	m_apTitle_UI[TITLE_UI_RIGHT]->SetAlpha(0.0f);
+	m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(1.0f);
+	m_TitleState = TITLESTATE_LOGO;
+}
+
+//====================================================
 // ロゴをだす処理
 //====================================================
 void CTitle::LogoState(void)
 {
+	CInputManager* pInput = CInputManager::GetInstance();
+
+	if (pInput == nullptr)
+		return;
+
 	// 画面にフラッシュが入る状態になった時
 	m_nCntMove++;
 
@@ -485,4 +451,45 @@ void CTitle::LogoState(void)
 	m_apTitle_UI[TITLE_UI_PENGUIN]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_apTitle_UI[TITLE_UI_PICKAXE]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_apTitle_UI[TITLE_UI_LOGO]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+
+	if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))	// ENTER押したとき
+	{
+		m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(0.0f);	// 透明度を0にする
+
+		m_bFade = true;
+		m_nCntState = 0;
+		m_TitleState = TITLESTATE_PICKAXE;
+
+		CSound::GetInstance()->Play(CSound::LABEL_SE_DECISION);
+	}
+}
+
+//====================================================
+// ピッケル動かす処理
+//====================================================
+void CTitle::PickaxeState(void)
+{
+	D3DXVECTOR3 rot = m_apTitle_UI[TITLE_UI_PICKAXE]->GetRotation();
+
+	rot.z += 0.07f;	// つるはしの向きを傾ける
+
+	if (rot.z > 0.5f)
+	{
+		rot.z = 0.5f;
+
+		m_apMenu_UI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));	// スタートロゴの透明度を0にする
+	}
+
+	m_apTitle_UI[TITLE_UI_PICKAXE]->SetRotation(rot);
+
+	if (m_bFade == true)
+	{
+		m_nCntState++;
+
+		if (m_nCntState > 70)
+		{
+			// フェード処理
+			Fade();
+		}
+	}
 }

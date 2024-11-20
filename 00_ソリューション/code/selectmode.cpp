@@ -205,14 +205,14 @@ void CSelectMode::Update(void)
 		ChangeSelectMode(-1);	// モード前にずらす
 
 		// サウンドの再生
-		pSound->Play(CSound::LABEL_SE_PAUSE_ENTER00);
+		pSound->Play(CSound::LABEL_SE_SELECT);
 	}
 	else if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_RIGHT))
 	{
 		ChangeSelectMode(1);	// モード先にずらす
 
 		// サウンドの再生
-		pSound->Play(CSound::LABEL_SE_PAUSE_ENTER00);
+		pSound->Play(CSound::LABEL_SE_SELECT);
 	}
 
 	// モード選択完了
@@ -242,7 +242,7 @@ void CSelectMode::Update(void)
 		}
 
 		// サウンドの再生
-		pSound->Play(CSound::LABEL_SE_PAUSE_ENTER00);
+		pSound->Play(CSound::LABEL_SE_DECISION);
 	}
 
 	// モードUI見た目更新処理
@@ -266,28 +266,7 @@ void CSelectMode::Draw(void)
 //=====================================================
 void CSelectMode::ChangeSelectMode(int move)
 {
-	// 値移動
-	m_selectMode = (MODE)((m_selectMode + move + MODE_MAX) % MODE_MAX);
-
-	//// 選択しているモード不透明/それ以外半透明
-	//for (int cnt = 0; cnt < MODE_MAX; cnt++)
-	//{
-	//	if (m_apModeUI[cnt] != nullptr)
-	//	{
-	//		// 設定
-	//		if (cnt == m_selectMode)
-	//		{// 選択しているモード
-	//			m_apModeUI[cnt]->SetCol(D3DXCOLOR(1.0f,1.0f,1.0f,1.0f));
-	//			//m_apModeUI[cnt]->SetAlpha(1.0f);
-	//		}
-	//		else
-	//		{// それ以外半透明
-	//			m_apModeUI[cnt]->SetCol(selectUI::NOSELECT_COLOR);
-	//			//m_apModeUI[cnt]->SetAlpha(selectUI::NOSELECT_ALPHA);
-	//		}
-	//		m_apModeUI[cnt]->SetVtx();	// 頂点反映
-	//	}
-	//}
+	m_selectMode = (MODE)((m_selectMode + move + MODE_MAX) % MODE_MAX);	// 値移動
 }
 
 //=====================================================

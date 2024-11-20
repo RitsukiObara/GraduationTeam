@@ -63,10 +63,11 @@ public:
 	STATE GetState(void) { return m_State; }
 
 private:
-	void Input(void);
 	void Fade(void);
 	void IceFlowState(void);
+	void IceConnect(D3DXVECTOR3 *left, D3DXVECTOR3 *right);
 	void LogoState(void);
+	void PickaxeState(void);
 
 	int m_nCntState;	// カウントの状態
 	int m_nCntMove;	// UIの移動カウント
