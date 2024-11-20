@@ -29,7 +29,7 @@ public:
 		STREAM_MAX
 	};
 
-	COcean();	// コンストラクタ
+	COcean(int nPriority = 3);	// コンストラクタ
 	~COcean();	// デストラクタ
 
 	static COcean* Create(void);

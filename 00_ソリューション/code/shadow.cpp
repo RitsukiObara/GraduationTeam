@@ -91,9 +91,6 @@ void CShadow::Update(void)
 {
 	// 継承クラスの更新
 	CPolygon3D::Update();
-
-	if (!CollideIce())	// 氷に当たらなかったら海との判定を行う
-		CollideOcean();
 }
 
 //=====================================================
@@ -119,7 +116,7 @@ bool CShadow::CollideIce(void)
 
 	pos.y = pIce->GetPosition().y;
 
-	SetPosition(pos);
+	CPolygon3D::SetPosition(pos);
 
 	return true;
 }
@@ -140,7 +137,18 @@ void CShadow::CollideOcean(void)
 
 	pos.y = fHeight;
 
-	SetPosition(pos);
+	CPolygon3D::SetPosition(pos);
+}
+
+//=====================================================
+// 位置の設定
+//=====================================================
+void CShadow::SetPosition(D3DXVECTOR3 pos)
+{
+	CPolygon3D::SetPosition(pos);
+
+	if (!CollideIce())	// 氷に当たらなかったら海との判定を行う
+		CollideOcean();
 }
 
 //=====================================================

@@ -18,6 +18,7 @@
 class CPolygon3D;
 class CIce;
 class CFlowIce;
+class CShadow;
 
 //*****************************************************
 // クラスの定義
@@ -156,6 +157,7 @@ private:
 	
 	CIce *m_pIceLand;				// 乗っている氷
 	CFlowIce *m_pLandSystemFlow;	// 乗ってる流氷システム
+	CShadow *m_pShadow;				// 影のポインタ
 
 	D3DXVECTOR3 m_move;		// 移動量
 	

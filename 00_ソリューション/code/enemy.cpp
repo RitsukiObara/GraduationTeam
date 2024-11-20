@@ -22,6 +22,7 @@
 #include "effect3D.h"
 #include "manager.h"
 #include "sound.h"
+#include "shadow.h"
 
 //*****************************************************
 // 定数定義
@@ -55,7 +56,7 @@ std::vector<CEnemy*> CEnemy::s_vector = {};	// 自身のポインタ
 //=====================================================
 CEnemy::CEnemy(int nPriority) : m_nGridV(0), m_nGridH(0),m_state(E_State::STATE_NONE), m_pIceLand(nullptr), m_bFollowIce(false),
 m_move(),m_nGridVDest(0), m_nGridHDest(0), m_fSpeedMove(0.0f), m_fTimerDeath(0.0f), m_bTurn(false), m_bEnableMove(false), m_pLandSystemFlow(nullptr),
-m_bMoveByGrid(false)
+m_bMoveByGrid(false), m_pShadow(nullptr)
 {
 	s_vector.push_back(this);
 }
@@ -134,6 +135,9 @@ HRESULT CEnemy::Init(void)
 	// 移動速度の初期設定
 	m_fSpeedMove = SPPED_MOVE_INIT;
 
+	// 影の生成
+	m_pShadow = CShadow::Create();
+
 	return S_OK;
 }
 
@@ -210,6 +214,10 @@ void CEnemy::Update(void)
 
 	// 漂流開始の判定
 	StartFlows();
+
+	// 影の追従
+	if (m_pShadow != nullptr)
+		m_pShadow->SetPosition(GetPosition());
 
 #ifdef _DEBUG
 	Debug();

@@ -52,7 +52,7 @@ COcean* COcean::m_pOcean = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-COcean::COcean()
+COcean::COcean(int nPriority) : CMeshField(nPriority)
 {
 	m_fSpeed = 0.0f;
 	m_nRandKeep = 0;

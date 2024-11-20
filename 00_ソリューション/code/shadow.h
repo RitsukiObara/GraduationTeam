@@ -30,6 +30,7 @@ public:
 	void Uninit(void) override;
 	void Update(void) override;
 	void Draw(void) override;
+	void SetPosition(D3DXVECTOR3 pos) override;	// ˆÊ’u‚Ìİ’è
 
 	// Ã“Iƒƒ“ƒoŠÖ”
 	static CShadow *Create(void);	// ¶¬ˆ—
