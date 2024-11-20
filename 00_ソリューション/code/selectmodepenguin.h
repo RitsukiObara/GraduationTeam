@@ -69,7 +69,6 @@ public:
 private:
 
 	// メンバ変数
-	D3DXVECTOR3 m_move;	// 移動量
 	CCollisionSphere *m_pCollisionSphere;	// 球の判定
 	ISelectModePenguinState* m_pState;	// 動きステート
 

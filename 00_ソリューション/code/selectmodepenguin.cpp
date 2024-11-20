@@ -31,6 +31,8 @@ namespace
 		const vector<CSelectModePenguin::MOTION> NEXT_MOTION_PATTERN =
 		{
 			CSelectModePenguin::MOTION_WALK,		// 移動
+			CSelectModePenguin::MOTION_WALK,		// 移動
+			CSelectModePenguin::MOTION_WALK,		// 移動
 			CSelectModePenguin::MOTION_NECKSHAKE,	// 首振り
 			CSelectModePenguin::MOTION_STOMACH,		// 腹ベタァ
 			CSelectModePenguin::MOTION_UNYO,		// 首うにょん
@@ -39,8 +41,9 @@ namespace
 	}
 	namespace Move
 	{
-		const int MOTION_COUNT = 60 * 4;	// モーションをする時間
-		const int FALL_CHANCE = 15;		// 転ぶ確立（値：％）
+		const int MOTION_COUNT = 60 * 6;	// モーションをする時間
+		const int FALL_CHANCE = 15;			// 転ぶ確立（値：％）
+		const float MOVE_SPEED = 2.5f;		// 移動速度
 	}
 	namespace ShakeHead
 	{
@@ -58,7 +61,6 @@ namespace
 CSelectModePenguin::CSelectModePenguin(int nPriority) : CMotion(nPriority)
 {
 	m_pCollisionSphere = nullptr;
-	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	nCntMove = 0;
 }
 
@@ -157,12 +159,6 @@ void CSelectModePenguin::Uninit(void)
 //=====================================================
 void CSelectModePenguin::Update(void)
 {
-	// 移動量分移動
-	Translate(m_move);
-
-	// 移動量の減衰
-	m_move *= FACT_DECREASE_MOVE;
-
 	// モーション更新
 	CMotion::Update();
 
@@ -296,6 +292,20 @@ void CSelectModePenguinState_Move::Uninit(void)
 //=====================================================
 void CSelectModePenguinState_Move::Update(CSelectModePenguin* pPenguin)
 {
+	// 移動
+	D3DXVECTOR3 rot = pPenguin->GetRotation();
+	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, -1.0f);
+
+	move.x = -sinf(rot.y) * Move::MOVE_SPEED;
+	move.z = -cosf(rot.y) * Move::MOVE_SPEED;
+
+	pPenguin->Translate(move);
+
+	// 回る
+	rot.y += 0.005f * D3DX_PI;
+	pPenguin->SetRotation(rot);
+
+	// ステート終了カウント
 	m_nCounter++;
 	if (m_nCounter >= Move::MOTION_COUNT)
 	{// ステート時間終了
