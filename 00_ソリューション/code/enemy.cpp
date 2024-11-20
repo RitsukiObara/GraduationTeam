@@ -21,6 +21,7 @@
 #include "UI_combo.h"
 #include "effect3D.h"
 #include "manager.h"
+#include "sound.h"
 
 //*****************************************************
 // 定数定義
@@ -95,6 +96,14 @@ CEnemy* CEnemy::Create(int nType, int nGridV, int nGridH)
 
 		// 初期化処理
 		pEnemy->Init();
+
+		// 海から飛び出しサウンド
+		CSound* pSound = CSound::GetInstance();
+		if (pSound != nullptr)
+		{
+			pSound->Play(CSound::LABEL_SE_SEA_SPLASH_01);
+			pSound->Play(CSound::LABEL_SE_SEA_SPLASH_02);
+		}
 	}
 
 	return pEnemy;
@@ -536,10 +545,10 @@ void CEnemy::JudgeTurn(void)
 //=====================================================
 // 振り返りの無効化
 //=====================================================
-void CEnemy::DisableTurn(void)
+bool CEnemy::DisableTurn(void)
 {
 	if (!m_bTurn)
-		return;
+		return true;
 
 	// 目標の向きに補正する
 	D3DXVECTOR3 rot = GetRotation();
@@ -555,6 +564,8 @@ void CEnemy::DisableTurn(void)
 
 	if (LINE_STOP_TURN * LINE_STOP_TURN > fRotDiff * fRotDiff)
 		m_bTurn = false;
+
+	return !m_bTurn;
 }
 
 //=====================================================
@@ -880,6 +891,13 @@ void CEnemy::Debug(void)
 	pDebugProc->Print("\n流氷システムある[%d]", m_pLandSystemFlow != nullptr);
 
 	pDebugProc->Print("\n現在の状態[%d]", m_state);
+
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	debug::Effect3DShort(pIceMgr->GetGridPosition(&m_nGridVDest, &m_nGridHDest), D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
 }
 
 //=====================================================

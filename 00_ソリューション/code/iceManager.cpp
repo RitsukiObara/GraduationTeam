@@ -18,6 +18,7 @@
 #include "meshfield.h"
 #include "ocean.h"
 #include "polygon3D.h"
+#include "sound.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -424,6 +425,7 @@ bool CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos)
 	{
 		pIcePeck->EnablePeck(true);
 		pIcePeck->ChangeState(new CIceStaeteBreak);
+		CSound::GetInstance()->Play(CSound::LABEL_SE_BREAK_ICE);
 	}
 
 	// •X’Tõ‚ÌÄ‹AŠÖ”
