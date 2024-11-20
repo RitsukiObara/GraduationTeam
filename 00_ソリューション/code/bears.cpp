@@ -46,9 +46,9 @@ namespace charge
 {
 const float SPEED_ROT = 0.3f;		// ‰ñ“]‘¬“x
 const float RATE_START = 0.7f;		// “Ëi‚ğŠJn‚·‚é‚Ì‚É•X‚É‹ß‚Ã‚¢‚Ä‚éŠ„‡
-const float LINE_START = 0.4f;		// ŠJn‚·‚é‚Ü‚Å‚ÌŠp“x‚Ì‚µ‚«‚¢’l
-const float TIME_MAX_SPEED = 10.4f;	// Å‘å‘¬“x‚É‚È‚é‚Ì‚É‚©‚©‚éŠÔ
-const float SPEED_MAX = 5.0f;		// Å‘å‘¬“x
+const float LINE_START = 0.1f;		// ŠJn‚·‚é‚Ü‚Å‚ÌŠp“x‚Ì‚µ‚«‚¢’l
+const float TIME_MAX_SPEED = 2.0f;	// Å‘å‘¬“x‚É‚È‚é‚Ì‚É‚©‚©‚éŠÔ
+const float SPEED_MAX = 4.0f;		// Å‘å‘¬“x
 const float RATE_RANGE = D3DX_PI / CIceManager::E_Direction::DIRECTION_MAX;	// “ËŒ‚‚ÌŠp“x”ÍˆÍ
 }
 }
@@ -56,7 +56,7 @@ const float RATE_RANGE = D3DX_PI / CIceManager::E_Direction::DIRECTION_MAX;	// “
 //=====================================================
 // —Dæ‡ˆÊ‚ğŒˆ‚ß‚éƒRƒ“ƒXƒgƒ‰ƒNƒ^
 //=====================================================
-CBears::CBears(int nPriority) : CEnemy(nPriority), m_pPlayerTarget(nullptr), m_vecCharge(), m_fTimerAcceleCharge(0.0f)
+CBears::CBears(int nPriority) : CEnemy(nPriority), m_pPlayerTarget(nullptr), m_vecCharge(), m_fTimerAcceleCharge(0.0f), m_bCharge(false)
 {
 
 }
@@ -496,6 +496,9 @@ void CBears::StartCharge(void)
 
 	// U‚èŒü‚«ƒtƒ‰ƒO‚ğ—§‚Ä‚é
 	EnableTurn(true);
+
+	// “ËŒ‚ƒtƒ‰ƒO‚ğ—§‚Ä‚é
+	m_bCharge = true;
 }
 
 //=====================================================
@@ -514,6 +517,9 @@ void CBears::EndCharge(void)
 
 	// Ÿ‚ÌU•àæ‚ğ’T‚·
 	DecideNextStrollGrid();
+
+	// “ËŒ‚ƒtƒ‰ƒO‚ğÜ‚é
+	m_bCharge = false;
 }
 
 //=====================================================
@@ -672,8 +678,16 @@ void CBears::ManageMotion(void)
 	//---------------------------------
 	if (m_pPlayerTarget != nullptr)
 	{
-		if (nMotion != E_Motion::MOTION_TURNCHARGE || bFinish)
-			SetMotion(E_Motion::MOTION_TURNCHARGE);
+		if (m_bCharge)
+		{// “Ëi’†
+			if (nMotion != E_Motion::MOTION_CHARGE || bFinish)
+				SetMotion(E_Motion::MOTION_CHARGE);
+		}
+		else
+		{// U‚èŒü‚«’†‚Ì
+			if (nMotion != E_Motion::MOTION_TURNCHARGE || bFinish)
+				SetMotion(E_Motion::MOTION_TURNCHARGE);
+		}
 	}
 	else if (IsTurn())
 	{// U‚èŒü‚«ƒ‚[ƒVƒ‡ƒ“

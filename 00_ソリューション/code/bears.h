@@ -80,8 +80,9 @@ private:
 
 	// メンバ変数
 	CPlayer *m_pPlayerTarget;	// ターゲットプレイヤー
-	D3DXVECTOR3 m_vecCharge;	// 突進するベクトル
-	float m_fTimerAcceleCharge;	// 突進加速カウンター
+	D3DXVECTOR3 m_vecCharge;	// 突撃するベクトル
+	float m_fTimerAcceleCharge;	// 突撃加速カウンター
+	bool m_bCharge;				// 突撃フラグ
 };
 
 #endif
