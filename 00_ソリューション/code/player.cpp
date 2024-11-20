@@ -207,6 +207,7 @@ void CPlayer::Uninit(void)
 {
 	Object::DeleteObject((CObject**)&m_pDir);
 	Object::DeleteObject((CObject**)&m_pPeckLine);
+	Object::DeleteObject((CObject**)&m_pShadow);
 
 	for (auto itr = s_apPlayer.begin(); itr < s_apPlayer.end(); itr++)
 	{

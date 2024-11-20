@@ -167,6 +167,8 @@ void CEnemy::InitGridIdx(void)
 //=====================================================
 void CEnemy::Uninit(void)
 {
+	Object::DeleteObject((CObject**)&m_pShadow);
+
 	for (auto itr = s_vector.begin(); itr < s_vector.end(); itr++ )
 	{
 		//íœ‘ÎÛ‚¶‚á‚È‚¢ê‡
