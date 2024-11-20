@@ -35,6 +35,20 @@ public:
 		STATE_SELECT,	// 選択状態
 		STATE_MAX
 	};
+	// 構造体定義
+	struct S_InfoStage
+	{// ステージ情報
+		CObjectX *pModel;				// Xモデルのポインタ
+		string pathModel;				// モデルのパス
+		string pathMap;					// マップのパス
+		D3DXVECTOR3 pos;				// 位置
+		CCollisionSphere *pCollision;	// 当たり判定
+		E_StateStage state;				// 状態
+		float fScaleDest;				// 目標のスケール
+
+		// コンストラクタ
+		S_InfoStage() : pModel(nullptr), pos(), pCollision(nullptr), state(E_StateStage::STATE_NONE), fScaleDest(0.0f) {}
+	};
 
 	CSelectStageManager();	// コンストラクタ
 	~CSelectStageManager() {};	// デストラクタ
@@ -48,22 +62,9 @@ public:
 
 	// 静的メンバ関数
 	static CSelectStageManager *Create(void);	// 生成処理
+	static vector<S_InfoStage*> GetInfoStage(void) { return s_aInfoStage; }	// ステージ情報取得
 
 private:
-	// 構造体定義
-	struct S_InfoStage
-	{// ステージ情報
-		CObjectX *pModel;	// Xモデルのポインタ
-		string pathModel;	// モデルのパス
-		D3DXVECTOR3 pos;	// 位置
-		CCollisionSphere *pCollision;	// 当たり判定
-		E_StateStage state;	// 状態
-		float fScaleDest;	// 目標のスケール
-
-		// コンストラクタ
-		S_InfoStage() : pModel(nullptr), pos(), pCollision(nullptr), state(E_StateStage::STATE_NONE), fScaleDest(0.0f) {}
-	};
-
 	// メンバ関数
 	void LoadStage(std::ifstream& file, string str, S_InfoStage *pInfoStage);	// ステージ情報の読込
 	void SetStage(void);	// ステージの設置
@@ -78,7 +79,7 @@ private:
 	void Debug(void);	// デバッグ処理
 
 	// メンバ変数
-	vector<S_InfoStage*> m_aInfoStage;	// ステージ情報の配列
+	static vector<S_InfoStage*> s_aInfoStage;	// ステージ情報の配列
 	CSelectStagePenguin *m_pPenguin;	// ペンギン
 	bool m_bEnter;	// エンターしたフラグ
 	float m_fTimerFade;	// フェードまでのタイマー

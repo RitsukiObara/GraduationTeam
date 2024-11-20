@@ -290,6 +290,14 @@ void CTitle::Uninit(void)
 //=====================================================
 void CTitle::Update(void)
 {
+	CInputManager *pInput = CInputManager::GetInstance();
+
+	if (pInput == nullptr)
+		return;
+
+	if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))	// ENTER‰Ÿ‚µ‚½‚Æ‚«
+		CFade::GetInstance()->SetFade(CScene::MODE::MODE_SELECTMODE);
+
 	switch (m_TitleState)
 	{
 	case CTitle::TITLESTATE_ICEFLOW:
