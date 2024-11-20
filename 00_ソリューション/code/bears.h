@@ -53,6 +53,7 @@ private:
 		MOTION_STAYJUMP,	// ジャンプ中
 		MOTION_LANDING,		// 着地
 		MOTION_TURN,		// 振り向き
+		MOTION_TURNCHARGE,	// 突進振り向き
 		MOTION_MAX
 	};
 
@@ -67,6 +68,7 @@ private:
 	bool CanCharge(D3DXVECTOR3 pos, int nIdxTargetV, int nIdxTargetH);							// 突撃できるかの判定
 	bool IsAliveTarget(int nIdxV, int nIdxH,float fRot,int nIdxTargetV, int nIdxTargetH);		// ターゲットに到達したかの再帰関数
 
+	void ReadyCharge(void);	// 突撃の準備
 	void StartCharge(void);	// 突撃の開始
 	void Charge(void);		// 突撃中の処理
 	void EndCharge(void);	// 突撃の終了

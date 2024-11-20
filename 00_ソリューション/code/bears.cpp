@@ -44,10 +44,12 @@ const float RADIUS_HIT = 150.0f;	// ヒット判定の半径
 //-----------------------------
 namespace charge
 {
-const float RATE_START = 0.4f;	// 突進を開始するのに氷に近づいてる割合
-const float RATE_RANGE = D3DX_PI / CIceManager::E_Direction::DIRECTION_MAX;	// 突撃の角度範囲
+const float SPEED_ROT = 0.3f;		// 回転速度
+const float RATE_START = 0.7f;		// 突進を開始するのに氷に近づいてる割合
+const float LINE_START = 0.4f;		// 開始するまでの角度のしきい値
 const float TIME_MAX_SPEED = 10.4f;	// 最大速度になるのにかかる時間
 const float SPEED_MAX = 5.0f;		// 最大速度
+const float RATE_RANGE = D3DX_PI / CIceManager::E_Direction::DIRECTION_MAX;	// 突撃の角度範囲
 }
 }
 
@@ -359,9 +361,6 @@ void CBears::SarchTarget(void)
 #ifdef _DEBUG
 			CEffect3D::Create(GetPosition(), 200.0f, 4, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
 #endif
-			// 突撃の開始
-			StartCharge();
-
 			// 突進ベクトルの保存
 			m_vecCharge = posPlayer - pos;
 			D3DXVec3Normalize(&m_vecCharge, &m_vecCharge);
@@ -467,12 +466,36 @@ bool CBears::IsAliveTarget(int nIdxV, int nIdxH, float fRot, int nIdxTargetV, in
 }
 
 //=====================================================
+// 突撃の準備
+//=====================================================
+void CBears::ReadyCharge(void)
+{
+	// 差分角度を作成
+	float fAngleDest = atan2f(-m_vecCharge.x, -m_vecCharge.z);
+	D3DXVECTOR3 rot = GetRotation();
+
+	// 向きの判定
+	float fRotDiff = fAngleDest - rot.y;
+	universal::LimitRot(&fRotDiff);
+
+	// 向きの補正
+	universal::FactingRot(&rot.y, fAngleDest, charge::SPEED_ROT);
+	SetRotation(rot);
+
+	if (charge::LINE_START * charge::LINE_START > fRotDiff * fRotDiff)
+		StartCharge(); // 一定の向きを向いたら突進開始
+}
+
+//=====================================================
 // 突撃の開始
 //=====================================================
 void CBears::StartCharge(void)
 {
 	// グリッド基準じゃない移動にする
 	EnableMoveByGrid(false);
+
+	// 振り向きフラグを立てる
+	EnableTurn(true);
 }
 
 //=====================================================
@@ -502,9 +525,6 @@ void CBears::UpdateMove(void)
 	{// プレイヤー未発見時の処理
 		// ターゲットの探索
 		SarchTarget();
-
-		// 次のグリッドに進む
-		MoveToNextGrid();
 	}
 	else
 	{// プレイヤー発見時はプレイヤーを追いかける
@@ -517,6 +537,10 @@ void CBears::UpdateMove(void)
 
 	// 継承クラスの更新
 	CEnemy::UpdateMove();
+
+	if(IsTurn())
+		MoveToNextGrid(); // 次のグリッドに進む
+
 }
 
 //=====================================================
@@ -634,22 +658,35 @@ void CBears::ManageMotion(void)
 	int nMotion = GetMotion();
 	bool bFinish = IsFinish();
 
+	//---------------------------------
+	// 出現状態のモーション
+	//---------------------------------
 	if (nMotion == E_Motion::MOTION_STARTJUMP)
 	{// ジャンプ開始モーション
 		if (bFinish)	// 終わり次第滞空モーションへ移行
 			SetMotion(E_Motion::MOTION_STAYJUMP);
 	}
 
-	// 移動状態のモーション管理
-	if (IsTurn())
-	{// 振り向きモーション
-		if (nMotion != E_Motion::MOTION_TURN || bFinish)
-			SetMotion(E_Motion::MOTION_TURN);
+	//---------------------------------
+	// 移動状態のモーション
+	//---------------------------------
+	if (m_pPlayerTarget != nullptr)
+	{
+		if (nMotion != E_Motion::MOTION_TURNCHARGE || bFinish)
+			SetMotion(E_Motion::MOTION_TURNCHARGE);
 	}
-	else if (!IsEnableMove())
-	{// 移動不可の時は待機モーション
-		//if (nMotion != E_Motion::MOTION_NEUTRAL)
-			//SetMotion(E_Motion::MOTION_NEUTRAL);
+	else if (IsTurn())
+	{// 振り向きモーション
+		if (m_pPlayerTarget == nullptr)
+		{// 通常振り向き
+			if (nMotion != E_Motion::MOTION_TURN || bFinish)
+				SetMotion(E_Motion::MOTION_TURN);
+		}
+		else
+		{// 突進振り向き
+			if (nMotion != E_Motion::MOTION_TURN || bFinish)
+				SetMotion(E_Motion::MOTION_TURN);
+		}
 	}
 	else if (GetState() == CEnemy::E_State::STATE_MOVE)
 	{
@@ -715,6 +752,11 @@ void CBears::Event(EVENT_INFO* pEventInfo)
 	{// 方向転換時、跳ねるタイミングのみ回転させる
 		// 振り向きの無効化
 		DisableTurn();
+	}
+
+	if (nMotion == E_Motion::MOTION_TURNCHARGE)
+	{// 突進前の回転
+		ReadyCharge();
 	}
 }
 
