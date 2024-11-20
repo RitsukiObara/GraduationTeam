@@ -22,6 +22,7 @@
 #include "player.h"
 #include "rankingSingle.h"
 #include "gameManager.h"
+#include "sound.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -435,7 +436,10 @@ void CResultSingleWin::UpdateWait(void)
 			CFade *pFade = CFade::GetInstance();
 
 			if (pFade != nullptr)
+			{
 				pFade->SetFade(CScene::MODE::MODE_TITLE);
+				CSound::GetInstance()->Play(CSound::LABEL_SE_DECISION);
+			}
 		}
 	}
 }

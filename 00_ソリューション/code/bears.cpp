@@ -35,7 +35,7 @@ const float FACT_MOVE_APPER = 0.04f;	// 出現時の移動係数
 const float RANGE_FIND_PLAYER = 1000.0f;	// プレイヤー発見範囲
 
 const float SPEED_ONESTEP = 1.1f;	// 一歩のスピード
-const float FACT_DECMOVE = 0.9f;	// 移動減衰係数
+const float FACT_DECMOVE = 0.96f;	// 移動減衰係数
 
 const float RADIUS_HIT = 150.0f;	// ヒット判定の半径
 
@@ -44,13 +44,9 @@ const float RADIUS_HIT = 150.0f;	// ヒット判定の半径
 //-----------------------------
 namespace charge
 {
-const float SPEED_ROT = 0.3f;		// 回転速度
 const float RATE_START = 0.7f;		// 突進を開始するのに氷に近づいてる割合
-const float LINE_START = 0.1f;		// 開始するまでの角度のしきい値
-const float TIME_MAX_SPEED = 2.0f;	// 最大速度になるのにかかる時間
-const float SPEED_MAX = 4.0f;		// 最大速度
 const float RATE_RANGE = D3DX_PI / CIceManager::E_Direction::DIRECTION_MAX;	// 突撃の角度範囲
-const float SPEED_ONESTEP = 2.5f;	// 一歩の速度
+const float SPEED_ONESTEP = 1.0f;	// 一歩の速度
 }
 }
 
@@ -474,19 +470,7 @@ bool CBears::IsAliveTarget(int nIdxV, int nIdxH, float fRot, int nIdxTargetV, in
 //=====================================================
 void CBears::ReadyCharge(void)
 {
-	// 差分角度を作成
-	float fAngleDest = atan2f(-m_vecCharge.x, -m_vecCharge.z);
-	D3DXVECTOR3 rot = GetRotation();
-
-	// 向きの判定
-	float fRotDiff = fAngleDest - rot.y;
-	universal::LimitRot(&fRotDiff);
-
-	// 向きの補正
-	universal::FactingRot(&rot.y, fAngleDest, charge::SPEED_ROT);
-	SetRotation(rot);
-
-	if (charge::LINE_START * charge::LINE_START > fRotDiff * fRotDiff)
+	if(DisableTurn())
 		StartCharge(); // 一定の向きを向いたら突進開始
 }
 
@@ -548,9 +532,8 @@ void CBears::UpdateMove(void)
 	// 継承クラスの更新
 	CEnemy::UpdateMove();
 
-	if(!IsTurn())
+	if(!IsTurn() || m_pPlayerTarget != nullptr)
 		MoveToNextGrid(); // 次のグリッドに進む
-
 }
 
 //=====================================================
@@ -558,7 +541,7 @@ void CBears::UpdateMove(void)
 //=====================================================
 void CBears::Charge(void)
 {
-
+	DisableTurn();
 }
 
 //=====================================================
@@ -706,6 +689,11 @@ void CBears::ManageMotion(void)
 			if (nMotion != E_Motion::MOTION_TURN || bFinish)
 				SetMotion(E_Motion::MOTION_TURN);
 		}
+	}
+	else if (!IsEnableMove())
+	{// 移動不可の時は待機モーション
+		if (nMotion != E_Motion::MOTION_TURN)
+			SetMotion(E_Motion::MOTION_TURN);
 	}
 	else if (GetState() == CEnemy::E_State::STATE_MOVE)
 	{

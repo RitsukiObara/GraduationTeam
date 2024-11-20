@@ -536,10 +536,10 @@ void CEnemy::JudgeTurn(void)
 //=====================================================
 // U‚è•Ô‚è‚Ì–³Œø‰»
 //=====================================================
-void CEnemy::DisableTurn(void)
+bool CEnemy::DisableTurn(void)
 {
 	if (!m_bTurn)
-		return;
+		return true;
 
 	// –Ú•W‚ÌŒü‚«‚É•â³‚·‚é
 	D3DXVECTOR3 rot = GetRotation();
@@ -555,6 +555,8 @@ void CEnemy::DisableTurn(void)
 
 	if (LINE_STOP_TURN * LINE_STOP_TURN > fRotDiff * fRotDiff)
 		m_bTurn = false;
+
+	return !m_bTurn;
 }
 
 //=====================================================
