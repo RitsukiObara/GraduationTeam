@@ -40,7 +40,8 @@ const float LINE_ENABLE_MOVE = 0.1f;	// 移動開始できる角度のしきい値
 
 const float RATE_STOP_FLOW_ICE_RADIUS = 1.0f;	// 漂流停止する際に検出する氷の半径の割合
 
-const float RATE_STOP_CHARGE = 0.55f;	// 突進を止めるときの氷のサイズの割合
+const float RATE_STOP_CHARGE = 0.6f;	// 突進を止めるときの氷のサイズの割合
+const float RANGE_STOP_MOVE = D3DX_PI * 1 / CIceManager::E_Direction::DIRECTION_MAX;	// 移動を止める角度の範囲
 }
 
 //*****************************************************
@@ -285,6 +286,36 @@ void CEnemy::MoveByNotGrid(void)
 
 	if (pIce == nullptr)
 		return;
+
+	D3DXVECTOR3 posCurrentGrid = pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH);
+
+	debug::Effect3DShort(posCurrentGrid);
+
+	// 自身のいる角度の先にある氷が無かったら、移動を止める
+	D3DXVECTOR3 rot = GetRotation();
+	rot.y += D3DX_PI;
+	universal::LimitRot(&rot.y);
+
+	// 周辺の氷の取得
+	vector<CIce*> apIce = pIceMgr->GetAroundIce(m_nGridV, m_nGridH);
+
+	for (auto it : apIce)
+	{
+		if (it == nullptr)
+			continue;
+
+		D3DXVECTOR3 posIce = it->GetPosition();
+
+		// 氷と移動角度の比較
+		bool bSelect = universal::IsInFanTargetYFlat(posCurrentGrid, posIce, rot.y, RANGE_STOP_MOVE);
+
+		if (bSelect)
+		{// 氷が選べたらfor文を終了
+			debug::Effect3DShort(posIce);
+
+			return;
+		}
+	}
 
 	// 氷の外に出たら移動を止める
 	if (!pIceMgr->IsInIce(pos, pIce, RATE_STOP_CHARGE))
