@@ -24,10 +24,11 @@ public:
 		LABEL_BGM_OPTION,				// オプションBGM
 
 		LABEL_SE_PENGUIN_JUMP,			// ペンギンジャンプ
-		LABEL_SE_SEA,					// 静かな海
+		LABEL_SE_SEA,					// 静かな海（未）
 		LABEL_SE_BREAK_ICE,				// 氷破壊
 		LABEL_SE_SEAL_CRY,				// アザラシ鳴き声
-		LABEL_SE_SEA_SPLASH,			// 敵が海から上がってきた
+		LABEL_SE_SEA_SPLASH_01,			// 敵が海から上がってきた（重ねその1）
+		LABEL_SE_SEA_SPLASH_02,			// 敵が海から上がってきた（重ねその2）
 		LABEL_SE_ICE_UNION,				// 氷同士ぶつかった
 		LABEL_SE_DECISION,				// 決定音
 		LABEL_SE_SELECT,				// 選択音
@@ -99,14 +100,15 @@ private:
 		{ "data/SOUND/BGM/BGM_Option.wav",-1 },			// オプション画面BGM
 
 		{ "data/SOUND/SE/SE_Penguin_Jump.wav",0 },		// ペンギンジャンプ
-		{ "data/SOUND/SE/SE_ENTER00.wav",0 },			// 静かな海（未）
-		{ "data/SOUND/SE/SE_Enter01.wav",0 },			// 氷破壊（未）
+		{ "data/SOUND/SE/SE_Sea.wav",0 },				// 静かな海
+		{ "data/SOUND/SE/SE_Break_Ice.wav",0 },			// 氷破壊
 		{ "data/SOUND/SE/SE_Seal_Cry.wav",0 },			// アザラシ鳴き声
-		{ "data/SOUND/SE/pause.wav",0 },				// 敵が海から上がってきた（未）
+		{ "data/SOUND/SE/SE_SeaSplash_01.wav",0 },		// 敵が海から上がってきた（重ねその1）
+		{ "data/SOUND/SE/SE_SeaSplash_02.wav",0 },		// 敵が海から上がってきた（重ねその2）
 		{ "data/SOUND/SE/SE_Ice_Union.wav",0 },			// 氷同士ぶつかった
-		{ "data/SOUND/SE/SE_Enter01.wav",0 },			// 決定音（未）
-		{ "data/SOUND/SE/SE_Enter02.wav",0 },			// 選択音（未）
-		{ "data/SOUND/SE/pause.wav",0 },				// ペンギン鳴き声（未）
+		{ "data/SOUND/SE/SE_Decision.wav",0 },			// 決定音
+		{ "data/SOUND/SE/SE_Select.wav",0 },			// 選択音
+		{ "data/SOUND/SE/SE_Penguin_Voice.wav",0 },		// ペンギン鳴き声
 		{ "data/SOUND/SE/SE_Polarbear_Voice.wav",0 },	// シロクマ鳴き声
 		{ "data/SOUND/SE/SE_Polarbear_Assault.wav",0 },	// シロクマ突撃
 

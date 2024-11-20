@@ -217,11 +217,13 @@ void CResultSingleLose::UpdateSelect(void)
 	if (pInputManager->GetTrigger(CInputManager::BUTTON_AXIS_RIGHT))
 	{
 		m_select = (E_Select)((m_select + 1) % E_Select::SELECT_MAX);
+		pSound->Play(CSound::LABEL_SE_SELECT);
 	}
 
 	if (pInputManager->GetTrigger(CInputManager::BUTTON_AXIS_LEFT))
 	{
 		m_select = (E_Select)((m_select + E_Select::SELECT_MAX - 1) % E_Select::SELECT_MAX);
+		pSound->Play(CSound::LABEL_SE_SELECT);
 	}
 
 	if (m_apMenu[m_select] != nullptr)
@@ -233,7 +235,7 @@ void CResultSingleLose::UpdateSelect(void)
 	{// 選択項目にフェードする
 		if (pSound != nullptr)
 		{
-			pSound->Play(pSound->LABEL_SE_PAUSE_ENTER00);
+			pSound->Play(CSound::LABEL_SE_DECISION);
 		}
 
 		Fade(m_select);

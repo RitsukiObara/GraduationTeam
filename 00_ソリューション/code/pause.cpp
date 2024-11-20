@@ -361,7 +361,7 @@ void CPause::Input(void)
 
 		if (pSound != nullptr && m_bSound == false)
 		{
-			pSound->Play(pSound->LABEL_SE_PAUSE_ARROW);
+			pSound->Play(CSound::LABEL_SE_SELECT);
 
 			m_bSound = true;
 		}
@@ -374,7 +374,7 @@ void CPause::Input(void)
 		
 		if (pSound != nullptr && m_bSound == false)
 		{
-			pSound->Play(pSound->LABEL_SE_PAUSE_ARROW);
+			pSound->Play(CSound::LABEL_SE_SELECT);
 
 			m_bSound = true;
 		}
@@ -389,7 +389,7 @@ void CPause::Input(void)
 	{// 選択項目にフェードする
 		if (pSound != nullptr)
 		{
-			pSound->Play(pSound->LABEL_SE_PAUSE_ENTER00);
+			pSound->Play(CSound::LABEL_SE_DECISION);
 		}
 
 		Fade(m_menu);

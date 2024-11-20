@@ -13,6 +13,7 @@
 #include "iceManager.h"
 #include "effect3D.h"
 #include "manager.h"
+#include "sound.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -142,6 +143,8 @@ void CFlowIce::StopAllIce(void)
 
 		pIceManager->AddIce(it, it->GetPosition());
 	}
+
+	CSound::GetInstance()->Play(CSound::LABEL_SE_ICE_UNION);
 }
 
 //=====================================================

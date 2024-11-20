@@ -321,9 +321,6 @@ void CTitle::Update(void)
 	// シーンの更新
 	CScene::Update();
 
-	// 入力
-	Input();
-
 	for (int nCntUI = 0; nCntUI < TITLE_UI_MAX; nCntUI++)
 	{
 		m_apTitle_UI[nCntUI]->SetVtx();
@@ -438,6 +435,10 @@ void CTitle::IceFlowState(void)
 			m_TitleState = TITLESTATE_LOGO;
 		}
 	}
+	if (m_aPosDest[TITLE_UI_LEFT].x + 0.01f < pos_left.x)
+	{
+		IceConnect(&pos_left, &pos_right);
+	}
 
 	m_apTitle_UI[TITLE_UI_LEFT]->SetPosition(pos_left);
 	m_apTitle_UI[TITLE_UI_RIGHT]->SetPosition(pos_right);
@@ -448,6 +449,11 @@ void CTitle::IceFlowState(void)
 //====================================================
 void CTitle::LogoState(void)
 {
+	CInputManager* pInput = CInputManager::GetInstance();
+
+	if (pInput == nullptr)
+		return;
+
 	// 画面にフラッシュが入る状態になった時
 	m_nCntMove++;
 
@@ -499,4 +505,45 @@ void CTitle::LogoState(void)
 	m_apTitle_UI[TITLE_UI_PENGUIN]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_apTitle_UI[TITLE_UI_PICKAXE]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_apTitle_UI[TITLE_UI_LOGO]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+
+	if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))	// ENTER押したとき
+	{
+		m_apTitle_UI[TITLE_UI_FLASH]->SetAlpha(0.0f);	// 透明度を0にする
+
+		m_bFade = true;
+		m_nCntState = 0;
+		m_TitleState = TITLESTATE_PICKAXE;
+
+		CSound::GetInstance()->Play(CSound::LABEL_SE_DECISION);
+	}
+}
+
+//====================================================
+// ピッケル動かす処理
+//====================================================
+void CTitle::PickaxeState(void)
+{
+	D3DXVECTOR3 rot = m_apTitle_UI[TITLE_UI_PICKAXE]->GetRotation();
+
+	rot.z += 0.07f;	// つるはしの向きを傾ける
+
+	if (rot.z > 0.5f)
+	{
+		rot.z = 0.5f;
+
+		m_apMenu_UI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));	// スタートロゴの透明度を0にする
+	}
+
+	m_apTitle_UI[TITLE_UI_PICKAXE]->SetRotation(rot);
+
+	if (m_bFade == true)
+	{
+		m_nCntState++;
+
+		if (m_nCntState > 70)
+		{
+			// フェード処理
+			Fade();
+		}
+	}
 }

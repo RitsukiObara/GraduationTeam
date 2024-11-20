@@ -21,6 +21,7 @@
 #include "UI_combo.h"
 #include "effect3D.h"
 #include "manager.h"
+#include "sound.h"
 
 //*****************************************************
 // 定数定義
@@ -40,7 +41,8 @@ const float LINE_ENABLE_MOVE = 0.1f;	// 移動開始できる角度のしきい値
 
 const float RATE_STOP_FLOW_ICE_RADIUS = 1.0f;	// 漂流停止する際に検出する氷の半径の割合
 
-const float RATE_STOP_CHARGE = 0.55f;	// 突進を止めるときの氷のサイズの割合
+const float RATE_STOP_CHARGE = 0.6f;	// 突進を止めるときの氷のサイズの割合
+const float RANGE_STOP_MOVE = D3DX_PI * 1 / CIceManager::E_Direction::DIRECTION_MAX;	// 移動を止める角度の範囲
 }
 
 //*****************************************************
@@ -94,6 +96,14 @@ CEnemy* CEnemy::Create(int nType, int nGridV, int nGridH)
 
 		// 初期化処理
 		pEnemy->Init();
+
+		// 海から飛び出しサウンド
+		CSound* pSound = CSound::GetInstance();
+		if (pSound != nullptr)
+		{
+			pSound->Play(CSound::LABEL_SE_SEA_SPLASH_01);
+			pSound->Play(CSound::LABEL_SE_SEA_SPLASH_02);
+		}
 	}
 
 	return pEnemy;
@@ -285,6 +295,36 @@ void CEnemy::MoveByNotGrid(void)
 
 	if (pIce == nullptr)
 		return;
+
+	D3DXVECTOR3 posCurrentGrid = pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH);
+
+	debug::Effect3DShort(posCurrentGrid);
+
+	// 自身のいる角度の先にある氷が無かったら、移動を止める
+	D3DXVECTOR3 rot = GetRotation();
+	rot.y += D3DX_PI;
+	universal::LimitRot(&rot.y);
+
+	// 周辺の氷の取得
+	vector<CIce*> apIce = pIceMgr->GetAroundIce(m_nGridV, m_nGridH);
+
+	for (auto it : apIce)
+	{
+		if (it == nullptr)
+			continue;
+
+		D3DXVECTOR3 posIce = it->GetPosition();
+
+		// 氷と移動角度の比較
+		bool bSelect = universal::IsInFanTargetYFlat(posCurrentGrid, posIce, rot.y, RANGE_STOP_MOVE);
+
+		if (bSelect)
+		{// 氷が選べたらfor文を終了
+			debug::Effect3DShort(posIce);
+
+			return;
+		}
+	}
 
 	// 氷の外に出たら移動を止める
 	if (!pIceMgr->IsInIce(pos, pIce, RATE_STOP_CHARGE))
@@ -505,10 +545,10 @@ void CEnemy::JudgeTurn(void)
 //=====================================================
 // 振り返りの無効化
 //=====================================================
-void CEnemy::DisableTurn(void)
+bool CEnemy::DisableTurn(void)
 {
 	if (!m_bTurn)
-		return;
+		return true;
 
 	// 目標の向きに補正する
 	D3DXVECTOR3 rot = GetRotation();
@@ -524,6 +564,8 @@ void CEnemy::DisableTurn(void)
 
 	if (LINE_STOP_TURN * LINE_STOP_TURN > fRotDiff * fRotDiff)
 		m_bTurn = false;
+
+	return !m_bTurn;
 }
 
 //=====================================================
@@ -849,6 +891,13 @@ void CEnemy::Debug(void)
 	pDebugProc->Print("\n流氷システムある[%d]", m_pLandSystemFlow != nullptr);
 
 	pDebugProc->Print("\n現在の状態[%d]", m_state);
+
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	debug::Effect3DShort(pIceMgr->GetGridPosition(&m_nGridVDest, &m_nGridHDest), D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
 }
 
 //=====================================================

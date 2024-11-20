@@ -18,6 +18,7 @@
 #include "UI_enemy.h"
 #include "effect3D.h"
 #include "manager.h"
+#include "sound.h"
 
 //*****************************************************
 // 定数定義
@@ -35,7 +36,7 @@ const float FACT_MOVE_APPER = 0.04f;	// 出現時の移動係数
 const float RANGE_FIND_PLAYER = 1000.0f;	// プレイヤー発見範囲
 
 const float SPEED_ONESTEP = 1.1f;	// 一歩のスピード
-const float FACT_DECMOVE = 0.9f;	// 移動減衰係数
+const float FACT_DECMOVE = 0.96f;	// 移動減衰係数
 
 const float RADIUS_HIT = 150.0f;	// ヒット判定の半径
 
@@ -44,17 +45,16 @@ const float RADIUS_HIT = 150.0f;	// ヒット判定の半径
 //-----------------------------
 namespace charge
 {
-const float RATE_START = 0.4f;	// 突進を開始するのに氷に近づいてる割合
+const float RATE_START = 0.7f;		// 突進を開始するのに氷に近づいてる割合
 const float RATE_RANGE = D3DX_PI / CIceManager::E_Direction::DIRECTION_MAX;	// 突撃の角度範囲
-const float TIME_MAX_SPEED = 10.4f;	// 最大速度になるのにかかる時間
-const float SPEED_MAX = 5.0f;		// 最大速度
+const float SPEED_ONESTEP = 1.0f;	// 一歩の速度
 }
 }
 
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
-CBears::CBears(int nPriority) : CEnemy(nPriority), m_pPlayerTarget(nullptr), m_vecCharge(), m_fTimerAcceleCharge(0.0f)
+CBears::CBears(int nPriority) : CEnemy(nPriority), m_pPlayerTarget(nullptr), m_vecCharge(), m_fTimerAcceleCharge(0.0f), m_bCharge(false)
 {
 
 }
@@ -199,6 +199,7 @@ void CBears::UpdateApper(void)
 		{
 			SetMotion(E_Motion::MOTION_LANDING); // 着地した判定に入ったら着地モーションへ移行
 			EnableFollowIce(true);	// 氷に追従するようにする
+			CSound::GetInstance()->Play(CSound::LABEL_SE_POLARBEAR_VOICE);	// 鳴き声
 		}
 	}
 
@@ -359,12 +360,12 @@ void CBears::SarchTarget(void)
 #ifdef _DEBUG
 			CEffect3D::Create(GetPosition(), 200.0f, 4, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
 #endif
-			// 突撃の開始
-			StartCharge();
-
 			// 突進ベクトルの保存
 			m_vecCharge = posPlayer - pos;
 			D3DXVec3Normalize(&m_vecCharge, &m_vecCharge);
+
+			// 振り向きフラグを立てる
+			EnableTurn(true);
 
 			// プレイヤーを保存してfor文を終了
 			pPlayer = it;
@@ -467,12 +468,27 @@ bool CBears::IsAliveTarget(int nIdxV, int nIdxH, float fRot, int nIdxTargetV, in
 }
 
 //=====================================================
+// 突撃の準備
+//=====================================================
+void CBears::ReadyCharge(void)
+{
+	if(DisableTurn())
+		StartCharge(); // 一定の向きを向いたら突進開始
+}
+
+//=====================================================
 // 突撃の開始
 //=====================================================
 void CBears::StartCharge(void)
 {
-	// グリッド基準じゃない移動にする
-	EnableMoveByGrid(false);
+	// 振り向きフラグを折る
+	EnableTurn(false);
+
+	// 突撃フラグを立てる
+	m_bCharge = true;
+
+	// プレイヤーグリッドの発見
+	FindPlayerGrid();
 }
 
 //=====================================================
@@ -480,8 +496,8 @@ void CBears::StartCharge(void)
 //=====================================================
 void CBears::EndCharge(void)
 {
-	// グリッド基準の移動にする
-	EnableMoveByGrid(true);
+	// 仮で探索状態にする
+	SetState(CEnemy::E_State::STATE_STOP);
 
 	// ターゲットのプレイヤーをnullにする
 	m_pPlayerTarget = nullptr;
@@ -491,6 +507,9 @@ void CBears::EndCharge(void)
 
 	// 次の散歩先を探す
 	DecideNextStrollGrid();
+
+	// 突撃フラグを折る
+	m_bCharge = false;
 }
 
 //=====================================================
@@ -502,9 +521,6 @@ void CBears::UpdateMove(void)
 	{// プレイヤー未発見時の処理
 		// ターゲットの探索
 		SarchTarget();
-
-		// 次のグリッドに進む
-		MoveToNextGrid();
 	}
 	else
 	{// プレイヤー発見時はプレイヤーを追いかける
@@ -517,6 +533,9 @@ void CBears::UpdateMove(void)
 
 	// 継承クラスの更新
 	CEnemy::UpdateMove();
+
+	if(!IsTurn() || m_pPlayerTarget != nullptr)
+		MoveToNextGrid(); // 次のグリッドに進む
 }
 
 //=====================================================
@@ -524,25 +543,22 @@ void CBears::UpdateMove(void)
 //=====================================================
 void CBears::Charge(void)
 {
-	// プレイヤーに向かって移動量を加算
-	D3DXVECTOR3 move = GetMove();
+	DisableTurn();
+}
 
-	if (m_fTimerAcceleCharge < charge::TIME_MAX_SPEED)
-		m_fTimerAcceleCharge += CManager::GetDeltaTime();
+//=====================================================
+// プレイヤーグリッドの発見
+//=====================================================
+void CBears::FindPlayerGrid(void)
+{
+	if (m_pPlayerTarget == nullptr)
+		return;
+	
+	int nGridV = m_pPlayerTarget->GetGridV();
+	int nGridH = m_pPlayerTarget->GetGridH();
 
-	// タイマーのイージング
-	float fTime = m_fTimerAcceleCharge / charge::TIME_MAX_SPEED;
-	float fRate = easing::EaseOutExpo(fTime);
-	universal::LimitValuefloat(&fRate, 1.0f, 0.0f);
-
-	// 割合で速度を設定
-	move = m_vecCharge * charge::SPEED_MAX * fRate;
-
-	SetMove(move);
-
-#ifdef _DEBUG
-	CEffect3D::Create(GetPosition(), 200.0f, 5, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-#endif
+	SetGridVDest(nGridV);
+	SetGridHDest(nGridH);
 }
 
 //=====================================================
@@ -553,6 +569,10 @@ void CBears::AliveDestGrid(void)
 	if (m_pPlayerTarget == nullptr)
 	{// プレイヤー未発見時は次の散歩先を探す
 		DecideNextStrollGrid();
+	}
+	else
+	{// 突進していた時はオーバーヒート状態にする
+		EndCharge();
 	}
 }
 
@@ -608,6 +628,8 @@ void CBears::Death(void)
 		pUIEnemy->DeleteEnemy();
 
 	CEnemy::Death();
+
+	CSound::GetInstance()->Play(CSound::LABEL_SE_POLARBEAR_VOICE);	// 鳴き声
 }
 
 //=====================================================
@@ -634,22 +656,48 @@ void CBears::ManageMotion(void)
 	int nMotion = GetMotion();
 	bool bFinish = IsFinish();
 
+	//---------------------------------
+	// 出現状態のモーション
+	//---------------------------------
 	if (nMotion == E_Motion::MOTION_STARTJUMP)
 	{// ジャンプ開始モーション
 		if (bFinish)	// 終わり次第滞空モーションへ移行
 			SetMotion(E_Motion::MOTION_STAYJUMP);
 	}
 
-	// 移動状態のモーション管理
-	if (IsTurn())
+	//---------------------------------
+	// 移動状態のモーション
+	//---------------------------------
+	if (m_pPlayerTarget != nullptr)
+	{
+		if (m_bCharge)
+		{// 突進中
+			if (nMotion != E_Motion::MOTION_CHARGE || bFinish)
+				SetMotion(E_Motion::MOTION_CHARGE);
+		}
+		else
+		{// 振り向き中の時
+			if (nMotion != E_Motion::MOTION_TURNCHARGE || bFinish)
+				SetMotion(E_Motion::MOTION_TURNCHARGE);
+		}
+	}
+	else if (IsTurn())
 	{// 振り向きモーション
-		if (nMotion != E_Motion::MOTION_TURN || bFinish)
-			SetMotion(E_Motion::MOTION_TURN);
+		if (m_pPlayerTarget == nullptr)
+		{// 通常振り向き
+			if (nMotion != E_Motion::MOTION_TURN || bFinish)
+				SetMotion(E_Motion::MOTION_TURN);
+		}
+		else
+		{// 突進振り向き
+			if (nMotion != E_Motion::MOTION_TURN || bFinish)
+				SetMotion(E_Motion::MOTION_TURN);
+		}
 	}
 	else if (!IsEnableMove())
 	{// 移動不可の時は待機モーション
-		//if (nMotion != E_Motion::MOTION_NEUTRAL)
-			//SetMotion(E_Motion::MOTION_NEUTRAL);
+		if (nMotion != E_Motion::MOTION_TURN)
+			SetMotion(E_Motion::MOTION_TURN);
 	}
 	else if (GetState() == CEnemy::E_State::STATE_MOVE)
 	{
@@ -715,6 +763,20 @@ void CBears::Event(EVENT_INFO* pEventInfo)
 	{// 方向転換時、跳ねるタイミングのみ回転させる
 		// 振り向きの無効化
 		DisableTurn();
+	}
+
+	if (nMotion == E_Motion::MOTION_TURNCHARGE)
+	{// 突進前の回転
+		ReadyCharge();
+	}
+
+	if (nMotion == E_Motion::MOTION_CHARGE)
+	{// 突進中はイベント発生でスピード発生
+		float fSpeed = GetSpeedMove();
+
+		fSpeed += charge::SPEED_ONESTEP;
+
+		SetSpeedMove(fSpeed);
 	}
 }
 
