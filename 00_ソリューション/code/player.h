@@ -20,6 +20,7 @@ class CIce;
 class CInputManager;
 class CFlowIce;
 class CPeckLine;
+class CShadow;
 
 //*****************************************************
 // クラスの定義
@@ -163,6 +164,7 @@ private:
 	int m_nTimePeck;				// 氷を突いた回数
 	CPolygon3D *m_pDir;				// 方向を示すポリゴン
 	CPeckLine *m_pPeckLine;			// つっつき線
+	CShadow *m_pShadow;				// 影のポインタ
 
 	S_FragMotion m_fragMotion;	// モーションフラグ
 

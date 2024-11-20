@@ -49,7 +49,7 @@ CMeshField *CMeshField::m_pMeshField = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CMeshField::CMeshField()
+CMeshField::CMeshField(int nPriority) : CObject3D(nPriority)
 {
 	ZeroMemory(&m_MeshField, sizeof(m_MeshField));
 	m_pIdxBuff = nullptr;
