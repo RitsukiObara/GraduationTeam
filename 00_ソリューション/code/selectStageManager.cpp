@@ -47,6 +47,7 @@ const float SPEED_PARTICLE = 22.0f;	// パーティクルの速度
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
+vector<CSelectStageManager::S_InfoStage*> CSelectStageManager::s_aInfoStage;	// ステージ情報の配列
 
 //=====================================================
 // コンストラクタ
@@ -105,6 +106,9 @@ HRESULT CSelectStageManager::Init(void)
 //=====================================================
 void CSelectStageManager::Load(void)
 {
+	if (!s_aInfoStage.empty())
+		return;
+
 	std::ifstream file(PATH_TEXT);
 
 	if (file.is_open())
@@ -127,7 +131,7 @@ void CSelectStageManager::Load(void)
 
 				LoadStage(file, temp, pInfoStage);
 
-				m_aInfoStage.push_back(pInfoStage);
+				s_aInfoStage.push_back(pInfoStage);
 			}
 
 			if (file.eof())
@@ -172,6 +176,11 @@ void CSelectStageManager::LoadStage(std::ifstream& file, string str, S_InfoStage
 		{// 位置
 			iss >> str >> pInfoStage->pos.x >> pInfoStage->pos.y >> pInfoStage->pos.z;
 		}
+
+		if (key == "PATHMAP")
+		{// マップのパス
+			iss >> str >> pInfoStage->pathMap;
+		}
 	}
 }
 
@@ -180,10 +189,10 @@ void CSelectStageManager::LoadStage(std::ifstream& file, string str, S_InfoStage
 //=====================================================
 void CSelectStageManager::SetStage(void)
 {
-	if (m_aInfoStage.empty())
+	if (s_aInfoStage.empty())
 		return;
 
-	for (S_InfoStage *pInfoStage : m_aInfoStage)
+	for (S_InfoStage *pInfoStage : s_aInfoStage)
 	{
 		// ステージのXモデルの設置
 		pInfoStage->pModel = CObjectX::Create();
@@ -208,7 +217,7 @@ void CSelectStageManager::SetStage(void)
 		// 状態の初期設定
 		pInfoStage->state = E_StateStage::STATE_NORMAL;
 
-		if (pInfoStage != *(m_aInfoStage.end() - 1))
+		if (pInfoStage != *(s_aInfoStage.end() - 1))
 		{// パーティクル位置の生成
 			CGameObject *pObject = new CGameObject;
 
@@ -247,9 +256,9 @@ void CSelectStageManager::Update(void)
 //=====================================================
 void CSelectStageManager::Select(void)
 {
-	for (int i = 0; i < (int)m_aInfoStage.size(); i++)
+	for (int i = 0; i < (int)s_aInfoStage.size(); i++)
 	{
-		S_InfoStage *pInfoStage = m_aInfoStage[i];
+		S_InfoStage *pInfoStage = s_aInfoStage[i];
 
 		// スケーリング処理
 		Scaling(pInfoStage);
@@ -317,12 +326,12 @@ void CSelectStageManager::Scaling(S_InfoStage *pInfoStage)
 //=====================================================
 void CSelectStageManager::SetParticle(int nIdx)
 {
-	if (nIdx >= (int)m_aInfoStage.size() - 1)
+	if (nIdx >= (int)s_aInfoStage.size() - 1)
 		return;
 
 	// 差分ベクトルを移動速度に正規化
-	D3DXVECTOR3 pos = m_aInfoStage[nIdx]->pos;
-	D3DXVECTOR3 posNext = m_aInfoStage[nIdx + 1]->pos;
+	D3DXVECTOR3 pos = s_aInfoStage[nIdx]->pos;
+	D3DXVECTOR3 posNext = s_aInfoStage[nIdx + 1]->pos;
 
 	D3DXVECTOR3 vecDiff = posNext - pos;
 
@@ -366,7 +375,7 @@ void CSelectStageManager::StartEnter(void)
 		m_pPenguin->EnableInput(false);
 
 	// 当たり判定の削除
-	for (S_InfoStage *pInfoStage : m_aInfoStage)
+	for (S_InfoStage *pInfoStage : s_aInfoStage)
 	{
 		if (pInfoStage->pCollision != nullptr)
 		{
@@ -394,7 +403,7 @@ void CSelectStageManager::StayEnter(void)
 
 	// ステージに引っ張られる処理
 	D3DXVECTOR3 pos = m_pPenguin->GetPosition();
-	D3DXVECTOR3 posStage = m_aInfoStage[m_nIdxSelect]->pos;
+	D3DXVECTOR3 posStage = s_aInfoStage[m_nIdxSelect]->pos;
 
 	universal::MoveToDest(&pos, posStage, SPEED_MOVE_ENTER);
 

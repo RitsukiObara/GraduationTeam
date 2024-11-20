@@ -42,6 +42,7 @@
 #include "destroy_score.h"
 #include "UI_combo.h"
 #include "albatross.h"
+#include "selectStageManager.h"
 
 //*****************************************************
 // 定数定義
@@ -51,7 +52,7 @@ namespace
 const int TRANS_TIME = 100;	// 終了までの余韻のフレーム数
 const int SPEED_TIME = 60;	// タイマーが減っていく速度
 const char* PATH_GAME_ROAD = "data\\MAP\\road00.bin";	// ゲームメッシュロードのパス
-const char* PATH_SAMPLE_ICESTAGE = "data\\TEXT\\ice_stage_01.txt";	// サンプルの初期配置
+const char* PATH_SAMPLE_ICESTAGE = "data\\TEXT\\ice_stage_00.txt";	// サンプルの初期配置
 const float SPEED_CHANGE_LIGHTCOL = 0.1f;	// ライトの色が変わる速度
 
 const int SIZE_GRID[CGame::E_GameMode::MODE_MAX] = { 0, 10, 15 };	// モードごとのステージのサイズ
@@ -93,8 +94,16 @@ HRESULT CGame::Init(void)
 	gameManager::LoadMode(&m_GameMode, abFrag);
 
 	// 氷マネージャー
+	int nIdxMap = gameManager::LoadIdxMap();
+
+	vector<CSelectStageManager::S_InfoStage*> apInfoStage = CSelectStageManager::GetInfoStage();
+
 	CIceManager* pIceManager = CIceManager::Create(SIZE_GRID[m_GameMode], SIZE_GRID[m_GameMode]);
-	pIceManager->Load(PATH_SAMPLE_ICESTAGE);
+
+	if (apInfoStage.empty())
+		pIceManager->Load(PATH_SAMPLE_ICESTAGE);
+	else
+		pIceManager->Load(&apInfoStage[nIdxMap]->pathMap[0]);
 
 	// タイマー生成
 	m_pTimer = CTimer::Create();

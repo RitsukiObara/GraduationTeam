@@ -1000,8 +1000,8 @@ bool IsInScreen(const D3DXVECTOR3 pos, D3DXVECTOR3 *pPos)
 	D3DVIEWPORT9 viewport;
 	pDevice->GetViewport(&viewport);
 
-	D3DXMATRIX projectionMatrix;
-	pDevice->GetTransform(D3DTS_PROJECTION, &projectionMatrix);
+	D3DXMATRIX m_projectionMatrix;
+	pDevice->GetTransform(D3DTS_PROJECTION, &m_projectionMatrix);
 
 	D3DXMATRIX viewMatrix;
 	pDevice->GetTransform(D3DTS_VIEW, &viewMatrix);
@@ -1010,7 +1010,7 @@ bool IsInScreen(const D3DXVECTOR3 pos, D3DXVECTOR3 *pPos)
 	D3DXMatrixIdentity(&mtx);
 
 	D3DXVECTOR3 screenPosition;
-	D3DXVec3Project(&screenPosition, &pos, &viewport, &projectionMatrix, &viewMatrix, D3DXMatrixIdentity(&mtx));
+	D3DXVec3Project(&screenPosition, &pos, &viewport, &m_projectionMatrix, &viewMatrix, D3DXMatrixIdentity(&mtx));
 
 	if (pPos != nullptr)
 	{

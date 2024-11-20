@@ -22,6 +22,8 @@
 #include "collision.h"
 #include "texture.h"
 #include "peckLine.h"
+#include "sound.h"
+#include "shadow.h"
 
 //*****************************************************
 // 定数定義
@@ -88,7 +90,7 @@ vector<CPlayer*> CPlayer::s_apPlayer;	// 格納用の配列
 //=====================================================
 CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(STATE_NONE), m_pIceMoveDest(nullptr), m_bEnableInput(false), m_fTimerStartMove(0.0f),
 m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f), m_pLandSystemFlow(nullptr), m_pLandFlow(nullptr), m_nTimePeck(0), m_nID(0), m_pPeckLine(nullptr),
-m_bEnableJump(false), m_pIceDestJump(nullptr), m_posInitJump()
+m_bEnableJump(false), m_pIceDestJump(nullptr), m_posInitJump(), m_pShadow(nullptr)
 {
 	// デフォルトは入った順の番号
 	m_nID = (int)s_apPlayer.size();
@@ -149,6 +151,9 @@ HRESULT CPlayer::Init(void)
 #else
 	m_state = STATE_NORMAL;
 #endif // _DEBUG
+
+	// 影の生成
+	m_pShadow = CShadow::Create();
 
 	return S_OK;
 }
@@ -250,6 +255,10 @@ void CPlayer::Update(void)
 
 	// 氷の追従
 	FollowIce();
+
+	// 影の追従
+	if (m_pShadow != nullptr)
+		m_pShadow->SetPosition(GetPosition());
 
 #ifdef _DEBUG
 	Debug();
@@ -1107,6 +1116,7 @@ void CPlayer::ManageMotion(void)
 			if (bFinish)
 			{
 				SetMotion(MOTION::MOTION_STAYJUMP);
+				CSound::GetInstance()->Play(CSound::LABEL_SE_PENGUIN_JUMP);
 			}
 		}
 		else if (nMotion != MOTION::MOTION_STARTJUMP)	// ジャンプ開始モーションの開始

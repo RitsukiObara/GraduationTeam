@@ -4,13 +4,22 @@
 // Author : 髙山桃也
 //
 //===========================================================
-#ifndef _EFFEKSEER_H_     // このマクロが定義されてなかったら
-#define _EFFEKSEER_H_     // 2重インクルードを防止のマクロを定義する
+#ifndef _EFFEKSEER_H_
+#define _EFFEKSEER_H_
 
+//***********************************************************
+// インクルード
+//***********************************************************
+#include "object.h"
+
+//***********************************************************
+// 前方宣言
+//***********************************************************
 class CEffekseerEffect;
 
-#define MAX_EFK   (64)
-
+//***********************************************************
+// クラスの定義
+//***********************************************************
 class CMyEffekseer
 {// エフェクシアのマネージャー
 public:
@@ -22,6 +31,7 @@ public:
 		TYPE_NONE = 0,	// なんもない
 		TYPE_PECKWAVE,	// つっつき波紋
 		TYPE_RIPPLES,	// さざ波
+		TYPE_BEARSTEP,	// シロクマの歩き煙
 		TYPE_MAX
 	};
 
@@ -39,17 +49,21 @@ public:
 	const char* GetPathEffect(CMyEffekseer::TYPE type);
 	std::list<CEffekseerEffect*> *GetList(void) { return &m_listEffect; };	// リストの取得
 
+	Effekseer::Matrix44 GetMtxCamera(void) { return m_cameraMatrix; }
+	Effekseer::Matrix44 GetMtxProj(void) { return m_projectionMatrix; }
+	Effekseer::Vector3D GetPosView(void) { return m_viewerPosition; }
+
 	// 静的メンバ関数
 	static CMyEffekseer *Create(void);
 	static CMyEffekseer *GetInstance(void) { return s_pMyEffekseer; }	// インスタンス取得
 
 private:
-	// メンバ変数 
+	// メンバ変数
 	EffekseerRendererDX9::RendererRef m_efkRenderer;
-	::Effekseer::Matrix44 cameraMatrix;
-	::Effekseer::Matrix44 projectionMatrix;
-	::Effekseer::ManagerRef m_efkManager;
-	::Effekseer::Vector3D viewerPosition;
+	Effekseer::Matrix44 m_cameraMatrix;
+	Effekseer::Matrix44 m_projectionMatrix;
+	Effekseer::ManagerRef m_efkManager;
+	Effekseer::Vector3D m_viewerPosition;
 	int m_nNum;
 	std::list<CEffekseerEffect*> m_listEffect;	// エフェクトクラスのリスト
 
@@ -58,14 +72,17 @@ private:
 	static CMyEffekseer *s_pMyEffekseer;		// 自身のポインタ
 };
 
-class CEffekseerEffect
+class CEffekseerEffect : public CObject
 {
 public:
-	CEffekseerEffect();	// コンストラクタ
+	CEffekseerEffect(int nPriority = 5);	// コンストラクタ
 	~CEffekseerEffect();	// デストラクタ
 
 	// メンバ関数
-	void Init(::Effekseer::Vector3D pos, ::Effekseer::Vector3D rot, ::Effekseer::Vector3D scale);	// 初期化
+	HRESULT Init(void) { return S_OK; }
+	HRESULT Init(::Effekseer::Vector3D pos, ::Effekseer::Vector3D rot, ::Effekseer::Vector3D scale);	// 初期化
+	void Update(void);	// 更新処理
+	void Draw(void);	// 描画
 	void Uninit(void);	// 終了処理
 	CEffekseerEffect *FollowPosition(D3DXVECTOR3 pos);	// 位置の追従
 
@@ -76,8 +93,8 @@ public:
 	Effekseer::Handle GetHandle(void) { return m_efkHandle; }
 	void SetTime(int32_t time) { m_time = time; }	// 時間
 	int32_t GetTime(void) { return m_time; }
-	Effekseer::Vector3D GetPosition(void) { return m_pos; }	// 位置
-	D3DXVECTOR3 GetPositionD3D(void) { return D3DXVECTOR3(m_pos.X, m_pos.Y, m_pos.Z); }
+	Effekseer::Vector3D GetPositionVector3(void) { return m_pos; }	// 位置
+	D3DXVECTOR3 GetPosition(void) { return D3DXVECTOR3(m_pos.X, m_pos.Y, m_pos.Z); }
 	void SetPosition(Effekseer::Vector3D pos) { m_pos = pos; }
 	Effekseer::Vector3D GetRotation(void) { return m_rot; }	// 向き
 	D3DXVECTOR3 GetRotationD3D(void) { return D3DXVECTOR3(m_rot.X, m_rot.Y, m_rot.Z); }

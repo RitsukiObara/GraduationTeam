@@ -21,6 +21,7 @@
 #include "UI_combo.h"
 #include "effect3D.h"
 #include "manager.h"
+#include "sound.h"
 
 //*****************************************************
 // 定数定義
@@ -95,6 +96,14 @@ CEnemy* CEnemy::Create(int nType, int nGridV, int nGridH)
 
 		// 初期化処理
 		pEnemy->Init();
+
+		// 海から飛び出しサウンド
+		CSound* pSound = CSound::GetInstance();
+		if (pSound != nullptr)
+		{
+			pSound->Play(CSound::LABEL_SE_SEA_SPLASH_01);
+			pSound->Play(CSound::LABEL_SE_SEA_SPLASH_02);
+		}
 	}
 
 	return pEnemy;

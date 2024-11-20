@@ -231,7 +231,7 @@ void CSelectMode::Update(void)
 		{
 		case CSelectMode::MODE_SINGLE:
 			gameManager::SaveMode(CGame::E_GameMode::MODE_SINGLE, abEnter);
-			pFade->SetFade(CScene::MODE_GAME);
+			pFade->SetFade(CScene::MODE_SELECTSTAGE);
 			break;
 		case CSelectMode::MODE_PARTY:
 			pFade->SetFade(CScene::MODE_SELECTPLAYER);
