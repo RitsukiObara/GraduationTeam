@@ -56,7 +56,7 @@ public:
 	void Draw(void);	// 描画
 	void TranslateByGrid(int nIdxV,int nIdxH);	// グリッドによる移動
 	void FollowIce(void);	// 氷に追従
-	void DisableTurn(void);	// 振り返りの無効化
+	bool DisableTurn(void);	// 振り返りの無効化
 
 	virtual void Death(void);				// 死亡時の処理
 	virtual void StopMoveByNotGrid(CIce *pIce);	// グリッド基準じゃない移動を止める
