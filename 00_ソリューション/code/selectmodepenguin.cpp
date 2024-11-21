@@ -41,8 +41,8 @@ namespace
 	}
 	namespace Move
 	{
-		const int MOTION_COUNT = 60 * 6;	// モーションをする時間
-		const int FALL_CHANCE = 15;			// 転ぶ確立（値：％）
+		const int MOTION_COUNT = 60 * 5 + 20;	// モーションをする時間
+		const int FALL_CHANCE = 18;			// コケ確率（値：％）
 		const float MOVE_SPEED = 2.5f;		// 移動速度
 	}
 	namespace ShakeHead
