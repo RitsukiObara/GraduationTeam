@@ -202,7 +202,7 @@ PARTICLESET		#12 雪が吹雪いた時のエフェクト
 END_PARTICLESET
 
 PARTICLESET		#13 ステージセレクトの雪の軌道
-	TEXTURE_PATH = data//TEXTURE//EFFECT//StageRoad.png
+	TEXTURE_PATH = data//TEXTURE//EFFECT//Snow.png
     LIFE_PARTICLE = 1
     NUM_EFFECT = 4
     LIFE_EFFECT = 30
