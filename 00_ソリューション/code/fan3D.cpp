@@ -53,7 +53,7 @@ CFan3D *CFan3D::Create(int nPriority, int nNumVtx)
 
 	if (pFan3D != nullptr)
 	{
-		pFan3D->SetNumVtx(nNumVtx);
+		pFan3D->SetNumVtx(nNumVtx + 2);
 
 		// 初期化処理
 		pFan3D->Init();
@@ -269,7 +269,6 @@ void CFan3D::Draw(void)
 
 		// カリングを無効化
 		pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-
 
 		// 1枚目のテクスチャ設定
 		int nIdxTexture1 = GetIdxTexture();
