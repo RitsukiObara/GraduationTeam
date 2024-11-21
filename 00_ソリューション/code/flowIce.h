@@ -42,6 +42,7 @@ public:
 
 private:
 	// メンバ関数
+	void CheckInAllIce(void);		// 全ての氷が画面に入ったかのチェック
 	void CheckSomeIceStop(void);	// どれかの氷が止まっていないかのチェック
 	void StopAllIce(void);	// 全ての氷を止める
 	void StopOnTopObject(void);	// 上にあるオブジェクトを止める
@@ -52,6 +53,7 @@ private:
 	// メンバ変数
 	vector<CIce*> m_apIce;	// 氷の配列
 	float m_fTimerDelete;	// 削除タイマー
+	bool m_bInScrnAllIce;	// 全ての氷がスクリーンに映ったフラグ
 
 	// 静的メンバ変数
 	static vector<CFlowIce*> s_vector;	// 格納用の配列

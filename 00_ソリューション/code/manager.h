@@ -44,12 +44,9 @@ public:
 	static CManager *GetInstance(void) { return m_pManager; }
 
 	static CCamera *GetCamera(void) { return m_pCamera; }
-	static CLight *GetLight(void) { return m_pLight; }
 	static CMyEffekseer* GetMyEffekseer(void) { return m_pMyEffekseer; }
 	static void SetMode(CScene::MODE mode);
 	static CScene::MODE GetMode(void) { return m_mode; }
-	static void SetScore(int nScore) { m_nScore = nScore; }
-	static int GetScore(void) { return m_nScore; }
 	static float GetDeltaTime(void) { return m_fDeltaTime; }
 	static void SetTick(float fDeltaTime) { m_fDeltaTime = fDeltaTime; }
 
@@ -63,11 +60,9 @@ private:
 
 	// 静的メンバ変数
 	static CCamera *m_pCamera;	// カメラのポインタ
-	static CLight *m_pLight;	// ライトのポインタ
 	static CMyEffekseer *m_pMyEffekseer;  // エフェクシアのポインタ
 	static CScene *m_pScene;	// 現在のシーン
 	static CScene::MODE m_mode;	// 現在のモード
-	static int m_nScore;	// スコア
 	static float m_fDeltaTime;	// 前回のフレームから経過した秒数
 	static CManager *m_pManager;	// 自身のポインタ
 };

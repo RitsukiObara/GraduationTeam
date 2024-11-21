@@ -18,13 +18,10 @@
 //*****************************************************
 namespace
 {
-	const std::string PATH_BODY = "data\\MOTION\\motionPenguin.txt";	// ボディのパス
-	const float SCALE_BODY = 1.8f;	// 体のスケール
-	
-	const float FACT_DECREASE_MOVE = 0.9f;	// 移動量の減衰係数
-	const float ADD_MOVE = 4.0f;	// 移動の追加量
-	
-	const float RADIUS_COLLISION = 200.0f;	// 球の判定の半径
+	namespace Loser
+	{
+		const float ROTATE_SPEED = 0.005f;
+	}
 }
 
 //*****************************************************
@@ -35,7 +32,7 @@ namespace
 //=====================================================
 HRESULT CNPCPenguinState_BANZAI::Init(CNPCPenguin* pPenguin)
 {
-	pPenguin->SetMotion(CNPCPenguin::MOTION::MOTION_NEUTRAL);
+	pPenguin->SetMotion(CNPCPenguin::MOTION::MOTION_VICTORY);
 
 	return S_OK;
 }
@@ -57,35 +54,6 @@ void CNPCPenguinState_BANZAI::Update(CNPCPenguin* pPenguin)
 }
 
 //*****************************************************
-// 勝者ジャンプステート
-//*****************************************************
-//=====================================================
-// 初期化処理
-//=====================================================
-HRESULT CNPCPenguinState_Jump::Init(CNPCPenguin* pPenguin)
-{
-	pPenguin->SetMotion(CNPCPenguin::MOTION::MOTION_WALK);
-
-	return S_OK;
-}
-
-//=====================================================
-// 終了処理
-//=====================================================
-void CNPCPenguinState_Jump::Uninit(void)
-{
-	delete this;
-}
-
-//=====================================================
-// 更新処理
-//=====================================================
-void CNPCPenguinState_Jump::Update(CNPCPenguin* pPenguin)
-{
-	
-}
-
-//*****************************************************
 // 敗者逃げステート
 //*****************************************************
 //=====================================================
@@ -93,7 +61,7 @@ void CNPCPenguinState_Jump::Update(CNPCPenguin* pPenguin)
 //=====================================================
 HRESULT CNPCPenguinState_Flee::Init(CNPCPenguin* pPenguin)
 {
-	pPenguin->SetMotion(CNPCPenguin::MOTION::MOTION_FALL);
+	pPenguin->SetMotion(CNPCPenguin::MOTION::MOTION_FAIL);
 
 	return S_OK;
 }
@@ -111,5 +79,19 @@ void CNPCPenguinState_Flee::Uninit(void)
 //=====================================================
 void CNPCPenguinState_Flee::Update(CNPCPenguin* pPenguin)
 {
-	
+	float length = D3DXVec3Length(&(c_centorPos - pPenguin->GetPosition()));
+	D3DXVECTOR3 rot = pPenguin->GetRotation();
+
+	// 移動向きを変える
+	rot.y += Loser::ROTATE_SPEED;
+	rot.y = fmodf(rot.y + (D3DX_PI * 3), D3DX_PI * 2) - D3DX_PI;
+
+	// 位置計算
+	D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, pPenguin->GetPosition().y, 0.0f);
+	pos.x = -sinf(rot.y - 0.5f * D3DX_PI) * length + c_centorPos.x;
+	pos.z = -cosf(rot.y - 0.5f * D3DX_PI) * length + c_centorPos.z;
+
+	// 位置向き設定
+	pPenguin->SetPosition(pos);
+	pPenguin->SetRotation(rot);
 }

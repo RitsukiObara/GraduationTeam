@@ -1,36 +1,35 @@
 //*****************************************************
 //
-// チュートリアル処理[tutorial.h]
+// チュートリアルマネージャー[tutorialManager.h]
 // Author:髙山桃也
 //
 //*****************************************************
-#ifndef _TUTORIAL_H_
-#define _TUTORIAL_H_
+#ifndef _TUTORIALMANAGER_H_
+#define _TUTORIALMANAGER_H_
 
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "scene.h"
-
-//*****************************************************
-// 前方宣言
-//*****************************************************
-class CUI;
+#include "object.h"
 
 //*****************************************************
 // クラスの定義
 //*****************************************************
-class CTutorial : public CScene
+class CTutorialManager : public CObject
 {
 public:
-	CTutorial();	// コンストラクタ
-	~CTutorial();	// デストラクタ
+	CTutorialManager();	// コンストラクタ
+	~CTutorialManager() {};	// デストラクタ
 
+	// メンバ関数
 	virtual HRESULT Init(void);
 	virtual void Uninit(void);
 	virtual void Update(void);
 	virtual void Draw(void);
-	
+
+	// 静的メンバ関数
+	static CTutorialManager *Create(void);	// 生成処理
+
 private:
 };
 
