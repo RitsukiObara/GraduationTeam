@@ -66,6 +66,7 @@ public:
 	void ChangeState(CIceState *pState);
 	bool IsOnTopAnyObject(void);	// 何かしらが乗ってる判定
 	void SetColor(D3DXCOLOR col);	// 色の設定
+	void StartFlash(void);	// 光る処理の開始
 
 	// 変数取得・設定関数
 	void SetState(E_State state) { m_state = state; }	// 状態
@@ -99,6 +100,8 @@ private:
 	void Shake(void);									// 揺れの処理
 	void Ripples(void);									// さざ波の処理
 
+	void Flash(void);		// きらりと光る処理
+
 	// メンバ変数
 	E_State m_state;	// 状態
 	bool m_bCanFind;	// 探索できるフラグ
@@ -121,6 +124,9 @@ private:
 	bool m_abRipleFrag[COcean::E_Stream::STREAM_MAX];	// 流れごとのフラグ
 	float m_fTimerRipples;								// さざ波のタイマー
 	float m_fSpawnTimeRipples;							// さざ波の制限時間
+
+	float m_fTimerFlash;		// 光のタイマー
+	float m_fTimeStartFlash;	// 光の開始までの時間
 
 	// 静的メンバ変数
 	static int s_nNumAll;	// 総数
