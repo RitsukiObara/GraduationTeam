@@ -192,6 +192,7 @@
     <ClCompile Include="code\peckWave.cpp" />
     <ClCompile Include="code\playerselect.cpp" />
     <ClCompile Include="code\rankingSingle.cpp" />
+    <ClCompile Include="code\resultmulti.cpp" />
     <ClCompile Include="code\resultSingleLose.cpp" />
     <ClCompile Include="code\resultSingleWin.cpp" />
     <ClCompile Include="code\selectmode.cpp" />
@@ -310,6 +311,7 @@
     <ClInclude Include="code\peckWave.h" />
     <ClInclude Include="code\playerselect.h" />
     <ClInclude Include="code\rankingSingle.h" />
+    <ClInclude Include="code\resultmulti.h" />
     <ClInclude Include="code\resultSingleLose.h" />
     <ClInclude Include="code\resultSingleWin.h" />
     <ClInclude Include="code\selectmode.h" />
