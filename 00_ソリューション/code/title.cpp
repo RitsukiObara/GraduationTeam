@@ -309,6 +309,9 @@ void CTitle::Update(void)
 		break;
 	case CTitle::TITLESTATE_PICKAXE:
 
+		// ロゴを出して動かす処理
+		LogoState();
+
 		// ピッケルを動かす処理
 		PickaxeState();
 
