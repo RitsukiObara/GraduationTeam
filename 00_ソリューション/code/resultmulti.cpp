@@ -30,6 +30,7 @@
 #include "gameManager.h"
 #include "npcpenguin.h"
 #include "npcpenguinstate_resultmulti.h"
+#include "resultseal.h"
 
 //*****************************************************
 // 定数定義
@@ -130,7 +131,9 @@ HRESULT CResultMulti::Init(void)
 	}
 
 	// アザラシ召喚
-
+	CResultSeal* pSeal = CResultSeal::Create(D3DXVECTOR3(800.0f, -10.0f, 600.0f));
+	pSeal->SetPosition(D3DXVECTOR3(1200.0f, 0.0f, -900.0f));
+	pSeal->SetRotation(D3DXVECTOR3(0.0f, 0.4f * D3DX_PI, 0.0f));
 
 	// 入力マネージャー生成
 	CInputManager::Create();

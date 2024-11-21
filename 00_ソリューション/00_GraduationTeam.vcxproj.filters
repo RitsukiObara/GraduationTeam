@@ -441,6 +441,9 @@
     <ClCompile Include="code\tutorialManager.cpp">
       <Filter>ソース ファイル\scene\tutorial</Filter>
     </ClCompile>
+    <ClCompile Include="code\resultseal.cpp">
+      <Filter>ソース ファイル\character</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\scene.h">
@@ -802,6 +805,9 @@
     </ClInclude>
     <ClInclude Include="code\tutorialManager.h">
       <Filter>ソース ファイル\scene\tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="code\resultseal.h">
+      <Filter>ソース ファイル\character</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
