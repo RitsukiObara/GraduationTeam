@@ -31,7 +31,7 @@ vector<CFlowIce*> CFlowIce::s_vector;	// 格納用の配列
 //=====================================================
 // コンストラクタ
 //=====================================================
-CFlowIce::CFlowIce(int nPriority) : CObject(nPriority), m_fTimerDelete(0.0f)
+CFlowIce::CFlowIce(int nPriority) : CObject(nPriority), m_fTimerDelete(0.0f), m_bInScrnAllIce(false)
 {
 	s_vector.push_back(this);
 }
@@ -103,12 +103,38 @@ void CFlowIce::Update(void)
 	// どれかの氷が止まっていないかのチェック
 	CheckSomeIceStop();
 
-	// 削除確認
-	CheckDelete();
+	if (!m_bInScrnAllIce)
+		CheckInAllIce();	// 全ての氷が映ったかの判定
+	else
+		CheckDelete();	// 削除確認
 
 #ifdef _DEBUG
 	Debug();
 #endif
+}
+
+//=====================================================
+// 全ての氷が画面に映ったかのチェック
+//=====================================================
+void CFlowIce::CheckInAllIce(void)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	for (int i = 0; i < (int)m_apIce.size(); i++)
+	{
+		if (m_apIce[i] == nullptr)
+			continue;
+
+		// 画面内判定
+		D3DXVECTOR3 pos = m_apIce[i]->GetPosition();
+		if (universal::IsInScreen(pos, nullptr))
+		{// どれか一つでも画面内にあればフラグを立てる
+			m_bInScrnAllIce = true;
+		}
+	}
 }
 
 //=====================================================
@@ -187,25 +213,20 @@ void CFlowIce::CheckDelete(void)
 	if (pIceMgr == nullptr)
 		return;
 
-	m_fTimerDelete += CManager::GetDeltaTime();
-
-	if (m_fTimerDelete > TIME_DELETE)
+	for (int i = 0; i < (int)m_apIce.size(); i++)
 	{
-		for (int i = 0; i < (int)m_apIce.size(); i++)
-		{
-			if (m_apIce[i] == nullptr)
-				continue;
+		if (m_apIce[i] == nullptr)
+			continue;
 
-			// 画面内判定
-			D3DXVECTOR3 pos = m_apIce[i]->GetPosition();
-			if (universal::IsInScreen(pos, nullptr))
-				return;	// どれか一つでも画面内にあれば関数を終了
-		}
-
-		// ここまで通ったら氷を削除
-		DeleteAllIce();
-		Uninit();
+		// 画面内判定
+		D3DXVECTOR3 pos = m_apIce[i]->GetPosition();
+		if (universal::IsInScreen(pos, nullptr))
+			return;	// どれか一つでも画面内にあれば関数を終了
 	}
+
+	// ここまで通ったら氷を削除
+	DeleteAllIce();
+	Uninit();
 }
 
 //=====================================================
