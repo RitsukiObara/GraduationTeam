@@ -12,6 +12,7 @@
 #include "collision.h"
 #include "debugproc.h"
 #include "motion.h"
+#include "shadow.h"
 
 //*****************************************************
 // 定数定義
@@ -25,34 +26,6 @@ namespace
 	const float ADD_MOVE = 4.0f;	// 移動の追加量
 	
 	const float RADIUS_COLLISION = 200.0f;	// 球の判定の半径
-	namespace Stand
-	{
-		const int MOTION_COUNT = 60 * 3;	// モーションをする時間
-		const vector<CNPCPenguin::MOTION> NEXT_MOTION_PATTERN =
-		{
-			CNPCPenguin::MOTION_WALK,		// 移動
-			CNPCPenguin::MOTION_WALK,		// 移動
-			CNPCPenguin::MOTION_WALK,		// 移動
-			CNPCPenguin::MOTION_NECKSHAKE,	// 首振り
-			CNPCPenguin::MOTION_STOMACH,		// 腹ベタァ
-			CNPCPenguin::MOTION_UNYO,		// 首うにょん
-			CNPCPenguin::MOTION_WINGPTPT		// 羽パタ
-		};
-	}
-	namespace Move
-	{
-		const int MOTION_COUNT = 60 * 5 + 20;	// モーションをする時間
-		const int FALL_CHANCE = 18;			// コケ確率（値：％）
-		const float MOVE_SPEED = 2.5f;		// 移動速度
-	}
-	namespace ShakeHead
-	{
-		const int MOTION_COUNT = 60 * 2;	// モーションをする時間
-	}
-	namespace Stomach
-	{
-		const int MOTION_COUNT = 60 * 3;	// モーションをする時間
-	}
 }
 
 //=====================================================
@@ -136,6 +109,9 @@ HRESULT CNPCPenguin::Init(void)
 		m_pCollisionSphere->SetPosition(GetPosition());
 	}
 
+	// 影の生成
+	m_pShadow = CShadow::Create();
+
 	return S_OK;
 }
 
@@ -144,6 +120,9 @@ HRESULT CNPCPenguin::Init(void)
 //=====================================================
 void CNPCPenguin::Uninit(void)
 {
+	// 影削除
+	Object::DeleteObject((CObject**)&m_pShadow);
+
 	if (m_pState != nullptr)
 	{
 		m_pState->Uninit();
@@ -162,10 +141,10 @@ void CNPCPenguin::Update(void)
 	// モーション更新
 	CMotion::Update();
 
+	D3DXVECTOR3 pos = GetPosition();
+
 	if (m_pCollisionSphere != nullptr)
 	{// 球の判定の追従
-		D3DXVECTOR3 pos = GetPosition();
-
 		m_pCollisionSphere->SetPosition(pos);
 
 		// ブロック判定
@@ -174,6 +153,10 @@ void CNPCPenguin::Update(void)
 		// キャラの位置反映
 		SetPosition(pos);
 	}
+
+	// 影の追従
+	if (m_pShadow != nullptr)
+		m_pShadow->SetPosition(pos);
 
 	if (m_pState != nullptr)
 	{

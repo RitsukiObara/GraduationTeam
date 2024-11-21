@@ -18,13 +18,6 @@
 //*****************************************************
 namespace
 {
-	const std::string PATH_BODY = "data\\MOTION\\motionPenguin.txt";	// ボディのパス
-	const float SCALE_BODY = 1.8f;	// 体のスケール
-	
-	const float FACT_DECREASE_MOVE = 0.9f;	// 移動量の減衰係数
-	const float ADD_MOVE = 4.0f;	// 移動の追加量
-	
-	const float RADIUS_COLLISION = 200.0f;	// 球の判定の半径
 	namespace Stand
 	{
 		const int MOTION_COUNT = 60 * 3;	// モーションをする時間
