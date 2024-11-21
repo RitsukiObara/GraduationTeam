@@ -157,8 +157,19 @@ HRESULT CSelectMode::Init(void)
 	pSound->Play(pSound->LABEL_BGM_TITLE);
 
 	// 遊ぶペンギン
-	CSelectModePenguin* pPenguin = CSelectModePenguin::Create(new CSelectModePenguinState_Stand);
+	CSelectModePenguin* pPenguin = nullptr;
+	// 右中心
+	pPenguin = CSelectModePenguin::Create(new CSelectModePenguinState_Stand);
 	pPenguin->SetPosition(D3DXVECTOR3(400.0f, 10.0f, -1000.0f));
+	// あの辺1
+	pPenguin = CSelectModePenguin::Create(new CSelectModePenguinState_Stand);
+	pPenguin->SetPosition(D3DXVECTOR3(-500.0f, 10.0f, 800.0f));
+	// あの辺2
+	pPenguin = CSelectModePenguin::Create(new CSelectModePenguinState_Stand);
+	pPenguin->SetPosition(D3DXVECTOR3(2200.0f, 10.0f, 800.0f));
+	// かまくら
+	pPenguin = CSelectModePenguin::Create(new CSelectModePenguinState_Stand);
+	pPenguin->SetPosition(D3DXVECTOR3(950.0f, 10.0f, 700.0f));
 
 	// 入力マネージャー生成
 	CInputManager::Create();
