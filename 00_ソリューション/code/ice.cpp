@@ -30,7 +30,8 @@
 //*****************************************************
 namespace
 {
-const string PATH_TEX = "data\\TEXTURE\\MATERIAL\\ice001.jpg";	// テクスチャパス
+const string PATH_TEX = "data\\TEXTURE\\MATERIAL\\ice001.jpg";				// テクスチャパス
+const string PATH_TEX_OVERRAY = "data\\TEXTURE\\MATERIAL\\icemask.jpg";	// オーバレイテクスチャパス
 const float SIZE_INIT = 100.0f;	// 初期サイズ
 const float HEIGHT_ICE = 50.0f;	// 氷の高さ
 const int NUM_CORNER = 6;	// 角の数
@@ -154,6 +155,9 @@ void CIce::CreateMesh(void)
 			m_pUp->SetRotation(ROT_UP_INIT);
 			int nIdxTexture = Texture::GetIdx(&PATH_TEX[0]);
 			m_pUp->SetIdxTexture(nIdxTexture);
+
+			int nIdxTextureOverray = Texture::GetIdx(&PATH_TEX_OVERRAY[0]);
+			m_pUp->SetIdxTextureOverRay(nIdxTextureOverray);
 		}
 	}
 
