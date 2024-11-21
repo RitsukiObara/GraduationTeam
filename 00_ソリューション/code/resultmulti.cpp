@@ -28,13 +28,22 @@
 #include "debugproc.h"
 #include "UI.h"
 #include "gameManager.h"
-#include "selectmodepenguin.h"
 
 //*****************************************************
 // 定数定義
 //*****************************************************
 namespace
 {
+	namespace Penguin
+	{
+		const D3DXVECTOR3 WINNER_POS = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 勝者の位置
+		const vector<D3DXVECTOR3> LOSER_POS =
+		{
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f)
+		};
+	}
 	namespace manual
 	{
 		const char* PATH = "data\\TEXTURE\\UI\\tutorial00.jpg";	// パス
