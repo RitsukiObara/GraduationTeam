@@ -33,14 +33,12 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CCamera *CManager::m_pCamera = nullptr;	// カメラのポインタ
-CLight *CManager::m_pLight = nullptr;	// ライトのポインタ
-CMyEffekseer* CManager::m_pMyEffekseer = nullptr;  // エフェクシアのポインタ
-CScene *CManager::m_pScene = nullptr;	// シーンへのポインタ
+CCamera *CManager::m_pCamera = nullptr;					// カメラのポインタ
+CMyEffekseer* CManager::m_pMyEffekseer = nullptr;		// エフェクシアのポインタ
+CScene *CManager::m_pScene = nullptr;					// シーンへのポインタ
 CScene::MODE CManager::m_mode = CScene::MODE_GAME;	// 現在のモード
-int CManager::m_nScore = 0;	// スコア保存用
-float CManager::m_fDeltaTime = 0.0f;	// 前回のフレームから経過した時間
-CManager *CManager::m_pManager = nullptr;	// 自身のポインタ
+float CManager::m_fDeltaTime = 0.0f;					// 前回のフレームから経過した時間
+CManager *CManager::m_pManager = nullptr;				// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -251,12 +249,6 @@ void CManager::Update(void)
 	if (pDebugProc != nullptr)
 	{
 		pDebugProc->Update();
-	}
-
-	if (m_pLight != nullptr)
-	{
-		// ライトの更新
-		m_pLight->Update();
 	}
 
 	if (CInputKeyboard::GetInstance() != nullptr)

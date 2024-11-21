@@ -36,31 +36,18 @@ private:
 };
 
 //****************************************
-// 勝者ジャンプステート
-//****************************************
-class CNPCPenguinState_Jump : public INPCPenguinState
-{
-public:
-	CNPCPenguinState_Jump() { m_nCounter = 0; }
-	~CNPCPenguinState_Jump() {}
-	HRESULT Init(CNPCPenguin* pPenguin);
-	void Uninit(void);
-	void Update(CNPCPenguin* pPenguin);
-private:
-	int m_nCounter;	// ステート実行カウンタ
-};
-
-//****************************************
 // 敗者逃げステート
 //****************************************
 class CNPCPenguinState_Flee : public INPCPenguinState
 {
 public:
-	CNPCPenguinState_Flee() {}
+	CNPCPenguinState_Flee(D3DXVECTOR3 centorPos) : c_centorPos(centorPos){}
 	~CNPCPenguinState_Flee() {}
 	HRESULT Init(CNPCPenguin* pPenguin);
 	void Uninit(void);
 	void Update(CNPCPenguin* pPenguin);
+private:
+	const D3DXVECTOR3 c_centorPos;	// 回転の中心
 };
 
 #endif

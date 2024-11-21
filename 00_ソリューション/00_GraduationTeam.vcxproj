@@ -195,6 +195,7 @@
     <ClCompile Include="code\playerselect.cpp" />
     <ClCompile Include="code\rankingSingle.cpp" />
     <ClCompile Include="code\resultmulti.cpp" />
+    <ClCompile Include="code\resultseal.cpp" />
     <ClCompile Include="code\resultSingleLose.cpp" />
     <ClCompile Include="code\resultSingleWin.cpp" />
     <ClCompile Include="code\selectmode.cpp" />
@@ -204,6 +205,7 @@
     <ClCompile Include="code\selectStagePenguin.cpp" />
     <ClCompile Include="code\shadow.cpp" />
     <ClCompile Include="code\snow.cpp" />
+    <ClCompile Include="code\tutorialManager.cpp" />
     <ClCompile Include="code\UI_combo.cpp" />
     <ClCompile Include="code\debris.cpp" />
     <ClCompile Include="code\debrisspawner.cpp" />
@@ -317,6 +319,7 @@
     <ClInclude Include="code\playerselect.h" />
     <ClInclude Include="code\rankingSingle.h" />
     <ClInclude Include="code\resultmulti.h" />
+    <ClInclude Include="code\resultseal.h" />
     <ClInclude Include="code\resultSingleLose.h" />
     <ClInclude Include="code\resultSingleWin.h" />
     <ClInclude Include="code\selectmode.h" />
@@ -326,6 +329,7 @@
     <ClInclude Include="code\selectStagePenguin.h" />
     <ClInclude Include="code\shadow.h" />
     <ClInclude Include="code\snow.h" />
+    <ClInclude Include="code\tutorialManager.h" />
     <ClInclude Include="code\UI_combo.h" />
     <ClInclude Include="code\debris.h" />
     <ClInclude Include="code\debrisSpawner.h" />

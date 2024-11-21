@@ -31,7 +31,7 @@
 namespace
 {
 const string PATH_TEX = "data\\TEXTURE\\MATERIAL\\ice001.jpg";				// テクスチャパス
-const string PATH_TEX_OVERRAY = "data\\TEXTURE\\MATERIAL\\icemask.jpg";	// オーバレイテクスチャパス
+const string PATH_TEX_OVERRAY = "data\\TEXTURE\\MATERIAL\\iceanimation.jpg";	// オーバレイテクスチャパス
 const float SIZE_INIT = 100.0f;	// 初期サイズ
 const float HEIGHT_ICE = 50.0f;	// 氷の高さ
 const int NUM_CORNER = 6;	// 角の数
@@ -65,9 +65,10 @@ const int MIN_TIME = 2;	// 生成にかかる最小時間
 //------------------------------
 namespace flash
 {
-const float SPEED_SCROLL = 0.04f;	// スクロールの速度
-const int MAX_TIME = 14;	// 再生にかかる最大時間
-const int MIN_TIME = 7;	// 再生にかかる最小時間
+const int MAX_TIME = 14;			// 再生にかかる最大時間
+const int MIN_TIME = 7;				// 再生にかかる最小時間
+const int FRAME_ANIMATION = 2;		// アニメーションを切り替えるフレーム
+const int PATERN_ANIM = 5;			// アニメーションのパターン
 }
 }
 
@@ -82,7 +83,7 @@ std::vector<CIce*> CIce::m_Vector = {};	// 自身のポインタ
 //=====================================================
 CIce::CIce(int nPriority) : CGameObject(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false), m_bPeck(false),
 m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false), m_bStop(nullptr), m_fHeightFromOcean(0.0f), m_shake(E_TypeShake::SHAKE_NONE),
-m_fHeightDestFromOcean(0.0f), m_abRipleFrag()
+m_fHeightDestFromOcean(0.0f), m_abRipleFrag(), m_nCntAnimFlash(0)
 {
 	s_nNumAll++;
 	m_Vector.push_back(this);
@@ -423,7 +424,8 @@ void CIce::StartFlash(void)
 	{
 		pVtx[i].tex2 = pVtx[i].tex;
 
-		pVtx[i].tex2.x -= 1.0f;
+		pVtx[i].tex2.x *= 1.0f / flash::PATERN_ANIM;	// アニメーション基準に縮める
+		pVtx[i].tex2.x += 1.0f / flash::PATERN_ANIM * flash::PATERN_ANIM;
 	}
 
 	// 頂点バッファのアンロック
@@ -440,10 +442,9 @@ void CIce::StartFlash(void)
 //=====================================================
 void CIce::Flash(void)
 {
-	// タイマーでのせき止め
 	m_fTimerFlash += CManager::GetDeltaTime();
 
-	if (m_fTimerFlash <= m_fTimeStartFlash)
+	if (m_fTimerFlash < m_fTimeStartFlash)
 		return;
 
 	if (m_pUp == nullptr)
@@ -465,17 +466,25 @@ void CIce::Flash(void)
 
 	for (int i = 0; i < nNumVtx + 2; i++)
 	{
-		pVtx[i].tex2.x += flash::SPEED_SCROLL;
+		pVtx[i].tex2 = pVtx[i].tex;
 
-		if (pVtx[i].tex2.x < 1.0f)
-			bPassAll = false;	// ひとつでも通過していなかったら、フラグを折る
+		pVtx[i].tex2.x *= 1.0f / flash::PATERN_ANIM;	// アニメーション基準に縮める
+		pVtx[i].tex2.x += 1.0f / flash::PATERN_ANIM * m_nPaternAnim;
 	}
-
-	if (bPassAll)
-		StartFlash();	// 全頂点が通過してたら光る処理をリセット
 
 	// 頂点バッファのアンロック
 	pVtxBuff->Unlock();
+
+	// カウンター加算
+	m_nCntAnimFlash++;
+
+	if (m_nCntAnimFlash % flash::FRAME_ANIMATION == 0)
+	{
+		m_nPaternAnim = (m_nPaternAnim + 1) % flash::PATERN_ANIM;
+
+		if (m_nPaternAnim == 0)
+			StartFlash();	// アニメーションが戻ったらリセット
+	}
 }
 
 //=====================================================

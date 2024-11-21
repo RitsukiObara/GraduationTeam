@@ -319,9 +319,7 @@ CIce *CIceManager::CreateFlowIce(int nGridV, int nGridH, CIce::E_Type type)
 
 	// 偶数行だったらずらす
 	if (nGridV % 2 == 0)
-	{
 		pos.x += WIDTH_GRID * 0.5f;
-	}
 
 	// 氷のトランスフォーム設定
 	pIce->SetPosition(pos);
