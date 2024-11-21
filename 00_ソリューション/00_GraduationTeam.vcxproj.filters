@@ -435,6 +435,9 @@
     <ClCompile Include="code\npcpenguinstate_selectmode.cpp">
       <Filter>ソース ファイル\character\npcpenguin\state</Filter>
     </ClCompile>
+    <ClCompile Include="code\snow.cpp">
+      <Filter>ソース ファイル\VFX</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\scene.h">
@@ -790,6 +793,9 @@
     </ClInclude>
     <ClInclude Include="code\npcpenguinstate_resultmulti.h">
       <Filter>ソース ファイル\character\npcpenguin\state</Filter>
+    </ClInclude>
+    <ClInclude Include="code\snow.h">
+      <Filter>ソース ファイル\VFX</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
