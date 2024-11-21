@@ -1,36 +1,39 @@
 //*****************************************************
 //
-// チュートリアル処理[tutorial.h]
+// チュートリアルプレイヤーの処理[PlayerTutorial.h]
 // Author:髙山桃也
 //
 //*****************************************************
-#ifndef _TUTORIAL_H_
-#define _TUTORIAL_H_
+#ifndef _PlayerTutorial_H_
+#define _PlayerTutorial_H_
 
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "scene.h"
+#include "player.h"
 
 //*****************************************************
 // 前方宣言
-//*****************************************************
-class CUI;
+//*****************************************************s
 
 //*****************************************************
 // クラスの定義
 //*****************************************************
-class CTutorial : public CScene
+class CPlayerTutorial : public CPlayer
 {
 public:
-	CTutorial();	// コンストラクタ
-	~CTutorial();	// デストラクタ
+	CPlayerTutorial(int nPriority = 5);	// コンストラクタ
+	~CPlayerTutorial();	// デストラクタ
 
-	virtual HRESULT Init(void);
-	virtual void Uninit(void);
-	virtual void Update(void);
-	virtual void Draw(void);
-	
+	// メンバ関数
+	HRESULT Init(void);
+	void Uninit(void);
+	void Update(void);
+	void Draw(void);
+
+	// 静的メンバ関数
+	static CPlayerTutorial* Create(void);										// 生成処理
+
 private:
 };
 
