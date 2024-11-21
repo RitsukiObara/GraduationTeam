@@ -53,7 +53,7 @@ CFan3D *CFan3D::Create(int nPriority, int nNumVtx)
 
 	if (pFan3D != nullptr)
 	{
-		pFan3D->SetNumVtx(nNumVtx + 2);
+		pFan3D->SetNumVtx(nNumVtx);
 
 		// ‰Šú‰»ˆ—
 		pFan3D->Init();
@@ -143,7 +143,7 @@ void CFan3D::SetVtx(void)
 			float fAngle = (fAngleMax * fRateAngle) * ((float)(i - 1) / (float)nNumVtx);
 
 			universal::LimitRot(&fAngle);
-
+			
 			pVtx[i].pos =
 			{
 				sinf(fAngle) * fRadius,
