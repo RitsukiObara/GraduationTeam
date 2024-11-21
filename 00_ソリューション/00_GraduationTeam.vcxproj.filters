@@ -438,6 +438,9 @@
     <ClCompile Include="code\snow.cpp">
       <Filter>ソース ファイル\VFX</Filter>
     </ClCompile>
+    <ClCompile Include="code\tutorialManager.cpp">
+      <Filter>ソース ファイル\scene\tutorial</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\scene.h">
@@ -796,6 +799,9 @@
     </ClInclude>
     <ClInclude Include="code\snow.h">
       <Filter>ソース ファイル\VFX</Filter>
+    </ClInclude>
+    <ClInclude Include="code\tutorialManager.h">
+      <Filter>ソース ファイル\scene\tutorial</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
