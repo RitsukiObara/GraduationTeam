@@ -59,6 +59,16 @@ namespace ripple
 const int MAX_TIME = 7;	// 生成にかかる最大時間
 const int MIN_TIME = 2;	// 生成にかかる最小時間
 }
+
+//------------------------------
+// 光の定数
+//------------------------------
+namespace flash
+{
+const float SPEED_SCROLL = 0.04f;	// スクロールの速度
+const int MAX_TIME = 14;	// 再生にかかる最大時間
+const int MIN_TIME = 7;	// 再生にかかる最小時間
+}
 }
 
 //*****************************************************
@@ -138,6 +148,9 @@ HRESULT CIce::Init(void)
 	m_fHeightFromOcean = HEIGHT_DEFAULT_FROM_OCEAN;
 	m_fHeightDestFromOcean = HEIGHT_DEFAULT_FROM_OCEAN;
 
+	// 光る処理の初期化
+	StartFlash();
+
 	return S_OK;
 }
 
@@ -158,6 +171,7 @@ void CIce::CreateMesh(void)
 
 			int nIdxTextureOverray = Texture::GetIdx(&PATH_TEX_OVERRAY[0]);
 			m_pUp->SetIdxTextureOverRay(nIdxTextureOverray);
+			m_pUp->SetVtx();
 		}
 	}
 
@@ -230,6 +244,9 @@ void CIce::Update(void)
 
 	// さざ波の処理
 	Ripples();
+
+	// 光る処理
+	Flash();
 }
 
 //=====================================================
@@ -380,6 +397,85 @@ void CIce::Ripples(void)
 	int nRand = universal::RandRange(ripple::MAX_TIME, ripple::MIN_TIME);
 
 	m_fSpawnTimeRipples = (float)nRand;
+}
+
+//=====================================================
+// 光る処理の開始
+//=====================================================
+void CIce::StartFlash(void)
+{
+	if (m_pUp == nullptr)
+		return;
+
+	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = *m_pUp->GetVtxBuff();
+	VERTEX_3D* pVtx;
+
+	if (pVtxBuff == nullptr)
+		return;
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// スクロールをリセット
+	int nNumVtx = m_pUp->GetNumVtx();
+
+	for (int i = 0; i < nNumVtx + 2; i++)
+	{
+		pVtx[i].tex2 = pVtx[i].tex;
+
+		pVtx[i].tex2.x -= 1.0f;
+	}
+
+	// 頂点バッファのアンロック
+	pVtxBuff->Unlock();
+
+	// タイマーの再設定
+	m_fTimerFlash = 0.0f;
+	int nRand = universal::RandRange(flash::MAX_TIME, flash::MIN_TIME);
+	m_fTimeStartFlash = (float)nRand;
+}
+
+//=====================================================
+// きらりと光る処理
+//=====================================================
+void CIce::Flash(void)
+{
+	// タイマーでのせき止め
+	m_fTimerFlash += CManager::GetDeltaTime();
+
+	if (m_fTimerFlash <= m_fTimeStartFlash)
+		return;
+
+	if (m_pUp == nullptr)
+		return;
+
+	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = *m_pUp->GetVtxBuff();
+	VERTEX_3D* pVtx;
+
+	if (pVtxBuff == nullptr)
+		return;
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// スクロールさせる
+	int nNumVtx = m_pUp->GetNumVtx();
+
+	bool bPassAll = true;	// 全頂点が通過したフラグ
+
+	for (int i = 0; i < nNumVtx + 2; i++)
+	{
+		pVtx[i].tex2.x += flash::SPEED_SCROLL;
+
+		if (pVtx[i].tex2.x < 1.0f)
+			bPassAll = false;	// ひとつでも通過していなかったら、フラグを折る
+	}
+
+	if (bPassAll)
+		StartFlash();	// 全頂点が通過してたら光る処理をリセット
+
+	// 頂点バッファのアンロック
+	pVtxBuff->Unlock();
 }
 
 //=====================================================

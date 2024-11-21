@@ -52,7 +52,7 @@ public:
 	float GetAngleMax(void) { return m_fAngleMax; }
 
 	void SetNumVtx(int nValue) { m_nNumVtx = nValue; }
-	int GetNumVtx(void) { return m_nNumVtx; }
+	int GetNumVtx(void) { return m_nNumVtx + 2; }
 
 	LPDIRECT3DVERTEXBUFFER9 *GetVtxBuff(void) { return &m_pVtxBuff; }
 
