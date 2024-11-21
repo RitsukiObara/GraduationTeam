@@ -292,7 +292,10 @@ CIce *CIceManager::CreateIce(int nGridV, int nGridH, CIce::E_Type type)
 	// 氷のトランスフォーム設定
 	pIce->SetPosition(m_aGrid[nGridV][nGridH].pos);
 	pIce->SetTransform(Grid::SIZE);
-	
+
+	// 光る処理の初期化
+	pIce->StartFlash();
+
 	// 氷を配列にセット
 	m_aGrid[nGridV][nGridH].pIce = pIce;
 
@@ -316,13 +319,14 @@ CIce *CIceManager::CreateFlowIce(int nGridV, int nGridH, CIce::E_Type type)
 
 	// 偶数行だったらずらす
 	if (nGridV % 2 == 0)
-	{
 		pos.x += WIDTH_GRID * 0.5f;
-	}
 
 	// 氷のトランスフォーム設定
 	pIce->SetPosition(pos);
 	pIce->SetTransform(Grid::SIZE);
+
+	// 光る処理の初期化
+	pIce->StartFlash();
 
 	return pIce;
 }

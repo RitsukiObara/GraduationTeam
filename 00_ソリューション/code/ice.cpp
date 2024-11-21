@@ -30,7 +30,8 @@
 //*****************************************************
 namespace
 {
-const string PATH_TEX = "data\\TEXTURE\\MATERIAL\\ice001.jpg";	// テクスチャパス
+const string PATH_TEX = "data\\TEXTURE\\MATERIAL\\ice001.jpg";				// テクスチャパス
+const string PATH_TEX_OVERRAY = "data\\TEXTURE\\MATERIAL\\iceanimation.jpg";	// オーバレイテクスチャパス
 const float SIZE_INIT = 100.0f;	// 初期サイズ
 const float HEIGHT_ICE = 50.0f;	// 氷の高さ
 const int NUM_CORNER = 6;	// 角の数
@@ -58,6 +59,17 @@ namespace ripple
 const int MAX_TIME = 7;	// 生成にかかる最大時間
 const int MIN_TIME = 2;	// 生成にかかる最小時間
 }
+
+//------------------------------
+// 光の定数
+//------------------------------
+namespace flash
+{
+const int MAX_TIME = 14;			// 再生にかかる最大時間
+const int MIN_TIME = 7;				// 再生にかかる最小時間
+const int FRAME_ANIMATION = 2;		// アニメーションを切り替えるフレーム
+const int PATERN_ANIM = 5;			// アニメーションのパターン
+}
 }
 
 //*****************************************************
@@ -71,7 +83,7 @@ std::vector<CIce*> CIce::m_Vector = {};	// 自身のポインタ
 //=====================================================
 CIce::CIce(int nPriority) : CGameObject(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false), m_bPeck(false),
 m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false), m_bStop(nullptr), m_fHeightFromOcean(0.0f), m_shake(E_TypeShake::SHAKE_NONE),
-m_fHeightDestFromOcean(0.0f), m_abRipleFrag()
+m_fHeightDestFromOcean(0.0f), m_abRipleFrag(), m_nCntAnimFlash(0)
 {
 	s_nNumAll++;
 	m_Vector.push_back(this);
@@ -137,6 +149,9 @@ HRESULT CIce::Init(void)
 	m_fHeightFromOcean = HEIGHT_DEFAULT_FROM_OCEAN;
 	m_fHeightDestFromOcean = HEIGHT_DEFAULT_FROM_OCEAN;
 
+	// 光る処理の初期化
+	StartFlash();
+
 	return S_OK;
 }
 
@@ -154,6 +169,10 @@ void CIce::CreateMesh(void)
 			m_pUp->SetRotation(ROT_UP_INIT);
 			int nIdxTexture = Texture::GetIdx(&PATH_TEX[0]);
 			m_pUp->SetIdxTexture(nIdxTexture);
+
+			int nIdxTextureOverray = Texture::GetIdx(&PATH_TEX_OVERRAY[0]);
+			m_pUp->SetIdxTextureOverRay(nIdxTextureOverray);
+			m_pUp->SetVtx();
 		}
 	}
 
@@ -226,6 +245,9 @@ void CIce::Update(void)
 
 	// さざ波の処理
 	Ripples();
+
+	// 光る処理
+	Flash();
 }
 
 //=====================================================
@@ -376,6 +398,93 @@ void CIce::Ripples(void)
 	int nRand = universal::RandRange(ripple::MAX_TIME, ripple::MIN_TIME);
 
 	m_fSpawnTimeRipples = (float)nRand;
+}
+
+//=====================================================
+// 光る処理の開始
+//=====================================================
+void CIce::StartFlash(void)
+{
+	if (m_pUp == nullptr)
+		return;
+
+	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = *m_pUp->GetVtxBuff();
+	VERTEX_3D* pVtx;
+
+	if (pVtxBuff == nullptr)
+		return;
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// スクロールをリセット
+	int nNumVtx = m_pUp->GetNumVtx();
+
+	for (int i = 0; i < nNumVtx + 2; i++)
+	{
+		pVtx[i].tex2 = pVtx[i].tex;
+
+		pVtx[i].tex2.x *= 1.0f / flash::PATERN_ANIM;	// アニメーション基準に縮める
+		pVtx[i].tex2.x += 1.0f / flash::PATERN_ANIM * flash::PATERN_ANIM;
+	}
+
+	// 頂点バッファのアンロック
+	pVtxBuff->Unlock();
+
+	// タイマーの再設定
+	m_fTimerFlash = 0.0f;
+	int nRand = universal::RandRange(flash::MAX_TIME, flash::MIN_TIME);
+	m_fTimeStartFlash = (float)nRand;
+}
+
+//=====================================================
+// きらりと光る処理
+//=====================================================
+void CIce::Flash(void)
+{
+	m_fTimerFlash += CManager::GetDeltaTime();
+
+	if (m_fTimerFlash < m_fTimeStartFlash)
+		return;
+
+	if (m_pUp == nullptr)
+		return;
+
+	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = *m_pUp->GetVtxBuff();
+	VERTEX_3D* pVtx;
+
+	if (pVtxBuff == nullptr)
+		return;
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// スクロールさせる
+	int nNumVtx = m_pUp->GetNumVtx();
+
+	bool bPassAll = true;	// 全頂点が通過したフラグ
+
+	for (int i = 0; i < nNumVtx + 2; i++)
+	{
+		pVtx[i].tex2 = pVtx[i].tex;
+
+		pVtx[i].tex2.x *= 1.0f / flash::PATERN_ANIM;	// アニメーション基準に縮める
+		pVtx[i].tex2.x += 1.0f / flash::PATERN_ANIM * m_nPaternAnim;
+	}
+
+	// 頂点バッファのアンロック
+	pVtxBuff->Unlock();
+
+	// カウンター加算
+	m_nCntAnimFlash++;
+
+	if (m_nCntAnimFlash % flash::FRAME_ANIMATION == 0)
+	{
+		m_nPaternAnim = (m_nPaternAnim + 1) % flash::PATERN_ANIM;
+
+		if (m_nPaternAnim == 0)
+			StartFlash();	// アニメーションが戻ったらリセット
+	}
 }
 
 //=====================================================

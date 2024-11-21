@@ -30,6 +30,7 @@ CFan3D::CFan3D(int nPriority) : CFan(nPriority)
 	m_bBillboard = false;
 	ZeroMemory(&m_mtxWorld, sizeof(D3DXMATRIX));
 	m_nStartOffsetCount = 0;
+	m_nIdxTextureOverRay = -1;
 }
 
 //=====================================================
@@ -134,6 +135,7 @@ void CFan3D::SetVtx(void)
 		// 中心の頂点の設定
 		pVtx[0].pos = D3DXVECTOR3{ 0.0f,0.0f,0.0f };
 		pVtx[0].tex = D3DXVECTOR2{ 0.5f,0.5f };
+		pVtx[0].tex2 = D3DXVECTOR2{ 0.5f,0.5f };
 		pVtx[0].col = GetCol();
 
 		for (int i = 1;i < nNumVtx + 2;i++)
@@ -141,7 +143,7 @@ void CFan3D::SetVtx(void)
 			float fAngle = (fAngleMax * fRateAngle) * ((float)(i - 1) / (float)nNumVtx);
 
 			universal::LimitRot(&fAngle);
-
+			
 			pVtx[i].pos =
 			{
 				sinf(fAngle) * fRadius,
@@ -158,6 +160,7 @@ void CFan3D::SetVtx(void)
 			};
 
 			pVtx[i].tex = tex;
+			pVtx[i].tex2 = tex;
 
 			pVtx[i].col = GetCol();
 		}
@@ -267,13 +270,30 @@ void CFan3D::Draw(void)
 		// カリングを無効化
 		pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
-		// テクスチャ設定
-		int nIdxTexture = GetIdxTexture();
-		LPDIRECT3DTEXTURE9 pTexture = CTexture::GetInstance()->GetAddress(nIdxTexture);
-		pDevice->SetTexture(0, pTexture);
+		// 1枚目のテクスチャ設定
+		int nIdxTexture1 = GetIdxTexture();
+		LPDIRECT3DTEXTURE9 pBaseTexture = CTexture::GetInstance()->GetAddress(nIdxTexture1);
+		pDevice->SetTexture(0, pBaseTexture);
 
-		// ポリゴンの描画
+		// 2枚目のテクスチャ設定
+		LPDIRECT3DTEXTURE9 pTexture2 = CTexture::GetInstance()->GetAddress(m_nIdxTextureOverRay);
+		pDevice->SetTexture(1, pTexture2);
+
+		// テクスチャステージの設定（2枚目のテクスチャ）
+		pDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);	// 2枚目のテクスチャの色
+		pDevice->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);	// 現在の色（1枚目）
+		pDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MULTIPLYADD);		// 色を加算
+		pDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);			// 2番目のUVを使用
+
+		// 描画
 		CFan::Draw();
+
+		// 設定を元に戻す
+		pDevice->SetTexture(1, NULL); // 2枚目のテクスチャを解除
+		pDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATE);		// 色を加算
+		pDevice->SetTextureStageState(0,D3DTSS_ALPHAOP,D3DTOP_MODULATE);
+		pDevice->SetTextureStageState(0,D3DTSS_ALPHAARG1,D3DTA_TEXTURE);
+		pDevice->SetTextureStageState(0,D3DTSS_ALPHAARG2,D3DTA_CURRENT);
 
 		// カリングを有効化
 		pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
