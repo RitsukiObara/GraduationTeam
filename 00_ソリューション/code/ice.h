@@ -66,7 +66,7 @@ public:
 	void ChangeState(CIceState *pState);
 	bool IsOnTopAnyObject(void);	// 何かしらが乗ってる判定
 	void SetColor(D3DXCOLOR col);	// 色の設定
-	void StartFlash(void);	// 光る処理の開始
+	void StartFlash(void);			// 光る処理の開始
 
 	// 変数取得・設定関数
 	void SetState(E_State state) { m_state = state; }	// 状態
@@ -127,6 +127,8 @@ private:
 
 	float m_fTimerFlash;		// 光のタイマー
 	float m_fTimeStartFlash;	// 光の開始までの時間
+	int m_nCntAnimFlash;		// 光のアニメーションカウンター
+	int m_nPaternAnim;			// アニメーションパターン
 
 	// 静的メンバ変数
 	static int s_nNumAll;	// 総数
