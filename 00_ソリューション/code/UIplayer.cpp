@@ -10,6 +10,8 @@
 //*****************************************************
 #include "UIplayer.h"
 #include "gameManager.h"
+#include "manager.h"
+#include "texture.h"
 
 //*****************************************************
 // 定数定義
@@ -21,13 +23,37 @@ namespace icon
 const float WIDTH = 0.05f;							// 幅
 const float HEIGHT = 0.086f;						// 高さ
 const D3DXVECTOR3 POS_INIT = { 0.5f,0.3f,0.0f };	// 初期位置
+const D3DXVECTOR3 POS_DEST[] =						// 目標位置
+{
+	{ WIDTH,HEIGHT,0.0f },
+	{ 1.0f - WIDTH,HEIGHT,0.0f },
+	{ WIDTH,1.0f - HEIGHT,0.0f },
+	{ 1.0f - WIDTH,1.0f - HEIGHT,0.0f },
+};
+const float TIME_MOVE = 3.0f;	// 移動にかかる時間
+const string PATH_TEX[] =		// テクスチャパス
+{
+	"data\\TEXTURE\\UI\\playericon_00.png",
+	"data\\TEXTURE\\UI\\playericon_01.png",
+	"data\\TEXTURE\\UI\\playericon_02.png",
+	"data\\TEXTURE\\UI\\playericon_03.png",
+};
 }
 }
+
+//*****************************************************
+// 静的メンバ変数宣言
+//*****************************************************
+CUIPlayer::FuncUpdateState CUIPlayer::s_aFuncUpdateState[] =	// 状態更新関数
+{
+	nullptr,					// 何でもない状態
+	&CUIPlayer::UpdateScatter,	// 散らばる状態
+};
 
 //=====================================================
 // コンストラクタ
 //=====================================================
-CUIPlayer::CUIPlayer(int nPriority) : CObject(nPriority), m_apIconPlayer()
+CUIPlayer::CUIPlayer(int nPriority) : CObject(nPriority), m_apIconPlayer(), m_state(E_State::STATE_NONE), m_fTimerScatter(0.0f)
 {
 
 }
@@ -76,8 +102,13 @@ HRESULT CUIPlayer::Init(void)
 
 		// UIの初期設定
 		m_apIconPlayer[i]->SetSize(icon::WIDTH, icon::HEIGHT);
+		D3DXVECTOR3 pos = icon::POS_INIT;
+		pos.x += icon::WIDTH * i;
 		m_apIconPlayer[i]->SetPosition(icon::POS_INIT);
 		m_apIconPlayer[i]->SetVtx();
+
+		int nIdxTexture = Texture::GetIdx(&icon::PATH_TEX[i][0]);
+		m_apIconPlayer[i]->SetIdxTexture(nIdxTexture);
 	}
 
 	return S_OK;
@@ -98,7 +129,44 @@ void CUIPlayer::Uninit(void)
 //=====================================================
 void CUIPlayer::Update(void)
 {
+	assert(m_state > -1 && m_state < STATE_MAX);
+	if (s_aFuncUpdateState[m_state] != nullptr)
+	{ // 更新関数が指定されている場合
+		// 各状態ごとの更新
+		(this->*(s_aFuncUpdateState[m_state]))();
+	}
+}
 
+//=====================================================
+// 散らばり始める処理
+//=====================================================
+void CUIPlayer::StartScatter(void)
+{
+	m_state = E_State::STATE_SCATTER;
+}
+
+//=====================================================
+// 散らばる更新
+//=====================================================
+void CUIPlayer::UpdateScatter(void)
+{
+	if (m_fTimerScatter < icon::TIME_MOVE)
+		m_fTimerScatter += CManager::GetDeltaTime();
+
+	float fRate = easing::EaseOutExpo(m_fTimerScatter);
+
+	for (int i = 0; i < NUM_PLAYER; i++)
+	{
+		if (m_apIconPlayer[i] == nullptr)
+			continue;
+
+		D3DXVECTOR3 vecDiff = icon::POS_DEST[i] - icon::POS_INIT;
+
+		D3DXVECTOR3 pos = icon::POS_INIT + vecDiff * fRate;
+
+		m_apIconPlayer[i]->SetPosition(pos);
+		m_apIconPlayer[i]->SetVtx();
+	}
 }
 
 //=====================================================

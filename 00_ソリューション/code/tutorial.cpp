@@ -309,9 +309,6 @@ void CTutorial::Debug(void)
 	if (pDebugProc == nullptr || pInputMgr == nullptr)
 		return;
 
-	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_PAUSE))	// 状態進める
-		ProgressState();
-
 	pDebugProc->Print("\nチュートリアル情報========================================");
 	pDebugProc->Print("\n状態[%d]", m_state);
 	pDebugProc->Print("\nカウンター[%d]", m_nCntProgress);
