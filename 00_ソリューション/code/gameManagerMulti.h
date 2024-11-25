@@ -39,7 +39,7 @@ public:
 private:
 	// メンバ関数
 	void UpdateStart(void) override;		// 開始状態の更新
-	void UpdateNormal(void) override;	// 通常状態の更新
+	void UpdateMove(void) override;	// 通常状態の更新
 	void ManagePlayer(void);	// プレイヤーの管理
 	void DeathPlayer(int nIdx);	// プレイヤーの死亡
 	void CheckEndGame(void);	// ゲーム終了のチェック

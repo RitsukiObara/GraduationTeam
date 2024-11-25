@@ -29,6 +29,11 @@ namespace
 	const int MIN_ROT_MOVE = -3;	// 最低向き速度
 }
 
+//*****************************************************
+// 静的メンバ変数宣言
+//*****************************************************
+int CSnow::m_nsnowCnt = 0;	// 雪が来るまでの頻度
+
 //=====================================================
 // コンストラクタ
 //=====================================================
@@ -56,6 +61,8 @@ HRESULT CSnow::Init(void)
 
 	SetMode(CPolygon3D::MODE_BILLBOARD);
 	EnableZtest(true);
+
+	m_nsnowCnt = 0;
 
 	return S_OK;
 }
@@ -196,4 +203,27 @@ void CSnow::Move(void)
 
 	// 頂点情報設定
 	SetVtx();
+}
+
+//=====================================================
+// 雪の設置処理
+//=====================================================
+void CSnow::SetSnow(int nMaxPos_X, int nMinPos_X, float fHeight, int nMaxRadius, int nMinRadius, int nLife, D3DXVECTOR3 move, int nFrequency)
+{
+	// 雪の場所を設定
+	float snowPos = (float)universal::RandRange(nMaxPos_X, nMinPos_X);
+
+	// 雪の半径を設定
+	float snowRadius = (float)universal::RandRange(nMaxRadius, nMinRadius);
+
+	m_nsnowCnt++;
+
+	if (m_nsnowCnt >= nFrequency)
+	{
+		// 雪を生成
+		CSnow::Create(D3DXVECTOR3(snowPos, fHeight, 0.0f), snowRadius, nLife,
+			D3DXVECTOR3(move.x, move.y, move.z));
+
+		m_nsnowCnt = 0;
+	}
 }
