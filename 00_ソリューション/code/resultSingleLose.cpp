@@ -89,6 +89,9 @@ HRESULT CResultSingleLose::Init(void)
 	// e‚Ìó‘ÔÝ’è
 	CResultSingle::SetState(CResultSingle::E_State::STATE_FADE);
 
+	m_select = SELECT_CONTINUE;
+	m_apMenu[SELECT_QUIT]->SetCol(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
+
 	return S_OK;
 }
 

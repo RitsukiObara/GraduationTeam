@@ -149,8 +149,11 @@ void CGame::Update(void)
 	{
 		if (pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE))
 		{
-			if (m_pPause == nullptr)
-				m_pPause = CPause::Create();
+			if (m_state != STATE_RESULT)
+			{
+				if (m_pPause == nullptr)
+					m_pPause = CPause::Create();
+			}
 		}
 	}
 
@@ -160,8 +163,12 @@ void CGame::Update(void)
 	// 状態管理
 	ManageState();
 
-	// ポーズの更新
-	UpdatePause();
+	if (m_state != STATE_RESULT)
+	{
+		// ポーズの更新
+		UpdatePause();
+	}
+
 
 	if (pKeyboard->GetTrigger(DIK_L))
 	{// アザラシ生成

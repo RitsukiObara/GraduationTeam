@@ -27,12 +27,12 @@ public:
 	// 列挙型定義
 	enum E_State
 	{// 状態
-		STATE_NONE = 0,	// 何でもない状態
-		STATE_MOVE,		// 移動状態
-		STATE_PECK,		// 突っつき状態
-		STATE_BREAK,	// 破壊状態
-		STATE_EXPLAIN,	// 説明状態
-		STATE_END,		// 終了状態
+		STATE_NONE = 0,			// 何でもない状態
+		STATE_MOVE,				// 移動状態
+		STATE_PECK,				// 突っつき状態
+		STATE_EXPLAIN_BREAK,	// 破壊説明
+		STATE_EXPLAIN_ENEMY,	// 敵説明
+		STATE_END,				// 終了状態
 		STATE_MAX
 	};
 	CTutorial();	// コンストラクタ
@@ -43,23 +43,28 @@ public:
 	void Update(void) override;
 	void Draw(void) override;
 	
+	void ProgressState(void);	// チュートリアルを進める
+
 	// 変数取得・設定関数
 	void SetState(E_State state) { m_state = state; }	// 状態
 	E_State GetState(void) { return m_state; }
+	int GetCntProgress(void) { return m_nCntProgress; }	// 状態進行カウンター
+	void AddCntProgress(void) { m_nCntProgress++; }
 
 	// 静的メンバ関数
 	static CTutorial *GetInstance(void) { return s_pTutorial; }	// インスタンス取得
 
 private:
 	// メンバ関数
-	void UpdateMove(void);		// 移動状態
-	void UpdateEnd(void);		// 終了状態
-	void Debug(void);			// デバッグ
+	void UpdateEnd(void);				// 終了状態
+	void CheckProgress(void);			// 進行判断
+	void Debug(void);					// デバッグ
 
 	// メンバ変数
 	E_State m_state;				// 状態
 	CTutorialManager *m_pManager;	// チュートリアルマネージャーのポインタ
 	float m_fTimeEnd;				// 終了タイマー
+	int m_nCntProgress;				// 進行カウンター
 
 	// 関数ポインタ型を定義
 	typedef void (CTutorial::*FuncUpdateState)(void);

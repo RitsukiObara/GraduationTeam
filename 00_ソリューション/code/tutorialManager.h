@@ -11,6 +11,7 @@
 // インクルード
 //*****************************************************
 #include "object.h"
+#include "tutorial.h"
 
 //*****************************************************
 // クラスの定義
@@ -22,10 +23,12 @@ public:
 	~CTutorialManager() {};	// デストラクタ
 
 	// メンバ関数
-	virtual HRESULT Init(void);
-	virtual void Uninit(void);
-	virtual void Update(void);
-	virtual void Draw(void);
+	HRESULT Init(void) override;
+	void Uninit(void) override;
+	void Update(void) override;
+	void Draw(void) override;
+
+	void ChangeState(CTutorial::E_State stateNext);	// 状態の変更
 
 	// 静的メンバ関数
 	static CTutorialManager *Create(void);	// 生成処理

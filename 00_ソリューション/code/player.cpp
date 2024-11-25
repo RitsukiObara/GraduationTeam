@@ -886,6 +886,31 @@ void CPlayer::InputPeck(void)
 }
 
 //=====================================================
+// “Ë‚Á‚Â‚«‚Ìˆ—
+//=====================================================
+bool CPlayer::Peck(void)
+{
+	CIceManager* pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return false;
+
+	// “Ë‚Á‚Â‚­ˆ—
+	D3DXVECTOR3 rot = GetRotation();
+	D3DXVECTOR3 pos = GetPosition();
+
+	rot.y += D3DX_PI;
+	universal::LimitRot(&rot.y);
+
+	bool bResultBreak;
+
+	if (pIceManager->PeckIce(m_nGridV, m_nGridH, rot.y, pos,&bResultBreak))
+		m_nTimePeck++;
+
+	return bResultBreak;
+}
+
+//=====================================================
 // •ûŒüUI‚Ì‰ñ“]
 //=====================================================
 void CPlayer::RotationDirUI(int nDir)
@@ -1151,20 +1176,8 @@ void CPlayer::Event(EVENT_INFO* pEventInfo)
 
 	if (nMotion == MOTION::MOTION_PECK)
 	{
-		CIceManager* pIceManager = CIceManager::GetInstance();
-
-		if (pIceManager == nullptr)
-			return;
-
 		// “Ë‚Á‚Â‚­ˆ—
-		D3DXVECTOR3 rot = GetRotation();
-		D3DXVECTOR3 pos = GetPosition();
-
-		rot.y += D3DX_PI;
-		universal::LimitRot(&rot.y);
-
-		if (pIceManager->PeckIce(m_nGridV, m_nGridH, rot.y, pos))
-			m_nTimePeck++;
+		Peck();
 	}
 }
 

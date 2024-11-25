@@ -52,8 +52,8 @@ CTutorial::FuncUpdateState CTutorial::s_aFuncUpdateState[] =	// 状態更新関数
 	nullptr,					// 何でもない状態
 	nullptr,					// 移動状態
 	nullptr,					// 突っつき状態
-	nullptr,					// 破壊状態
-	nullptr,					// 説明状態
+	nullptr,					// 破壊説明
+	nullptr,					// 敵説明
 	&CTutorial::UpdateEnd,		// 終了状態
 };
 
@@ -62,7 +62,7 @@ CTutorial *CTutorial::s_pTutorial = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CTutorial::CTutorial() : m_state(E_State::STATE_NONE)
+CTutorial::CTutorial() : m_state(E_State::STATE_NONE), m_pManager(nullptr), m_fTimeEnd(0.0f) , m_nCntProgress(0)
 {
 	s_pTutorial = this;
 }
@@ -159,20 +159,15 @@ void CTutorial::Update(void)
 		(this->*(s_aFuncUpdateState[m_state]))();
 	}
 
+	// 状態が進むかの確認をする処理
+	CheckProgress();
+
 	// シーンの更新
 	CScene::Update();
 
 #ifdef _DEBUG
 	Debug();
 #endif
-}
-
-//=====================================================
-// 移動状態の更新
-//=====================================================
-void CTutorial::UpdateMove(void)
-{
-
 }
 
 //=====================================================
@@ -191,6 +186,35 @@ void CTutorial::UpdateEnd(void)
 
 		pFade->SetFade(CScene::MODE::MODE_GAME);
 	}
+}
+
+//=====================================================
+// 進行判定
+//=====================================================
+void CTutorial::CheckProgress(void)
+{
+	int nNumPlayer = CPlayer::GetNumPlayer();
+
+	if (m_nCntProgress == nNumPlayer)
+	{// プレイヤーと進行カウンターが一致したら進行
+		ProgressState();
+	}
+}
+
+//=====================================================
+// 状態を進める処理
+//=====================================================
+void CTutorial::ProgressState(void)
+{
+	// 状態を進める
+	m_state = (E_State)(m_state + 1);
+
+	// カウンターのリセット
+	m_nCntProgress = 0;
+
+	// チュートリアルマネージャー側で状態が変わったときの処理
+	if (m_pManager != nullptr)
+		m_pManager->ChangeState(m_state);
 }
 
 //=====================================================
@@ -213,6 +237,10 @@ void CTutorial::Debug(void)
 	if (pDebugProc == nullptr || pInputMgr == nullptr)
 		return;
 
-	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_ENTER))	// 強制遷移
-		SetState(CTutorial::E_State::STATE_END);
+	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_PAUSE))	// 状態進める
+		ProgressState();
+
+	pDebugProc->Print("\nチュートリアル情報========================================");
+	pDebugProc->Print("\n状態[%d]", m_state);
+	pDebugProc->Print("\nカウンター[%d]", m_nCntProgress);
 }

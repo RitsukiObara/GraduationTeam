@@ -11,6 +11,7 @@
 // インクルード
 //*****************************************************
 #include "player.h"
+#include "tutorial.h"
 
 //*****************************************************
 // 前方宣言
@@ -32,9 +33,18 @@ public:
 	void Draw(void);
 
 	// 静的メンバ関数
-	static CPlayerTutorial* Create(void);										// 生成処理
+	static CPlayerTutorial* Create(void);	// 生成処理
 
 private:
+	// メンバ関数
+	void CheckSpeed(void);						// スピードの確認
+	void ReadExplain(void);						// 説明進む処理
+	void AddProgress(CTutorial::E_State state);	// 進行させる処理
+	bool Peck(void) override;					// 突っつく処理
+
+	// メンバ変数
+	float m_fTimerMove;	// 移動カウンター
+	bool m_bComplete;	// チュートリアルを終えたかの判定
 };
 
 #endif

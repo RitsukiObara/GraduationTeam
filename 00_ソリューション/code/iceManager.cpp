@@ -390,7 +390,7 @@ bool CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, E
 //=====================================================
 // •X‚ð‚Â‚Â‚­
 //=====================================================
-bool CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos)
+bool CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos, bool *pResultBreak)
 {
 	CIce *pIceStand = m_aGrid[nNumV][nNumH].pIce;
 	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
@@ -463,7 +463,10 @@ bool CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos)
 	SummarizeIce(nNumBreakV, nNumBreakH);
 
 	// •X‚ª‰ó‚ê‚éƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚½‚ç•X‚ð‰ó‚·
-	BreakIce();
+	bool bResultBreak = BreakIce();
+
+	if (pResultBreak != nullptr)
+		*pResultBreak = bResultBreak;
 
 	return true;
 }
@@ -1042,8 +1045,10 @@ void CIceManager::SaveFlowIce(int nNumV, int nNumH, CFlowIce *pFlowIce)
 //=====================================================
 // •X‚Ì”j‰ó
 //=====================================================
-void CIceManager::BreakIce(void)
+bool CIceManager::BreakIce(void)
 {
+	bool bBreakAny = false;
+
 	for (int i = 0; i < m_nNumGridVirtical; i++)
 	{
 		for (int j = 0; j < m_nNumGridHorizontal; j++)
@@ -1058,8 +1063,12 @@ void CIceManager::BreakIce(void)
 			m_aGrid[i][j].pIce = nullptr;
 
 			BreakPeck(i, j);
+
+			bBreakAny = true;
 		}
 	}
+
+	return bBreakAny;
 }
 
 //=====================================================
