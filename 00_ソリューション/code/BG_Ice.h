@@ -19,27 +19,16 @@
 class CBgIce : public CObjectX
 {
 public:
-
-	//背景氷の種類
-	typedef enum
-	{
-		TYPE_BIG = 0,
-		TYPE_SMALL,
-		TYPE_MAX
-	}TYPE;
-
 	CBgIce();	// コンストラクタ
 	~CBgIce();	// デストラクタ
 
-	static CBgIce* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot,TYPE type);
+	static CBgIce* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot,int type);
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 	static void Load(char* pPath);
 
-	void SetType(TYPE type) { m_type = type; }
-	TYPE GetType(void) { return m_type; }
 	void Move(void);
 	void Flow(void);
 
@@ -53,11 +42,18 @@ private:
 		STATE_MAX
 	}STATE;
 
-	TYPE m_type;			// タイプ分け変数
 	STATE m_state;			// 状態分け変数
 	float fgravity_speed;	// 沈んでいく速度;
 	float m_fspeed;			// 沈み始める速度
 	bool m_binscrean;		// 画面内に入ったかチェックする変数
 };
+
+//*****************************************************
+// 定数定義
+//*****************************************************
+namespace bgice
+{
+	const int BGICE_MODEL = 3;	// 背景の氷総数
+}
 
 #endif

@@ -26,7 +26,7 @@
 //*****************************************************
 namespace
 {
-	const char* MODEL[CBgIce::TYPE_MAX] = { "data\\MODEL\\block\\Drift_ice.x","data\\MODEL\\block\\Drift_ice_small.x" };
+	const char* MODEL[bgice::BGICE_MODEL] = { "data\\MODEL\\block\\ice_small001.x","data\\MODEL\\block\\ice_small002.x","data\\MODEL\\block\\ice_small003.x" };
 	const float MAX_HEIGHT = -300.0f;	// 氷が沈む高さ
 	const int MAX_FLOWTIMING = 12;	// 氷が沈む最大タイミング
 	const int MIN_FLOWTIMING = 1;	// 氷が沈む最小タイミング
@@ -41,7 +41,6 @@ namespace
 //====================================================
 CBgIce::CBgIce()
 {
-	m_type = TYPE_BIG;
 	m_state = STATE_FLOW;
 	m_fspeed = 0.0f;
 	m_binscrean = false;
@@ -58,17 +57,18 @@ CBgIce::~CBgIce()
 //====================================================
 // 生成処理
 //====================================================
-CBgIce* CBgIce::Create(D3DXVECTOR3 pos,D3DXVECTOR3 rot,TYPE type)
+CBgIce* CBgIce::Create(D3DXVECTOR3 pos,D3DXVECTOR3 rot,int type)
 {
 	CBgIce* pBgIce = new CBgIce;
 
 	pBgIce->SetPosition(pos);
 	pBgIce->SetRotation(rot);
 
-	pBgIce->m_type = type;
 	pBgIce->m_binscrean = false;
 
 	pBgIce->Init();
+	
+	pBgIce->BindModel(CModel::Load(MODEL[type]));
 
 	pBgIce->m_fspeed = (float)universal::RandRange(MAX_FLOWTIMING, MIN_FLOWTIMING) * 0.01f;
 
@@ -93,8 +93,6 @@ HRESULT CBgIce::Init(void)
 		return S_OK;
 
 	CObjectX::Init();
-
-	CObjectX::BindModel(CModel::Load(MODEL[m_type]));
 
 	return S_OK;
 }
@@ -136,7 +134,6 @@ void CBgIce::Load(char* pPath)
 
 	D3DXVECTOR3 pos;
 	D3DXVECTOR3 rot;
-	TYPE type;
 
 	//ファイルから読み込む
 	FILE* pFile = fopen(pPath, "r");
@@ -175,15 +172,8 @@ void CBgIce::Load(char* pPath)
 											(void)fscanf(pFile, "%f", &rot[nCntRot]);
 										}
 									}
-
-									if (strcmp(cTemp, "TYPE") == 0)
-									{//タイプ取得
-										(void)fscanf(pFile, "%s", &cTemp[0]);
-
-										(void)fscanf(pFile, "%d", &type);
-									}
 								}
-						Create(pos, rot, type);
+						Create(pos, rot, 0);
 					}
 
 					if (strcmp(cTemp, "END_SCRIPT") == 0)

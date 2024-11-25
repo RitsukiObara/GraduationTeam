@@ -310,7 +310,7 @@ void COcean::OceanCycleTimer(void)
 void COcean::BgIceSetPosUp(void)
 {
 	float posX = (float)universal::RandRange(MAX_RANGE_LEFT, MAX_RANGE_RIGHT);
-	CBgIce::TYPE type = (CBgIce::TYPE)universal::RandRange(CBgIce::TYPE_MAX, CBgIce::TYPE_BIG);
+	int type = universal::RandRange(bgice::BGICE_MODEL, 0);
 
 	m_nBgiceCnt++;
 
@@ -329,7 +329,7 @@ void COcean::BgIceSetPosUp(void)
 void COcean::BgIceSetPosDown(void)
 {
 	float posX = (float)universal::RandRange(MAX_RANGE_LEFT, MAX_RANGE_RIGHT);
-	CBgIce::TYPE type = (CBgIce::TYPE)universal::RandRange(CBgIce::TYPE_MAX, CBgIce::TYPE_BIG);
+	int type = universal::RandRange(bgice::BGICE_MODEL, 0);
 
 	m_nBgiceCnt++;
 
@@ -348,7 +348,7 @@ void COcean::BgIceSetPosDown(void)
 void COcean::BgIceSetPosL(void)
 {
 	float posZ = (float)universal::RandRange(MAX_RANGE_UP, MAX_RANGE_DOWN);
-	CBgIce::TYPE type = (CBgIce::TYPE)universal::RandRange(CBgIce::TYPE_MAX, CBgIce::TYPE_BIG);
+	int type = universal::RandRange(bgice::BGICE_MODEL, 0);
 
 	m_nBgiceCnt++;
 
@@ -367,7 +367,7 @@ void COcean::BgIceSetPosL(void)
 void COcean::BgIceSetPosR(void)
 {
 	float posZ = (float)universal::RandRange(MAX_RANGE_UP, MAX_RANGE_DOWN);
-	CBgIce::TYPE type = (CBgIce::TYPE)universal::RandRange(CBgIce::TYPE_MAX, CBgIce::TYPE_BIG);
+	int type = universal::RandRange(bgice::BGICE_MODEL, 0);
 
 	m_nBgiceCnt++;
 
