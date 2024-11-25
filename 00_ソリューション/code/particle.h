@@ -35,6 +35,7 @@ public:
 		TYPE_STICK_ICE,	// 氷がくっつく時のパーティクル
 		TYPE_SNOW_STORM,// 雪が舞ったときのパーティクル
 		TYPE_STAGESELECT_SNOW,	// ステージセレクトの雪の軌道
+		TYPE_LAND,	// 敵が氷に着地するときのパーティクル
 		TYPE_MAX
 	}TYPE;
 
