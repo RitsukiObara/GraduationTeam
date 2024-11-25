@@ -20,6 +20,8 @@
 #include "debugproc.h"
 #include "manager.h"
 #include "fade.h"
+#include "UIplayer.h"
+#include "texture.h"
 
 //*****************************************************
 // 定数定義
@@ -42,6 +44,17 @@ namespace state
 {
 const float TIME_END = 1.0f;	// 終了の猶予
 }
+
+//------------------------------
+// チェックマークの定数
+//------------------------------
+namespace check
+{
+const string PATH_TEX = "data\\TEXTURE\\UI\\CheckMark.png";		// テクスチャパス
+const float WIDTH = 0.05f;										// 幅
+const float HEIGHT = 0.086f;									// 高さ
+const D3DXVECTOR3 OFFSET = { WIDTH,-HEIGHT,0.0f };	// オフセット
+}
 }
 
 //*****************************************************
@@ -62,7 +75,7 @@ CTutorial *CTutorial::s_pTutorial = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CTutorial::CTutorial() : m_state(E_State::STATE_NONE), m_pManager(nullptr), m_fTimeEnd(0.0f) , m_nCntProgress(0)
+CTutorial::CTutorial() : m_state(E_State::STATE_NONE), m_pManager(nullptr), m_fTimeEnd(0.0f) , m_nCntProgress(0), m_pUIPlayer(nullptr)
 {
 	s_pTutorial = this;
 }
@@ -129,6 +142,9 @@ HRESULT CTutorial::Init(void)
 		pPlayer->SetID(i);
 	}
 
+	// プレイヤーUIの生成
+	m_pUIPlayer = CUIPlayer::Create();
+
 	return S_OK;
 }
 
@@ -138,6 +154,7 @@ HRESULT CTutorial::Init(void)
 void CTutorial::Uninit(void)
 {
 	Object::DeleteObject((CObject**)&m_pManager);
+	Object::DeleteObject((CObject**)&m_pUIPlayer);
 
 	// シーンの終了
 	CScene::Uninit();
@@ -202,6 +219,55 @@ void CTutorial::CheckProgress(void)
 }
 
 //=====================================================
+// 進行カウンター加算
+//=====================================================
+void CTutorial::AddCntProgress(CPlayer *pPlayer)
+{
+	// 対応したIDのアイコンを取得
+	int nID = pPlayer->GetID();
+
+	// チェックマークの生成
+	CreateCheck(nID);
+
+	// 進行カウンター加算
+	m_nCntProgress++;
+}
+
+//=====================================================
+// チェックマークの生成
+//=====================================================
+void CTutorial::CreateCheck(int nIdx)
+{
+	if (m_pUIPlayer == nullptr)
+		return;
+
+	CUI *pIcon = m_pUIPlayer->GetIcon(nIdx);
+
+	if (pIcon == nullptr)
+		return;
+
+	// アイコンの位置取得
+	D3DXVECTOR3 posIcon = pIcon->GetPosition();
+
+	D3DXVECTOR3 posCheck = posIcon + check::OFFSET;
+
+	CUI *pCheck = CUI::Create();
+
+	if (pCheck == nullptr)
+		return;
+
+	// チェックマークの初期設定
+	pCheck->SetSize(check::WIDTH, check::HEIGHT);
+	pCheck->SetPosition(posCheck);
+	pCheck->SetVtx();
+
+	int nIdxTexture = Texture::GetIdx(&check::PATH_TEX[0]);
+	pCheck->SetIdxTexture(nIdxTexture);
+
+	m_apCheck.push_back(pCheck);
+}
+
+//=====================================================
 // 状態を進める処理
 //=====================================================
 void CTutorial::ProgressState(void)
@@ -211,6 +277,12 @@ void CTutorial::ProgressState(void)
 
 	// カウンターのリセット
 	m_nCntProgress = 0;
+
+	// チェックマークのリセット
+	for (CUI *pUI : m_apCheck)
+		pUI->Uninit();
+
+	m_apCheck.clear();
 
 	// チュートリアルマネージャー側で状態が変わったときの処理
 	if (m_pManager != nullptr)

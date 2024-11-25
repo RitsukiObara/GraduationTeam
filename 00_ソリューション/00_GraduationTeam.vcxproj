@@ -207,6 +207,7 @@
     <ClCompile Include="code\snow.cpp" />
     <ClCompile Include="code\tutorialManager.cpp" />
     <ClCompile Include="code\playerTutorial.cpp" />
+    <ClCompile Include="code\UIplayer.cpp" />
     <ClCompile Include="code\UI_combo.cpp" />
     <ClCompile Include="code\debris.cpp" />
     <ClCompile Include="code\debrisspawner.cpp" />
@@ -270,7 +271,6 @@
     <ClCompile Include="code\ranking.cpp" />
     <ClCompile Include="code\renderer.cpp" />
     <ClCompile Include="code\resultSingle.cpp" />
-    <ClCompile Include="code\ripples.cpp" />
     <ClCompile Include="code\scene.cpp" />
     <ClCompile Include="code\score.cpp" />
     <ClCompile Include="code\seals.cpp" />
@@ -332,6 +332,7 @@
     <ClInclude Include="code\snow.h" />
     <ClInclude Include="code\tutorialManager.h" />
     <ClInclude Include="code\playerTutorial.h" />
+    <ClInclude Include="code\UIplayer.h" />
     <ClInclude Include="code\UI_combo.h" />
     <ClInclude Include="code\debris.h" />
     <ClInclude Include="code\debrisSpawner.h" />
@@ -394,7 +395,6 @@
     <ClInclude Include="code\ranking.h" />
     <ClInclude Include="code\renderer.h" />
     <ClInclude Include="code\resultSingle.h" />
-    <ClInclude Include="code\ripples.h" />
     <ClInclude Include="code\scene.h" />
     <ClInclude Include="code\score.h" />
     <ClInclude Include="code\seals.h" />
