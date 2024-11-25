@@ -31,7 +31,7 @@ CFade2D::FuncUpdateState CFade2D::s_aFuncUpdateState[] =
 //====================================================
 // コンストラクタ
 //====================================================
-CFade2D::CFade2D() : m_state(E_State::STATE_NONE), m_fTimer(0.0f)
+CFade2D::CFade2D() : m_state(E_State::STATE_NONE), m_fTimer(0.0f), m_bBouceIn(false), m_bBouceOut(false)
 {
 
 }
@@ -88,9 +88,21 @@ void CFade2D::Update(void)
 	{
 	case CFade2D::STATE_IN:
 		m_fTimer += CManager::GetDeltaTime();
+
+		if (m_bBouceIn)
+		{
+			if (m_fTimer > m_fTimeMax)
+				m_state = CFade2D::STATE_OUT;
+		}
 		break;
 	case CFade2D::STATE_OUT:
 		m_fTimer -= CManager::GetDeltaTime();
+		
+		if (m_bBouceOut)
+		{
+			if (m_fTimer < 0.0f)
+				m_state = CFade2D::STATE_IN;
+		}
 		break;
 	default:
 		break;
