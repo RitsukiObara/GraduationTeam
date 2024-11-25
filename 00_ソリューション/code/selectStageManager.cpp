@@ -428,7 +428,7 @@ void CSelectStageManager::EndEnter(void)
 	if (pFade == nullptr)
 		return;
 
-	pFade->SetFade(CScene::MODE::MODE_GAME);
+	pFade->SetFade(CScene::MODE::MODE_TUTORIAL);
 }
 
 //=====================================================

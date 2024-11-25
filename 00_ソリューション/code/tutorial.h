@@ -68,7 +68,10 @@ private:
 	CUIPlayer *m_pUIPlayer;			// プレイヤーUIのポインタ
 	float m_fTimeEnd;				// 終了タイマー
 	int m_nCntProgress;				// 進行カウンター
+	CUI *m_pCaption;				// キャプション
+	float m_fTimerCaption;			// キャプションのタイマー
 	vector<CUI*> m_apCheck;			// チェックマークの配列
+	bool m_abComplete[NUM_PLAYER];	// 完了フラグ
 
 	// 関数ポインタ型を定義
 	typedef void (CTutorial::*FuncUpdateState)(void);

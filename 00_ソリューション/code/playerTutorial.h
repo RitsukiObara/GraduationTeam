@@ -33,7 +33,7 @@ public:
 	void Draw(void);
 
 	// Ã“Iƒƒ“ƒoŠÖ”
-	static CPlayerTutorial* Create(void);	// ¶¬ˆ—
+	static CPlayerTutorial *Create(void);	// ¶¬ˆ—
 
 private:
 	// ƒƒ“ƒoŠÖ”
