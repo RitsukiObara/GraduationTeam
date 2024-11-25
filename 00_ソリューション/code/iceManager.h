@@ -58,7 +58,7 @@ public:
 	CIce *CreateFlowIce(int nGridV,int nGridH, CIce::E_Type type = CIce::E_Type::TYPE_NORMAL);	// —¬•X‚Ì¶¬
 	void StopIce(CIce *pIce);	// •X‚Ì’â~
 	bool CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, E_Direction *pDir = nullptr,CIce **ppIce = nullptr);	// •X‚ğ‚Â‚Â‚¯‚é‚©‚Ìƒ`ƒFƒbƒN
-	bool PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos);	// •X‚ğ‚Â‚Â‚­
+	bool PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos, bool *bResultBreak = nullptr);	// •X‚ğ‚Â‚Â‚­
 	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// •X‚Ì’Ç‰Á
 	bool FindIce(int nNumV, int nNumH, int nIdx,CIce *pIceStand,vector<CIce*> apIceLast,bool bBreak);	// ƒAƒCƒX‚Ì”­Œ©
 	vector<CIce*> GetAroundIce(int nNumV, int nNumH);	// ü•Ó‚Ì•X‚ğæ“¾
@@ -122,7 +122,7 @@ private:
 	void DisableBreak(int nNumV, int nNumH);	// •X‚Ì”j‰ó‚ğ‰ğœ
 	void SummarizeIce(int nNumV, int nNumH);	// •X‚ğ‚Ü‚Æ‚ß‚éˆ—
 	void SaveFlowIce(int nNumV, int nNumH, CFlowIce *pFlowIce);	// —¬•X‚É‚Ü‚Æ‚ß‚éˆ—
-	void BreakIce(void);	// •X‚Ì”j‰ó
+	bool BreakIce(void);	// •X‚Ì”j‰ó
 	bool CheckCorner(int nNumV, int nNumH);	// Šp‚ÌŠm”F
 	void BreakPeck(int nNumV, int nNumH);	// “Ë‚Á‚Â‚¢‚½•X‚ğ’¾‚ß‚é
 	void LimitInIce(D3DXVECTOR3 *pPos, int nNumV, int nNumH);	// •X“à‚Éû‚ß‚éˆ—

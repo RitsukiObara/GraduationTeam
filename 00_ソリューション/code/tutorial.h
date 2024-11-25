@@ -27,12 +27,12 @@ public:
 	// 列挙型定義
 	enum E_State
 	{// 状態
-		STATE_NONE = 0,	// 何でもない状態
-		STATE_MOVE,		// 移動状態
-		STATE_PECK,		// 突っつき状態
-		STATE_BREAK,	// 破壊状態
-		STATE_EXPLAIN,	// 説明状態
-		STATE_END,		// 終了状態
+		STATE_NONE = 0,			// 何でもない状態
+		STATE_MOVE,				// 移動状態
+		STATE_PECK,				// 突っつき状態
+		STATE_EXPLAIN_BREAK,	// 破壊説明
+		STATE_EXPLAIN_ENEMY,	// 敵説明
+		STATE_END,				// 終了状態
 		STATE_MAX
 	};
 	CTutorial();	// コンストラクタ
@@ -49,6 +49,7 @@ public:
 	void SetState(E_State state) { m_state = state; }	// 状態
 	E_State GetState(void) { return m_state; }
 	int GetCntProgress(void) { return m_nCntProgress; }	// 状態進行カウンター
+	void AddCntProgress(void) { m_nCntProgress++; }
 
 	// 静的メンバ関数
 	static CTutorial *GetInstance(void) { return s_pTutorial; }	// インスタンス取得

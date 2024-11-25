@@ -52,8 +52,8 @@ CTutorial::FuncUpdateState CTutorial::s_aFuncUpdateState[] =	// 状態更新関数
 	nullptr,					// 何でもない状態
 	nullptr,					// 移動状態
 	nullptr,					// 突っつき状態
-	nullptr,					// 破壊状態
-	nullptr,					// 説明状態
+	nullptr,					// 破壊説明
+	nullptr,					// 敵説明
 	&CTutorial::UpdateEnd,		// 終了状態
 };
 
@@ -160,7 +160,7 @@ void CTutorial::Update(void)
 	}
 
 	// 状態が進むかの確認をする処理
-
+	CheckProgress();
 
 	// シーンの更新
 	CScene::Update();
@@ -237,9 +237,10 @@ void CTutorial::Debug(void)
 	if (pDebugProc == nullptr || pInputMgr == nullptr)
 		return;
 
-	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_ENTER))	// 状態進める
+	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_PAUSE))	// 状態進める
 		ProgressState();
 
 	pDebugProc->Print("\nチュートリアル情報========================================");
 	pDebugProc->Print("\n状態[%d]", m_state);
+	pDebugProc->Print("\nカウンター[%d]", m_nCntProgress);
 }

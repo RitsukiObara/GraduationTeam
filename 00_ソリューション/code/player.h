@@ -66,6 +66,7 @@ public:
 	void Update(void);
 	void Draw(void);
 	void Hit(float fDamage) override;	// ヒット処理
+	virtual bool Peck(void);		// 突っつく処理
 
 	// 取得・設定
 	void SetMove(D3DXVECTOR3 move) { m_move = move; }				// 移動量
@@ -80,6 +81,7 @@ public:
 	E_State GetState(void) { return m_state; }
 	int GetTimePeck(void) { return m_nTimePeck; }					// 氷を突いた回数
 	void BindInputMgr(CInputManager *pInputMgr) { m_pInputMgr = pInputMgr; }	// 入力マネージャー
+	CInputManager *GetInpuManager(void) { return m_pInputMgr; }
 	void SetID(int nID) { m_nID = nID; }	// 番号
 	int GetID(void) { return m_nID; }
 
