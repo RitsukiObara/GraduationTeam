@@ -228,6 +228,10 @@ bool CSeals::CollideLand(void)
 
 	if (pos.y < posIce.y)
 	{// •X‚æ‚è‚àˆÊ’u‚ª’á‚­‚È‚Á‚½‚ç’…’n”»’è
+
+		// oŒ»‚·‚éêŠ‚É…‚µ‚Ô‚«‚ð”­¶
+		CParticle::Create(pos, CParticle::TYPE::TYPE_LAND, D3DXVECTOR3(0.0f, 0.0f, 0.0f), (D3DXVECTOR3 *)nullptr, 3);
+
 		pos.y = posIce.y;
 		SetPosition(pos);
 		return true;
