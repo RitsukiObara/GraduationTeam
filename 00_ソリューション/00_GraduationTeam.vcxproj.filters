@@ -91,9 +91,6 @@
     <Filter Include="ソース ファイル\character\npcpenguin\state">
       <UniqueIdentifier>{45ee91ca-e305-400c-abbc-2f36944af48d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\UI\UIplayer">
-      <UniqueIdentifier>{26085469-75ce-4251-8bf8-d83cf85b58d7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\UI\destory_score">
       <UniqueIdentifier>{e20b84da-c177-4f12-afbf-21c3ee028e3d}</UniqueIdentifier>
     </Filter>
@@ -129,6 +126,9 @@
     </Filter>
     <Filter Include="ソース ファイル\UI\UI_ready">
       <UniqueIdentifier>{42eaba0c-0b3c-4908-9c26-f35d20361be6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\UIplayer">
+      <UniqueIdentifier>{26085469-75ce-4251-8bf8-d83cf85b58d7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

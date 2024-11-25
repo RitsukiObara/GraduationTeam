@@ -17,6 +17,7 @@
 //*****************************************************
 class CUI;
 class CTutorialManager;
+class CUIPlayer;
 
 //*****************************************************
 // クラスの定義
@@ -49,22 +50,25 @@ public:
 	void SetState(E_State state) { m_state = state; }	// 状態
 	E_State GetState(void) { return m_state; }
 	int GetCntProgress(void) { return m_nCntProgress; }	// 状態進行カウンター
-	void AddCntProgress(void) { m_nCntProgress++; }
+	void AddCntProgress(CPlayer *pPlayer);
 
 	// 静的メンバ関数
 	static CTutorial *GetInstance(void) { return s_pTutorial; }	// インスタンス取得
 
 private:
 	// メンバ関数
-	void UpdateEnd(void);				// 終了状態
-	void CheckProgress(void);			// 進行判断
-	void Debug(void);					// デバッグ
+	void UpdateEnd(void);		// 終了状態
+	void CheckProgress(void);	// 進行判断
+	void CreateCheck(int nIdx);	// チェックマーク生成
+	void Debug(void);			// デバッグ
 
 	// メンバ変数
 	E_State m_state;				// 状態
 	CTutorialManager *m_pManager;	// チュートリアルマネージャーのポインタ
+	CUIPlayer *m_pUIPlayer;			// プレイヤーUIのポインタ
 	float m_fTimeEnd;				// 終了タイマー
 	int m_nCntProgress;				// 進行カウンター
+	vector<CUI*> m_apCheck;			// チェックマークの配列
 
 	// 関数ポインタ型を定義
 	typedef void (CTutorial::*FuncUpdateState)(void);
