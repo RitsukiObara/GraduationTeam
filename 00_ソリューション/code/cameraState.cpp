@@ -39,6 +39,9 @@ const D3DXVECTOR3 POSV_DEFAULT_SELECTSTAGE = { 0.0f,2244.0f,-2001.0f };	// ÉXÉeÅ
 const D3DXVECTOR3 POSR_DEFAULT_SELECTMODE = { 0.0f,50.0f,0.0f };	// ÉÇÅ[ÉhÉZÉåÉNÉgíÜÇÃÉfÉtÉHÉãÉgíçéãì_à íu
 const D3DXVECTOR3 POSV_DEFAULT_SELECTMODE = { 0.0f,200.0f,-2000.0f };	// ÉÇÅ[ÉhÉZÉåÉNÉgíÜÇÃÉfÉtÉHÉãÉgéãì_à íu
 
+const D3DXVECTOR3 POSR_DEFAULT_RESULTMULTI = { 800.0f,50.0f,-400.0f };	// É}ÉãÉ`ÉÇÅ[ÉhÇÃÉäÉUÉãÉgíÜÇÃÉfÉtÉHÉãÉgíçéãì_à íu
+const D3DXVECTOR3 POSV_DEFAULT_RESULTMULTI = { 800.0f,400.0f,-2400.0f };	// É}ÉãÉ`ÉÇÅ[ÉhÇÃÉäÉUÉãÉgíÜÇÃÉfÉtÉHÉãÉgéãì_à íu
+
 namespace resultSingle
 {
 const D3DXVECTOR3 POS_OFFSET = { 0.0f,100.0f,-500.0f };	// ñ⁄ïWínì_ÇÃÉIÉtÉZÉbÉg
@@ -283,6 +286,32 @@ void CCameraResultSingle::MoveToPlayerFront(CCamera* pCamera)
 	D3DXVECTOR3 posDestR = m_posDest - resultSingle::POS_OFFSET;
 
 	pInfoCamera->posR += (posDestR - pInfoCamera->posR) * resultSingle::SPEED_POSR;
+}
+
+//**************************************************************************
+// É}ÉãÉ`ÉÇÅ[ÉhÇÃÉäÉUÉãÉg
+//**************************************************************************
+//=====================================================
+// èâä˙âª
+//=====================================================
+void CCameraStateResultMulti::Init(CCamera* pCamera)
+{
+	if (pCamera == nullptr)
+		return;
+
+	CCamera::Camera* pInfoCamera = pCamera->GetCamera();
+
+	// ÉJÉÅÉâéãì_ÅAíçéãì_à íuèâä˙âª
+	pInfoCamera->posR = POSR_DEFAULT_RESULTMULTI;
+	pInfoCamera->posV = POSV_DEFAULT_RESULTMULTI;
+}
+
+//=====================================================
+// çXêV
+//=====================================================
+void CCameraStateResultMulti::Update(CCamera* pCamera)
+{
+
 }
 
 //**************************************************************************

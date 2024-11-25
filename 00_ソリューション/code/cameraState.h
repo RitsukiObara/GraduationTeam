@@ -103,6 +103,18 @@ private:
 	CResultSingle *m_pResult;	// リザルトのポインタ
 };
 
+// マルチモードのリザルト
+class CCameraStateResultMulti : public CCameraState
+{
+public:
+	CCameraStateResultMulti() {}
+	void Init(CCamera* pCamera);
+	void Update(CCamera* pCamera) override;
+private:
+
+};
+
+// モード選択画面
 class CCameraStateSelectMode : public CCameraState
 {
 public:

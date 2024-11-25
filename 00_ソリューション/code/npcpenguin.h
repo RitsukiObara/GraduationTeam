@@ -16,6 +16,7 @@
 // 前方宣言
 //*****************************************************
 class CCollisionSphere;
+class CShadow;
 __interface INPCPenguinState;
 
 //*****************************************************
@@ -70,7 +71,8 @@ private:
 
 	// メンバ変数
 	CCollisionSphere *m_pCollisionSphere;	// 球の判定
-	INPCPenguinState* m_pState;	// 動きステート
+	INPCPenguinState *m_pState;				// 動きステート
+	CShadow *m_pShadow;						// 影のポインタ
 
 	int nCntMove;	// 移動のカウント
 };

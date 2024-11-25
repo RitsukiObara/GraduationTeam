@@ -28,6 +28,9 @@
 #include "debugproc.h"
 #include "UI.h"
 #include "gameManager.h"
+#include "npcpenguin.h"
+#include "npcpenguinstate_resultmulti.h"
+#include "resultseal.h"
 
 //*****************************************************
 // 定数定義
@@ -36,12 +39,18 @@ namespace
 {
 	namespace Penguin
 	{
-		const D3DXVECTOR3 WINNER_POS = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 勝者の位置
-		const vector<D3DXVECTOR3> LOSER_POS =
+		const D3DXVECTOR3 WINNER_POS = D3DXVECTOR3(800.0f, 0.0f, -1800.0f);	// 勝者の位置
+		const vector<D3DXVECTOR3> LOSER_POS =	// 敗者の位置
 		{
-			D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-			D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-			D3DXVECTOR3(0.0f, 0.0f, 0.0f)
+			D3DXVECTOR3(800.0f, 0.0f, -500.0f),
+			D3DXVECTOR3(800.0f, 0.0f, -700.0f),
+			D3DXVECTOR3(800.0f, 0.0f, -900.0f)
+		};
+		const vector<D3DXVECTOR3> LOSER_ROT =	// 敗者の向き
+		{
+			D3DXVECTOR3(0.0f, 0.5f * D3DX_PI, 0.0f),
+			D3DXVECTOR3(0.0f, 0.5471f * D3DX_PI, 0.0f),
+			D3DXVECTOR3(0.0f, 0.5f * D3DX_PI, 0.0f)
 		};
 	}
 	namespace manual
@@ -79,7 +88,7 @@ HRESULT CResultMulti::Init(void)
 		return E_FAIL;
 
 	// カメラ
-	Camera::ChangeState(new CCameraStateSelectMode);
+	Camera::ChangeState(new CCameraStateResultMulti);
 
 	// 勝者UI生成
 	//m_pManual = CUI::Create();
@@ -99,29 +108,32 @@ HRESULT CResultMulti::Init(void)
 	pMeshField->SetDivTex(128);
 
 	// かまくら
-	/*CObjectX *pIgloo = CObjectX::Create();
+	CObjectX *pIgloo = CObjectX::Create();
 	pIgloo->BindModel(CModel::Load("data\\MODEL\\object\\Snowdome.x"));
-	pIgloo->SetPosition(D3DXVECTOR3(800.0f, -10.0f, 600.0f));*/
+	pIgloo->SetPosition(D3DXVECTOR3(800.0f, -10.0f, 600.0f));
 
 	// BGMの再生
 	CSound* pSound = CSound::GetInstance();
 	assert(pSound != nullptr);
 	pSound->Play(pSound->LABEL_BGM_TITLE);
 
-	//// 遊ぶペンギン
-	//CResultMultiPenguin* pPenguin = nullptr;
-	//// 右中心
-	//pPenguin = CResultMultiPenguin::Create(new CResultMultiPenguinState_Stand);
-	//pPenguin->SetPosition(D3DXVECTOR3(400.0f, 10.0f, -1000.0f));
-	//// あの辺1
-	//pPenguin = CResultMultiPenguin::Create(new CResultMultiPenguinState_Stand);
-	//pPenguin->SetPosition(D3DXVECTOR3(-500.0f, 10.0f, 800.0f));
-	//// あの辺2
-	//pPenguin = CResultMultiPenguin::Create(new CResultMultiPenguinState_Stand);
-	//pPenguin->SetPosition(D3DXVECTOR3(2200.0f, 10.0f, 800.0f));
-	//// かまくら
-	//pPenguin = CResultMultiPenguin::Create(new CResultMultiPenguinState_Stand);
-	//pPenguin->SetPosition(D3DXVECTOR3(950.0f, 10.0f, 700.0f));
+	// 各ペンギン召喚
+	CNPCPenguin* pPenguin = nullptr;
+	// 勝者ペンギン
+	pPenguin = CNPCPenguin::Create(new CNPCPenguinState_BANZAI);
+	pPenguin->SetPosition(Penguin::WINNER_POS);
+	// 敗者ペンギン
+	for (int cnt = 0; cnt < (int)Penguin::LOSER_POS.size(); cnt++)
+	{
+		pPenguin = CNPCPenguin::Create(new CNPCPenguinState_Flee(D3DXVECTOR3(800.0f, -10.0f, 600.0f)));
+		pPenguin->SetPosition(Penguin::LOSER_POS[cnt]);
+		pPenguin->SetRotation(Penguin::LOSER_ROT[cnt]);
+	}
+
+	// アザラシ召喚
+	CResultSeal* pSeal = CResultSeal::Create(D3DXVECTOR3(800.0f, -10.0f, 600.0f));
+	pSeal->SetPosition(D3DXVECTOR3(1200.0f, 0.0f, -900.0f));
+	pSeal->SetRotation(D3DXVECTOR3(0.0f, 0.4f * D3DX_PI, 0.0f));
 
 	// 入力マネージャー生成
 	CInputManager::Create();
