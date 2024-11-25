@@ -86,7 +86,7 @@ CTutorial *CTutorial::s_pTutorial = nullptr;	// 自身のポインタ
 // コンストラクタ
 //=====================================================
 CTutorial::CTutorial() : m_state(E_State::STATE_NONE), m_pManager(nullptr), m_fTimeEnd(0.0f) , m_nCntProgress(0), m_pUIPlayer(nullptr), m_abComplete(),
-m_pCaption(nullptr)
+m_pCaption(nullptr), m_fTimerCaption(0.0f)
 {
 	s_pTutorial = this;
 }
@@ -153,8 +153,11 @@ HRESULT CTutorial::Init(void)
 		pPlayer->SetID(i);
 	}
 
-	// プレイヤーUIの生成
-	m_pUIPlayer = CUIPlayer::Create();
+	if (CPlayer::GetNumPlayer() > 1)
+	{// 複数人プレイ時のみ生成
+		// プレイヤーUIの生成
+		m_pUIPlayer = CUIPlayer::Create();
+	}
 
 	//--------------------------------
 	// キャプションの生成

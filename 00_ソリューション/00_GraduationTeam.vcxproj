@@ -182,6 +182,7 @@
     <ClCompile Include="code\camera.cpp" />
     <ClCompile Include="code\cameraState.cpp" />
     <ClCompile Include="code\collision.cpp" />
+    <ClCompile Include="code\fade2D.cpp" />
     <ClCompile Include="code\fade_fallice.cpp" />
     <ClCompile Include="code\gameManager.cpp" />
     <ClCompile Include="code\gameManagerMulti.cpp" />
@@ -306,6 +307,7 @@
     <ClInclude Include="code\collision.h" />
     <ClInclude Include="code\container.h" />
     <ClInclude Include="code\debug.h" />
+    <ClInclude Include="code\fade2D.h" />
     <ClInclude Include="code\fade_fallice.h" />
     <ClInclude Include="code\gameManager.h" />
     <ClInclude Include="code\gameManagerMulti.h" />
