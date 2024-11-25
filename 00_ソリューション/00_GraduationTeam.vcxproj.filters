@@ -91,6 +91,45 @@
     <Filter Include="ソース ファイル\character\npcpenguin\state">
       <UniqueIdentifier>{45ee91ca-e305-400c-abbc-2f36944af48d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI\UIplayer">
+      <UniqueIdentifier>{26085469-75ce-4251-8bf8-d83cf85b58d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\destory_score">
+      <UniqueIdentifier>{e20b84da-c177-4f12-afbf-21c3ee028e3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\gauge">
+      <UniqueIdentifier>{7344753d-edd2-4cc5-a7a5-9b68696fee17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\nextflowice">
+      <UniqueIdentifier>{14579060-749b-4abf-8441-db726ca0cd00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\number">
+      <UniqueIdentifier>{574fb904-4e05-4f9b-8239-d567a1642b09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\ocean_flow_UI">
+      <UniqueIdentifier>{7e0ffc58-a811-4759-ab9d-7661647f9e49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\pause">
+      <UniqueIdentifier>{51c2c92f-5b91-4376-af1a-c1465ff8d22b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\score">
+      <UniqueIdentifier>{238b7713-3637-48da-98c8-c87481719b4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\stageResultUI">
+      <UniqueIdentifier>{3afde655-28f6-4181-b207-8e2ee00cf8d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\timer">
+      <UniqueIdentifier>{15f938ae-2701-4031-ad76-3dcfa90dc84b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\UI_combo">
+      <UniqueIdentifier>{bbdb3ac3-ad9f-4796-be46-5d4a30ac6aa3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\UI_enemy">
+      <UniqueIdentifier>{97062722-eba8-4969-aaf7-faf4e87ff280}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\UI_ready">
+      <UniqueIdentifier>{42eaba0c-0b3c-4908-9c26-f35d20361be6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="code\scene.cpp">
@@ -192,23 +231,11 @@
     <ClCompile Include="code\polygon3D.cpp">
       <Filter>ソース ファイル\mesh</Filter>
     </ClCompile>
-    <ClCompile Include="code\pause.cpp">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClCompile>
     <ClCompile Include="code\particle.cpp">
       <Filter>ソース ファイル\VFX</Filter>
     </ClCompile>
-    <ClCompile Include="code\number.cpp">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="code\number3D.cpp">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClCompile>
     <ClCompile Include="code\precompile.cpp">
       <Filter>ソース ファイル\base</Filter>
-    </ClCompile>
-    <ClCompile Include="code\timer.cpp">
-      <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
     <ClCompile Include="code\fan.cpp">
       <Filter>ソース ファイル\mesh</Filter>
@@ -248,9 +275,6 @@
     </ClCompile>
     <ClCompile Include="code\blurEvent.cpp">
       <Filter>ソース ファイル\VFX</Filter>
-    </ClCompile>
-    <ClCompile Include="code\gauge.cpp">
-      <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
     <ClCompile Include="code\frame.cpp">
       <Filter>ソース ファイル\VFX</Filter>
@@ -300,26 +324,11 @@
     <ClCompile Include="code\player.cpp">
       <Filter>ソース ファイル\character</Filter>
     </ClCompile>
-    <ClCompile Include="code\score.cpp">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="code\UI_enemy.cpp">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClCompile>
     <ClCompile Include="code\ocean.cpp">
       <Filter>ソース ファイル\mesh</Filter>
     </ClCompile>
-    <ClCompile Include="code\stageResultUI.cpp">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClCompile>
     <ClCompile Include="code\iceHard.cpp">
       <Filter>ソース ファイル\gameobject</Filter>
-    </ClCompile>
-    <ClCompile Include="code\ripples.cpp">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="code\ocean_flow_UI.cpp">
-      <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
     <ClCompile Include="code\flowIce.cpp">
       <Filter>ソース ファイル\gameobject</Filter>
@@ -330,15 +339,6 @@
     <ClCompile Include="code\flowIceFactory.cpp">
       <Filter>ソース ファイル\factory</Filter>
     </ClCompile>
-    <ClCompile Include="code\destroy_score.cpp">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="code\UI_combo.cpp">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="code\nextflowice.cpp">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClCompile>
     <ClCompile Include="code\collision.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
@@ -347,9 +347,6 @@
     </ClCompile>
     <ClCompile Include="code\selectStagePenguin.cpp">
       <Filter>ソース ファイル\character</Filter>
-    </ClCompile>
-    <ClCompile Include="code\UI_ready.cpp">
-      <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
     <ClCompile Include="code\game.cpp">
       <Filter>ソース ファイル\scene\game</Filter>
@@ -446,6 +443,48 @@
     </ClCompile>
     <ClCompile Include="code\playerTutorial.cpp">
       <Filter>ソース ファイル\scene\tutorial</Filter>
+    </ClCompile>
+    <ClCompile Include="code\UIplayer.cpp">
+      <Filter>ソース ファイル\UI\UIplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="code\destroy_score.cpp">
+      <Filter>ソース ファイル\UI\destory_score</Filter>
+    </ClCompile>
+    <ClCompile Include="code\gauge.cpp">
+      <Filter>ソース ファイル\UI\gauge</Filter>
+    </ClCompile>
+    <ClCompile Include="code\nextflowice.cpp">
+      <Filter>ソース ファイル\UI\nextflowice</Filter>
+    </ClCompile>
+    <ClCompile Include="code\number.cpp">
+      <Filter>ソース ファイル\UI\number</Filter>
+    </ClCompile>
+    <ClCompile Include="code\number3D.cpp">
+      <Filter>ソース ファイル\UI\number</Filter>
+    </ClCompile>
+    <ClCompile Include="code\ocean_flow_UI.cpp">
+      <Filter>ソース ファイル\UI\ocean_flow_UI</Filter>
+    </ClCompile>
+    <ClCompile Include="code\pause.cpp">
+      <Filter>ソース ファイル\UI\pause</Filter>
+    </ClCompile>
+    <ClCompile Include="code\score.cpp">
+      <Filter>ソース ファイル\UI\score</Filter>
+    </ClCompile>
+    <ClCompile Include="code\stageResultUI.cpp">
+      <Filter>ソース ファイル\UI\stageResultUI</Filter>
+    </ClCompile>
+    <ClCompile Include="code\timer.cpp">
+      <Filter>ソース ファイル\UI\timer</Filter>
+    </ClCompile>
+    <ClCompile Include="code\UI_combo.cpp">
+      <Filter>ソース ファイル\UI\UI_combo</Filter>
+    </ClCompile>
+    <ClCompile Include="code\UI_enemy.cpp">
+      <Filter>ソース ファイル\UI\UI_enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="code\UI_ready.cpp">
+      <Filter>ソース ファイル\UI\UI_ready</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -548,23 +587,11 @@
     <ClInclude Include="code\polygon3D.h">
       <Filter>ソース ファイル\mesh</Filter>
     </ClInclude>
-    <ClInclude Include="code\pause.h">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClInclude>
     <ClInclude Include="code\particle.h">
       <Filter>ソース ファイル\VFX</Filter>
     </ClInclude>
-    <ClInclude Include="code\number.h">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="code\number3D.h">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClInclude>
     <ClInclude Include="code\precompile.h">
       <Filter>ソース ファイル\base</Filter>
-    </ClInclude>
-    <ClInclude Include="code\timer.h">
-      <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
     <ClInclude Include="code\myLib.h">
       <Filter>ソース ファイル\base</Filter>
@@ -607,9 +634,6 @@
     </ClInclude>
     <ClInclude Include="code\blurEvent.h">
       <Filter>ソース ファイル\VFX</Filter>
-    </ClInclude>
-    <ClInclude Include="code\gauge.h">
-      <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
     <ClInclude Include="code\frame.h">
       <Filter>ソース ファイル\VFX</Filter>
@@ -659,26 +683,11 @@
     <ClInclude Include="code\player.h">
       <Filter>ソース ファイル\character</Filter>
     </ClInclude>
-    <ClInclude Include="code\score.h">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="code\UI_enemy.h">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClInclude>
     <ClInclude Include="code\ocean.h">
       <Filter>ソース ファイル\mesh</Filter>
     </ClInclude>
-    <ClInclude Include="code\stageResultUI.h">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClInclude>
     <ClInclude Include="code\iceHard.h">
       <Filter>ソース ファイル\gameobject</Filter>
-    </ClInclude>
-    <ClInclude Include="code\ripples.h">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="code\ocean_flow_UI.h">
-      <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
     <ClInclude Include="code\flowIce.h">
       <Filter>ソース ファイル\gameobject</Filter>
@@ -688,15 +697,6 @@
     </ClInclude>
     <ClInclude Include="code\flowIceFactory.h">
       <Filter>ソース ファイル\factory</Filter>
-    </ClInclude>
-    <ClInclude Include="code\destroy_score.h">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="code\UI_combo.h">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="code\nextflowice.h">
-      <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
     <ClInclude Include="code\collision.h">
       <Filter>ソース ファイル\base</Filter>
@@ -709,9 +709,6 @@
     </ClInclude>
     <ClInclude Include="code\selectStagePenguin.h">
       <Filter>ソース ファイル\character</Filter>
-    </ClInclude>
-    <ClInclude Include="code\UI_ready.h">
-      <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
     <ClInclude Include="code\game.h">
       <Filter>ソース ファイル\scene\game</Filter>
@@ -814,6 +811,48 @@
     </ClInclude>
     <ClInclude Include="code\playerTutorial.h">
       <Filter>ソース ファイル\scene\tutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="code\UIplayer.h">
+      <Filter>ソース ファイル\UI\UIplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="code\destroy_score.h">
+      <Filter>ソース ファイル\UI\destory_score</Filter>
+    </ClInclude>
+    <ClInclude Include="code\gauge.h">
+      <Filter>ソース ファイル\UI\gauge</Filter>
+    </ClInclude>
+    <ClInclude Include="code\nextflowice.h">
+      <Filter>ソース ファイル\UI\nextflowice</Filter>
+    </ClInclude>
+    <ClInclude Include="code\number.h">
+      <Filter>ソース ファイル\UI\number</Filter>
+    </ClInclude>
+    <ClInclude Include="code\number3D.h">
+      <Filter>ソース ファイル\UI\number</Filter>
+    </ClInclude>
+    <ClInclude Include="code\ocean_flow_UI.h">
+      <Filter>ソース ファイル\UI\ocean_flow_UI</Filter>
+    </ClInclude>
+    <ClInclude Include="code\pause.h">
+      <Filter>ソース ファイル\UI\pause</Filter>
+    </ClInclude>
+    <ClInclude Include="code\score.h">
+      <Filter>ソース ファイル\UI\score</Filter>
+    </ClInclude>
+    <ClInclude Include="code\stageResultUI.h">
+      <Filter>ソース ファイル\UI\stageResultUI</Filter>
+    </ClInclude>
+    <ClInclude Include="code\timer.h">
+      <Filter>ソース ファイル\UI\timer</Filter>
+    </ClInclude>
+    <ClInclude Include="code\UI_combo.h">
+      <Filter>ソース ファイル\UI\UI_combo</Filter>
+    </ClInclude>
+    <ClInclude Include="code\UI_enemy.h">
+      <Filter>ソース ファイル\UI\UI_enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="code\UI_ready.h">
+      <Filter>ソース ファイル\UI\UI_ready</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
