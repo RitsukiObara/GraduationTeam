@@ -55,6 +55,16 @@ const float WIDTH = 0.05f;										// 幅
 const float HEIGHT = 0.086f;									// 高さ
 const D3DXVECTOR3 OFFSET = { WIDTH,-HEIGHT,0.0f };	// オフセット
 }
+
+//------------------------------
+// キャプションの定数
+//------------------------------
+namespace caption
+{
+const float WIDTH = 0.3f;							// 幅
+const float HEIGHT = 0.1f;							// 高さ
+const D3DXVECTOR3 POS_INIT = { 0.5f,0.114f,0.0f };	// 位置
+}
 }
 
 //*****************************************************
@@ -75,7 +85,8 @@ CTutorial *CTutorial::s_pTutorial = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CTutorial::CTutorial() : m_state(E_State::STATE_NONE), m_pManager(nullptr), m_fTimeEnd(0.0f) , m_nCntProgress(0), m_pUIPlayer(nullptr), m_abComplete()
+CTutorial::CTutorial() : m_state(E_State::STATE_NONE), m_pManager(nullptr), m_fTimeEnd(0.0f) , m_nCntProgress(0), m_pUIPlayer(nullptr), m_abComplete(),
+m_pCaption(nullptr)
 {
 	s_pTutorial = this;
 }
@@ -144,6 +155,18 @@ HRESULT CTutorial::Init(void)
 
 	// プレイヤーUIの生成
 	m_pUIPlayer = CUIPlayer::Create();
+
+	//--------------------------------
+	// キャプションの生成
+	//--------------------------------
+	m_pCaption = CUI::Create();
+	
+	if (m_pCaption == nullptr)
+		return E_FAIL;
+
+	m_pCaption->SetSize(caption::WIDTH, caption::HEIGHT);
+	m_pCaption->SetPosition(caption::POS_INIT);
+	m_pCaption->SetVtx();
 
 	return S_OK;
 }
