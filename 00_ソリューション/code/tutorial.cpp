@@ -15,7 +15,11 @@
 #include "inputManager.h"
 #include "game.h"
 #include "gameManager.h"
-#include "player.h"
+#include "tutorialManager.h"
+#include "playerTutorial.h"
+#include "debugproc.h"
+#include "manager.h"
+#include "fade.h"
 
 //*****************************************************
 // 定数定義
@@ -30,14 +34,37 @@ namespace stage
 const string PATH_MAP = "data\\TEXT\\ice_stage_tutorial.txt";	// マップのパス
 const int SIZE_MAP = 15;										// マップのサイズ
 }
+
+//------------------------------
+// 状態の定数
+//------------------------------
+namespace state
+{
+const float TIME_END = 1.0f;	// 終了の猶予
 }
+}
+
+//*****************************************************
+// 静的メンバ変数宣言
+//*****************************************************
+CTutorial::FuncUpdateState CTutorial::s_aFuncUpdateState[] =	// 状態更新関数
+{
+	nullptr,					// 何でもない状態
+	nullptr,					// 移動状態
+	nullptr,					// 突っつき状態
+	nullptr,					// 破壊状態
+	nullptr,					// 説明状態
+	&CTutorial::UpdateEnd,		// 終了状態
+};
+
+CTutorial *CTutorial::s_pTutorial = nullptr;	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
 //=====================================================
-CTutorial::CTutorial()
+CTutorial::CTutorial() : m_state(E_State::STATE_NONE)
 {
-
+	s_pTutorial = this;
 }
 
 //=====================================================
@@ -45,7 +72,7 @@ CTutorial::CTutorial()
 //=====================================================
 CTutorial::~CTutorial()
 {
-
+	s_pTutorial = nullptr;
 }
 
 //=====================================================
@@ -71,7 +98,13 @@ HRESULT CTutorial::Init(void)
 
 	// 海の生成
 	COcean::Create();
+
+	// チュートリアルマネージャーの生成
+	m_pManager = CTutorialManager::Create();
 	
+	// 状態の初期化
+	m_state = E_State::STATE_MOVE;
+
 	//--------------------------------
 	// プレイヤーの生成
 	//--------------------------------
@@ -87,7 +120,7 @@ HRESULT CTutorial::Init(void)
 		if (!abFrag[i])
 			continue;
 
-		CPlayer *pPlayer = CPlayer::Create();
+		CPlayerTutorial *pPlayer = CPlayerTutorial::Create();
 
 		if (pPlayer == nullptr)
 			continue;
@@ -104,6 +137,8 @@ HRESULT CTutorial::Init(void)
 //=====================================================
 void CTutorial::Uninit(void)
 {
+	Object::DeleteObject((CObject**)&m_pManager);
+
 	// シーンの終了
 	CScene::Uninit();
 
@@ -116,8 +151,46 @@ void CTutorial::Uninit(void)
 //=====================================================
 void CTutorial::Update(void)
 {
+	assert(m_state > -1 && m_state < STATE_MAX);
+	if (s_aFuncUpdateState[m_state] != nullptr)
+	{ // 更新関数が指定されている場合
+
+		// 各状態ごとの更新
+		(this->*(s_aFuncUpdateState[m_state]))();
+	}
+
 	// シーンの更新
 	CScene::Update();
+
+#ifdef _DEBUG
+	Debug();
+#endif
+}
+
+//=====================================================
+// 移動状態の更新
+//=====================================================
+void CTutorial::UpdateMove(void)
+{
+
+}
+
+//=====================================================
+// 終了状態の更新
+//=====================================================
+void CTutorial::UpdateEnd(void)
+{
+	m_fTimeEnd += CManager::GetDeltaTime();
+
+	if (m_fTimeEnd > state::TIME_END)
+	{
+		// 一定時間経過でフェードする
+		CFade *pFade = CFade::GetInstance();
+		if (pFade == nullptr)
+			return;
+
+		pFade->SetFade(CScene::MODE::MODE_GAME);
+	}
 }
 
 //=====================================================
@@ -127,4 +200,19 @@ void CTutorial::Draw(void)
 {
 	// シーンの描画
 	CScene::Draw();
+}
+
+//=====================================================
+// デバッグ処理
+//=====================================================
+void CTutorial::Debug(void)
+{
+	CDebugProc *pDebugProc = CDebugProc::GetInstance();
+	CInputManager *pInputMgr = CInputManager::GetInstance();
+
+	if (pDebugProc == nullptr || pInputMgr == nullptr)
+		return;
+
+	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_ENTER))	// 強制遷移
+		SetState(CTutorial::E_State::STATE_END);
 }

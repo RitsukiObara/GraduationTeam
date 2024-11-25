@@ -85,10 +85,10 @@ void CGameManagerMulti::UpdateStart(void)
 //=====================================================
 // 通常状態の更新
 //=====================================================
-void CGameManagerMulti::UpdateNormal(void)
+void CGameManagerMulti::UpdateMove(void)
 {
 	// 基底クラスの更新
-	CGameManager::UpdateNormal();
+	CGameManager::UpdateMove();
 
 	// プレイヤー管理
 	ManagePlayer();
