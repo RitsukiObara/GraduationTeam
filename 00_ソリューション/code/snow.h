@@ -29,10 +29,12 @@ public:
 	void Update(void);
 	void Draw(void);
 	void Move(void);
+	static void SetSnow(int nMaxPos_X,int nMinPos_X ,float fHeight, int nMaxRadius, int nMinRadius, int nLife, D3DXVECTOR3 move, int nFrequency);
 
 private:
 	int m_nLife;	// 寿命
 	D3DXVECTOR3 m_move;
+	static int m_nsnowCnt;				// 雪が来るタイミングカウント
 };
 
 #endif
