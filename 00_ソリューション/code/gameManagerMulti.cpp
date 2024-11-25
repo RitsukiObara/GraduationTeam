@@ -11,6 +11,7 @@
 #include "gameManagerMulti.h"
 #include "inputManager.h"
 #include "player.h"
+#include "UIplayer.h"
 
 //=====================================================
 // コンストラクタ
@@ -49,6 +50,12 @@ HRESULT CGameManagerMulti::Init(void)
 		pPlayer->SetID(i);
 		m_apPlayer.push_back(pPlayer);
 	}
+
+	// プレイヤーUIの生成
+	CUIPlayer *pUIPlayer = CUIPlayer::Create();
+
+	if (pUIPlayer != nullptr)
+		pUIPlayer->StartScatter();
 
 	return S_OK;
 }

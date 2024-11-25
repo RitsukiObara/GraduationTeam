@@ -156,7 +156,7 @@ void CPlayerTutorial::AddProgress(CTutorial::E_State state)
 	// 指定した状態とチュートリアルの状態が一致したら進行させる
 	if (stateCur == state)
 	{
-		pTutorial->AddCntProgress();
+		pTutorial->AddCntProgress(this);
 
 		m_bComplete = true;
 	}

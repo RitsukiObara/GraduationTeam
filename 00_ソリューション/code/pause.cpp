@@ -74,11 +74,11 @@ CPause *CPause::Create(void)
 //====================================================
 HRESULT CPause::Init(void)
 {
-	// ƒQ[ƒ€‚ð’âŽ~‚·‚é
 	CGame *pGame = CGame::GetInstance();
 
 	if (pGame != nullptr)
 	{
+		// ƒQ[ƒ€‚ð’âŽ~‚·‚é
 		pGame->EnableStop(true);
 
 		CSound* pSound = CSound::GetInstance();
@@ -335,7 +335,7 @@ void CPause::Input(void)
 	{
 		return;
 	}
-
+	
 	if ((pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE) || 
 		pInputManager->GetTrigger(CInputManager::BUTTON_BACK)) && 
 		m_state == STATE::STATE_NONE)
