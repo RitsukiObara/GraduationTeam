@@ -22,7 +22,7 @@ namespace icon
 {
 const float WIDTH = 0.05f;							// 幅
 const float HEIGHT = 0.086f;						// 高さ
-const D3DXVECTOR3 POS_INIT = { 0.5f,0.3f,0.0f };	// 初期位置
+const D3DXVECTOR3 POS_INIT = { 0.35f,0.3f,0.0f };	// 初期位置
 const D3DXVECTOR3 POS_DEST[] =						// 目標位置
 {
 	{ WIDTH,HEIGHT,0.0f },
@@ -103,8 +103,8 @@ HRESULT CUIPlayer::Init(void)
 		// UIの初期設定
 		m_apIconPlayer[i]->SetSize(icon::WIDTH, icon::HEIGHT);
 		D3DXVECTOR3 pos = icon::POS_INIT;
-		pos.x += icon::WIDTH * i;
-		m_apIconPlayer[i]->SetPosition(icon::POS_INIT);
+		pos.x += icon::WIDTH * i * 2;
+		m_apIconPlayer[i]->SetPosition(pos);
 		m_apIconPlayer[i]->SetVtx();
 
 		int nIdxTexture = Texture::GetIdx(&icon::PATH_TEX[i][0]);

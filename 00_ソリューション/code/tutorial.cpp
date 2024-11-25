@@ -75,7 +75,7 @@ CTutorial *CTutorial::s_pTutorial = nullptr;	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CTutorial::CTutorial() : m_state(E_State::STATE_NONE), m_pManager(nullptr), m_fTimeEnd(0.0f) , m_nCntProgress(0), m_pUIPlayer(nullptr)
+CTutorial::CTutorial() : m_state(E_State::STATE_NONE), m_pManager(nullptr), m_fTimeEnd(0.0f) , m_nCntProgress(0), m_pUIPlayer(nullptr), m_abComplete()
 {
 	s_pTutorial = this;
 }
@@ -226,8 +226,13 @@ void CTutorial::AddCntProgress(CPlayer *pPlayer)
 	// 対応したIDのアイコンを取得
 	int nID = pPlayer->GetID();
 
+	if (m_abComplete[nID])
+		return;	// 既に完了していたら通らない
+
 	// チェックマークの生成
 	CreateCheck(nID);
+
+	m_abComplete[nID] = true;
 
 	// 進行カウンター加算
 	m_nCntProgress++;
@@ -283,6 +288,10 @@ void CTutorial::ProgressState(void)
 		pUI->Uninit();
 
 	m_apCheck.clear();
+
+	// 完了フラグリセット
+	for (int i = 0; i < NUM_PLAYER; i++)
+		m_abComplete[i] = false;
 
 	// チュートリアルマネージャー側で状態が変わったときの処理
 	if (m_pManager != nullptr)
