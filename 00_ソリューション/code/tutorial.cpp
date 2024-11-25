@@ -21,6 +21,7 @@
 #include "manager.h"
 #include "fade.h"
 #include "UIplayer.h"
+#include "fade2D.h"
 #include "texture.h"
 
 //*****************************************************
@@ -64,6 +65,7 @@ namespace caption
 const float WIDTH = 0.3f;							// 幅
 const float HEIGHT = 0.1f;							// 高さ
 const D3DXVECTOR3 POS_INIT = { 0.5f,0.114f,0.0f };	// 位置
+const float TIME_FADE = 2.0f;						// フェードにかかる時間
 }
 }
 
@@ -86,7 +88,7 @@ CTutorial *CTutorial::s_pTutorial = nullptr;	// 自身のポインタ
 // コンストラクタ
 //=====================================================
 CTutorial::CTutorial() : m_state(E_State::STATE_NONE), m_pManager(nullptr), m_fTimeEnd(0.0f) , m_nCntProgress(0), m_pUIPlayer(nullptr), m_abComplete(),
-m_pCaption(nullptr)
+m_pCaption(nullptr), m_pFade2D(nullptr)
 {
 	s_pTutorial = this;
 }
@@ -153,8 +155,11 @@ HRESULT CTutorial::Init(void)
 		pPlayer->SetID(i);
 	}
 
-	// プレイヤーUIの生成
-	m_pUIPlayer = CUIPlayer::Create();
+	if (CPlayer::GetNumPlayer() > 1)
+	{// 複数人プレイ時のみ生成
+		// プレイヤーUIの生成
+		m_pUIPlayer = CUIPlayer::Create();
+	}
 
 	//--------------------------------
 	// キャプションの生成
@@ -167,6 +172,14 @@ HRESULT CTutorial::Init(void)
 	m_pCaption->SetSize(caption::WIDTH, caption::HEIGHT);
 	m_pCaption->SetPosition(caption::POS_INIT);
 	m_pCaption->SetVtx();
+
+	m_pFade2D = CFade2D::Create(m_pCaption, caption::TIME_FADE);
+
+	if (m_pFade2D != nullptr)
+	{
+		m_pFade2D->EnableBouceOut(true);
+		m_pFade2D->SetState(CFade2D::E_State::STATE_IN);
+	}
 
 	return S_OK;
 }
@@ -311,6 +324,9 @@ void CTutorial::ProgressState(void)
 		pUI->Uninit();
 
 	m_apCheck.clear();
+
+	if(m_pFade2D != nullptr)
+		m_pFade2D->SetState(CFade2D::E_State::STATE_OUT);
 
 	// 完了フラグリセット
 	for (int i = 0; i < NUM_PLAYER; i++)

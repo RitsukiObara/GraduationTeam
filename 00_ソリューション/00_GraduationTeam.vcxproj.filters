@@ -130,6 +130,9 @@
     <Filter Include="ソース ファイル\UI\UIplayer">
       <UniqueIdentifier>{26085469-75ce-4251-8bf8-d83cf85b58d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\anim2D">
+      <UniqueIdentifier>{c084b14d-45e9-41c7-a93a-76d5583c7278}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="code\scene.cpp">
@@ -485,6 +488,9 @@
     </ClCompile>
     <ClCompile Include="code\UI_ready.cpp">
       <Filter>ソース ファイル\UI\UI_ready</Filter>
+    </ClCompile>
+    <ClCompile Include="code\fade2D.cpp">
+      <Filter>ソース ファイル\anim2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -853,6 +859,9 @@
     </ClInclude>
     <ClInclude Include="code\UI_ready.h">
       <Filter>ソース ファイル\UI\UI_ready</Filter>
+    </ClInclude>
+    <ClInclude Include="code\fade2D.h">
+      <Filter>ソース ファイル\anim2D</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
