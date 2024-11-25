@@ -43,23 +43,27 @@ public:
 	void Update(void) override;
 	void Draw(void) override;
 	
+	void ProgressState(void);	// チュートリアルを進める
+
 	// 変数取得・設定関数
 	void SetState(E_State state) { m_state = state; }	// 状態
 	E_State GetState(void) { return m_state; }
+	int GetCntProgress(void) { return m_nCntProgress; }	// 状態進行カウンター
 
 	// 静的メンバ関数
 	static CTutorial *GetInstance(void) { return s_pTutorial; }	// インスタンス取得
 
 private:
 	// メンバ関数
-	void UpdateMove(void);		// 移動状態
-	void UpdateEnd(void);		// 終了状態
-	void Debug(void);			// デバッグ
+	void UpdateEnd(void);				// 終了状態
+	void CheckProgress(void);			// 進行判断
+	void Debug(void);					// デバッグ
 
 	// メンバ変数
 	E_State m_state;				// 状態
 	CTutorialManager *m_pManager;	// チュートリアルマネージャーのポインタ
 	float m_fTimeEnd;				// 終了タイマー
+	int m_nCntProgress;				// 進行カウンター
 
 	// 関数ポインタ型を定義
 	typedef void (CTutorial::*FuncUpdateState)(void);

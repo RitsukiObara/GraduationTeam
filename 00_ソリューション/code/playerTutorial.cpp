@@ -65,7 +65,7 @@ HRESULT CPlayerTutorial::Init(void)
 void CPlayerTutorial::Uninit(void)
 {
 	// åpè≥ÉNÉâÉXÇÃèIóπ
-	CMotion::Uninit();
+	CPlayer::Uninit();
 }
 
 //=====================================================

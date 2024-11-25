@@ -664,6 +664,9 @@ void CIceStaeteNormal::MoveObjectOnIce(D3DXVECTOR3 vecMove,CIce *pIce)
 	// ã‚É‚Ç‚ê‚©‚ªæ‚Á‚Ä‚½‚ç“®‚©‚·
 	for (CGameObject* object : apObject)
 	{
+		if (object == nullptr)
+			continue;
+
 		D3DXVECTOR3 posObject = object->GetPosition();
 		D3DXVECTOR3 pos = pIce->GetPosition();
 

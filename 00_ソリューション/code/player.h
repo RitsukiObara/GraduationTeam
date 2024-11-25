@@ -87,6 +87,7 @@ public:
 	static CPlayer* Create(void);										// 生成処理
 	static vector<CPlayer*> GetInstance(void) { return s_apPlayer; }	// インスタンスの取得
 	static void EnableInputAll(bool bValue);							// 全プレイヤーの入力フラグ
+	static int GetNumPlayer(void) { return (int)s_apPlayer.size(); }	// プレイヤー数の取得
 
 private:
 	// 構造体定義
