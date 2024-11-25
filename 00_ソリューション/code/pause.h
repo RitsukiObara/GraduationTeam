@@ -62,7 +62,7 @@ private:
 	CUI *m_pBg;	// 背景２Dオブジェクト
 	D3DXVECTOR3 m_aPosDest[MENU_MAX];	// 目標の位置
 	STATE m_state;	// 状態
-	bool m_bSound;		
+	bool m_bSound;
 	int nCountMove;
 };
 
