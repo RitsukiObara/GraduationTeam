@@ -84,13 +84,14 @@ namespace
 		const D3DXVECTOR3 POS	= D3DXVECTOR3(0.82f, 0.91f, 0.0f);	// 位置
 	}
 
-	const int CNT_SNOW = 30;					// 雪が降るタイミング
-	const float MAX_HEIGHT = 1800.0f;			// 雪が降ってくる高さ
-	const float SNOW_RADIUS = 100.0f;			// 雪の半径
-	const int SNOW_LIFE = 200;					// 雪のライフ
-	const float SNOW_MOVE_SPED = -10.0f;		// 雪の移動速度
-	const int MAX_SNOW_POS = 2200;			// 雪の最大生成場所
-	const int MIN_SNOW_POS = -2200;			// 雪の最低生成場所
+	const int CNT_SNOW = 10;						// 雪が降るタイミング
+	const float MAX_HEIGHT = 1800.0f;				// 雪が降ってくる高さ
+	const int MAX_SNOW_RADIUS = 100;				// 最大雪の半径
+	const int MIN_SNOW_RADIUS = 20;				// 最低雪の半径
+	const int SNOW_LIFE = 200;						// 雪のライフ
+	const float SNOW_MOVE_SPED = -10.0f;			// 雪の移動速度
+	const int MAX_SNOW_POS = 2200;					// 雪の最大生成場所
+	const int MIN_SNOW_POS = -2200;					// 雪の最低生成場所
 }
 
 //=====================================================
@@ -102,7 +103,6 @@ CSelectMode::CSelectMode()
 	m_fCurTime = 0.0f;
 	m_selectMode = MODE_SINGLE;
 	for (int cnt = 0; cnt < MODE_MAX; cnt++) { m_apModeUI[cnt] = nullptr; }
-	m_nsnowCnt = 0;
 }
 
 //=====================================================
@@ -124,8 +124,6 @@ HRESULT CSelectMode::Init(void)
 
 	// カメラ
 	Camera::ChangeState(new CCameraStateSelectMode);
-
-	m_nsnowCnt = 0;		// 雪が来るタイミングを初期化
 
 	// 説明の生成
 	//m_pManual = CUI::Create();
@@ -223,18 +221,8 @@ void CSelectMode::Update(void)
 	CSound* pSound = CSound::GetInstance();	// サウンド情報
 	assert(pSound != nullptr);
 
-	float snowPos = (float)universal::RandRange(MAX_SNOW_POS, MIN_SNOW_POS);
-
-	m_nsnowCnt++;
-
-	if (m_nsnowCnt >= CNT_SNOW)
-	{
-		// 雪を生成
-		CSnow::Create(D3DXVECTOR3(snowPos, MAX_HEIGHT, 0.0f), SNOW_RADIUS, SNOW_LIFE,
-			D3DXVECTOR3(0.0f, SNOW_MOVE_SPED, 0.0f));
-
-		m_nsnowCnt = 0;
-	}
+	CSnow::SetSnow(MAX_SNOW_POS, MIN_SNOW_POS, MAX_HEIGHT, MAX_SNOW_RADIUS, MIN_SNOW_RADIUS,
+		SNOW_LIFE, D3DXVECTOR3(0.0f, SNOW_MOVE_SPED, 0.0f), CNT_SNOW);
 
 	// モードの移動
 	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_LEFT))
