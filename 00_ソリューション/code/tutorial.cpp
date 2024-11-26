@@ -377,9 +377,7 @@ void CTutorial::InputSkip(void)
 			CFade *pFade = CFade::GetInstance();
 
 			if (pFade != nullptr)
-			{
-				pFade->SetFade(CScene::MODE_TITLE);
-			}
+				pFade->SetFade(CScene::MODE_GAME);
 		}
 	}
 	else

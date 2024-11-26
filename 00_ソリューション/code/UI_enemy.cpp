@@ -13,6 +13,7 @@
 #include "enemy.h"
 #include "UI.h"
 #include "texture.h"
+#include "game.h"
 #include "inputkeyboard.h"
 
 //*****************************************************
@@ -121,7 +122,7 @@ void CUIEnemy::Debug(void)
 
 	if (pInputKeyboard->GetTrigger(DIK_UP))
 	{
-		AddEnemy();
+		AddEnemy(0);
 	}
 	else if (pInputKeyboard->GetTrigger(DIK_DOWN))
 	{
@@ -140,7 +141,7 @@ void CUIEnemy::Draw(void)
 //=====================================================
 // 敵の追加
 //=====================================================
-void CUIEnemy::AddEnemy(void)
+void CUIEnemy::AddEnemy(int nType)
 {
 	// アイコンを増やす
 	CIcon *pIcon = CIcon::Create();
@@ -174,6 +175,7 @@ void CUIEnemy::DeleteEnemy(void)
 	if (m_apIcon.empty())
 		return;
 	
+	// アイコンを落下させる
 	int nSizeArray = (int)m_apIcon.size();
 
 	CIcon* pIcon = m_apIcon[nSizeArray - 1];
@@ -181,6 +183,12 @@ void CUIEnemy::DeleteEnemy(void)
 	pIcon->StartFall();	// 落下を開始させる
 
 	m_apIcon.erase(m_apIcon.end() - 1);
+
+	// ゲームの敵の最大数減少
+	CGame *pGame = CGame::GetInstance();
+
+	if (pGame != nullptr)
+		pGame->DecreaseNumEnemu();
 }
 
 //******************************************************************

@@ -35,8 +35,8 @@ const string PATH_TEX[CResultSingleLose::E_Select::SELECT_MAX] =
 	"data\\TEXTURE\\UI\\Quit.png",
 };
 const float TIME_APPER = 2.0f;		// èoåªÇ…Ç©Ç©ÇÈéûä‘
-const float WIDTH = 0.2f;			// ïù
-const float HEIGHT = 0.15f;			// çÇÇ≥
+const float WIDTH = 0.16f;			// ïù
+const float HEIGHT = 0.22f;			// çÇÇ≥
 const float HEIGHT_INIT = -HEIGHT;
 const D3DXVECTOR3 POS_INIT[CResultSingleLose::E_Select::SELECT_MAX] =
 {// èâä˙à íu

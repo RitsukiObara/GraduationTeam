@@ -71,6 +71,9 @@ public:
 	// 変数取得・設定関数
 	int GetTimeSecond(void) { if (m_pTimer != nullptr) { return m_pTimer->GetSecond(); } return 0; }
 	CScore *GetScore(void) { return m_pScore; };	// スコア
+	void DecreaseNumEnemu(void) { m_nNumEnemyMax--; }	// 敵の最大数
+	void AddEnemy(int nType);
+	int GetNumEnemyMax(void) { return m_nNumEnemyMax; }
 
 private:
 	// メンバ関数
@@ -81,14 +84,15 @@ private:
 	void UpdatePause(void);	// ポーズの更新
 
 	// メンバ変数
-	int m_nCntState;	// 状態遷移カウンター
-	int m_nTimerCnt;	// タイマー用のカウント
-	bool m_bStop;	// 停止状態
-	CTimer* m_pTimer;		// タイマー
-	CScore* m_pScore;		// スコア
+	int m_nCntState;					// 状態遷移カウンター
+	int m_nTimerCnt;					// タイマー用のカウント
+	bool m_bStop;						// 停止状態
+	CTimer* m_pTimer;					// タイマー
+	CScore* m_pScore;					// スコア
 	CStageResultUI* m_pStageResultUI;	// ステージクリアUI
-	CPause *m_pPause;	// ポーズのポインタ
-	E_GameMode m_GameMode;	// ゲームモード
+	CPause *m_pPause;					// ポーズのポインタ
+	E_GameMode m_GameMode;				// ゲームモード
+	int m_nNumEnemyMax;					// 敵の最大数
 
 	// 静的メンバ変数
 	static E_State m_state;	// 状態

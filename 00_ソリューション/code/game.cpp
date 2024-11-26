@@ -74,6 +74,7 @@ CGame::CGame()
 	m_bStop = false;
 	m_pPause = nullptr;
 	m_GameMode = E_GameMode::MODE_NONE;
+	m_nNumEnemyMax = 0;
 }
 
 //=====================================================
@@ -93,7 +94,7 @@ HRESULT CGame::Init(void)
 	vector<bool> abFrag;
 	gameManager::LoadMode(&m_GameMode, abFrag);
 
-	// 氷マネージャー
+	// 氷マネージャーの読込処理
 	int nIdxMap = gameManager::LoadIdxMap();
 
 	vector<CSelectStageManager::S_InfoStage*> apInfoStage = CSelectStageManager::GetInfoStage();
@@ -299,21 +300,12 @@ void CGame::Debug(void)
 		CResultSingle::Create(false);
 	}
 
-	// 敵を倒したスコア出す
-	if (pKeyboard->GetTrigger(DIK_K))
-	{
-		//敵を倒した時のスコア生成
-		CDestroyScore::GetInstance()->AddDestroyScore(CEnemy::TYPE_SEALS);
-
-		//敵を倒した時のコンボUI生成
-		CUI_Combo::GetInstance()->AddCombo();
-	}
-
 	pDebugProc->Print("\nゲームデバッグキー======================");
 	pDebugProc->Print("\nF:時間停止");
 	pDebugProc->Print("\n0:勝利");
 	pDebugProc->Print("\n9:敗北");
 	pDebugProc->Print("\nK:敵倒したスコア生成");
+	pDebugProc->Print("\n7:敵倒す");
 }
 
 //=====================================================
@@ -361,6 +353,20 @@ void CGame::StartGame(void)
 
 	// 全プレイヤーが操作可能になる
 	CPlayer::EnableInputAll(true);
+}
+
+//=====================================================
+// 敵の追加
+//=====================================================
+void CGame::AddEnemy(int nType)
+{
+	// 敵UIの敵数を加算
+	CUIEnemy *pUIEnemy = CUIEnemy::GetInstance();
+
+	if (pUIEnemy != nullptr)
+		pUIEnemy->AddEnemy(nType);
+
+	m_nNumEnemyMax++;
 }
 
 namespace game

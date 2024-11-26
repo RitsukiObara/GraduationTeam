@@ -13,11 +13,23 @@
 #include "player.h"
 #include "inputManager.h"
 #include "resultSingle.h"
+#include "selectStageManager.h"
+#include "enemyfactory.h"
+#include "game.h"
+
+//*****************************************************
+// 定数定義
+//*****************************************************
+namespace
+{
+const int NUM_ENEMY_DEFAULT = 5;								// 敵の数のデフォルト値
+const string PATH_ENEMY_DEFAULT = "data\\TEXT\\enemy00.txt";	// 敵配置情報のテキスト
+}
 
 //=====================================================
 // コンストラクタ
 //=====================================================
-CGameManagerSingle::CGameManagerSingle()
+CGameManagerSingle::CGameManagerSingle() : m_pPlayer(nullptr), m_pEnemyFct(nullptr)
 {
 
 }
@@ -48,6 +60,21 @@ HRESULT CGameManagerSingle::Init(void)
 
 	// 基底クラスの初期化
 	CGameManager::Init();
+
+	// 敵配置の設定
+	int nIdxMap = gameManager::LoadIdxMap();
+
+	m_pEnemyFct = CEnemyFct::Create();
+
+	if (m_pEnemyFct == nullptr)
+		return E_FAIL;
+
+	vector<CSelectStageManager::S_InfoStage*> apInfoStage = CSelectStageManager::GetInfoStage();
+
+	if (apInfoStage.empty())
+		m_pEnemyFct->Load(PATH_ENEMY_DEFAULT);
+	else
+		m_pEnemyFct->Load(apInfoStage[nIdxMap]->pathEnemy);
 
 	return S_OK;
 }
@@ -84,13 +111,16 @@ void CGameManagerSingle::UpdateStart(void)
 //=====================================================
 // 通常状態の更新
 //=====================================================
-void CGameManagerSingle::UpdateMove(void)
+void CGameManagerSingle::UpdateNormal(void)
 {
 	// 基底クラスの更新
-	CGameManager::UpdateMove();
+	CGameManager::UpdateNormal();
 
 	// プレイヤー管理
 	ManagePlayer();
+
+	// 敵管理
+	ManageEnemy();
 }
 
 //=====================================================
@@ -120,6 +150,22 @@ void CGameManagerSingle::DeathPlayer(void)
 
 	// プレイヤー死亡で敗北
 	CResultSingle::Create(false);
+}
+
+//=====================================================
+// 敵の管理
+//=====================================================
+void CGameManagerSingle::ManageEnemy(void)
+{
+	CGame *pGame = CGame::GetInstance();
+
+	if (pGame == nullptr)
+		return;
+
+	int nNumEnemy = pGame->GetNumEnemyMax();
+
+	if(nNumEnemy == 0)	// 敵全滅で勝利
+		CResultSingle::Create(true);
 }
 
 //=====================================================

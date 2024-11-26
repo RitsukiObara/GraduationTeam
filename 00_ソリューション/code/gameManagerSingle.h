@@ -16,6 +16,7 @@
 // 前方宣言
 //*****************************************************
 class CPlayer;
+class CEnemyFct;
 
 //*****************************************************
 // クラスの定義
@@ -38,16 +39,18 @@ public:
 
 private:
 	// メンバ関数
-	void UpdateStart(void) override;		// 開始状態の更新
-	void UpdateMove(void) override;	// 通常状態の更新
-	void ManagePlayer(void);	// プレイヤーの管理
-	void DeathPlayer(void);	// プレイヤーの死亡
+	void UpdateStart(void) override;	// 開始状態の更新
+	void UpdateNormal(void) override;	// 通常状態の更新
+	void ManagePlayer(void);			// プレイヤーの管理
+	void DeathPlayer(void);				// プレイヤーの死亡
+	void ManageEnemy(void);				// 敵の管理
 
 	void UpdateResult(void) override;	// リザルト状態の更新
 	void UpdateEnd(void) override;		// 終了状態の更新
 
 	// メンバ変数
-	CPlayer *m_pPlayer;	// プレイヤーのポインタ
+	CPlayer *m_pPlayer;		// プレイヤーのポインタ
+	CEnemyFct *m_pEnemyFct;	// 敵ファクトリー
 
 	// 静的メンバ変数
 };

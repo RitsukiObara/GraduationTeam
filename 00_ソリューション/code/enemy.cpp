@@ -886,6 +886,9 @@ void CEnemy::Debug(void)
 	if (pDebugProc == nullptr || pInputKeyboard == nullptr)
 		return;
 
+	if (pInputKeyboard->GetTrigger(DIK_7))
+		Death();
+
 	pDebugProc->Print("\n“Gî•ñ==========================");
 	pDebugProc->Print("\nˆÊ’u[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
 	pDebugProc->Print("\nˆÚ“®—Ê[%f,%f,%f]", GetMove().x, GetMove().y, GetMove().z);

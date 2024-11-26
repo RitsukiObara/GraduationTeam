@@ -32,7 +32,10 @@ public:
 		LABEL_SE_ICE_UNION,				// 氷同士ぶつかった
 		LABEL_SE_DECISION,				// 決定音
 		LABEL_SE_SELECT,				// 選択音
-		LABEL_SE_PENGUIN_VOICE,			// ペンギン鳴き声
+		LABEL_SE_PENGUIN_VOICE00,		// ペンギンの鳴き声1
+		LABEL_SE_PENGUIN_VOICE01,		// ペンギンの鳴き声2
+		LABEL_SE_FLAPPING_WING,			// ペンギンの羽ばたき音
+		LABEL_SE_PENGUIN_WALKING,		// ペンギンの歩く音
 		LABEL_SE_POLARBEAR_VOICE,		// シロクマ鳴き声
 		LABEL_SE_POLARBEAR_ASSALT,		// シロクマ突撃
 
@@ -108,7 +111,10 @@ private:
 		{ "data/SOUND/SE/SE_Ice_Union.wav",0 },			// 氷同士ぶつかった
 		{ "data/SOUND/SE/SE_Decision.wav",0 },			// 決定音
 		{ "data/SOUND/SE/SE_Select.wav",0 },			// 選択音
-		{ "data/SOUND/SE/SE_Penguin_Voice.wav",0 },		// ペンギン鳴き声
+		{ "data/SOUND/SE/SE_Penguin_Voice00.wav",0 },	// ペンギン鳴き声1
+		{ "data/SOUND/SE/SE_Penguin_Voice01.wav",0 },	// ペンギン鳴き声2
+		{ "data/SOUND/SE/SE_flapping_wing.wav",0 },		// ペンギンの羽ばたき音
+		{ "data/SOUND/SE/SE_Walking_Sound.wav",0 },		// ペンギンの歩く音
 		{ "data/SOUND/SE/SE_Polarbear_Voice.wav",0 },	// シロクマ鳴き声
 		{ "data/SOUND/SE/SE_Polarbear_Assault.wav",0 },	// シロクマ突撃
 

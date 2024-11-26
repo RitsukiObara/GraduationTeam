@@ -1202,7 +1202,7 @@ void CPlayer::Hit(float fDamage)
 	m_bEnableInput = false;
 
 	// ƒyƒ“ƒMƒ“‚Ì–Â‚«º
-	CSound::GetInstance()->Play(CSound::LABEL_SE_PENGUIN_VOICE);
+	CSound::GetInstance()->Play(CSound::LABEL_SE_PENGUIN_VOICE00);
 }
 
 //=====================================================
