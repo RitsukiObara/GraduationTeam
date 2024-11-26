@@ -69,7 +69,10 @@ public:
 	bool IsInIce(D3DXVECTOR3 pos, CIce *pIce, float fRate = 0.7f);	// 氷に乗ってるかの判定
 	bool SetIceInGrid(int nNumV, int nNumH, CIce *pIce);	// グリッドに氷を設定
 	void GetIceIndex(CIce *pIce, int *pNumV, int *pNumH);	// 氷のグリッド番号を取得
-	CIce* GetLeftDownIdx(int *pNumV, int *pNumH);	// 右下の氷取得
+	CIce* GetLeftDownIdx(int *pNumV, int *pNumH);	// 左下の氷取得
+	CIce* GetLeftUpIdx(int *pNumV, int *pNumH);	// 左上の氷取得
+	CIce* GetRightDownIdx(int *pNumV, int *pNumH);	// 右上の氷取得
+	CIce* GetRightUpIdx(int *pNumV, int *pNumH);	// 右上の氷取得
 	void DisableFind(void);	// 探索フラグの無効化
 	void Load(const char* pPath);	// 初期配置読み込み
 	void BindRippleElements(void);	// さざ波の属性を割り当てる処理

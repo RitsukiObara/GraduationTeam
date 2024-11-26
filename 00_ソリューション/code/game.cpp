@@ -100,10 +100,15 @@ HRESULT CGame::Init(void)
 	vector<CSelectStageManager::S_InfoStage*> apInfoStage = CSelectStageManager::GetInfoStage();
 
 	CIceManager* pIceManager = CIceManager::Create(SIZE_GRID[m_GameMode], SIZE_GRID[m_GameMode]);
+	if (pIceManager == nullptr)
+		return E_FAIL;
 
-	if (apInfoStage.empty())
+	pIceManager->SetDirStream((COcean::E_Stream)apInfoStage[nIdxMap]->nDirStream);
+	pIceManager->SetDirStreamNext((COcean::E_Stream)apInfoStage[nIdxMap]->nDirStream);
+
+	if (apInfoStage.empty())	// ステージ情報が空だったらデフォルトマップ
 		pIceManager->Load(PATH_SAMPLE_ICESTAGE);
-	else
+	else						// 対応したステージを読込む
 		pIceManager->Load(&apInfoStage[nIdxMap]->pathMap[0]);
 
 	// タイマー生成

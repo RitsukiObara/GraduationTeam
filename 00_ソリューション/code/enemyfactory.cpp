@@ -126,6 +126,11 @@ void CEnemyFct::LoadInfo(std::ifstream& file, string str, S_InfoEnemy *pInfoEnem
 			iss >> str >> pInfoEnemy->nType;
 		}
 
+		if (key == "SPAWN")
+		{// スポーンパターン
+			iss >> str >> pInfoEnemy->nPaternSpawn;
+		}
+
 		if (key == "END_SETENEMY")
 		{// 終了
 			break;
@@ -170,7 +175,7 @@ void CEnemyFct::Update(void)
 	{
 		if (pInfo->fDelaySpawn > fTimeOld && pInfo->fDelaySpawn <= m_fTimerSpawn)
 		{// スポーンディレイを越えた瞬間にスポーン
-			CEnemy::Create(pInfo->nType);
+			CEnemy::Create(pInfo->nType,(CEnemy::E_Spawn)pInfo->nPaternSpawn);
 		}
 	}
 }

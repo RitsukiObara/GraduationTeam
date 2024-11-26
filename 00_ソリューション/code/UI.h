@@ -19,14 +19,14 @@ class CUI	: public CPolygon2D
 {
 public:
 	CUI(int nPriority = 7);	// コンストラクタ
-	~CUI();	//	デストラクタ
+	~CUI();					//	デストラクタ
 
 	// メンバ関数
 	static CUI *Create(void);	// 生成処理
-	HRESULT Init(void);	// 初期化処理
-	void Uninit(void);	// 終了処理
-	void Update(void);	// 更新処理
-	void Draw(void);	// 描画処理
+	HRESULT Init(void);			// 初期化処理
+	void Uninit(void);			// 終了処理
+	void Update(void);			// 更新処理
+	void Draw(void);			// 描画処理
 
 	// 変数取得・設定関数
 	void SetSize(float width, float height) override;	// サイズ

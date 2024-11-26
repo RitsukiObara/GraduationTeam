@@ -102,8 +102,8 @@ HRESULT CIceManager::Init(void)
 	SetGridPos();
 
 	// ŠC—¬‚ğ‰Šú‰»
-	m_dirStream = COcean::STREAM_LEFT;
-	m_dirStreamNext = COcean::STREAM_LEFT;
+	m_dirStream = COcean::STREAM_DOWN;
+	m_dirStreamNext = COcean::STREAM_DOWN;
 	m_fOceanLevel = OCEAN_FLOW_MAX;
 
 	return S_OK;
@@ -1408,7 +1408,7 @@ void CIceManager::GetIceIndex(CIce *pIce, int *pNumV, int *pNumH)
 }
 
 //=====================================================
-// ‰E‰º‚Ì•X‚ğæ“¾
+// ¶‰º‚Ì•X‚ğæ“¾
 //=====================================================
 CIce* CIceManager::GetLeftDownIdx(int *pNumV, int *pNumH)
 {
@@ -1418,6 +1418,78 @@ CIce* CIceManager::GetLeftDownIdx(int *pNumV, int *pNumH)
 	for (int i = 0; i < m_nNumGridVirtical; i++)
 	{
 		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			if (m_aGrid[i][j].pIce != nullptr)
+			{// •X‚ª‚ ‚Á‚½‚ç”Ô†‚ğ•Û‘¶
+				*pNumV = i;
+				*pNumH = j;
+				return m_aGrid[i][j].pIce;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
+//=====================================================
+// ¶ã‚Ì•X‚ğæ“¾
+//=====================================================
+CIce* CIceManager::GetLeftUpIdx(int *pNumV, int *pNumH)
+{
+	if (pNumV == nullptr || pNumH == nullptr)
+		return nullptr;
+
+	for (int i = m_nNumGridVirtical - 1; i >= 0; i--)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			if (m_aGrid[i][j].pIce != nullptr)
+			{// •X‚ª‚ ‚Á‚½‚ç”Ô†‚ğ•Û‘¶
+				*pNumV = i;
+				*pNumH = j;
+				return m_aGrid[i][j].pIce;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
+//=====================================================
+// ‰E‰º‚Ì•X‚ğæ“¾
+//=====================================================
+CIce* CIceManager::GetRightDownIdx(int *pNumV, int *pNumH)
+{
+	if (pNumV == nullptr || pNumH == nullptr)
+		return nullptr;
+
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = m_nNumGridHorizontal - 1; j >= 0; j--)
+		{
+			if (m_aGrid[i][j].pIce != nullptr)
+			{// •X‚ª‚ ‚Á‚½‚ç”Ô†‚ğ•Û‘¶
+				*pNumV = i;
+				*pNumH = j;
+				return m_aGrid[i][j].pIce;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
+//=====================================================
+// ‰Eã‚Ì•X‚ğæ“¾
+//=====================================================
+CIce* CIceManager::GetRightUpIdx(int *pNumV, int *pNumH)
+{
+	if (pNumV == nullptr || pNumH == nullptr)
+		return nullptr;
+
+	for (int i = m_nNumGridVirtical - 1; i >= 0; i--)
+	{
+		for (int j = m_nNumGridHorizontal - 1; j >= 0; j--)
 		{
 			if (m_aGrid[i][j].pIce != nullptr)
 			{// •X‚ª‚ ‚Á‚½‚ç”Ô†‚ğ•Û‘¶
