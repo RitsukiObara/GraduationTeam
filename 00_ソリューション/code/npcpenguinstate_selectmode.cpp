@@ -12,6 +12,7 @@
 #include "collision.h"
 #include "debugproc.h"
 #include "motion.h"
+#include "sound.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -113,6 +114,9 @@ HRESULT CNPCPenguinState_Move::Init(CNPCPenguin* pPenguin)
 {
 	pPenguin->SetMotion(CNPCPenguin::MOTION::MOTION_WALK);
 
+	CSound::GetInstance()->Play(CSound::LABEL_SE_PENGUIN_VOICE01);	// ƒyƒ“ƒMƒ“‚Ì‰H‚Î‚½‚«‰¹
+	CSound::GetInstance()->Play(CSound::LABEL_SE_PENGUIN_WALKING);  // ƒyƒ“ƒMƒ“‚Ì•à‚­‰¹
+
 	return S_OK;
 }
 
@@ -200,6 +204,9 @@ void CNPCPenguinState_Fall::Update(CNPCPenguin* pPenguin)
 HRESULT CNPCPenguinState_ShakeHead::Init(CNPCPenguin* pPenguin)
 {
 	pPenguin->SetMotion(CNPCPenguin::MOTION::MOTION_NECKSHAKE);
+
+	// ƒyƒ“ƒMƒ“‚Ì‰H‚Î‚½‚«‰¹
+	CSound::GetInstance()->Play(CSound::LABEL_SE_FLAPPING_WING);
 
 	return S_OK;
 }
@@ -298,6 +305,9 @@ void CNPCPenguinState_UNYO::Update(CNPCPenguin* pPenguin)
 HRESULT CNPCPenguinState_WingPTPT::Init(CNPCPenguin* pPenguin)
 {
 	pPenguin->SetMotion(CNPCPenguin::MOTION::MOTION_WINGPTPT);
+
+	// ƒyƒ“ƒMƒ“‚Ì‰H‚Î‚½‚«‰¹
+	CSound::GetInstance()->Play(CSound::LABEL_SE_FLAPPING_WING);
 
 	return S_OK;
 }
