@@ -41,6 +41,7 @@ private:
 	void ReadExplain(void);						// 説明進む処理
 	void AddProgress(CTutorial::E_State state);	// 進行させる処理
 	bool Peck(void) override;					// 突っつく処理
+	void StartJump(void) override;				// ジャンプの開始
 
 	// メンバ変数
 	float m_fTimerMove;	// 移動カウンター

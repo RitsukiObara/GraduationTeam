@@ -18,6 +18,7 @@
 class CUI;
 class CTutorialManager;
 class CUIPlayer;
+class CFade2D;
 
 //*****************************************************
 // クラスの定義
@@ -31,7 +32,9 @@ public:
 		STATE_NONE = 0,			// 何でもない状態
 		STATE_MOVE,				// 移動状態
 		STATE_PECK,				// 突っつき状態
+		STATE_EXPLAIN_ICE,		// 氷説明
 		STATE_EXPLAIN_BREAK,	// 破壊説明
+		STATE_JUMP,				// ジャンプ
 		STATE_EXPLAIN_ENEMY,	// 敵説明
 		STATE_END,				// 終了状態
 		STATE_MAX
@@ -69,7 +72,7 @@ private:
 	float m_fTimeEnd;				// 終了タイマー
 	int m_nCntProgress;				// 進行カウンター
 	CUI *m_pCaption;				// キャプション
-	float m_fTimerCaption;			// キャプションのタイマー
+	CFade2D *m_pFade2D;				// 2Dフェード
 	vector<CUI*> m_apCheck;			// チェックマークの配列
 	bool m_abComplete[NUM_PLAYER];	// 完了フラグ
 
