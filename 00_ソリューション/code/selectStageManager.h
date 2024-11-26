@@ -42,6 +42,7 @@ public:
 		string pathModel;				// モデルのパス
 		string pathMap;					// マップのパス
 		string pathEnemy;				// 敵のパス
+		int nDirStream;					// 海流の向き
 		D3DXVECTOR3 pos;				// 位置
 		CCollisionSphere *pCollision;	// 当たり判定
 		E_StateStage state;				// 状態
@@ -59,15 +60,14 @@ public:
 	void Uninit(void) override;
 	void Update(void) override;
 	void Draw(void) override;
-	void Load(void);	// 読み込み処理
 
 	// 静的メンバ関数
+	static void Load(void);	// 読み込み処理
 	static CSelectStageManager *Create(void);	// 生成処理
 	static vector<S_InfoStage*> GetInfoStage(void) { return s_aInfoStage; }	// ステージ情報取得
 
 private:
 	// メンバ関数
-	void LoadStage(std::ifstream& file, string str, S_InfoStage *pInfoStage);	// ステージ情報の読込
 	void SetStage(void);	// ステージの設置
 	void Select(void);	// 選択処理
 	void Scaling(S_InfoStage *pInfoStage);	// スケーリング処理
@@ -79,6 +79,9 @@ private:
 
 	void Debug(void);	// デバッグ処理
 
+	// 静的メンバ関数
+	static void LoadStage(std::ifstream& file, string str, S_InfoStage *pInfoStage);	// ステージ情報の読込
+
 	// メンバ変数
 	static vector<S_InfoStage*> s_aInfoStage;	// ステージ情報の配列
 	CSelectStagePenguin *m_pPenguin;	// ペンギン
@@ -86,8 +89,6 @@ private:
 	float m_fTimerFade;	// フェードまでのタイマー
 	int m_nIdxSelect;	// 選んだステージ番号
 	vector<CGameObject*> m_aParticlePos;	// パーティクルの位置用オブジェクト
-
-	// 静的メンバ変数
 };
 
 #endif

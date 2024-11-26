@@ -86,9 +86,6 @@ HRESULT CSelectStageManager::Init(void)
 	// カメラのステイト設定
 	Camera::ChangeState(new CCameraStateSelectStage);
 
-	// 読込
-	Load();
-
 	// ステージの設置
 	SetStage();
 
@@ -185,6 +182,11 @@ void CSelectStageManager::LoadStage(std::ifstream& file, string str, S_InfoStage
 		if (key == "PATHENEMY")
 		{// 敵のパス
 			iss >> str >> pInfoStage->pathEnemy;
+		}
+
+		if (key == "DIR_STREAM")
+		{// 海流の向き
+			iss >> str >> pInfoStage->nDirStream;
 		}
 	}
 }

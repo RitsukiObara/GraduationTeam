@@ -41,6 +41,7 @@ private:
 	{// 敵情報
 		float fDelaySpawn;	// スポーンディレイ
 		int nType;			// 種類
+		int nPaternSpawn;	// スポーンパターン
 	};
 
 	// メンバ関数

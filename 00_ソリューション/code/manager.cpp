@@ -29,6 +29,7 @@
 #include "debrisSpawner.h"
 #include "cameraState.h"
 #include "MyEffekseer.h"
+#include "selectStageManager.h"
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -98,6 +99,9 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// パーティクルの読込
 	CParticle::Load();
+
+	// ステージ情報の読込
+	CSelectStageManager::Load();
 
 	SetMode(m_mode);
 

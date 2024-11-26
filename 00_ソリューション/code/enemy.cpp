@@ -72,7 +72,7 @@ CEnemy::~CEnemy()
 //=====================================================
 // 生成処理
 //=====================================================
-CEnemy* CEnemy::Create(int nType, int nGridV, int nGridH)
+CEnemy* CEnemy::Create(int nType, E_Spawn spawn)
 {
 	CEnemy* pEnemy = nullptr;
 
@@ -91,9 +91,8 @@ CEnemy* CEnemy::Create(int nType, int nGridV, int nGridH)
 
 	if (pEnemy != nullptr)
 	{// 敵生成
-		// グリッド初期化
-		pEnemy->SetGridV(nGridV);
-		pEnemy->SetGridH(nGridH);
+		// グリッド番号初期化
+		pEnemy->InitGridIdx(spawn);
 
 		// 初期化処理
 		pEnemy->Init();
@@ -118,9 +117,6 @@ HRESULT CEnemy::Init(void)
 	// 継承クラスの初期化
 	CMotion::Init();
 
-	// グリッド番号初期化
-	InitGridIdx();
-
 	// 状態初期化
 	m_state = E_State::STATE_APPER;
 
@@ -144,7 +140,7 @@ HRESULT CEnemy::Init(void)
 //=====================================================
 // グリッド番号の初期化
 //=====================================================
-void CEnemy::InitGridIdx(void)
+void CEnemy::InitGridIdx(E_Spawn spawn)
 {
 	CIceManager *pIceMgr = CIceManager::GetInstance();
 
@@ -154,7 +150,25 @@ void CEnemy::InitGridIdx(void)
 	if (pIceMgr->GetGridIce(&m_nGridV, &m_nGridH) != nullptr)
 		return;
 
-	pIceMgr->GetLeftDownIdx(&m_nGridV, &m_nGridH);
+	switch (spawn)
+	{
+	case CEnemy::SPAWN_RU:
+		pIceMgr->GetRightUpIdx(&m_nGridV, &m_nGridH);
+		break;
+	case CEnemy::SPAWN_LU:
+		pIceMgr->GetLeftUpIdx(&m_nGridV, &m_nGridH);
+		break;
+	case CEnemy::SPAWN_RD:
+		pIceMgr->GetRightDownIdx(&m_nGridV, &m_nGridH);
+		break;
+	case CEnemy::SPAWN_LD:
+		pIceMgr->GetLeftDownIdx(&m_nGridV, &m_nGridH);
+		break;
+	default:
+		assert(false);
+		break;
+	}
+
 	m_nGridVNext = m_nGridV;
 	m_nGridHNext = m_nGridH;
 

@@ -43,6 +43,14 @@ public:
 		STATE_DRIFT,	// 流れる状態
 		STATE_MAX
 	};
+	enum E_Spawn
+	{// スポーンパターン
+		SPAWN_RU = 0,	// 右上
+		SPAWN_LU,		// 左上
+		SPAWN_RD,		// 右下
+		SPAWN_LD,		// 左下
+		SPAWN_MAX
+	};
 
 	// 関数ポインタ型の定義
 	typedef void (CEnemy::*UpdateState)(void);
@@ -110,12 +118,12 @@ public:
 	D3DXVECTOR3 GetMove(void) { return m_move; }
 
 	// 静的メンバ関数
-	static CEnemy* Create(int nType,int nGridV = 0, int nGridH = 0);	// 生成処理
+	static CEnemy* Create(int nType, E_Spawn spawn = E_Spawn::SPAWN_RU);	// 生成処理
 	static std::vector<CEnemy*> GetInstance(void) { return s_vector; }	// 配列の取得
 
 private:
 	// メンバ関数
-	void InitGridIdx(void);	// グリッド番号の初期化
+	void InitGridIdx(E_Spawn spawn);	// グリッド番号の初期化
 	virtual void SetApperTransform(void) = 0;	// 出現時のトランスフォーム設定
 
 	void SarchNearIceToDest(void);								// 目標に近い氷を探す
