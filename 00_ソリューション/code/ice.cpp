@@ -49,7 +49,14 @@ const float HEIGHT_NORMALSINK_FROM_OCEAN = 10.0f;	// 海からの通常沈む高さ
 
 const float LINE_STOP_ICE = 1.0f;	// 氷が止まるしきい値
 
-const float SPEED_SHAKE_SINK_NORMAL = 0.1f;	// 通常の揺れの沈む速度
+//------------------------------
+// 傾きの定数
+//------------------------------
+namespace tilt
+{
+const float SPEED_ROT = 0.1f;			// 回転速度
+const float MAX_TILT = D3DX_PI * 0.3f;	// 最大の傾き
+}
 
 //------------------------------
 // さざ波の定数
@@ -82,8 +89,7 @@ std::vector<CIce*> CIce::m_Vector = {};	// 自身のポインタ
 // コンストラクタ
 //=====================================================
 CIce::CIce(int nPriority) : CGameObject(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false), m_bPeck(false),
-m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false), m_bStop(nullptr), m_fHeightFromOcean(0.0f), m_shake(E_TypeShake::SHAKE_NONE),
-m_fHeightDestFromOcean(0.0f), m_abRipleFrag(), m_nCntAnimFlash(0)
+m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false), m_bStop(nullptr), m_abRipleFrag(), m_nCntAnimFlash(0), m_rotDest()
 {
 	s_nNumAll++;
 	m_Vector.push_back(this);
@@ -144,10 +150,6 @@ HRESULT CIce::Init(void)
 
 	// ステイト初期化
 	ChangeState(new CIceStaeteNormal);
-
-	// 初期の海からの高さ
-	m_fHeightFromOcean = HEIGHT_DEFAULT_FROM_OCEAN;
-	m_fHeightDestFromOcean = HEIGHT_DEFAULT_FROM_OCEAN;
 
 	// 光る処理の初期化
 	StartFlash();
@@ -240,8 +242,8 @@ void CIce::Update(void)
 	// 上に乗ってる物の検出
 	SearchOnThis();
 
-	// 揺れの処理
-	Shake();
+	// 傾きの処理
+	Tilt();
 
 	// さざ波の処理
 	Ripples();
@@ -267,7 +269,7 @@ void CIce::FollowWave(void)
 
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	pos.y = pOcean->GetHeight(pos, &move) + m_fHeightFromOcean;
+	pos.y = pOcean->GetHeight(pos, &move) + HEIGHT_ICE;
 
 	if (m_pUp != nullptr)
 	{
@@ -293,21 +295,7 @@ void CIce::SearchOnThis(void)
 
 	GetOnTopObject(apObject);
 
-	// 上にどれかが乗ってたら沈む
-	for (CGameObject* object : apObject)
-	{
-		D3DXVECTOR3 posObject = object->GetPosition();
-		D3DXVECTOR3 pos = GetPosition();
 
-		if (universal::DistCmpFlat(pos,posObject, SIZE_INIT,nullptr))
-		{// 何かが乗ってるので沈む
-			m_fHeightDestFromOcean = HEIGHT_NORMALSINK_FROM_OCEAN;
-
-			return;
-		}
-	}
-
-	m_fHeightDestFromOcean = HEIGHT_DEFAULT_FROM_OCEAN;
 }
 
 //=====================================================
@@ -353,11 +341,49 @@ void CIce::GetOnTopObject(vector<CGameObject*> &rVector)
 }
 
 //=====================================================
-// 揺れの処理
+// 傾きの処理
 //=====================================================
-void CIce::Shake(void)
+void CIce::Tilt(void)
 {
-	m_fHeightFromOcean += (m_fHeightDestFromOcean - m_fHeightFromOcean) * SPEED_SHAKE_SINK_NORMAL;
+	// 乗っているオブジェクトの取得
+	vector<CGameObject*> apObject;
+	GetOnTopObject(apObject);
+	
+	int nNumObject = (int)apObject.size();
+
+	if (nNumObject != 0)
+	{// 何かしら乗ってたら判定
+		D3DXVECTOR3 vecDiff = { 0.0f,0.0f,0.0f };
+
+		for (CGameObject* pObj : apObject)
+		{
+			D3DXVECTOR3 pos = GetPosition();
+			D3DXVECTOR3 posObj = pObj->GetPosition();
+
+			vecDiff += posObj - pos;
+		}
+
+		// 差分ベクトルを平均化
+		vecDiff /= (float)nNumObject;
+	}
+	else	// 上に何も乗ってなかったら元に戻す
+		m_rotDest = { 0.0f,0.0f,0.0f };
+
+	// 向きの補正
+	D3DXVECTOR3 rot = GetRotation();
+
+	rot += (m_rotDest - rot) * tilt::SPEED_ROT;
+
+	SetRotation(rot);
+
+	//------------------------------
+	// 向きの追従
+	//------------------------------
+	if (m_pUp == nullptr || m_pSide == nullptr)
+		return;
+
+	m_pUp->SetRotation(D3DXVECTOR3(rot.x + D3DX_PI * 0.5f,rot.y,rot.z));
+	m_pSide->SetRotation(rot);
 }
 
 //=====================================================
