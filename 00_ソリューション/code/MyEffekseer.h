@@ -32,6 +32,7 @@ public:
 		TYPE_PECKWAVE,	// ‚Â‚Á‚Â‚«”g–ä
 		TYPE_RIPPLES,	// ‚³‚´”g
 		TYPE_BEARSTEP,	// ƒVƒƒNƒ}‚Ì•à‚«‰Œ
+		TYPE_BLIZZARD,	// á
 		TYPE_MAX
 	};
 

@@ -32,6 +32,7 @@
 #include "npcpenguinstate_selectmode.h"
 #include "snow.h"
 #include "inputkeyboard.h"
+#include "MyEffekseer.h"
 
 //*****************************************************
 // 定数定義
@@ -282,9 +283,13 @@ void CSelectMode::Update(void)
 	m_nSnowStormCnt++;
 
 	// 吹雪を生成
-	if (m_nSnowStormCnt == 120)
+	if (m_nSnowStormCnt == 800)
 	{
-		CParticle::Create(D3DXVECTOR3(0.0f, 50.0f, 0.0f), CParticle::TYPE_SNOW_STORM);
+		D3DXVECTOR3 posEffect = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		D3DXVECTOR3 rotEffect = { 0.0f,0.0f,0.0f };
+
+		// エフェクトの生成
+		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_BLIZZARD, posEffect, rotEffect);
 
 		m_nSnowStormCnt = 0;
 	}
