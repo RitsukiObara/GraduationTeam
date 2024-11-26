@@ -82,8 +82,6 @@ public:
 	void EnableStop(bool bStop) { m_bStop = bStop; }	// 止まるフラグ
 	bool IsStop(void) { return m_bStop; }
 	CFan3D *GetFan3D(void) { return m_pUp; }	// 上側の扇ポリゴン取得
-	void SetShake(E_TypeShake shake) { m_shake = shake; }	// 揺れ
-	E_TypeShake GetShake(void) { return m_shake; }
 	void SetRippleFrag(COcean::E_Stream stream, bool bValue) { m_abRipleFrag[stream] = bValue; }	// 流れごとのフラグ取得
 	bool GetRippleFrag(COcean::E_Stream stream) { return m_abRipleFrag[stream]; }
 
@@ -97,9 +95,9 @@ private:
 	void FollowWave(void);								// 波に追従する処理
 	void SearchOnThis(void);							// 自身に乗ってるものの検出
 	void GetOnTopObject(vector<CGameObject*> &rVector);	// 上に乗ってるものの検出
-	void Shake(void);									// 揺れの処理
+	void Tilt(void);									// 揺れの処理
 	void Ripples(void);									// さざ波の処理
-
+	
 	void Flash(void);		// きらりと光る処理
 
 	// メンバ変数
@@ -110,12 +108,6 @@ private:
 	bool m_bSink;		// 沈むフラグ
 	bool m_bStop;		// 停止しているかどうか
 
-	float m_fHeightFromOcean;		// 海からの高さ
-	float m_fHeightDestFromOcean;	// 海からの目標高さ
-
-	E_TypeShake m_shake;		// 揺れのタイプ
-	float m_fTimerReturnShake;	// 揺れから戻るタイマー
-	
 	CFan3D *m_pUp;			// 上側に貼る扇ポリゴン
 	CMeshCylinder *m_pSide;	// サイドのシリンダー
 
