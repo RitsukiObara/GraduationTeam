@@ -45,6 +45,7 @@ public:
 	void Update();
 	void Draw();
 	void AddDestroyScore(CEnemy::TYPE type);
+	void AddComboScore(void);	// コンボスコアを計算して加算
 
 	// 静的メンバ関数
 	static CDestroyScore* GetInstance(void);	// インスタンスの取得
@@ -70,8 +71,7 @@ private:
 	int m_nCntState;	//状態管理数字
 	D3DXVECTOR3 m_ShiftPos;	//ずらす位置
 
-	static CDestroyScore* s_pDestroyScore;	// 格納用の配列
-
+	static CDestroyScore* s_pDestroyScore;	// 自身のポインタ
 };
 
 #endif

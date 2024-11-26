@@ -15,6 +15,7 @@
 #include "resultSingle.h"
 #include "selectStageManager.h"
 #include "enemyfactory.h"
+#include "destroy_score.h"
 #include "game.h"
 
 //*****************************************************
@@ -164,8 +165,16 @@ void CGameManagerSingle::ManageEnemy(void)
 
 	int nNumEnemy = pGame->GetNumEnemyMax();
 
-	if(nNumEnemy == 0)	// 敵全滅で勝利
+	if (nNumEnemy == 0)	// 敵全滅で勝利
+	{
+		// 現在あるコンボのスコアを加算
+		CDestroyScore *pDestroyScore = CDestroyScore::GetInstance();
+		if (pDestroyScore != nullptr)
+			pDestroyScore->AddComboScore();
+
+		// リザルトの生成
 		CResultSingle::Create(true);
+	}
 }
 
 //=====================================================
