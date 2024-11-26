@@ -50,6 +50,7 @@ public:
 	E_State GetState(void) { return m_state; }
 	void EnableBouceIn(bool bValue) { m_bBouceIn = bValue; }
 	void EnableBouceOut(bool bValue) { m_bBouceOut = bValue; }
+	void SetPathNext(string sValue) { m_pathNext = sValue; }	// 次のテクスチャパス
 
 	// 静的メンバ関数
 	static CFade2D *Create(CPolygon2D *pPolygon,float fTimeMax = 4.0f);
@@ -61,6 +62,7 @@ private:
 	CPolygon2D *m_pPoygon;	// ポリゴンのポインタ
 	bool m_bBouceIn;		// イン状態のバウンス
 	bool m_bBouceOut;		// アウト状態のバウンス
+	string m_pathNext;		// 次のテクスチャパス
 
 	// 状態更新の関数ポインタ型エイリアス定義
 	typedef void (CFade2D::*FuncUpdateState)(void);
