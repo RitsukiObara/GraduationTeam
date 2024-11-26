@@ -584,3 +584,16 @@ void CPause::Draw(void)
 {
 
 }
+
+//====================================================
+// ó‘Ôİ’èˆ—
+//====================================================
+void CPause::SetState(STATE state)
+{
+	m_state = state;
+
+	if (m_state == STATE_OUT)
+	{
+		OffPosition();
+	}
+}

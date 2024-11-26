@@ -145,15 +145,15 @@ void CGame::Update(void)
 	}
 
 	// ƒ|[ƒY========================================
-	if (pInputManager != nullptr)
+	if (m_state != STATE_RESULT && pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE))
 	{
-		if (pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE))
+		if (m_pPause == nullptr)
 		{
-			if (m_state != STATE_RESULT)
-			{
-				if (m_pPause == nullptr)
-					m_pPause = CPause::Create();
-			}
+			m_pPause = CPause::Create();
+		}
+		else
+		{
+			m_pPause->SetState(m_pPause->STATE_OUT);
 		}
 	}
 
