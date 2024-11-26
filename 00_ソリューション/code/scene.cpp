@@ -72,6 +72,7 @@ HRESULT CScene::Init(void)
 		pCylinder->SetRadius(6000.0f);
 		pCylinder->SetHeight(5000.0f);
 		pCylinder->SetVtx();
+		pCylinder->EnableLighting(false);
 	}
 
 	// ƒXƒ[ŠÇ—‚Ì¶¬
