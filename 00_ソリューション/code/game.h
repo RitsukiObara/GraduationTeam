@@ -72,6 +72,7 @@ public:
 	int GetTimeSecond(void) { if (m_pTimer != nullptr) { return m_pTimer->GetSecond(); } return 0; }
 	CScore *GetScore(void) { return m_pScore; };	// ƒXƒRƒA
 	void DecreaseNumEnemu(void) { m_nNumEnemyMax--; }	// “G‚ÌÅ‘å”
+	void AddEnemy(int nType);
 	int GetNumEnemyMax(void) { return m_nNumEnemyMax; }
 
 private:

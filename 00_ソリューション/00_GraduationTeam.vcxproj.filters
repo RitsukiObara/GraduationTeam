@@ -492,6 +492,9 @@
     <ClCompile Include="code\fade2D.cpp">
       <Filter>ソース ファイル\anim2D</Filter>
     </ClCompile>
+    <ClCompile Include="code\enemyfactory.cpp">
+      <Filter>ソース ファイル\factory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\scene.h">
@@ -862,6 +865,9 @@
     </ClInclude>
     <ClInclude Include="code\fade2D.h">
       <Filter>ソース ファイル\anim2D</Filter>
+    </ClInclude>
+    <ClInclude Include="code\enemyfactory.h">
+      <Filter>ソース ファイル\factory</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

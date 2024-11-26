@@ -181,6 +181,11 @@ void CSelectStageManager::LoadStage(std::ifstream& file, string str, S_InfoStage
 		{// マップのパス
 			iss >> str >> pInfoStage->pathMap;
 		}
+
+		if (key == "PATHENEMY")
+		{// 敵のパス
+			iss >> str >> pInfoStage->pathEnemy;
+		}
 	}
 }
 

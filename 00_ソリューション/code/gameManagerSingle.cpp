@@ -13,6 +13,8 @@
 #include "player.h"
 #include "inputManager.h"
 #include "resultSingle.h"
+#include "selectStageManager.h"
+#include "enemyfactory.h"
 #include "game.h"
 
 //*****************************************************
@@ -20,13 +22,14 @@
 //*****************************************************
 namespace
 {
-const int NUM_ENEMY_DEFAULT = 5;	// 敵の数のデフォルト値
+const int NUM_ENEMY_DEFAULT = 5;								// 敵の数のデフォルト値
+const string PATH_ENEMY_DEFAULT = "data\\TEXT\\enemy00.txt";	// 敵配置情報のテキスト
 }
 
 //=====================================================
 // コンストラクタ
 //=====================================================
-CGameManagerSingle::CGameManagerSingle() : m_pPlayer(nullptr)
+CGameManagerSingle::CGameManagerSingle() : m_pPlayer(nullptr), m_pEnemyFct(nullptr)
 {
 
 }
@@ -57,6 +60,21 @@ HRESULT CGameManagerSingle::Init(void)
 
 	// 基底クラスの初期化
 	CGameManager::Init();
+
+	// 敵配置の設定
+	int nIdxMap = gameManager::LoadIdxMap();
+
+	m_pEnemyFct = CEnemyFct::Create();
+
+	if (m_pEnemyFct == nullptr)
+		return E_FAIL;
+
+	vector<CSelectStageManager::S_InfoStage*> apInfoStage = CSelectStageManager::GetInfoStage();
+
+	if (apInfoStage.empty())
+		m_pEnemyFct->Load(PATH_ENEMY_DEFAULT);
+	else
+		m_pEnemyFct->Load(apInfoStage[nIdxMap]->pathEnemy);
 
 	return S_OK;
 }

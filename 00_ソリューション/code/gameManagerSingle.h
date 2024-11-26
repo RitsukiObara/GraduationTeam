@@ -16,6 +16,7 @@
 // 前方宣言
 //*****************************************************
 class CPlayer;
+class CEnemyFct;
 
 //*****************************************************
 // クラスの定義
@@ -48,7 +49,8 @@ private:
 	void UpdateEnd(void) override;		// 終了状態の更新
 
 	// メンバ変数
-	CPlayer *m_pPlayer;	// プレイヤーのポインタ
+	CPlayer *m_pPlayer;		// プレイヤーのポインタ
+	CEnemyFct *m_pEnemyFct;	// 敵ファクトリー
 
 	// 静的メンバ変数
 };

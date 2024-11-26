@@ -34,7 +34,7 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	void AddEnemy(void);	// “G‚Ì’Ç‰Á
+	void AddEnemy(int nType);	// “G‚Ì’Ç‰Á
 	void DeleteEnemy(void);	// “G‚Ìíœ
 
 	// •Ï”æ“¾Eİ’èŠÖ”
