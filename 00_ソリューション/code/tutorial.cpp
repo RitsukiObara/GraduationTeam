@@ -23,6 +23,7 @@
 #include "UIplayer.h"
 #include "fade2D.h"
 #include "texture.h"
+#include "gauge.h"
 
 //*****************************************************
 // 定数定義
@@ -67,6 +68,15 @@ const float HEIGHT = 0.1f;							// 高さ
 const D3DXVECTOR3 POS_INIT = { 0.5f,0.114f,0.0f };	// 位置
 const float TIME_FADE = 2.0f;						// フェードにかかる時間
 }
+
+//------------------------------
+// ゲージの定数
+//------------------------------
+namespace gauge
+{
+const float TIME_SKIP = 3.0f;				// スキップにかかる時間
+const D3DXVECTOR3 POS = { 0.85f,0.9f,0.0f };	// 位置
+}
 }
 
 //*****************************************************
@@ -90,7 +100,7 @@ CTutorial *CTutorial::s_pTutorial = nullptr;	// 自身のポインタ
 // コンストラクタ
 //=====================================================
 CTutorial::CTutorial() : m_state(E_State::STATE_NONE), m_pManager(nullptr), m_fTimeEnd(0.0f) , m_nCntProgress(0), m_pUIPlayer(nullptr), m_abComplete(),
-m_pCaption(nullptr), m_pFade2D(nullptr)
+m_pCaption(nullptr), m_pFade2D(nullptr), m_pGaugeSkip(nullptr), m_fTimerSkip(0.0f)
 {
 	s_pTutorial = this;
 }
@@ -183,6 +193,14 @@ HRESULT CTutorial::Init(void)
 		m_pFade2D->SetState(CFade2D::E_State::STATE_IN);
 	}
 
+	// ゲージの生成
+	m_pGaugeSkip = CGauge::Create(gauge::TIME_SKIP);
+
+	if (m_pGaugeSkip == nullptr)
+		return E_FAIL;
+
+	m_pGaugeSkip->SetPosition(gauge::POS);
+
 	return S_OK;
 }
 
@@ -193,6 +211,8 @@ void CTutorial::Uninit(void)
 {
 	Object::DeleteObject((CObject**)&m_pManager);
 	Object::DeleteObject((CObject**)&m_pUIPlayer);
+	Object::DeleteObject((CObject**)&m_pCaption);
+	Object::DeleteObject((CObject**)&m_pFade2D);
 
 	// シーンの終了
 	CScene::Uninit();
@@ -216,6 +236,9 @@ void CTutorial::Update(void)
 
 	// 状態が進むかの確認をする処理
 	CheckProgress();
+
+	// スキップの入力
+	InputSkip();
 
 	// シーンの更新
 	CScene::Update();
@@ -308,6 +331,46 @@ void CTutorial::CreateCheck(int nIdx)
 	pCheck->SetIdxTexture(nIdxTexture);
 
 	m_apCheck.push_back(pCheck);
+}
+
+//=====================================================
+// スキップの入力
+//=====================================================
+void CTutorial::InputSkip(void)
+{
+	CInputManager *pInputManager = CInputManager::GetInstance();
+
+	if (pInputManager == nullptr)
+		return;
+
+	if (pInputManager->GetPress(CInputManager::BUTTON_SKIP))
+	{
+		float fDeltaTime = CManager::GetDeltaTime();
+
+		m_fTimerSkip += fDeltaTime;
+
+		if (m_fTimerSkip >= gauge::TIME_SKIP)
+		{// 一定時間長押しでタイトルに遷移
+			m_fTimerSkip = gauge::TIME_SKIP;
+
+			CFade *pFade = CFade::GetInstance();
+
+			if (pFade != nullptr)
+			{
+				pFade->SetFade(CScene::MODE_TITLE);
+			}
+		}
+	}
+	else
+	{
+		if (m_fTimerSkip < gauge::TIME_SKIP)
+		{
+			m_fTimerSkip = 0;
+		}
+	}
+
+	if (m_pGaugeSkip != nullptr)
+		m_pGaugeSkip->SetParam(m_fTimerSkip);
 }
 
 //=====================================================
