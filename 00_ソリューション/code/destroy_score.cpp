@@ -101,7 +101,6 @@ HRESULT CDestroyScore::Init(void)
 	m_State = STATE_VERTICAL;	//ó‘Ô‚Ì‰Šú‰»
 	m_ShiftPos = D3DXVECTOR3(0.0f, 0.0f, SCORE_POS_Z);
 
-
 	// ‰ŠúˆÊ’u‚ÌÝ’è
 	SetPosition(POS_INITIAL);
 
@@ -116,6 +115,7 @@ void CDestroyScore::Uninit(void)
 	if (m_aNumber3D != nullptr)
 	{
 		m_aNumber3D->Uninit();
+		m_aNumber3D = nullptr;
 	}
 
 	CGameObject::Uninit();
@@ -217,7 +217,8 @@ void CDestroyScore::UpdateNumber()
 //=====================================================
 void CDestroyScore::SetColor(D3DXCOLOR col)
 {
-	m_aNumber3D->SetColor(col);
+	if(m_aNumber3D != nullptr)
+		m_aNumber3D->SetColor(col);
 }
 
 //=====================================================
