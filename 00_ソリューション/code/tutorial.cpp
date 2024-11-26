@@ -63,10 +63,22 @@ const D3DXVECTOR3 OFFSET = { WIDTH,-HEIGHT,0.0f };	// オフセット
 //------------------------------
 namespace caption
 {
-const float WIDTH = 0.3f;							// 幅
-const float HEIGHT = 0.1f;							// 高さ
-const D3DXVECTOR3 POS_INIT = { 0.5f,0.114f,0.0f };	// 位置
-const float TIME_FADE = 2.0f;						// フェードにかかる時間
+const float WIDTH = 0.3f;								// 幅
+const float HEIGHT = 0.1f;								// 高さ
+const D3DXVECTOR3 POS_INIT = { 0.5f,0.114f,0.0f };		// 位置
+const float TIME_FADE = 2.0f;							// フェードにかかる時間
+const string PATH_TEX[CTutorial::E_State::STATE_MAX] =	// テクスチャパス
+{
+	"",												// 何でもない状態
+	"data\\TEXTURE\\UI\\tutorial_move.png",			// 移動状態
+	"data\\TEXTURE\\UI\\tutorial_piston.png",		// 突っつき状態
+	"data\\TEXTURE\\UI\\tutorial_pistonice.png",	// 氷説明
+	"data\\TEXTURE\\UI\\tutorial_separate.png",		// 破壊説明
+	"data\\TEXTURE\\UI\\tutorial_jump.png",			// ジャンプ
+	"data\\TEXTURE\\UI\\tutorial_enemy.png",		// 敵説明
+	"",												// 終了状態
+};
+const string PATH_TEX_ENEMY = "data\\TEXTURE\\UI\\tutorial_rival.png";	// マルチ用の敵説明パス
 }
 
 //------------------------------
@@ -168,7 +180,7 @@ HRESULT CTutorial::Init(void)
 	}
 
 	if (CPlayer::GetNumPlayer() > 1)
-	{// 複数人プレイ時のみ生成
+	{// 複数人プレイ時のみ行う処理
 		// プレイヤーUIの生成
 		m_pUIPlayer = CUIPlayer::Create();
 	}
@@ -184,6 +196,9 @@ HRESULT CTutorial::Init(void)
 	m_pCaption->SetSize(caption::WIDTH, caption::HEIGHT);
 	m_pCaption->SetPosition(caption::POS_INIT);
 	m_pCaption->SetVtx();
+
+	int nIdxTexture = Texture::GetIdx(&caption::PATH_TEX[E_State::STATE_MOVE][0]);
+	m_pCaption->SetIdxTexture(nIdxTexture);
 
 	m_pFade2D = CFade2D::Create(m_pCaption, caption::TIME_FADE);
 
@@ -284,6 +299,12 @@ void CTutorial::CheckProgress(void)
 //=====================================================
 void CTutorial::AddCntProgress(CPlayer *pPlayer)
 {
+	if (m_pFade2D != nullptr)
+	{
+		if (m_pFade2D->GetState() != CFade2D::E_State::STATE_NONE)
+			return;
+	}
+
 	// 対応したIDのアイコンを取得
 	int nID = pPlayer->GetID();
 
@@ -390,8 +411,17 @@ void CTutorial::ProgressState(void)
 
 	m_apCheck.clear();
 
-	if(m_pFade2D != nullptr)
+	if (m_pFade2D != nullptr)
+	{
 		m_pFade2D->SetState(CFade2D::E_State::STATE_OUT);
+		m_pFade2D->SetPathNext(caption::PATH_TEX[m_state]);
+
+		if (m_state == E_State::STATE_EXPLAIN_ENEMY)
+		{
+			if (CPlayer::GetNumPlayer() > 1)
+				m_pFade2D->SetPathNext(caption::PATH_TEX_ENEMY);
+		}
+	}
 
 	// 完了フラグリセット
 	for (int i = 0; i < NUM_PLAYER; i++)
