@@ -108,6 +108,8 @@ private:
 	bool m_bSink;		// 沈むフラグ
 	bool m_bStop;		// 停止しているかどうか
 
+	D3DXVECTOR3 m_rotDest;	// 目標の向き
+
 	CFan3D *m_pUp;			// 上側に貼る扇ポリゴン
 	CMeshCylinder *m_pSide;	// サイドのシリンダー
 
