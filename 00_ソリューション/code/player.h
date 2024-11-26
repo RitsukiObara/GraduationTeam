@@ -91,6 +91,9 @@ public:
 	static void EnableInputAll(bool bValue);							// 全プレイヤーの入力フラグ
 	static int GetNumPlayer(void) { return (int)s_apPlayer.size(); }	// プレイヤー数の取得
 
+protected:
+	virtual void StartJump(void);	// ジャンプの開始
+
 private:
 	// 構造体定義
 	struct S_FragMotion
@@ -132,7 +135,6 @@ private:
 
 	void InputJump(void);			// ジャンプの入力
 	void SarchJumpIce(void);		// ジャンプ先の氷を探す
-	void StartJump(void);			// ジャンプの開始
 	void StayJump(void);			// ジャンプ中の処理
 	void LimitInSideFlowIce(void);	// 流氷の内側に制限
 	void EndJump(void);				// ジャンプの終了

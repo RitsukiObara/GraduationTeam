@@ -32,7 +32,9 @@ public:
 		STATE_NONE = 0,			// ‰½‚Å‚à‚È‚¢ó‘Ô
 		STATE_MOVE,				// ˆÚ“®ó‘Ô
 		STATE_PECK,				// “Ë‚Á‚Â‚«ó‘Ô
+		STATE_EXPLAIN_ICE,		// •Xà–¾
 		STATE_EXPLAIN_BREAK,	// ”j‰óà–¾
+		STATE_JUMP,				// ƒWƒƒƒ“ƒv
 		STATE_EXPLAIN_ENEMY,	// “Gà–¾
 		STATE_END,				// I—¹ó‘Ô
 		STATE_MAX

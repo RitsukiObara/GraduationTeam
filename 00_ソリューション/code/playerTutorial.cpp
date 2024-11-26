@@ -125,6 +125,9 @@ void CPlayerTutorial::ReadExplain(void)
 		AddProgress(CTutorial::E_State::STATE_EXPLAIN_BREAK);
 
 	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_ENTER))
+		AddProgress(CTutorial::E_State::STATE_EXPLAIN_ICE);
+
+	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_ENTER))
 		AddProgress(CTutorial::E_State::STATE_EXPLAIN_ENEMY);
 }
 
@@ -140,6 +143,18 @@ bool CPlayerTutorial::Peck(void)
 	CPlayer::Peck();
 
 	return false;
+}
+
+//=====================================================
+// ジャンプの開始
+//=====================================================
+void CPlayerTutorial::StartJump(void)
+{
+	// チュートリアル進行
+	AddProgress(CTutorial::E_State::STATE_JUMP);
+
+	// 継承クラスのジャンプ開始
+	CPlayer::StartJump();
 }
 
 //=====================================================

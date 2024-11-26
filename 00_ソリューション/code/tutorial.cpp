@@ -77,7 +77,9 @@ CTutorial::FuncUpdateState CTutorial::s_aFuncUpdateState[] =	// 状態更新関数
 	nullptr,					// 何でもない状態
 	nullptr,					// 移動状態
 	nullptr,					// 突っつき状態
+	nullptr,					// 氷説明
 	nullptr,					// 破壊説明
+	nullptr,					// ジャンプ
 	nullptr,					// 敵説明
 	&CTutorial::UpdateEnd,		// 終了状態
 };
