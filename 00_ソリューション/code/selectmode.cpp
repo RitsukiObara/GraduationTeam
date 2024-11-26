@@ -31,6 +31,7 @@
 #include "npcpenguin.h"
 #include "npcpenguinstate_selectmode.h"
 #include "snow.h"
+#include "inputkeyboard.h"
 
 //*****************************************************
 // 定数定義
@@ -103,6 +104,8 @@ CSelectMode::CSelectMode()
 	m_fCurTime = 0.0f;
 	m_selectMode = MODE_SINGLE;
 	for (int cnt = 0; cnt < MODE_MAX; cnt++) { m_apModeUI[cnt] = nullptr; }
+	m_nSnowStormCnt = 0;
+	m_bStorm = false;
 }
 
 //=====================================================
@@ -124,6 +127,9 @@ HRESULT CSelectMode::Init(void)
 
 	// カメラ
 	Camera::ChangeState(new CCameraStateSelectMode);
+
+	m_nSnowStormCnt = 0;
+	m_bStorm = false;
 
 	// 説明の生成
 	//m_pManual = CUI::Create();
@@ -218,6 +224,9 @@ void CSelectMode::Update(void)
 	CInputManager *pInputMgr = CInputManager::GetInstance();
 	assert(pInputMgr != nullptr);
 
+	CInputKeyboard* pKeyboard = CInputKeyboard::GetInstance();
+	assert(pKeyboard != nullptr);
+
 	CSound* pSound = CSound::GetInstance();	// サウンド情報
 	assert(pSound != nullptr);
 
@@ -268,6 +277,16 @@ void CSelectMode::Update(void)
 
 		// サウンドの再生
 		pSound->Play(CSound::LABEL_SE_DECISION);
+	}
+
+	m_nSnowStormCnt++;
+
+	// 吹雪を生成
+	if (m_nSnowStormCnt == 120)
+	{
+		CParticle::Create(D3DXVECTOR3(0.0f, 50.0f, 0.0f), CParticle::TYPE_SNOW_STORM);
+
+		m_nSnowStormCnt = 0;
 	}
 
 	// モードUI見た目更新処理
