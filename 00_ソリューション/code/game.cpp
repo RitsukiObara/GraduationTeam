@@ -56,6 +56,8 @@ const char* PATH_SAMPLE_ICESTAGE = "data\\TEXT\\ice_stage_00.txt";	// サンプルの
 const float SPEED_CHANGE_LIGHTCOL = 0.1f;	// ライトの色が変わる速度
 
 const int SIZE_GRID[CGame::E_GameMode::MODE_MAX] = { 0, 10, 15 };	// モードごとのステージのサイズ
+
+const int NUM_ENEMY_DEFAULT = 5;	// 敵のデフォルト数
 }
 
 //*****************************************************
@@ -74,6 +76,7 @@ CGame::CGame()
 	m_bStop = false;
 	m_pPause = nullptr;
 	m_GameMode = E_GameMode::MODE_NONE;
+	m_nNumEnemyMax = 0;
 }
 
 //=====================================================
@@ -93,7 +96,7 @@ HRESULT CGame::Init(void)
 	vector<bool> abFrag;
 	gameManager::LoadMode(&m_GameMode, abFrag);
 
-	// 氷マネージャー
+	// 氷マネージャーの読込処理
 	int nIdxMap = gameManager::LoadIdxMap();
 
 	vector<CSelectStageManager::S_InfoStage*> apInfoStage = CSelectStageManager::GetInfoStage();
@@ -110,6 +113,9 @@ HRESULT CGame::Init(void)
 
 	// ゲームマネージャーの生成
 	CGameManager::Create(m_GameMode);
+
+	// 敵のデフォルト数設定
+	m_nNumEnemyMax = NUM_ENEMY_DEFAULT;
 
 	return S_OK;
 }
@@ -145,15 +151,15 @@ void CGame::Update(void)
 	}
 
 	// ポーズ========================================
-	if (pInputManager != nullptr)
+	if (m_state != STATE_RESULT && pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE))
 	{
-		if (pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE))
+		if (m_pPause == nullptr)
 		{
-			if (m_state != STATE_RESULT)
-			{
-				if (m_pPause == nullptr)
-					m_pPause = CPause::Create();
-			}
+			m_pPause = CPause::Create();
+		}
+		else
+		{
+			m_pPause->SetState(m_pPause->STATE_OUT);
 		}
 	}
 

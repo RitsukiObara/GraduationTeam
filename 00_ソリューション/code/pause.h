@@ -24,6 +24,14 @@ class CUI;
 class CPause : CObject
 {
 public:
+	enum STATE
+	{
+		STATE_NONE = 0,	// 何でもない状態
+		STATE_IN,	// フェードイン状態
+		STATE_OUT,	// フェードアウト状態
+		STATE_MAX
+	};
+
 	CPause();	// コンストラクタ
 	~CPause();	// デストラクタ
 
@@ -33,6 +41,8 @@ public:
 	void Update(void);
 	void Draw(void);
 
+	void SetState(STATE state);
+
 private:
 	enum MENU
 	{// 項目の種類
@@ -41,13 +51,6 @@ private:
 		MENU_QUIT,	// タイトルに戻る
 		MENU_PAUSE,	// ポーズ
 		MENU_MAX
-	};
-	enum STATE
-	{
-		STATE_NONE = 0,	// 何でもない状態
-		STATE_IN,	// フェードイン状態
-		STATE_OUT,	// フェードアウト状態
-		STATE_MAX
 	};
 
 	void ManageState(void);

@@ -130,7 +130,7 @@ void CGameManager::ManageGameState(void)
 		UpdateStart();
 		break;
 	case CGame::STATE_NORMAL:
-		UpdateMove();
+		UpdateNormal();
 		break;
 	case CGame::STATE_RESULT:
 		UpdateResult();
@@ -155,7 +155,7 @@ void CGameManager::UpdateStart(void)
 //=====================================================
 // ’Êíó‘Ô‚ÌXV
 //=====================================================
-void CGameManager::UpdateMove(void)
+void CGameManager::UpdateNormal(void)
 {
 	m_nCounterSoundSea++;
 	if (m_nCounterSoundSea >= PLAY_SOUND_SEA_COUNT)

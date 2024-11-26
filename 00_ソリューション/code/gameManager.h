@@ -33,7 +33,7 @@ public:
 	virtual void Update(void);
 	virtual void Draw(void);
 	virtual void UpdateStart(void);		// 開始状態の更新
-	virtual void UpdateMove(void);	// 通常状態の更新
+	virtual void UpdateNormal(void);	// 通常状態の更新
 	virtual void UpdateResult(void);	// リザルト状態の更新
 	virtual void UpdateEnd(void);		// 終了状態の更新
 

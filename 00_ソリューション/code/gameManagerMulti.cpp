@@ -92,10 +92,10 @@ void CGameManagerMulti::UpdateStart(void)
 //=====================================================
 // 通常状態の更新
 //=====================================================
-void CGameManagerMulti::UpdateMove(void)
+void CGameManagerMulti::UpdateNormal(void)
 {
 	// 基底クラスの更新
-	CGameManager::UpdateMove();
+	CGameManager::UpdateNormal();
 
 	// プレイヤー管理
 	ManagePlayer();
@@ -136,7 +136,7 @@ void CGameManagerMulti::DeathPlayer(int nIdx)
 void CGameManagerMulti::CheckEndGame(void)
 {
 	// プレイヤー数と死亡数が一致したらゲーム終了
-	if ((int)m_apPlayer.size() == m_nNumDeathPlayer)
+	if ((int)m_apPlayer.size() - 1 == m_nNumDeathPlayer)
 	{
 		CGame::SetState(CGame::E_State::STATE_END);
 	}

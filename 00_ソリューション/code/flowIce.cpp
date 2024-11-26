@@ -14,6 +14,7 @@
 #include "effect3D.h"
 #include "manager.h"
 #include "sound.h"
+#include "player.h"
 
 //*****************************************************
 // 定数定義
@@ -191,10 +192,22 @@ void CFlowIce::DeleteAllIce(void)
 	if (pIceManager == nullptr)
 		return;
 
+	// プレイヤーの取得
+	vector<CPlayer*> apPlayer = CPlayer::GetInstance();
+
 	for (int i = 0; i < (int)m_apIce.size(); i++)
 	{
 		if (m_apIce[i] == nullptr)
 			continue;
+		
+		for (CPlayer *pPlayer : apPlayer)
+		{// プレイヤーが上に乗ってたらHitする
+			D3DXVECTOR3 pos = pPlayer->GetPosition();
+			D3DXVECTOR3 posIce = m_apIce[i]->GetPosition();
+
+			if (universal::DistCmpFlat(posIce, pos, Grid::SIZE, nullptr))
+				pPlayer->Hit(0.0f);
+		}
 
 		pIceManager->DeleteIce(m_apIce[i]);
 		m_apIce[i]->Uninit();

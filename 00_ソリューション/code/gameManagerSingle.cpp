@@ -13,11 +13,20 @@
 #include "player.h"
 #include "inputManager.h"
 #include "resultSingle.h"
+#include "game.h"
+
+//*****************************************************
+// 定数定義
+//*****************************************************
+namespace
+{
+const int NUM_ENEMY_DEFAULT = 5;	// 敵の数のデフォルト値
+}
 
 //=====================================================
 // コンストラクタ
 //=====================================================
-CGameManagerSingle::CGameManagerSingle()
+CGameManagerSingle::CGameManagerSingle() : m_pPlayer(nullptr)
 {
 
 }
@@ -84,13 +93,16 @@ void CGameManagerSingle::UpdateStart(void)
 //=====================================================
 // 通常状態の更新
 //=====================================================
-void CGameManagerSingle::UpdateMove(void)
+void CGameManagerSingle::UpdateNormal(void)
 {
 	// 基底クラスの更新
-	CGameManager::UpdateMove();
+	CGameManager::UpdateNormal();
 
 	// プレイヤー管理
 	ManagePlayer();
+
+	// 敵管理
+	ManageEnemy();
 }
 
 //=====================================================
@@ -120,6 +132,22 @@ void CGameManagerSingle::DeathPlayer(void)
 
 	// プレイヤー死亡で敗北
 	CResultSingle::Create(false);
+}
+
+//=====================================================
+// 敵の管理
+//=====================================================
+void CGameManagerSingle::ManageEnemy(void)
+{
+	CGame *pGame = CGame::GetInstance();
+
+	if (pGame == nullptr)
+		return;
+
+	int nNumEnemy = pGame->GetNumEnemyMax();
+
+	if(nNumEnemy == 0)	// 敵全滅で勝利
+		CResultSingle::Create(true);
 }
 
 //=====================================================
