@@ -170,12 +170,6 @@ void CScore::UpdateNumber()
 		value[nCnt] = (m_nScore % (int)(pow(10, (m_aNumber.size() - (nCnt)))) / (int)(pow(10, (m_aNumber.size() - (nCnt + 1)))));
 	}
 
-	// スコアの加算========================================
-	if (pInputManager->GetTrigger(CInputManager::BUTTON_SCORE))
-	{// スコアを加算する
-		AddScore(1000);
-	}
-
 	for (int i = 0; i < (int)m_aNumber.size(); i++)
 	{
 		m_aNumber[i]->SetValue(value[i]);

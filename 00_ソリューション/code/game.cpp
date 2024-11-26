@@ -56,8 +56,6 @@ const char* PATH_SAMPLE_ICESTAGE = "data\\TEXT\\ice_stage_00.txt";	// サンプルの
 const float SPEED_CHANGE_LIGHTCOL = 0.1f;	// ライトの色が変わる速度
 
 const int SIZE_GRID[CGame::E_GameMode::MODE_MAX] = { 0, 10, 15 };	// モードごとのステージのサイズ
-
-const int NUM_ENEMY_DEFAULT = 5;	// 敵のデフォルト数
 }
 
 //*****************************************************
@@ -113,9 +111,6 @@ HRESULT CGame::Init(void)
 
 	// ゲームマネージャーの生成
 	CGameManager::Create(m_GameMode);
-
-	// 敵のデフォルト数設定
-	m_nNumEnemyMax = NUM_ENEMY_DEFAULT;
 
 	return S_OK;
 }
@@ -305,21 +300,12 @@ void CGame::Debug(void)
 		CResultSingle::Create(false);
 	}
 
-	// 敵を倒したスコア出す
-	if (pKeyboard->GetTrigger(DIK_K))
-	{
-		//敵を倒した時のスコア生成
-		CDestroyScore::GetInstance()->AddDestroyScore(CEnemy::TYPE_SEALS);
-
-		//敵を倒した時のコンボUI生成
-		CUI_Combo::GetInstance()->AddCombo();
-	}
-
 	pDebugProc->Print("\nゲームデバッグキー======================");
 	pDebugProc->Print("\nF:時間停止");
 	pDebugProc->Print("\n0:勝利");
 	pDebugProc->Print("\n9:敗北");
 	pDebugProc->Print("\nK:敵倒したスコア生成");
+	pDebugProc->Print("\n7:敵倒す");
 }
 
 //=====================================================
@@ -367,6 +353,20 @@ void CGame::StartGame(void)
 
 	// 全プレイヤーが操作可能になる
 	CPlayer::EnableInputAll(true);
+}
+
+//=====================================================
+// 敵の追加
+//=====================================================
+void CGame::AddEnemy(int nType)
+{
+	// 敵UIの敵数を加算
+	CUIEnemy *pUIEnemy = CUIEnemy::GetInstance();
+
+	if (pUIEnemy != nullptr)
+		pUIEnemy->AddEnemy(nType);
+
+	m_nNumEnemyMax++;
 }
 
 namespace game

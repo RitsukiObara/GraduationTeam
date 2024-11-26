@@ -41,6 +41,7 @@ public:
 		CObjectX *pModel;				// Xモデルのポインタ
 		string pathModel;				// モデルのパス
 		string pathMap;					// マップのパス
+		string pathEnemy;				// 敵のパス
 		D3DXVECTOR3 pos;				// 位置
 		CCollisionSphere *pCollision;	// 当たり判定
 		E_StateStage state;				// 状態

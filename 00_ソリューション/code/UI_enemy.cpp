@@ -122,7 +122,7 @@ void CUIEnemy::Debug(void)
 
 	if (pInputKeyboard->GetTrigger(DIK_UP))
 	{
-		AddEnemy();
+		AddEnemy(0);
 	}
 	else if (pInputKeyboard->GetTrigger(DIK_DOWN))
 	{
@@ -141,7 +141,7 @@ void CUIEnemy::Draw(void)
 //=====================================================
 // “G‚Ì’Ç‰Á
 //=====================================================
-void CUIEnemy::AddEnemy(void)
+void CUIEnemy::AddEnemy(int nType)
 {
 	// ƒAƒCƒRƒ“‚ğ‘‚â‚·
 	CIcon *pIcon = CIcon::Create();

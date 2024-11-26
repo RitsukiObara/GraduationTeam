@@ -104,12 +104,6 @@ HRESULT CBears::Init(void)
 	// ポーズ初期化
 	InitPose(0);
 
-	// 敵UIの敵数を加算
-	CUIEnemy *pUIEnemy = CUIEnemy::GetInstance();
-
-	if (pUIEnemy != nullptr)
-		pUIEnemy->AddEnemy();
-
 	// スピードを0に設定
 	SetSpeedMove(0.0f);
 
