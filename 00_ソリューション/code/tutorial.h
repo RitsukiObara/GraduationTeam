@@ -19,6 +19,7 @@ class CUI;
 class CTutorialManager;
 class CUIPlayer;
 class CFade2D;
+class CGauge;
 
 //*****************************************************
 // クラスの定義
@@ -32,7 +33,9 @@ public:
 		STATE_NONE = 0,			// 何でもない状態
 		STATE_MOVE,				// 移動状態
 		STATE_PECK,				// 突っつき状態
+		STATE_EXPLAIN_ICE,		// 氷説明
 		STATE_EXPLAIN_BREAK,	// 破壊説明
+		STATE_JUMP,				// ジャンプ
 		STATE_EXPLAIN_ENEMY,	// 敵説明
 		STATE_END,				// 終了状態
 		STATE_MAX
@@ -61,6 +64,7 @@ private:
 	void UpdateEnd(void);		// 終了状態
 	void CheckProgress(void);	// 進行判断
 	void CreateCheck(int nIdx);	// チェックマーク生成
+	void InputSkip(void);		// スキップ入力
 	void Debug(void);			// デバッグ
 
 	// メンバ変数
@@ -73,6 +77,8 @@ private:
 	CFade2D *m_pFade2D;				// 2Dフェード
 	vector<CUI*> m_apCheck;			// チェックマークの配列
 	bool m_abComplete[NUM_PLAYER];	// 完了フラグ
+	CGauge *m_pGaugeSkip;			// スキップゲージ
+	float m_fTimerSkip;				// スキップタイマー
 
 	// 関数ポインタ型を定義
 	typedef void (CTutorial::*FuncUpdateState)(void);

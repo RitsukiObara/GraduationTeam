@@ -75,19 +75,7 @@ void CTutorialManager::Uninit(void)
 //=====================================================
 void CTutorialManager::Update(void)
 {
-	CTutorial *pTutorial = CTutorial::GetInstance();
 
-	if (pTutorial == nullptr)
-		return;
-
-	CTutorial::E_State state = pTutorial->GetState();
-
-	assert(state > -1 && state < CTutorial::E_State::STATE_MAX);
-	if (s_aFuncUpdateState[state] != nullptr)
-	{ // 更新関数が指定されている場合
-		// 各状態ごとの更新
-		(this->*(s_aFuncUpdateState[state]))();
-	}
 }
 
 //=====================================================

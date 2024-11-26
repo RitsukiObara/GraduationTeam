@@ -11,6 +11,7 @@
 #include "fade2D.h"
 #include "polygon2D.h"
 #include "manager.h"
+#include "texture.h"
 
 //*****************************************************
 // 定数定義
@@ -31,7 +32,7 @@ CFade2D::FuncUpdateState CFade2D::s_aFuncUpdateState[] =
 //====================================================
 // コンストラクタ
 //====================================================
-CFade2D::CFade2D() : m_state(E_State::STATE_NONE), m_fTimer(0.0f), m_bBouceIn(false), m_bBouceOut(false)
+CFade2D::CFade2D() : m_state(E_State::STATE_NONE), m_fTimer(0.0f), m_bBouceIn(false), m_bBouceOut(false), m_pathNext("")
 {
 
 }
@@ -89,19 +90,33 @@ void CFade2D::Update(void)
 	case CFade2D::STATE_IN:
 		m_fTimer += CManager::GetDeltaTime();
 
-		if (m_bBouceIn)
+		if (m_fTimer > m_fTimeMax)
 		{
-			if (m_fTimer > m_fTimeMax)
+			if (m_bBouceIn)
 				m_state = CFade2D::STATE_OUT;
+			else
+				m_state = CFade2D::STATE_NONE;
 		}
+
+		
 		break;
 	case CFade2D::STATE_OUT:
 		m_fTimer -= CManager::GetDeltaTime();
 		
-		if (m_bBouceOut)
+		if (m_fTimer < 0.0f)
 		{
-			if (m_fTimer < 0.0f)
+			if (m_bBouceOut)
+			{
+				if (m_pathNext != "")
+				{// 次のテクスチャを貼る
+					int nIdxTexture = Texture::GetIdx(&m_pathNext[0]);
+					m_pPoygon->SetIdxTexture(nIdxTexture);
+				}
+
 				m_state = CFade2D::STATE_IN;
+			}
+			else
+				m_state = CFade2D::STATE_NONE;
 		}
 		break;
 	default:
