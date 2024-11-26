@@ -50,6 +50,8 @@ private:
 	CUI *m_pManual;				// 説明情報
 	float m_fCurTime;			// 現在の待機時間
 	MODE m_selectMode;			// 選択しているモード
+	int m_nSnowStormCnt;		// 吹雪が来るまでのカウント
+	bool m_bStorm;				// 吹雪が来たかどうか
 };
 
 #endif
