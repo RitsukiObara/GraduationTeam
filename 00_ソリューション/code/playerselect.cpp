@@ -25,6 +25,7 @@
 #include "gameManager.h"
 #include "meshcylinder.h"
 #include "fan3D.h"
+#include "particle.h"
 
 //*****************************************************
 // 定数定義
@@ -290,6 +291,11 @@ void CPlayerSelect::CreatePlayer(int nIdx)
 
 		// プレイヤーIDの割り当て
 		m_apPlayer[nIdx]->SetID(nIdx);
+
+		m_apPlayer[nIdx]->SetMotion(CPlayer::MOTION::MOTION_MULTIAPPEAR);
+
+		// パーティクルの発生
+		CParticle::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), CParticle::TYPE::TYPE_ICEBREAK);
 	}
 
 	m_nNumPlayer++;

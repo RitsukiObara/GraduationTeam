@@ -1128,7 +1128,11 @@ void CPlayer::ManageMotion(void)
 	int nMotion = GetMotion();
 	bool bFinish = IsFinish();
 
-	if (m_fragMotion.bJump)
+	if (nMotion == MOTION::MOTION_MULTIAPPEAR && !bFinish)
+	{
+
+	}
+	else if (m_fragMotion.bJump)
 	{// ジャンプ中
 		if (nMotion == MOTION::MOTION_LANDING)
 		{// 着地モーション終了でジャンプ終了
