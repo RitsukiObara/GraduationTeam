@@ -17,11 +17,6 @@
 //*****************************************************
 #define SPEED_MOVE	(7.0f)	// 移動速度
 
-//*****************************************************
-// 静的メンバ変数宣言
-//*****************************************************
-LPDIRECT3DTEXTURE9 CEffect2D::m_pTexture = nullptr;	// テクスチャのポインタ
-
 //=====================================================
 // コンストラクタ
 //=====================================================
@@ -87,21 +82,8 @@ void CEffect2D::Update(void)
 //=====================================================
 void CEffect2D::Draw(void)
 {
-	// デバイスの取得
-	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
-
-	//αブレンディングを加算合成に設定
-	pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-
 	// 継承クラスの描画
 	CPolygon2D::Draw();
-
-	//αブレンディングを元に戻す
-	pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 }
 
 //=====================================================
@@ -131,37 +113,4 @@ CEffect2D *CEffect2D::Create(D3DXVECTOR3 pos, float fRadius, int nLife, D3DXCOLO
 	pEffect2D->SetCol(col);
 
 	return pEffect2D;
-}
-
-//=====================================================
-// 読込処理
-//=====================================================
-HRESULT CEffect2D::Load(void)
-{
-	if (m_pTexture == nullptr)
-	{
-		// デバイスの取得
-		LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
-
-		D3DXCreateTextureFromFile
-		(
-			pDevice,
-			"data\\TEXTURE\\EFFECT\\effect000.png",
-			&m_pTexture
-		);
-	}
-
-	return S_OK;
-}
-
-//=====================================================
-// テクスチャ破棄
-//=====================================================
-void CEffect2D::Unload(void)
-{
-	if (m_pTexture != nullptr)
-	{
-		m_pTexture->Release();
-		m_pTexture = nullptr;
-	}
 }

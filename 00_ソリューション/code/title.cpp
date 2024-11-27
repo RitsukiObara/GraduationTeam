@@ -12,7 +12,7 @@
 #include "object.h"
 #include "inputManager.h"
 #include "manager.h"
-#include "fade.h"
+#include "fade_fallice.h"
 #include "texture.h"
 #include "camera.h"
 #include "cameraState.h"
@@ -323,7 +323,8 @@ void CTitle::Update(void)
 
 	CEffect2D* pEffect2D = CEffect2D::Create(D3DXVECTOR3(500.0f, 400.0f, 0.0f), 60.0f, 120, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
-	pEffect2D->SetIdxTexture(Texture::GetIdx(&PATH_TEX[0]));
+	int nIdx =  Texture::GetIdx(&PATH_TEX[0]);
+	pEffect2D->SetIdxTexture(nIdx);
 
 	// シーンの更新
 	CScene::Update();
@@ -370,7 +371,7 @@ void CTitle::Input(void)
 //=====================================================
 void CTitle::Fade(void)
 {// 各種フェード
-	CFade* pFade = CFade::GetInstance();
+	CFade_FallIce* pFade = CFade_FallIce::GetInstance();
 
 	if (pFade == nullptr)
 		return;
