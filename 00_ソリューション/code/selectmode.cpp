@@ -165,9 +165,8 @@ HRESULT CSelectMode::Init(void)
 	pMeshField->SetDivTex(128);
 
 	// ‚©‚Ü‚­‚ç
-	CObjectX *pIgloo = CObjectX::Create();
+	CObjectX *pIgloo = CObjectX::Create(D3DXVECTOR3(800.0f, -10.0f, 600.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f),4);
 	pIgloo->BindModel(CModel::Load("data\\MODEL\\object\\Snowdome.x"));
-	pIgloo->SetPosition(D3DXVECTOR3(800.0f, -10.0f, 600.0f));
 
 	// BGM‚ÌÄ¶
 	CSound* pSound = CSound::GetInstance();
