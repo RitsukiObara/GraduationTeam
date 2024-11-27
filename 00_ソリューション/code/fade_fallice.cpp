@@ -168,8 +168,6 @@ void CFade_FallIce::Update(void)
 				pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 				for (auto itr = FALLICE_PATTERN[m_nCounterPattern].begin(); itr != FALLICE_PATTERN[m_nCounterPattern].end(); itr++)
 				{
-					CPolygon2D* polygon = CPolygon2D::Create();	// オブジェクト生成
-
 					// 配置位置計算
 					D3DXVECTOR3 pos;
 					pos.x = ((((*itr).y % 2 == 0) ? 0 : 0.5f) + (*itr).x) * POLYGON_WIDTH;
