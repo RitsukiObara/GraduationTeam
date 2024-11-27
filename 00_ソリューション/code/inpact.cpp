@@ -55,7 +55,7 @@ CInpact *CInpact::Create(float nLife, D3DXMATRIX *pMtx)
 		{
 			if (pMtx != nullptr)
 			{
-				pInpact->SetMtx(*pMtx);
+				pInpact->SetMatrix(*pMtx);
 			}
 
 			pInpact->m_info.fLife = nLife;

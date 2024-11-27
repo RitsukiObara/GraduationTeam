@@ -33,16 +33,22 @@ public:
 	void SetTex(float fScrollX, float fScrollY);      // テクスチャ座標設定処理
 	void SetCol(D3DXCOLOR col) override;
 	void SetIdxTextureOverRay(int nIdx) { m_nIdxTextureOverRay = nIdx; }	// オーバーレイテクスチャ番号設定
+	void ResetMtxParent(void);		// 親マトリックスのリセット
+
+	// 変数取得・設定関数
+	D3DXMATRIX GetMatrixParent(void) { return m_mtxParent; }	// 親マトリックス
+	void SetMatrixParent(D3DXMATRIX mtx) { m_mtxParent = mtx; }
 
 	// 静的メンバ関数
 	static CFan3D *Create(int nPriority = 3, int nNumVtx = 16);	// 生成処理
 
 private:
 	// メンバ変数
-	D3DXMATRIX m_mtxWorld;	// ワールドマトリックス
-	bool m_bBillboard;	// ビルボードかどうか
-	int m_nStartOffsetCount;  // 使用する波形の開始位置をずらすカウント
-	int m_nIdxTextureOverRay;	// オーバーレイテクスチャの設定
+	D3DXMATRIX m_mtxWorld;			// ワールドマトリックス
+	D3DXMATRIX m_mtxParent;	// 親マトリックス
+	bool m_bBillboard;				// ビルボードかどうか
+	int m_nStartOffsetCount;		// 使用する波形の開始位置をずらすカウント
+	int m_nIdxTextureOverRay;		// オーバーレイテクスチャの設定
 };
 
 #endif

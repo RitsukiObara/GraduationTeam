@@ -10,7 +10,7 @@
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "gameObject.h"
+#include "object3D.h"
 #include "ocean.h"
 
 //*****************************************************
@@ -24,7 +24,7 @@ class CObjectX;
 //*****************************************************
 // クラスの定義
 //*****************************************************
-class CIce : public CGameObject
+class CIce : public CObject3D
 {
 public:
 	// 列挙型定義
@@ -94,10 +94,11 @@ private:
 	// メンバ関数
 	void FollowWave(void);								// 波に追従する処理
 	void SearchOnThis(void);							// 自身に乗ってるものの検出
-	void GetOnTopObject(vector<CGameObject*> &rVector);	// 上に乗ってるものの検出
+	void GetOnTopObject(vector<CGameObject*> &rVector,float fRate = 1.0f);	// 上に乗ってるものの検出
 	void Tilt(void);									// 揺れの処理
 	void Ripples(void);									// さざ波の処理
 	
+	void FollowMesh(void);	// メッシュの追従
 	void Flash(void);		// きらりと光る処理
 
 	// メンバ変数

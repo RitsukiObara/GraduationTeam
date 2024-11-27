@@ -26,6 +26,7 @@ public:
 	virtual void Uninit(void);	// 終了
 	virtual void Update(void);	// 更新
 	virtual void Draw(void);	// 描画
+	void CulcMatrix(void);		// マトリックスの計算
 	void ResetMtxParent(void);	// 親マトリックスのリセット
 	D3DXVECTOR3 GetForward(void);	// マトリックスから前方ベクトルを取得
 	D3DXVECTOR3 GetUp(void);	// マトリックスから上方ベクトルを取得

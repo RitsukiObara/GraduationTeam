@@ -24,7 +24,7 @@
 //=====================================================
 // コンストラクタ
 //=====================================================
-CMeshCylinder::CMeshCylinder(int nPriority) : CObject(nPriority)
+CMeshCylinder::CMeshCylinder(int nPriority) : CObject3D(nPriority)
 {
 	ZeroMemory(&m_meshCylinder, sizeof(m_meshCylinder));
 	m_pIdxBuff = nullptr;
@@ -190,6 +190,9 @@ HRESULT CMeshCylinder::Init(void)
 	//インデックスバッファをアンロック
 	m_pIdxBuff->Unlock();
 
+	// 継承クラスの初期化
+	CObject3D::Init();
+
 	return S_OK;
 }
 
@@ -210,7 +213,8 @@ void CMeshCylinder::Uninit(void)
 		m_pIdxBuff = NULL;
 	}
 
-	Release();
+	// 継承クラスの終了
+	CObject3D::Uninit();
 }
 
 //=====================================================
@@ -218,11 +222,12 @@ void CMeshCylinder::Uninit(void)
 //=====================================================
 void CMeshCylinder::Update(void)
 {
-
+	// 継承クラスの更新
+	CObject3D::Update();
 }
 
 //=====================================================
-// 更新処理
+// 頂点反映
 //=====================================================
 void CMeshCylinder::SetVtx(void)
 {
@@ -310,26 +315,11 @@ void CMeshCylinder::Draw(void)
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
 
-	D3DXMATRIX mtxRot, mtxTrans;
-
 	// カリングを無効化
 	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
-	//ワールドマトリックス初期化
-	D3DXMatrixIdentity(&m_meshCylinder.mtxWorld);
-
-	//向きを反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot,
-		m_meshCylinder.rot.y, m_meshCylinder.rot.x, m_meshCylinder.rot.z);
-	D3DXMatrixMultiply(&m_meshCylinder.mtxWorld, &m_meshCylinder.mtxWorld, &mtxRot);
-
-	//位置を反映
-	D3DXMatrixTranslation(&mtxTrans,
-		m_meshCylinder.pos.x, m_meshCylinder.pos.y, m_meshCylinder.pos.z);
-	D3DXMatrixMultiply(&m_meshCylinder.mtxWorld, &m_meshCylinder.mtxWorld, &mtxTrans);
-
-	//ワールドマトリックス設定
-	pDevice->SetTransform(D3DTS_WORLD, &m_meshCylinder.mtxWorld);
+	// 継承クラスの描画
+	CObject3D::Draw();
 
 	//頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
@@ -376,15 +366,10 @@ void CMeshCylinder::JustDraw(void)
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
 
-	D3DXMATRIX mtxRot, mtxTrans;
-
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	// カリングを無効化
 	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-
-	//ワールドマトリックス設定
-	pDevice->SetTransform(D3DTS_WORLD, &m_meshCylinder.mtxWorld);
 
 	//頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
