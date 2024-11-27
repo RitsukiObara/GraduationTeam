@@ -29,6 +29,7 @@
 namespace
 {
 const string PATH_TEXT = "data\\TEXT\\selectStage.txt";	// テキストパス
+const string PATH_BANNER = "data\\MODEL\\other\\stageselect_banner.x";
 
 const float RADIUS_COLLISION_PUSHOUT = 500.0f;	// 押し出し判定の半径
 const float RATE_SELECT_COLLISION = 1.4f;	// 選択時の半径の割合
@@ -85,6 +86,11 @@ HRESULT CSelectStageManager::Init(void)
 
 	// カメラのステイト設定
 	Camera::ChangeState(new CCameraStateSelectStage);
+
+	// ステージ選択看板設置
+	CObjectX* pBanner = CObjectX::Create(D3DXVECTOR3(0.0f,0.0,1300.0));
+	pBanner->BindModel(CModel::Load(&PATH_BANNER[0]));
+	pBanner->SetScale(15.0f);
 
 	// ステージの設置
 	SetStage();
