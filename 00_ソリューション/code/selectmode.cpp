@@ -70,20 +70,29 @@ namespace
 		const float SELECTUI_COLORCHANGE_COEF = 0.4f;	// モードUIの変化の慣性
 	}
 
-	namespace manual
+	namespace MeshField
 	{
-		const char* PATH = "data\\TEXTURE\\UI\\tutorial00.jpg";	// パス
-		const float WIDTH		= 0.5f;	// 幅
-		const float HEIGHT		= 0.5f;	// 高さ
-		const D3DXVECTOR3 POS	= D3DXVECTOR3(0.5f, 0.5f, 0.0f);	// 位置
+		const string TEX_PATH = "data\\TEXTURE\\MATERIAL\\field.jpg";
+		const D3DXVECTOR3 POS = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		const int DIV_TEX = 128;
 	}
 
-	namespace control
+	namespace Igloo
 	{
-		const char* PATH = "data\\TEXTURE\\UI\\tutorial_control00.png";	// パス
-		const float WIDTH		= 0.18f;	// 幅
-		const float HEIGHT		= 0.08f;	// 高さ
-		const D3DXVECTOR3 POS	= D3DXVECTOR3(0.82f, 0.91f, 0.0f);	// 位置
+		const string MODEL_PATH = "data\\MODEL\\object\\Snowdome_SelectMode.x";
+		const D3DXVECTOR3 POS = D3DXVECTOR3(800.0f, -10.0f, 600.0f);
+		const D3DXVECTOR3 ROT = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	}
+
+	namespace Penguin
+	{
+		const vector<D3DXVECTOR3> POS =
+		{
+			D3DXVECTOR3(400.0f, 10.0f, -1000.0f),
+			D3DXVECTOR3(-500.0f, 10.0f, 800.0f),
+			D3DXVECTOR3(2200.0f, 10.0f, 800.0f),
+			D3DXVECTOR3(950.0f, 10.0f, 700.0f)
+		};
 	}
 
 	const int CNT_SNOW = 10;						// 雪が降るタイミング
@@ -149,13 +158,13 @@ HRESULT CSelectMode::Init(void)
 
 	// メッシュフィールド
 	CMeshField* pMeshField = CMeshField::Create();
-	pMeshField->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	pMeshField->SetIdxTexture(CTexture::GetInstance()->Regist("data\\TEXTURE\\MATERIAL\\field.jpg"));
-	pMeshField->SetDivTex(128);
+	pMeshField->SetPosition(MeshField::POS);
+	pMeshField->SetIdxTexture(CTexture::GetInstance()->Regist(&MeshField::TEX_PATH[0]));
+	pMeshField->SetDivTex(MeshField::DIV_TEX);
 
 	// かまくら
-	CObjectX *pIgloo = CObjectX::Create(D3DXVECTOR3(800.0f, -10.0f, 600.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f),4);
-	pIgloo->BindModel(CModel::Load("data\\MODEL\\object\\Snowdome.x"));
+	CObjectX *pIgloo = CObjectX::Create(Igloo::POS, Igloo::ROT,4);
+	pIgloo->BindModel(CModel::Load(&Igloo::MODEL_PATH[0]));
 
 	// BGMの再生
 	CSound* pSound = CSound::GetInstance();
@@ -164,18 +173,11 @@ HRESULT CSelectMode::Init(void)
 
 	// 遊ぶペンギン
 	CNPCPenguin* pPenguin = nullptr;
-	// 右中心
-	pPenguin = CNPCPenguin::Create(new CNPCPenguinState_Stand);
-	pPenguin->SetPosition(D3DXVECTOR3(400.0f, 10.0f, -1000.0f));
-	// あの辺1
-	pPenguin = CNPCPenguin::Create(new CNPCPenguinState_Stand);
-	pPenguin->SetPosition(D3DXVECTOR3(-500.0f, 10.0f, 800.0f));
-	// あの辺2
-	pPenguin = CNPCPenguin::Create(new CNPCPenguinState_Stand);
-	pPenguin->SetPosition(D3DXVECTOR3(2200.0f, 10.0f, 800.0f));
-	// かまくら
-	pPenguin = CNPCPenguin::Create(new CNPCPenguinState_Stand);
-	pPenguin->SetPosition(D3DXVECTOR3(950.0f, 10.0f, 700.0f));
+	for (auto itr = Penguin::POS.begin(); itr != Penguin::POS.end(); itr++)
+	{
+		pPenguin = CNPCPenguin::Create(new CNPCPenguinState_Stand);
+		pPenguin->SetPosition((*itr));
+	}
 
 	// 入力マネージャー生成
 	CInputManager::Create();
