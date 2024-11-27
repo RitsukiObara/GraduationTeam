@@ -31,7 +31,8 @@ namespace
 const string PATH_TEXT = "data\\TEXT\\selectStage.txt";	// テキストパス
 const string PATH_BANNER = "data\\MODEL\\other\\stageselect_banner.x";
 
-const float RADIUS_COLLISION_PUSHOUT = 500.0f;	// 押し出し判定の半径
+const float RADIUS_COLLISION_PUSHOUT_STAGE = 500.0f;	// 押し出し判定の半径（ステージ）
+const float RADIUS_COLLISION_PUSHOUT_BANNER = 250.0f;	// 押し出し判定の半径（看板）
 const float RATE_SELECT_COLLISION = 1.4f;	// 選択時の半径の割合
 
 const float SCALE_STATE[CSelectStageManager::E_StateStage::STATE_MAX] = { 0.0f, 1.0f, 1.4f };	// 状態ごとのスケール
@@ -43,6 +44,7 @@ const float SPEED_SCALING_PENGUIN = 0.05f;	// ペンギンのスケーリング速度
 const float SPEED_MOVE_ENTER = 0.01f;	// エンター時の移動速度
 
 const float SPEED_PARTICLE = 22.0f;	// パーティクルの速度
+const D3DXVECTOR3 BANNER_POS = D3DXVECTOR3(0.0f, 0.0, 1300.0);	// 看板の位置
 }
 
 //*****************************************************
@@ -88,9 +90,15 @@ HRESULT CSelectStageManager::Init(void)
 	Camera::ChangeState(new CCameraStateSelectStage);
 
 	// ステージ選択看板設置
-	CObjectX* pBanner = CObjectX::Create(D3DXVECTOR3(0.0f,0.0,1300.0));
+	CObjectX* pBanner = CObjectX::Create(BANNER_POS);
 	pBanner->BindModel(CModel::Load(&PATH_BANNER[0]));
 	pBanner->SetScale(15.0f);
+	CCollisionSphere *pCollision = CCollisionSphere::Create(CCollision::TAG::TAG_BLOCK, CCollision::TYPE::TYPE_SPHERE, this);
+	if (pCollision != nullptr)
+	{
+		pCollision->SetRadius(RADIUS_COLLISION_PUSHOUT_BANNER);
+		pCollision->SetPosition(BANNER_POS);
+	}
 
 	// ステージの設置
 	SetStage();
@@ -224,7 +232,7 @@ void CSelectStageManager::SetStage(void)
 		if (pInfoStage->pCollision == nullptr)
 			return;
 
-		pInfoStage->pCollision->SetRadius(RADIUS_COLLISION_PUSHOUT);
+		pInfoStage->pCollision->SetRadius(RADIUS_COLLISION_PUSHOUT_STAGE);
 		pInfoStage->pCollision->SetPosition(GetPosition());
 
 		// 状態の初期設定
@@ -286,7 +294,7 @@ void CSelectStageManager::Select(void)
 		pInfoStage->pCollision->SetPosition(pInfoStage->pModel->GetPosition());
 
 		// 判定の一時拡大
-		pInfoStage->pCollision->SetRadius(RATE_SELECT_COLLISION * RADIUS_COLLISION_PUSHOUT);
+		pInfoStage->pCollision->SetRadius(RATE_SELECT_COLLISION * RADIUS_COLLISION_PUSHOUT_STAGE);
 
 		// プレイヤーが入っていたら選択状態にする
 		bool bEnter = pInfoStage->pCollision->OnEnter(CCollision::TAG_PLAYER);
@@ -312,7 +320,7 @@ void CSelectStageManager::Select(void)
 			pInfoStage->state = E_StateStage::STATE_NORMAL;
 
 		// 判定の大きさを戻す
-		pInfoStage->pCollision->SetRadius(RADIUS_COLLISION_PUSHOUT);
+		pInfoStage->pCollision->SetRadius(RADIUS_COLLISION_PUSHOUT_STAGE);
 	}
 }
 
@@ -359,12 +367,12 @@ void CSelectStageManager::SetParticle(int nIdx)
 	CParticle::Create(posParticle, CParticle::TYPE::TYPE_STAGESELECT_SNOW);
 
 	// 次の位置に一定以上近づいたら元の位置に戻す
-	if (universal::DistCmpFlat(posParticle, posNext, RADIUS_COLLISION_PUSHOUT * RATE_SELECT_COLLISION, nullptr))
+	if (universal::DistCmpFlat(posParticle, posNext, RADIUS_COLLISION_PUSHOUT_STAGE * RATE_SELECT_COLLISION, nullptr))
 	{
 		D3DXVECTOR3 posBack = pos;
 		D3DXVECTOR3 vecLength = vecDiff;
 
-		universal::VecConvertLength(&vecLength, RADIUS_COLLISION_PUSHOUT * RATE_SELECT_COLLISION);
+		universal::VecConvertLength(&vecLength, RADIUS_COLLISION_PUSHOUT_STAGE * RATE_SELECT_COLLISION);
 
 		posBack += vecLength;
 

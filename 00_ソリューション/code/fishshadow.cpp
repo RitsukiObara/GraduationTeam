@@ -14,27 +14,19 @@
 //*****************************************************
 // マクロ定義
 //*****************************************************
-
-//*****************************************************
-// 定数定義
-//*****************************************************
 namespace
 {
-	const char* SEALS_LOGO_PATH = "data\\TEXTURE\\UI\\stage_clear.png";	// クリアロゴのパス
-	const char* BEARS_LOGO_PATH = "data\\TEXTURE\\UI\\gameover.png";	// 失敗ロゴのパス
+	const char* FISHSHADOW_LOGO_PATH = "data\\TEXTURE\\enemy\\Fish_shadow.png";	// クリアロゴのパス
+	const float SIZE_INIT[CEnemy::TYPE::TYPE_MAX] = {70.0f , 200.0f};	// 初期のサイズ
+	const D3DXCOLOR COL_INIT = { 0.0f,0.0f,0.0f,1.0f };	// 初期色
 }
-
-//*****************************************************
-// 静的メンバ変数宣言
-//*****************************************************
-CFishShadow* CFishShadow::m_pFishShadow = nullptr;	// 自身のポインタ
 
 //====================================================
 // コンストラクタ
 //====================================================
 CFishShadow::CFishShadow()
 {
-	m_FishShadow = FISHSHADOW_SEALS;
+
 }
 
 //====================================================
@@ -48,19 +40,22 @@ CFishShadow::~CFishShadow()
 //====================================================
 // 生成処理
 //====================================================
-CFishShadow* CFishShadow::Create(void)
+CFishShadow* CFishShadow::Create(CEnemy::TYPE type)
 {
-	if (m_pFishShadow == nullptr)
-	{
-		m_pFishShadow = new CFishShadow;
+	CFishShadow* pFishShadow = nullptr;
 
-		if (m_pFishShadow != nullptr)
-		{
-			m_pFishShadow->Init();
-		}
+	pFishShadow = new CFishShadow;
+
+	if (pFishShadow != nullptr)
+	{
+		pFishShadow->Init();
+
+		// サイズ設定
+		pFishShadow->SetSize(SIZE_INIT[type], SIZE_INIT[type]);
+		pFishShadow->SetVtx();
 	}
 
-	return m_pFishShadow;
+	return pFishShadow;
 }
 
 //====================================================
@@ -68,35 +63,18 @@ CFishShadow* CFishShadow::Create(void)
 //====================================================
 HRESULT CFishShadow::Init(void)
 {
-	//クリアの時
-	if (m_FishShadow == FISHSHADOW_SEALS)
-	{
-		// クリアロゴの生成
-		m_apFishShadow[FISHSHADOW_SEALS] = CObject3D::Create();
+	// 継承クラスの初期化
+	CPolygon3D::Init();
 
-		if (m_apFishShadow[FISHSHADOW_SEALS] != nullptr)
-		{
-			m_apFishShadow[FISHSHADOW_SEALS]->SetScale(D3DXVECTOR3(300.0f, 100.0f, 100.0f));
-			m_apFishShadow[FISHSHADOW_SEALS]->SetPosition(D3DXVECTOR3(640.0f, 200.0f, 0.0f));
-			int nIdx = CTexture::GetInstance()->Regist(SEALS_LOGO_PATH);
-		}
-	}
+	// テクスチャ設定
+	int nIdxTexture = Texture::GetIdx(&FISHSHADOW_LOGO_PATH[0]);
+	SetIdxTexture(nIdxTexture);
 
-	//失敗の時
-	else if (m_FishShadow == FISHSHADOW_BEARS)
-	{
-		// 失敗ロゴの生成
-		m_apFishShadow[FISHSHADOW_BEARS] = CObject3D::Create();
+	// 前面に出す
+	EnableZtest(true);
 
-		if (m_apFishShadow[FISHSHADOW_BEARS] != nullptr)
-		{
-			m_apFishShadow[FISHSHADOW_BEARS]->SetScale(D3DXVECTOR3(300.0f, 100.0f, 100.0f));
-			m_apFishShadow[FISHSHADOW_BEARS]->SetPosition(D3DXVECTOR3(640.0f, 200.0f, 0.0f));
-			int nIdx = CTexture::GetInstance()->Regist(BEARS_LOGO_PATH);
-		}
-	}
-
-	//m_aPosDest[0].x = RESULT_WIDTH;
+	// 色設定
+	SetColor(COL_INIT);
 
 	EnableNotStop(true);
 
@@ -108,19 +86,8 @@ HRESULT CFishShadow::Init(void)
 //====================================================
 void CFishShadow::Uninit(void)
 {
-	for (int nCnt = 0; nCnt < FISHSHADOW_MAX; nCnt++)
-	{// メニュー項目の破棄
-		if (m_apFishShadow[nCnt] != nullptr)
-		{
-			m_apFishShadow[nCnt]->Uninit();
-
-			m_apFishShadow[nCnt] = nullptr;
-		}
-	}
-
-	m_pFishShadow = nullptr;
-
-	Release();
+	// 継承クラスの終了
+	CPolygon3D::Uninit();
 }
 
 //====================================================
@@ -128,50 +95,8 @@ void CFishShadow::Uninit(void)
 //====================================================
 void CFishShadow::Update(void)
 {
-	// 状態管理
-	ResultState();
-}
-
-//====================================================
-// 魚影状態管理
-//====================================================
-void CFishShadow::ResultState(void)
-{
-	// アザラシの魚影処理
-	FishShadowSeals();
-
-	// しろくまの魚影処理
-	FishShadowBears();
-}
-
-//====================================================
-// アザラシの魚影処理
-//====================================================
-void CFishShadow::FishShadowSeals(void)
-{
-	// クリアの時
-	if (m_FishShadow == FISHSHADOW_SEALS)
-	{
-		if (m_apFishShadow[FISHSHADOW_SEALS] != nullptr)
-		{
-
-		}
-	}
-}
-
-//====================================================
-// しろくまの魚影処理
-//====================================================
-void CFishShadow::FishShadowBears(void)
-{
-	// 失敗の時
-	if (m_FishShadow == FISHSHADOW_BEARS)
-	{
-		if (m_apFishShadow[FISHSHADOW_BEARS] != nullptr)
-		{
-
-		}
-	}
+	// 継承クラスの更新
+	CPolygon3D::Update();
 }
 
 //====================================================
@@ -179,5 +104,6 @@ void CFishShadow::FishShadowBears(void)
 //====================================================
 void CFishShadow::Draw(void)
 {
-
+	// 継承クラスの描画
+	CPolygon3D::Draw();
 }
