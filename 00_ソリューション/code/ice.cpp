@@ -55,7 +55,8 @@ const float LINE_STOP_ICE = 1.0f;	// 氷が止まるしきい値
 namespace tilt
 {
 const float SPEED_ROT = 0.1f;			// 回転速度
-const float MAX_TILT = D3DX_PI * 0.3f;	// 最大の傾き
+const float MAX_TILT = D3DX_PI * 0.2f;	// 最大の傾き
+const float RATE_COLLIDE = 1.6f;		// 判定の割合
 }
 
 //------------------------------
@@ -88,7 +89,7 @@ std::vector<CIce*> CIce::m_Vector = {};	// 自身のポインタ
 //=====================================================
 // コンストラクタ
 //=====================================================
-CIce::CIce(int nPriority) : CGameObject(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false), m_bPeck(false),
+CIce::CIce(int nPriority) : CObject3D(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false), m_bPeck(false),
 m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false), m_bStop(nullptr), m_abRipleFrag(), m_nCntAnimFlash(0), m_rotDest()
 {
 	s_nNumAll++;
@@ -154,6 +155,9 @@ HRESULT CIce::Init(void)
 	// 光る処理の初期化
 	StartFlash();
 
+	// 継承クラスの初期化
+	CObject3D::Init();
+
 	return S_OK;
 }
 
@@ -168,7 +172,6 @@ void CIce::CreateMesh(void)
 
 		if (m_pUp != nullptr)
 		{
-			m_pUp->SetRotation(ROT_UP_INIT);
 			int nIdxTexture = Texture::GetIdx(&PATH_TEX[0]);
 			m_pUp->SetIdxTexture(nIdxTexture);
 
@@ -224,7 +227,8 @@ void CIce::Uninit(void)
 		m_pState = nullptr;
 	}
 
-	CGameObject::Uninit();
+	// 継承クラスの終了
+	CObject3D::Uninit();
 }
 
 //=====================================================
@@ -248,8 +252,14 @@ void CIce::Update(void)
 	// さざ波の処理
 	Ripples();
 
+	// メッシュの追従
+	FollowMesh();
+
 	// 光る処理
 	Flash();
+
+	// 継承クラスの更新
+	CObject3D::Update();
 }
 
 //=====================================================
@@ -325,19 +335,34 @@ bool CIce::IsOnTopAnyObject(void)
 //=====================================================
 // 判定するオブジェクトの検出
 //=====================================================
-void CIce::GetOnTopObject(vector<CGameObject*> &rVector)
+void CIce::GetOnTopObject(vector<CGameObject*> &rVector, float fRate)
 {
+	vector<CGameObject*> apObject;
+
 	// 敵の追加
 	vector<CEnemy*> aEnemy = CEnemy::GetInstance();
 
 	for (CEnemy* enemy : aEnemy)
-		rVector.push_back((CGameObject*)enemy);
+		apObject.push_back((CGameObject*)enemy);
 
 	// プレイヤーの追加
 	vector<CPlayer*> aPlayer = CPlayer::GetInstance();
 
 	for (CPlayer* player : aPlayer)
-		rVector.push_back((CGameObject*)player);
+		apObject.push_back((CGameObject*)player);
+
+	// 上にどれかが乗ってたら真を返す
+	for (CGameObject* object : apObject)
+	{
+		D3DXVECTOR3 posObject = object->GetPosition();
+		D3DXVECTOR3 pos = GetPosition();
+
+		if (universal::DistCmpFlat(pos, posObject, SIZE_INIT * fRate, nullptr))
+		{// 何かが乗ってるので真を返す
+			rVector.push_back(object);
+		}
+	}
+
 }
 
 //=====================================================
@@ -345,10 +370,16 @@ void CIce::GetOnTopObject(vector<CGameObject*> &rVector)
 //=====================================================
 void CIce::Tilt(void)
 {
+	if (!IsCanPeck())
+		return;	// 叩けない氷なら通らない
+
+	//------------------------------
+	// 傾きの計算
+	//------------------------------
 	// 乗っているオブジェクトの取得
 	vector<CGameObject*> apObject;
-	GetOnTopObject(apObject);
-	
+	GetOnTopObject(apObject, tilt::RATE_COLLIDE);
+
 	int nNumObject = (int)apObject.size();
 
 	if (nNumObject != 0)
@@ -365,6 +396,9 @@ void CIce::Tilt(void)
 
 		// 差分ベクトルを平均化
 		vecDiff /= (float)nNumObject;
+
+		m_rotDest.x = vecDiff.z / Grid::SIZE * tilt::MAX_TILT;
+		m_rotDest.z = -vecDiff.x / Grid::SIZE * tilt::MAX_TILT;
 	}
 	else	// 上に何も乗ってなかったら元に戻す
 		m_rotDest = { 0.0f,0.0f,0.0f };
@@ -375,15 +409,6 @@ void CIce::Tilt(void)
 	rot += (m_rotDest - rot) * tilt::SPEED_ROT;
 
 	SetRotation(rot);
-
-	//------------------------------
-	// 向きの追従
-	//------------------------------
-	if (m_pUp == nullptr || m_pSide == nullptr)
-		return;
-
-	m_pUp->SetRotation(D3DXVECTOR3(rot.x + D3DX_PI * 0.5f,rot.y,rot.z));
-	m_pSide->SetRotation(rot);
 }
 
 //=====================================================
@@ -424,6 +449,28 @@ void CIce::Ripples(void)
 	int nRand = universal::RandRange(ripple::MAX_TIME, ripple::MIN_TIME);
 
 	m_fSpawnTimeRipples = (float)nRand;
+}
+
+//=====================================================
+// メッシュの追従
+//=====================================================
+void CIce::FollowMesh(void)
+{
+	if (m_pUp == nullptr || m_pSide == nullptr)
+		return;
+
+	// マトリックスを確定させる
+	CulcMatrix();
+
+	D3DXMATRIX mtx = GetMatrix();
+
+	// 上の扇ポリゴンの設定
+	m_pUp->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	m_pUp->SetMatrixParent(mtx);
+
+	// サイドのシリンダーの設定
+	m_pSide->SetPosition(D3DXVECTOR3(0.0f, -HEIGHT_ICE, 0.0f));
+	m_pSide->SetMatrixParent(mtx);
 }
 
 //=====================================================
@@ -530,7 +577,7 @@ void CIce::SetColor(D3DXCOLOR col)
 //=====================================================
 void CIce::Draw(void)
 {
-
+	CObject3D::Draw();
 }
 
 //=====================================================

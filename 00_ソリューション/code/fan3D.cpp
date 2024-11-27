@@ -69,6 +69,9 @@ HRESULT CFan3D::Init(void)
 {
 	CFan::Init();
 
+	// 親マトリックスリセット
+	ResetMtxParent();
+
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
 
@@ -114,6 +117,14 @@ void CFan3D::Update(void)
 }
 
 //=====================================================
+// 親マトリックスのリセット
+//=====================================================
+void CFan3D::ResetMtxParent(void)
+{
+	D3DXMatrixIdentity(&m_mtxParent);
+}
+
+//=====================================================
 // 頂点位置設定
 //=====================================================
 void CFan3D::SetVtx(void)
@@ -147,8 +158,8 @@ void CFan3D::SetVtx(void)
 			pVtx[i].pos =
 			{
 				sinf(fAngle) * fRadius,
-				cosf(fAngle) * fRadius,
 				0.0f,
+				cosf(fAngle) * fRadius,
 			};
 
 			float f = 0.1f * sinf((float)i * 0.01f);
@@ -305,19 +316,29 @@ void CFan3D::Draw(void)
 //=====================================================
 void CFan3D::DrawNormal(void)
 {
-	D3DXMATRIX mtxRot, mtxTrans;
-	D3DXVECTOR3 pos = GetPosition();
-	D3DXVECTOR3 rot = GetRotation();
+	LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
+	D3DXMATRIX mtxRot, mtxTrans, mtxScale;
 
-	//向きを反映
+	// ワールドマトリックス初期化
+	D3DXMatrixIdentity(&m_mtxWorld);
+
+	// 向きを反映
+	D3DXVECTOR3 rot = GetRotation();
 	D3DXMatrixRotationYawPitchRoll(&mtxRot,
 		rot.y, rot.x, rot.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
-	//位置を反映
+	// 位置を反映
+	D3DXVECTOR3 pos = GetPosition();
 	D3DXMatrixTranslation(&mtxTrans,
 		pos.x, pos.y, pos.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+
+	// 親マトリックスをかけ合わせる
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &m_mtxParent);
+
+	// ワールドマトリックス設定
+	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 }
 
 //=====================================================
