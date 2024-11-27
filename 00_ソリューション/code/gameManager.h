@@ -36,6 +36,7 @@ public:
 	virtual void UpdateNormal(void);	// 通常状態の更新
 	virtual void UpdateResult(void);	// リザルト状態の更新
 	virtual void UpdateEnd(void);		// 終了状態の更新
+	virtual void EndGame(void) = 0;		// ゲームの終了
 
 	// 変数取得・設定関数
 

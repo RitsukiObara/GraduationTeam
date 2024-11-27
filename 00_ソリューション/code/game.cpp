@@ -76,6 +76,7 @@ CGame::CGame()
 	m_pPause = nullptr;
 	m_GameMode = E_GameMode::MODE_NONE;
 	m_nNumEnemyMax = 0;
+	m_pGameManager = nullptr;
 }
 
 //=====================================================
@@ -116,7 +117,7 @@ HRESULT CGame::Init(void)
 	m_pTimer = CTimer::Create();
 
 	// ゲームマネージャーの生成
-	CGameManager::Create(m_GameMode);
+	m_pGameManager = CGameManager::Create(m_GameMode);
 
 	return S_OK;
 }
@@ -126,6 +127,8 @@ HRESULT CGame::Init(void)
 //=====================================================
 void CGame::Uninit(void)
 {
+	m_pGameManager = nullptr;
+
 	// オブジェクト全棄
 	CObject::ReleaseAll();
 
@@ -243,7 +246,7 @@ void CGame::ManageState(void)
 		m_nCntState++;
 		if (m_nCntState >= TRANS_TIME && pFade != nullptr)
 		{
-			pFade->SetFade(CScene::MODE_TITLE);
+			m_pGameManager->EndGame();
 		}
 
 		break;
