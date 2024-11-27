@@ -836,6 +836,9 @@ void CIceStaeteBreak::UpdateRepair(CIce *pIce)
 
 		pIce->ChangeState(new CIceStaeteNormal);
 		pIce->EnablePeck(false);
+
+		// パーティクル発生
+		CParticle::Create(pIce->GetPosition(), CParticle::TYPE::TYPE_REPAIRICE);
 	}
 }
 
