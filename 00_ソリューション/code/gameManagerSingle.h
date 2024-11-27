@@ -30,8 +30,9 @@ public:
 	// メンバ関数
 	HRESULT Init(void) override;
 	void Uninit(void) override;
-	void Update() override;
-	void Draw() override;
+	void Update(void) override;
+	void Draw(void) override;
+	void EndGame(void) override;	// ゲームの終了
 
 	// 変数取得・設定関数
 

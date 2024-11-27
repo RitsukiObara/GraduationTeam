@@ -12,6 +12,7 @@
 #include "inputManager.h"
 #include "player.h"
 #include "UIplayer.h"
+#include "fade.h"
 
 //=====================================================
 // コンストラクタ
@@ -167,4 +168,15 @@ void CGameManagerMulti::Draw(void)
 {
 	// 基底クラスの描画
 	CGameManager::Draw();
+}
+
+//=====================================================
+// ゲームの終了
+//=====================================================
+void CGameManagerMulti::EndGame(void)
+{
+	CFade *pFade = CFade::GetInstance();
+
+	if (pFade != nullptr)
+		pFade->SetFade(CScene::MODE_RESULTMULTI);
 }
