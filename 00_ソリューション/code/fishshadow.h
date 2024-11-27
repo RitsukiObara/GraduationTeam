@@ -33,15 +33,14 @@ private:
 		FISHSHADOW_MAX
 	};
 
-	void ResultState(void); // リザルトUIの状態
-	void ResultClear(void); // リザルトがクリアの時
-	void ResultFail(void); // リザルトが失敗の時
+	void ResultState(void); // 魚影状態管理
+	void FishShadowSeals(void); // アザラシの魚影処理
+	void FishShadowBears(void); // しろくまの魚影処理
 
 	FISHSHADOW m_FishShadow;	// 選択項目
+	CObject3D* m_apFishShadow[FISHSHADOW_MAX];	// 魚影の3Dオブジェクト
 	D3DXVECTOR3 m_aPosDest[FISHSHADOW_MAX];	// 目標の位置
 	static CFishShadow* m_pFishShadow;	// 自身のポインタ
-	bool m_bSound;
-	int nCountMove;
 };
 
 #endif

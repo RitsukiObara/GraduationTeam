@@ -43,6 +43,7 @@
 #include "UI_combo.h"
 #include "albatross.h"
 #include "selectStageManager.h"
+#include "fishshadow.h"
 
 //*****************************************************
 // 定数定義
@@ -179,6 +180,7 @@ void CGame::Update(void)
 	if (pKeyboard->GetTrigger(DIK_L))
 	{// アザラシ生成
 		CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
+		//CFishShadow::Create();
 	}
 
 	if (pKeyboard->GetTrigger(DIK_K))
