@@ -11,7 +11,7 @@
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "object.h"
+#include "object3D.h"
 
 //*****************************************************
 // 定数定義
@@ -29,7 +29,7 @@ const float MESH_HEIGHT = 50.0f;	// メッシュの高さ
 //*****************************************************
 // クラス定義
 //*****************************************************
-class CMeshCylinder : public CObject
+class CMeshCylinder : public CObject3D
 {
 public:
 	CMeshCylinder(int nPriority = 4);	// コンストラクタ
@@ -39,7 +39,6 @@ public:
 	{
 		D3DXVECTOR3 pos;						//位置
 		D3DXVECTOR3 rot;						//向き
-		D3DXMATRIX mtxWorld;					//ワールドマトリックス
 		int nNumIdx;							//インデックス数
 		int nNumVtx;							//頂点数
 		float fRadius;	// 半径
@@ -76,7 +75,6 @@ public:
 	MeshCylinder *GetMeshCylinder(void) { return &m_meshCylinder; }
 	void SetCol(D3DXCOLOR col);
 	D3DXCOLOR GetCol(void) { return m_col; }
-	void SetMtx(D3DXMATRIX mtx) { m_meshCylinder.mtxWorld = mtx; }
 	void SetVtx(void);
 
 private:

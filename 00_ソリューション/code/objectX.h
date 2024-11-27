@@ -28,7 +28,7 @@ public:
 	void Draw(void);
 	void JustDraw(void);
 	void DrawShadow(void);
-	static CObjectX *Create(D3DXVECTOR3 pos = { 0.0f,0.0f,0.0f }, D3DXVECTOR3 rot = { 0.0f,0.0f,0.0f });
+	static CObjectX *Create(D3DXVECTOR3 pos = { 0.0f,0.0f,0.0f }, D3DXVECTOR3 rot = { 0.0f,0.0f,0.0f }, int nPriority = 3);
 	float GetWidth(void) { return 0.0f; }	// ƒTƒCƒYæ“¾
 	void SetPositionOld(D3DXVECTOR3 pos) { m_posOld = pos; }	// İ’èˆ—
 	void SetMove(D3DXVECTOR3 move) { m_move = move; }	// İ’èˆ—

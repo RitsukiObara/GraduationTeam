@@ -75,6 +75,15 @@ void CObject3D::Update(void)
 //=====================================================
 void CObject3D::Draw(void)
 {
+	// マトリックスの計算
+	CulcMatrix();
+}
+
+//=====================================================
+// マトリックスの計算
+//=====================================================
+void CObject3D::CulcMatrix(void)
+{
 	LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
 	D3DXMATRIX mtxRot, mtxTrans, mtxScale;
 

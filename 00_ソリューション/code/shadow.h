@@ -33,7 +33,7 @@ public:
 	void SetPosition(D3DXVECTOR3 pos) override;	// 位置の設定
 
 	// 静的メンバ関数
-	static CShadow *Create(void);	// 生成処理
+	static CShadow *Create(int nPriority = 4);	// 生成処理
 
 private:
 	// メンバ関数

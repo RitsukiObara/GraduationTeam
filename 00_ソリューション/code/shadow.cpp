@@ -40,9 +40,9 @@ CShadow::CShadow(int nPriority) : CPolygon3D(nPriority)
 //=====================================================
 // ¶¬ˆ—
 //=====================================================
-CShadow *CShadow::Create(void)
+CShadow *CShadow::Create(int nPriority)
 {
-	CShadow *pShadow = new CShadow;
+	CShadow *pShadow = new CShadow(nPriority);
 
 	if (pShadow != nullptr)
 		pShadow->Init();
