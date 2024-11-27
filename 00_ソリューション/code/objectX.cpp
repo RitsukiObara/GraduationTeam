@@ -303,14 +303,14 @@ void CObjectX::CalcMatrix(void)
 //=====================================================
 //生成処理
 //=====================================================
-CObjectX *CObjectX::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CObjectX *CObjectX::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nPriority)
 {
 	CObjectX *pObjectX = nullptr;
 
 	if (pObjectX == nullptr)
 	{
 		// インスタンス生成
-		pObjectX = new CObjectX;
+		pObjectX = new CObjectX(nPriority);
 
 		pObjectX->SetPosition(pos);
 		pObjectX->SetRotation(rot);

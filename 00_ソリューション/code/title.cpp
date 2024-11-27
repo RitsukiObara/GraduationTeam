@@ -75,6 +75,7 @@ CTitle::CTitle()
 	m_apMenu_UI = nullptr;
 	m_bFade = false;
 	m_bMove = false;
+	m_nCntMove = 0;
 
 	for (int nCntUI = 0; nCntUI < TITLE_UI_MAX; nCntUI++)
 	{
@@ -457,7 +458,7 @@ void CTitle::LogoState(void)
 			m_bMove = true;
 		}
 
-		if (m_nCntMove > 80)
+		if (m_nCntMove > 79)
 		{
 			m_nCntMove = 0;
 		}
