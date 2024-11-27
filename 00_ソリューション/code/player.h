@@ -84,6 +84,7 @@ public:
 	CInputManager *GetInpuManager(void) { return m_pInputMgr; }
 	void SetID(int nID) { m_nID = nID; }	// ”Ô†
 	int GetID(void) { return m_nID; }
+	void SetShadowPos(D3DXVECTOR3 pos);
 
 	// Ã“Iƒƒ“ƒoŠÖ”
 	static CPlayer* Create(void);										// ¶¬ˆ—

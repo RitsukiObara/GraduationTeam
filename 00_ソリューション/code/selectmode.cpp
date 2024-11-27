@@ -89,7 +89,7 @@ namespace
 	const int CNT_SNOW = 10;						// 雪が降るタイミング
 	const float MAX_HEIGHT = 1800.0f;				// 雪が降ってくる高さ
 	const int MAX_SNOW_RADIUS = 100;				// 最大雪の半径
-	const int MIN_SNOW_RADIUS = 20;				// 最低雪の半径
+	const int MIN_SNOW_RADIUS = 20;					// 最低雪の半径
 	const int SNOW_LIFE = 200;						// 雪のライフ
 	const float SNOW_MOVE_SPED = -10.0f;			// 雪の移動速度
 	const int MAX_SNOW_POS = 2200;					// 雪の最大生成場所
