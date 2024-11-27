@@ -17,6 +17,7 @@
 #include "enemyfactory.h"
 #include "destroy_score.h"
 #include "game.h"
+#include "fade.h"
 
 //*****************************************************
 // 定数定義
@@ -202,4 +203,15 @@ void CGameManagerSingle::Draw(void)
 {
 	// 基底クラスの描画
 	CGameManager::Draw();
+}
+
+//=====================================================
+// ゲームの終了
+//=====================================================
+void CGameManagerSingle::EndGame(void)
+{
+	CFade *pFade = CFade::GetInstance();
+
+	if (pFade != nullptr)
+		pFade->SetFade(CScene::MODE_TITLE);
 }

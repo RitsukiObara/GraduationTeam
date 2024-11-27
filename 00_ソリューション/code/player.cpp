@@ -1222,6 +1222,7 @@ void CPlayer::Debug(void)
 	pDebugProc->Print("\n”Ô†[%d]", m_nID);
 	pDebugProc->Print("\nc[%d]‰¡[%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\nˆÊ’u[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
+	pDebugProc->Print("\n‰e‚ÌˆÊ’u[%f,%f,%f]", m_pShadow->GetPosition().x, m_pShadow->GetPosition().y, m_pShadow->GetPosition().z);
 	pDebugProc->Print("\nˆÚ“®—Ê[%f,%f,%f]", GetMove().x, GetMove().y, GetMove().z);
 
 	if (pInputMgr->GetTrigger(CInputManager::BUTTON_SETICE))
@@ -1283,6 +1284,15 @@ void CPlayer::Draw(void)
 {
 	// Œp³ƒNƒ‰ƒX‚Ì•`‰æ
 	CMotion::Draw();
+}
+
+//=====================================================
+// ‰e‚ÌˆÊ’uÝ’è
+//=====================================================
+void CPlayer::SetShadowPos(D3DXVECTOR3 pos)
+{
+	if (m_pShadow != nullptr)
+		m_pShadow->SetJustPosition(pos);
 }
 
 //=====================================================

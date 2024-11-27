@@ -27,11 +27,8 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	static HRESULT Load(void);	// 読込
-	static void Unload(void);
 
 private:
-	static LPDIRECT3DTEXTURE9 m_pTexture;	// テクスチャへのポインタ
 	int m_nLife;	// 寿命
 	float m_fDecrease;	// 減少量
 };

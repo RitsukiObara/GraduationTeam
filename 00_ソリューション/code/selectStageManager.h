@@ -20,6 +20,8 @@ class CCollisionSphere;
 class CObjectX;
 class CSelectStagePenguin;
 class CGameObject;
+class CMeshCylinder;
+class CFan3D;
 
 //*****************************************************
 // ƒNƒ‰ƒX‚Ì’è‹`

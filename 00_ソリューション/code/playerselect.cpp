@@ -10,39 +10,21 @@
 //*****************************************************
 #include "manager.h"
 #include "playerselect.h"
-#include "object.h"
 #include "inputkeyboard.h"
 #include "inputManager.h"
-#include "inputjoypad.h"
 #include "fade.h"
 #include "camera.h"
 #include "sound.h"
-#include "scene.h"
 #include "debugproc.h"
 #include "UIManager.h"
-#include "polygon3D.h"
 #include "texture.h"
-#include "skybox.h"
-#include "renderer.h"
-#include "animEffect3D.h"
-#include "pause.h"
-#include "slow.h"
 #include "meshfield.h"
 #include "CameraState.h"
-#include "particle.h"
-#include "meshCube.h"
-#include "blur.h"
-#include "light.h"
-#include "ice.h"
-#include "iceManager.h"
 #include "player.h"
-#include "seals.h"
-#include "flowIce.h"
-#include "BG_Ice.h"
-#include "flowIceFactory.h"
-#include "UI.h"
 #include "ocean.h"
 #include "gameManager.h"
+#include "meshcylinder.h"
+#include "fan3D.h"
 
 //*****************************************************
 // 定数定義
@@ -56,6 +38,20 @@ const string PATH_UI_STANDBY = "data\\TEXTURE\\UI\\standby.png";	// スタンドバイ
 const string PATH_UI_READY = "data\\TEXTURE\\UI\\ready.png";	// 準備完了テクスチャのパス
 
 const D3DXVECTOR3 INIT_MOVE_PLAYER = D3DXVECTOR3(0.0f, 100.0f, 0.0f);	// プレイヤーの初期の移動量
+
+//----------------------------------
+// ステージの定数
+//----------------------------------
+namespace stage
+{
+const float RADIUS = 1000.0f;				// 半径
+const float RADIUS_COLLIDE = RADIUS * 0.9f;	// 判定の半径
+const int PRIOLITY = 4;						// 優先順位
+const int NUM_VTX = 32;						// 頂点の数
+const float HEIGHT = 100.0f;				// 高さ
+const string PATH_TEX_FAN = "data\\TEXTURE\\MATERIAL\\field.jpg";			// 円のテクスチャパス
+const string PATH_TEX_CYLINDER = "data\\TEXTURE\\MATERIAL\\small_ice.png";	// 円筒のテクスチャパス
+}
 }
 
 //*****************************************************
@@ -72,6 +68,8 @@ CPlayerSelect::CPlayerSelect()
 	ZeroMemory(&m_apPlayerUI[0], sizeof(m_apPlayerUI));
 	ZeroMemory(&m_apPlayer[0], sizeof(m_apPlayer));
 	ZeroMemory(&m_apInputMgr[0], sizeof(m_apInputMgr));
+	m_pCylinder = nullptr;
+	m_pFan = nullptr;
 }
 
 //=====================================================
@@ -124,7 +122,44 @@ HRESULT CPlayerSelect::Init(void)
 		m_apInputMgr[nCount] = pInputMgr;
 	}
 
+	// メッシュの生成
+	CreateMesh();
+
+	// 海の生成
+	COcean::Create();
+
 	return S_OK;
+}
+
+//=====================================================
+// メッシュの生成
+//=====================================================
+void CPlayerSelect::CreateMesh(void)
+{
+	m_pFan = CFan3D::Create(stage::PRIOLITY, stage::NUM_VTX);
+
+	if (m_pFan == nullptr)
+		return;
+
+	m_pFan->SetPosition(D3DXVECTOR3(0.0f, stage::HEIGHT, 0.0f));
+	m_pFan->SetRadius(stage::RADIUS);
+	m_pFan->SetVtx();
+
+	int nIdxTexture = Texture::GetIdx(&stage::PATH_TEX_FAN[0]);
+	m_pFan->SetIdxTexture(nIdxTexture);
+
+	m_pCylinder = CMeshCylinder::Create(stage::NUM_VTX);
+
+	if (m_pCylinder == nullptr)
+		return;
+
+	m_pCylinder->SetHeight(stage::HEIGHT);
+	m_pCylinder->SetRadius(stage::RADIUS);
+	m_pCylinder->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	m_pCylinder->SetVtx();
+
+	nIdxTexture = Texture::GetIdx(&stage::PATH_TEX_CYLINDER[0]);
+	m_pCylinder->SetIdxTexture(nIdxTexture);
 }
 
 //=====================================================
@@ -132,6 +167,9 @@ HRESULT CPlayerSelect::Init(void)
 //=====================================================
 void CPlayerSelect::Uninit(void)
 {
+	Object::DeleteObject((CObject**)&m_pCylinder);
+	Object::DeleteObject((CObject**)&m_pFan);
+
 	// 各種オブジェクトの破棄
 	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
 	{
@@ -172,6 +210,9 @@ void CPlayerSelect::Update(void)
 	// 操作
 	Input();
 
+	// プレイヤーの位置制限
+	LimitPlayerPos();
+
 	// 開始するかの確認
 	CheckStart();
 	
@@ -200,6 +241,25 @@ void CPlayerSelect::Input(void)
 }
 
 //=====================================================
+// プレイヤーの位置制限
+//=====================================================
+void CPlayerSelect::LimitPlayerPos(void)
+{
+	for (CPlayer *pPlayer : m_apPlayer)
+	{
+		if (pPlayer == nullptr)
+			continue;
+
+		D3DXVECTOR3 posPlayer = pPlayer->GetPosition();
+
+		universal::LimitDistCylinderInSide(stage::RADIUS_COLLIDE, &posPlayer, D3DXVECTOR3(0.0f, posPlayer.y, 0.0f));
+
+		pPlayer->SetPosition(posPlayer);
+		pPlayer->SetShadowPos(posPlayer);
+	}
+}
+
+//=====================================================
 // プレイヤーの生成
 //=====================================================
 void CPlayerSelect::CreatePlayer(int nIdx)
@@ -221,8 +281,9 @@ void CPlayerSelect::CreatePlayer(int nIdx)
 	if (m_apPlayer[nIdx] != nullptr)
 	{
 		// プレイヤー初期設定
-		m_apPlayer[nIdx]->SetMove(INIT_MOVE_PLAYER);
+		//m_apPlayer[nIdx]->SetMove(INIT_MOVE_PLAYER);
 		m_apPlayer[nIdx]->SetState(CPlayer::STATE_NORMAL);
+		m_apPlayer[nIdx]->SetPosition(D3DXVECTOR3(0.0f, stage::HEIGHT, 0.0f));
 
 		// 入力マネージャーの割り当て
 		m_apPlayer[nIdx]->BindInputMgr(m_apInputMgr[nIdx]);	

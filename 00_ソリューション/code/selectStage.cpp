@@ -23,10 +23,7 @@
 //*****************************************************
 namespace
 {
-const char* PATH_SelectStage_ROAD = "data\\MAP\\road00.bin";	// ゲームメッシュロードのパス
-const int NUM_LIGHT = 3;	// ライトの数
-const D3DXCOLOR COL_LIGHT_DEFAULT = { 0.9f,0.9f,0.9f,1.0f };	// ライトのデフォルト色
-const float SPEED_CHANGE_LIGHTCOL = 0.1f;	// ライトの色が変わる速度
+
 }
 
 //*****************************************************

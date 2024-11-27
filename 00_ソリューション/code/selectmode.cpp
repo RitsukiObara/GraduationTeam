@@ -89,7 +89,7 @@ namespace
 	const int CNT_SNOW = 10;						// 雪が降るタイミング
 	const float MAX_HEIGHT = 1800.0f;				// 雪が降ってくる高さ
 	const int MAX_SNOW_RADIUS = 100;				// 最大雪の半径
-	const int MIN_SNOW_RADIUS = 20;				// 最低雪の半径
+	const int MIN_SNOW_RADIUS = 20;					// 最低雪の半径
 	const int SNOW_LIFE = 200;						// 雪のライフ
 	const float SNOW_MOVE_SPED = -10.0f;			// 雪の移動速度
 	const int MAX_SNOW_POS = 2200;					// 雪の最大生成場所
@@ -131,17 +131,6 @@ HRESULT CSelectMode::Init(void)
 
 	m_nSnowStormCnt = 0;
 	m_bStorm = false;
-
-	// 説明の生成
-	//m_pManual = CUI::Create();
-	//if (m_pManual != nullptr)
-	//{
-	//	// 説明の設定
-	//	m_pManual->SetIdxTexture(CTexture::GetInstance()->Regist(manual::PATH));	// テクスチャ割当
-	//	m_pManual->SetPosition(manual::POS);				// 位置
-	//	m_pManual->SetSize(manual::WIDTH, manual::HEIGHT);	// 大きさ
-	//	m_pManual->SetVtx();	// 頂点反映
-	//}
 
 	// モードボタンUI
 	for (int cnt = 0; cnt < MODE_MAX; cnt++)

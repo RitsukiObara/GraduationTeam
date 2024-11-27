@@ -25,6 +25,7 @@
 class CGame;
 class CLight;
 class CPause;
+class CGameManager;
 
 //*****************************************************
 // クラスの定義
@@ -92,6 +93,7 @@ private:
 	CStageResultUI* m_pStageResultUI;	// ステージクリアUI
 	CPause *m_pPause;					// ポーズのポインタ
 	E_GameMode m_GameMode;				// ゲームモード
+	CGameManager *m_pGameManager;		// ゲームマネージャー
 	int m_nNumEnemyMax;					// 敵の最大数
 
 	// 静的メンバ変数
