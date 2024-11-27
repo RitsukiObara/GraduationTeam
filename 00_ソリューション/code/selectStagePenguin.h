@@ -17,6 +17,7 @@
 //*****************************************************
 class CInputManager;
 class CCollisionSphere;
+class CIce;
 
 //*****************************************************
 // クラスの定義
@@ -47,10 +48,11 @@ private:
 	void Debug(void);	// デバッグ処理
 
 	// メンバ変数
-	D3DXVECTOR3 m_move;	// 移動量
-	CInputManager *m_pInputMgr;	// 入力マネージャー
+	D3DXVECTOR3 m_move;					// 移動量
+	CInputManager *m_pInputMgr;			// 入力マネージャー
 	CCollisionSphere *m_pClsnSphere;	// 球の判定
-	bool m_bInput;	// 入力可能フラグ
+	CIce *m_pIce;						// 足場の氷
+	bool m_bInput;						// 入力可能フラグ
 };
 
 #endif

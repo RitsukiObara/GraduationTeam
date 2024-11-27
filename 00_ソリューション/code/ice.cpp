@@ -596,11 +596,13 @@ void CIce::SetTransform(float fRadius)
 	m_pUp->SetVtx();
 
 	// サイドのシリンダーの設定
-	m_pSide->SetRadius(fRadius);
+	m_pSide->SetRadius(fRadius * 0.5f);
 	m_pSide->SetHeight(HEIGHT_ICE);
 	D3DXVECTOR3 posSide = posIce;
 	posSide.y -= HEIGHT_ICE;
 	m_pSide->SetPosition(posSide);
+
+	m_pSide->SetVtx();
 }
 
 //=====================================================
