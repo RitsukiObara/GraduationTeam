@@ -110,7 +110,7 @@ HRESULT CNPCPenguin::Init(void)
 	}
 
 	// âeÇÃê∂ê¨
-	m_pShadow = CShadow::Create();
+	m_pShadow = CShadow::Create(3);
 
 	return S_OK;
 }
