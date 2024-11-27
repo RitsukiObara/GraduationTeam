@@ -31,6 +31,7 @@ public:
 	void Update(void) override;
 	void Draw(void) override;
 	void SetPosition(D3DXVECTOR3 pos) override;	// 位置の設定
+	void SetJustPosition(D3DXVECTOR3 pos) { CPolygon3D::SetPosition(pos); };	// 位置の設定
 
 	// 静的メンバ関数
 	static CShadow *Create(int nPriority = 4);	// 生成処理

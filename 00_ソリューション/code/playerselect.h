@@ -24,6 +24,8 @@ class CPlayerSelect;
 class CUI;
 class CPlayer;
 class CInputManager;
+class CMeshCylinder;
+class CFan3D;
 
 //*****************************************************
 // クラスの定義
@@ -44,19 +46,19 @@ public:
 
 	virtual HRESULT Init(void);
 	virtual void Uninit(void);
-	virtual void Update();
-	virtual void Draw();
-
-	// 変数取得・設定関数
+	virtual void Update(void);
+	virtual void Draw(void);
 
 private:
 	// メンバ関数
-	void Input(void);	// 操作
+	void CreateMesh(void);			// メッシュの生成
 	void CreatePlayer(int nIdx);	// プレイヤーの生成
-	void Ready(int nIdx);	// 準備
-	void CheckStart(void);	// 開始するかの確認
-	void StartFade(void);	// フェードの開始
-	void Debug(void);
+	void Input(void);				// 操作
+	void LimitPlayerPos(void);		// プレイヤーの位置制限
+	void Ready(int nIdx);			// 準備
+	void CheckStart(void);			// 開始するかの確認
+	void StartFade(void);			// フェードの開始
+	void Debug(void);				// デバッグ処理
 
 	// メンバ変数
 	int m_nNumPlayer;	// プレイヤーの数
@@ -65,6 +67,8 @@ private:
 	CUI *m_apStateUI[MAX_PLAYER];	// プレイヤー用2Dオブジェクトのポインタ
 	CPlayer *m_apPlayer[MAX_PLAYER];// プレイヤーのポインタ
 	CInputManager *m_apInputMgr[MAX_PLAYER];	// 入力マネージャーの配列
+	CMeshCylinder *m_pCylinder;	// 側面のシリンダー
+	CFan3D *m_pFan;				// 上側の円ポリゴン
 
 	// 静的メンバ変数
 };
