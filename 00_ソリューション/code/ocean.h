@@ -60,10 +60,9 @@ private:
 	static COcean* m_pOcean;	// 自身のポインタ
 	int m_nRandKeep;	// ランダム関数の保存用
 	int m_nRandNextKeep;	// 次のランダム関数の保存用
-	int m_nSetRotTime;	// 向き変更をした時のタイマー時間
-	int m_nExecRotChangeTime;	// 向き変更をするまでのタイマー時間
+	float m_fProgressTime;	// 経過時間
+	float m_fRotChangeTime;	// 向き変更をするまでの時間
 	bool m_bRandState;	// ランダム変数の状態
-	bool m_bUse;	// アホウドリが使われているか
 	int m_nBgiceCnt;	// 背景の氷が呼び出されるカウント(左)
 };
 #endif

@@ -49,6 +49,9 @@ const float FACT_ROTATION_TURN = 0.2f;	// U‚èŒü‚«‰ñ“]ŒW”
 
 const float RANGE_ROT_FORWARD = D3DX_PI * 2 / CIceManager::E_Direction::DIRECTION_MAX;	// ‘Oi‚·‚é‚Ì‚É”»’f‚·‚éŠp“x
 
+const float DEATH_VIBRATION_POWER = 0.7f;	// Ž€–SŽž‚ÌU“®‹­‚³
+const int DEATH_VIBRATION_TIME = 30;			// Ž€–SŽž‚ÌU“®ŽžŠÔ
+
 //-------------------------------
 // ƒWƒƒƒ“ƒv‚Ì’è”
 //-------------------------------
@@ -1204,6 +1207,11 @@ void CPlayer::Hit(float fDamage)
 		m_state == E_State::STATE_INVINCIBLE)
 		return;	// ðŒ‚É‚æ‚Á‚ÄHitˆ—‚ð–³Œø‰»
 
+	CInputJoypad* pInputJoypad = CInputJoypad::GetInstance();
+
+	if (pInputJoypad == nullptr)
+		return;
+
 	// Ž€–Só‘Ô‚É‚·‚é
 	m_state = E_State::STATE_DEATH;
 
@@ -1214,6 +1222,9 @@ void CPlayer::Hit(float fDamage)
 
 	// ‘€ì‰Â”\ƒtƒ‰ƒO‚ðÜ‚é
 	m_bEnableInput = false;
+
+	// joypadU“®‚³‚¹‚é
+	pInputJoypad->Vibration(m_nID, CInputJoypad::PADVIB_USE, DEATH_VIBRATION_POWER, DEATH_VIBRATION_TIME);
 
 	// ƒyƒ“ƒMƒ“‚Ì–Â‚«º
 	CSound::GetInstance()->Play(CSound::LABEL_SE_PENGUIN_VOICE00);
