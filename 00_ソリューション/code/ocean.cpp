@@ -29,22 +29,23 @@
 //*****************************************************
 namespace
 {
-	const int OCEAN_ROT_CHANGE_TIME_DEFAULT = 10;	// ƒfƒtƒHƒ‹ƒg‚ÌŠC—¬Œü‚«•ÏXŽžŠÔ
-	const int OCEAN_ROT_CHANGE_TIME_DEGREE = 10;	// ŠC—¬Œü‚«•ÏXŽžŠÔ‚Ô‚ê•
-	const float FLOW_LEVEL_MULTIPLY = 0.008f;		// ŠC—¬‚Ì‘¬“x‚Ì”{—¦
-	const int MAX_ALBATROSS = 2;					// ƒAƒzƒEƒhƒŠÅ‘å”
-	const int MAX_RANGE_LEFT = -1800;				// ƒ‰ƒ“ƒ_ƒ€ƒŒƒ“ƒW¶Å‘å”
-	const int MAX_RANGE_RIGHT = 1500;				// ƒ‰ƒ“ƒ_ƒ€ƒŒƒ“ƒW‰EÅ‘å”
-	const int MAX_RANGE_UP = 1200;					// ƒ‰ƒ“ƒ_ƒ€ƒŒƒ“ƒWãÅ‘å”
-	const int MAX_RANGE_DOWN = -1500;				// ƒ‰ƒ“ƒ_ƒ€ƒŒƒ“ƒW‰ºÅ‘å”
-	const float Z_UP = 1500.0f;						// Z•ûŒüã•ûŒü
-	const float Z_DOWN = -1500.0f;					// Z•ûŒü‰º•ûŒü
-	const float X_LEFT = -2500.0f;					// X•ûŒüã•ûŒü
-	const float X_RIGHT = 2500.0f;					// X•ûŒü‰º•ûŒü
-	const int BGICE_CREATE_CNT_L = 200;				// ”wŒi•X‚ª¶¬‚³‚ê‚é•b(¶)
-	const int BGICE_CREATE_CNT_R = 200;				// ”wŒi•X‚ª¶¬‚³‚ê‚é•b(‰E)
-	const int BGICE_CREATE_CNT_UP = 200;			// ”wŒi•X‚ª¶¬‚³‚ê‚é•b(ã)
-	const int BGICE_CREATE_CNT_DOWN = 200;			// ”wŒi•X‚ª¶¬‚³‚ê‚é•b(‰º)
+	const float OCEAN_ROT_CHANGE_TIME_DEFAULT = 10.0f;	// ƒfƒtƒHƒ‹ƒg‚ÌŠC—¬Œü‚«•ÏXŽžŠÔ
+	const int OCEAN_ROT_CHANGE_TIME_DEGREE = 10;		// ŠC—¬Œü‚«•ÏXŽžŠÔ‚Ô‚ê•
+	const float FLOW_LEVEL_MULTIPLY = 0.008f;			// ŠC—¬‚Ì‘¬“x‚Ì”{—¦
+	const float ALBATROSS_SPAWN_TIME = 3.0f;			// ƒAƒzƒEƒhƒŠoŒ»ŽžŠÔ
+	const int MAX_ALBATROSS = 2;						// ƒAƒzƒEƒhƒŠÅ‘å”
+	const int MAX_RANGE_LEFT = -1800;					// ƒ‰ƒ“ƒ_ƒ€ƒŒƒ“ƒW¶Å‘å”
+	const int MAX_RANGE_RIGHT = 1500;					// ƒ‰ƒ“ƒ_ƒ€ƒŒƒ“ƒW‰EÅ‘å”
+	const int MAX_RANGE_UP = 1200;						// ƒ‰ƒ“ƒ_ƒ€ƒŒƒ“ƒWãÅ‘å”
+	const int MAX_RANGE_DOWN = -1500;					// ƒ‰ƒ“ƒ_ƒ€ƒŒƒ“ƒW‰ºÅ‘å”
+	const float Z_UP = 1500.0f;							// Z•ûŒüã•ûŒü
+	const float Z_DOWN = -1500.0f;						// Z•ûŒü‰º•ûŒü
+	const float X_LEFT = -2500.0f;						// X•ûŒüã•ûŒü
+	const float X_RIGHT = 2500.0f;						// X•ûŒü‰º•ûŒü
+	const int BGICE_CREATE_CNT_L = 200;					// ”wŒi•X‚ª¶¬‚³‚ê‚é•b(¶)
+	const int BGICE_CREATE_CNT_R = 200;					// ”wŒi•X‚ª¶¬‚³‚ê‚é•b(‰E)
+	const int BGICE_CREATE_CNT_UP = 200;				// ”wŒi•X‚ª¶¬‚³‚ê‚é•b(ã)
+	const int BGICE_CREATE_CNT_DOWN = 200;				// ”wŒi•X‚ª¶¬‚³‚ê‚é•b(‰º)
 }
 
 //*****************************************************
@@ -62,8 +63,8 @@ COcean::COcean(int nPriority) : CMeshField(nPriority)
 	m_nRandNextKeep = 0;
 	m_bRandState = false;
 	m_fRot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_nSetRotTime = 0;
-	m_nExecRotChangeTime = 0;
+	m_fProgressTime = 0.0f;
+	m_fRotChangeTime = 0.0f;
 	m_nBgiceCnt = 0;
 }
 
@@ -181,8 +182,8 @@ void COcean::SetNextOceanRot(void)
 	} while (m_nRandKeep == m_nRandNextKeep);	// ŽŸ‚ÌŒü‚«‚ª•Ï‚í‚é‚Ü‚Å—”‚ð‰ñ‚·
 
 	// •ÏXŽžŠÔÝ’è
-	m_nExecRotChangeTime = OCEAN_ROT_CHANGE_TIME_DEFAULT + universal::RandRange(OCEAN_ROT_CHANGE_TIME_DEGREE, 0);
-	m_nSetRotTime = pGame->GetTimeSecond();	 // Œ»Ý‚Ìƒ^ƒCƒ€‚ðŽæ“¾
+	m_fRotChangeTime = OCEAN_ROT_CHANGE_TIME_DEFAULT + (float)universal::RandRange(OCEAN_ROT_CHANGE_TIME_DEGREE, 0);
+	m_fProgressTime = 0.0f;
 }
 
 //====================================================
@@ -190,18 +191,18 @@ void COcean::SetNextOceanRot(void)
 //====================================================
 void COcean::OceanChangeCheck(void)
 {
+	CManager* pManager = CManager::GetInstance();
 	COcean* pOcean = COcean::GetInstance();
 	CIceManager* pIceManager = CIceManager::GetInstance();
 	CGame* pGame = CGame::GetInstance();
 
-	if (pOcean == nullptr || pIceManager == nullptr || pGame == nullptr)
+	if (pManager == nullptr || pOcean == nullptr || pIceManager == nullptr || pGame == nullptr)
 		return;
 
 	COcean::E_Stream OceanFlow = pIceManager->GetDirStreamNext();
 
-	int nNowTime = pGame->GetTimeSecond();	 // Œ»Ý‚Ìƒ^ƒCƒ€‚ðŽæ“¾
-
-	if (m_nSetRotTime - nNowTime >= m_nExecRotChangeTime)
+	m_fProgressTime += pManager->GetDeltaTime();
+	if (m_fProgressTime >= m_fRotChangeTime)
 	{// •ÏXŽžŠÔ‚É‚È‚Á‚½
 		pOcean->SetOceanSpeedState(COcean::OCEAN_STATE_DOWN);	// ŠC—¬‚Ì‘¬“x‚ð‰º‚°‚é
 		pIceManager->SetDirStreamNext((COcean::E_Stream)(m_nRandNextKeep));	// ŠC—¬‚ÌŒü‚«‚ðƒ‰ƒ“ƒ_ƒ€‚É‚·‚é
@@ -210,7 +211,7 @@ void COcean::OceanChangeCheck(void)
 		m_bRandState = false;	// ƒ‰ƒ“ƒ_ƒ€‚Ìó‘Ô‚ð false ‚É‚·‚é
 	}
 
-	if (m_nSetRotTime - nNowTime + 3 == m_nExecRotChangeTime)
+	if (m_fProgressTime >= m_fRotChangeTime - ALBATROSS_SPAWN_TIME)
 	{
 		if (m_bRandState == false)
 		{
