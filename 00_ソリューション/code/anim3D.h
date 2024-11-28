@@ -29,6 +29,11 @@ public:
 	void Draw(void);
 	void RandStart(void);	// アニメーションのスタートをランダムにする処理
 
+	// 変数取得・設定関数
+	void SetNumAnim(int nAnim) { m_nNumAnim = nAnim; }			// アニメーション数
+	void SetSpeedAnim(int nSpeed) { m_nSpeedAnim = nSpeed; }	// アニメーション速度
+	void EnableLoop(bool bLoop) { m_bLoop = bLoop; }			// ループフラグ
+
 private:
 	void SetAnim(int nAnim, int nNumAnim);
 

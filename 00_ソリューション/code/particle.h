@@ -21,21 +21,22 @@ class CParticle : public CObject
 public:
 	typedef enum
 	{
-		TYPE_NONE = 0,	// 何でもない
-		TYPE_RUN,	// 疾走
-		TYPE_RESULTSMOKE,	// リザルトの煙
-		TYPE_ICEBREAK,	// 氷破壊時
-		TYPE_HITENEMY,	// 敵と当たったときのパーティクル
-		TYPE_PECKHARDICE,	// 硬い氷を叩いた時のパーティクル
-		TYPE_REPAIRICE,	// 氷の修復するときのパーティクル
-		TYPE_DROP,	// 水しぶき
-		TYPE_BUBBLE_SINK,	// 沈むときの泡
-		TYPE_ENTER_MAP,	// マップに入ったときのエフェクト
-		TYPE_STAR_HIT,	// ヒット時の星パーティクル
-		TYPE_STICK_ICE,	// 氷がくっつく時のパーティクル
-		TYPE_SNOW_STORM,// 雪が舞ったときのパーティクル
+		TYPE_NONE = 0,			// 何でもない
+		TYPE_RUN,				// 疾走
+		TYPE_RESULTSMOKE,		// リザルトの煙
+		TYPE_ICEBREAK,			// 氷破壊時
+		TYPE_HITENEMY,			// 敵と当たったときのパーティクル
+		TYPE_PECKHARDICE,		// 硬い氷を叩いた時のパーティクル
+		TYPE_REPAIRICE,			// 氷の修復するときのパーティクル
+		TYPE_DROP,				// 水しぶき
+		TYPE_BUBBLE_SINK,		// 沈むときの泡
+		TYPE_ENTER_MAP,			// マップに入ったときのエフェクト
+		TYPE_STAR_HIT,			// ヒット時の星パーティクル
+		TYPE_STICK_ICE,			// 氷がくっつく時のパーティクル
+		TYPE_SNOW_STORM,		// 雪が舞ったときのパーティクル
 		TYPE_STAGESELECT_SNOW,	// ステージセレクトの雪の軌道
-		TYPE_LAND,	// 敵が氷に着地するときのパーティクル
+		TYPE_LAND,				// 敵が氷に着地するときのパーティクル
+		TYPE_ENTERPLAYER,		// プレイヤーエンター時のパーティクル
 		TYPE_MAX
 	}TYPE;
 

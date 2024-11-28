@@ -12,13 +12,14 @@
 #include "texture.h"
 #include "manager.h"
 #include "iceManager.h"
+#include "enemy.h"
 
 //*****************************************************
 // マクロ定義
 //*****************************************************
 namespace
 {
-const char* PATH_TEX = "data\\TEXTURE\\enemy\\Fish_shadow.png";	// テクスチャパス
+const char* PATH_TEX = "data\\TEXTURE\\enemy\\FishShadow.png";	// テクスチャパス
 const float TIME_FADEIN = 1.0f;									// フェードインにかかる時間
 const float TIME_FADEOUT = 2.0f;								// フェードアウトにかかる時間
 const D3DXCOLOR COL_INIT = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f);	// 初期色
@@ -26,12 +27,21 @@ const float WIDTH = 70.0f;										// 幅
 const float HEIGHT = 140.0f;									// 高さ
 const float DIST_APPER = 500.0f;								// 出現する距離
 const float RATE_DEST = 0.7f;									// 目標位置の割合
+
+//-----------------------------------
+// アニメーションの定数定義
+//-----------------------------------
+namespace anim
+{
+const int PATERN_ANIM = 5;	// アニメーションパターン
+const int FRAME_ANIM = 5;	// アニメーションが切り替わるフレーム数
+}
 }
 
 //====================================================
 // コンストラクタ
 //====================================================
-CFishShadow::CFishShadow(int nPriority) : CPolygon3D(nPriority), m_fTimerFade(0.0f) ,m_fTimerVanish(0.0f)
+CFishShadow::CFishShadow(int nPriority) : CAnim3D(nPriority), m_fTimerFade(0.0f) ,m_fTimerVanish(0.0f)
 {
 
 }
@@ -68,7 +78,7 @@ CFishShadow* CFishShadow::Create(int nPatern)
 HRESULT CFishShadow::Init(void)
 {
 	// 継承クラスの初期化
-	CPolygon3D::Init();
+	CAnim3D::Init();
 
 	// テクスチャ設定
 	int nIdxTexture = Texture::GetIdx(&PATH_TEX[0]);
@@ -82,6 +92,11 @@ HRESULT CFishShadow::Init(void)
 
 	// サイズ設定
 	SetSize(WIDTH, HEIGHT);
+
+	// アニメーション設定
+	SetNumAnim(anim::PATERN_ANIM);
+	SetSpeedAnim(anim::FRAME_ANIM);
+	EnableLoop(true);
 
 	return S_OK;
 }
@@ -150,7 +165,7 @@ void CFishShadow::InitSpawn(int nPatern)
 void CFishShadow::Uninit(void)
 {
 	// 継承クラスの終了
-	CPolygon3D::Uninit();
+	CAnim3D::Uninit();
 }
 
 //====================================================
@@ -159,7 +174,7 @@ void CFishShadow::Uninit(void)
 void CFishShadow::Update(void)
 {
 	// 継承クラスの更新
-	CPolygon3D::Update();
+	CAnim3D::Update();
 
 	if (m_fTimerVanish >= fishshadow::TIME_VANISH)
 	{
@@ -231,5 +246,5 @@ void CFishShadow::Move(void)
 void CFishShadow::Draw(void)
 {
 	// 継承クラスの描画
-	CPolygon3D::Draw();
+	CAnim3D::Draw();
 }

@@ -388,7 +388,7 @@ void CPlayerSelect::CreatePlayer(int nIdx)
 		pInputJoypad->Vibration(nIdx, CInputJoypad::PADVIB_USE, 0.6f, 15);
 
 		// パーティクルの発生
-		CParticle::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), CParticle::TYPE::TYPE_ICEBREAK);
+		CParticle::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), CParticle::TYPE::TYPE_ENTERPLAYER);
 	}
 
 	m_nNumPlayer++;
