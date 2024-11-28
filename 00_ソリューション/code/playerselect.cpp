@@ -26,6 +26,7 @@
 #include "meshcylinder.h"
 #include "fan3D.h"
 #include "particle.h"
+#include "inputjoypad.h"
 
 //*****************************************************
 // 定数定義
@@ -244,6 +245,7 @@ void CPlayerSelect::Input(void)
 		if (m_apPlayer[i] != nullptr &&
 			m_apInputMgr[i]->GetTrigger(CInputManager::E_Button::BUTTON_READY))
 			Ready(i);	// 準備
+
 	}
 }
 
@@ -304,6 +306,11 @@ void CPlayerSelect::CreatePlayer(int nIdx)
 	if (m_apPlayer[nIdx] != nullptr)
 		return;	// 枠が埋まってたら処理を通らない
 
+	CInputJoypad* pInputJoypad = CInputJoypad::GetInstance();
+
+	if (pInputJoypad == nullptr)
+		return;
+
 	// テクスチャ変更
 	int nIdxTexture = Texture::GetIdx(&PATH_UI_STANDBY[0]);
 	if(m_apStateUI[nIdx] != nullptr)
@@ -329,6 +336,9 @@ void CPlayerSelect::CreatePlayer(int nIdx)
 		m_apPlayer[nIdx]->SetID(nIdx);
 
 		m_apPlayer[nIdx]->SetMotion(CPlayer::MOTION::MOTION_MULTIAPPEAR);
+
+		// joypad振動させる
+		pInputJoypad->Vibration(nIdx, CInputJoypad::PADVIB_USE, 0.6f, 15);
 
 		// パーティクルの発生
 		CParticle::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), CParticle::TYPE::TYPE_ICEBREAK);
