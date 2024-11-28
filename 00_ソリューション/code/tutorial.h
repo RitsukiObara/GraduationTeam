@@ -37,6 +37,7 @@ public:
 		STATE_EXPLAIN_BREAK,	// 破壊説明
 		STATE_JUMP,				// ジャンプ
 		STATE_EXPLAIN_ENEMY,	// 敵説明
+		STATE_ALBATROSS,		// アホウドリ
 		STATE_END,				// 終了状態
 		STATE_MAX
 	};

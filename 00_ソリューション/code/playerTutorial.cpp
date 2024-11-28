@@ -121,6 +121,9 @@ void CPlayerTutorial::ReadExplain(void)
 	if (pInputMgr == nullptr)
 		return;
 
+	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_ENTER))
+		AddProgress(CTutorial::E_State::STATE_ALBATROSS);
+
 	if(pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_ENTER))
 		AddProgress(CTutorial::E_State::STATE_EXPLAIN_BREAK);
 
