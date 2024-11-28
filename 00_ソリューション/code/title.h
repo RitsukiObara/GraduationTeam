@@ -73,6 +73,7 @@ private:
 	int m_nCntState;	// カウントの状態
 	int m_nCntMove;	// UIの移動カウント
 	int m_nCntFade;	// カウントの状態
+	int m_nStateLogo;	// スタートロゴカウント
 	bool m_bFade; // フェイド
 	bool m_bMove; // 移動
 	STATE m_State;				// 状態
