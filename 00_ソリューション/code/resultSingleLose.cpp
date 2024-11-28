@@ -269,8 +269,8 @@ void CResultSingleLose::Fade(E_Select select)
 	case CResultSingleLose::E_Select::SELECT_CONTINUE:	// コンティニュー
 		pFade->SetFade(CScene::MODE::MODE_GAME);
 		break;
-	case CResultSingleLose::E_Select::SELECT_QUIT:		// タイトルに戻る
-		pFade->SetFade(CScene::MODE::MODE_TITLE);
+	case CResultSingleLose::E_Select::SELECT_QUIT:		// ステージセレクトに戻る
+		pFade->SetFade(CScene::MODE::MODE_SELECTSTAGE);
 		break;
 	default:
 		break;
