@@ -29,6 +29,8 @@
 #include "inputjoypad.h"
 #include "collision.h"
 #include "shadow.h"
+#include "polygon3D.h"
+#include "texture.h"
 
 //*****************************************************
 // 定数定義
@@ -41,6 +43,7 @@ const float HEIGHT_UI_PLAYERNUMBER = 0.8f;	// プレイヤーナンバーUIの位置の高さ
 const string PATH_UI_STANDBY = "data\\TEXTURE\\UI\\standby.png";	// スタンドバイテクスチャのパス
 const string PATH_UI_READY = "data\\TEXTURE\\UI\\ready.png";	// 準備完了テクスチャのパス
 const string PATH_BANNER = "data\\MODEL\\other\\entry_banner.x";	// 看板のモデルパス
+const string PATH_PLAYERNUM = "data\\TEXTURE\\UI\\player_Count.png";	// プレイヤー番号テクスチャパス
 const D3DXVECTOR3 BANNER_POS = D3DXVECTOR3(0.0f, 0.0f, 500.0f);	// 看板の初期の位置
 const D3DXVECTOR3 BANNER_ROT = D3DXVECTOR3(0.1f, 0.0f, 0.07f);		// 看板の初期の向き
 const float BANNER_SCALE = 6.5f;	// 看板のサイズ
@@ -48,6 +51,9 @@ const float BANNER_COLLISION_SIZE = 20.0f;
 
 const D3DXVECTOR3 INIT_MOVE_PLAYER = D3DXVECTOR3(0.0f, 30.0f, 0.0f);	// プレイヤーの初期の移動量
 const D3DXVECTOR3 POS_PLAYER_INIT = D3DXVECTOR3(0.0f, -200.0f, 0.0f);		// プレイヤーの初期の位置
+
+const float PLAYERNUM_SIZE = 80.0f;
+const float PLAYERNUM_POS_Y = 250.0f;
 
 const float GRAVITY = 0.6f;	// 重力
 
@@ -80,6 +86,7 @@ CPlayerSelect::CPlayerSelect()
 	ZeroMemory(&m_apPlayerUI[0], sizeof(m_apPlayerUI));
 	ZeroMemory(&m_apPlayer[0], sizeof(m_apPlayer));
 	ZeroMemory(&m_apInputMgr[0], sizeof(m_apInputMgr));
+	ZeroMemory(&m_apBillboard[0], sizeof(m_apBillboard));
 	m_pCylinder = nullptr;
 	m_pFan = nullptr;
 	m_pCollisionSphere = nullptr;
@@ -228,6 +235,11 @@ void CPlayerSelect::Uninit(void)
 			m_apPlayer[nCount]->Uninit();
 			m_apPlayer[nCount] = nullptr;
 		}
+		if (m_apBillboard[nCount] != nullptr)
+		{
+			m_apBillboard[nCount]->Uninit();
+			m_apBillboard[nCount] = nullptr;
+		}
 	}
 
 	// オブジェクト全棄
@@ -258,6 +270,9 @@ void CPlayerSelect::Update(void)
 
 	// 開始するかの確認
 	CheckStart();
+
+	// プレイヤー番号ビルボード位置更新
+	UpdateBillboard();
 	
 #ifdef _DEBUG
 	Debug();
@@ -382,6 +397,24 @@ void CPlayerSelect::CreatePlayer(int nIdx)
 		// プレイヤーIDの割り当て
 		m_apPlayer[nIdx]->SetID(nIdx);
 
+		// 頭にビルボード配置
+		m_apBillboard[nIdx] = CPolygon3D::Create(D3DXVECTOR3(POS_PLAYER_INIT.x,POS_PLAYER_INIT.y + PLAYERNUM_POS_Y, POS_PLAYER_INIT.z));
+		if (m_apBillboard[nIdx] != nullptr)
+		{
+			m_apBillboard[nIdx]->SetMode(CPolygon3D::MODE_BILLBOARD);
+			m_apBillboard[nIdx]->SetSize(PLAYERNUM_SIZE, PLAYERNUM_SIZE);
+			m_apBillboard[nIdx]->SetTex(D3DXVECTOR2((float)(nIdx + 1) / MAX_PLAYER, 1.0f), D3DXVECTOR2((float)(nIdx) / MAX_PLAYER, 0.0f));
+
+			CTexture* pTexture = CTexture::GetInstance();
+			if (pTexture != nullptr)
+			{
+				m_apBillboard[nIdx]->SetIdxTexture(pTexture->Regist(&PATH_PLAYERNUM[0]));
+			}
+			
+			m_apBillboard[nIdx]->SetVtx();
+		}
+
+		// モーション設定
 		m_apPlayer[nIdx]->SetMotion(CPlayer::MOTION::MOTION_MULTIAPPEAR);
 
 		// joypad振動させる
@@ -450,6 +483,22 @@ void CPlayerSelect::StartFade(void)
 
 	// ゲームに遷移
 	pFade->SetFade(CScene::MODE_SELECTSTAGE);
+}
+
+//=====================================================
+// プレイヤー番号ビルボード位置更新
+//=====================================================
+void CPlayerSelect::UpdateBillboard(void)
+{
+	for (int cnt = 0; cnt < MAX_PLAYER; cnt++)
+	{
+		if (m_apBillboard[cnt] != nullptr)
+		{
+			D3DXVECTOR3 pos = m_apPlayer[cnt]->GetPosition();
+			m_apBillboard[cnt]->SetPosition(D3DXVECTOR3(pos.x, pos.y + PLAYERNUM_POS_Y, pos.z));
+			m_apBillboard[cnt]->SetVtx();
+		}
+	}
 }
 
 //=====================================================

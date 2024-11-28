@@ -13,6 +13,7 @@
 #include "manager.h"
 #include "renderer.h"
 #include "polygon2D.h"
+#include "sound.h"
 
 //*****************************************************
 // マクロ定義
@@ -147,6 +148,9 @@ void CFade_FallIce::Update(void)
 				m_nCounterFrame = 0;
 				m_nCounterPattern++;
 
+				// 決定音を鳴らす
+				CSound::GetInstance()->Play(CSound::LABEL_SE_TITLE_FADE);
+
 				// 次の氷出す
 				LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();	// デバイスの取得
 				LPDIRECT3DVERTEXBUFFER9 pVtxBuff = nullptr;
@@ -233,6 +237,9 @@ void CFade_FallIce::Update(void)
 				// カウンタ設定
 				m_nCounterFrame = 0;
 				m_nCounterPattern++;
+
+				// 決定音を鳴らす
+				CSound::GetInstance()->Play(CSound::LABEL_SE_TITLE_FADE);
 
 				// 氷削除（後々落下）
 				if (m_icePolygon[m_nCounterPattern] != nullptr)
