@@ -33,7 +33,7 @@ namespace
 	const int OCEAN_ROT_CHANGE_TIME_DEGREE = 10;		// 海流向き変更時間ぶれ幅
 	const float FLOW_LEVEL_MULTIPLY = 0.008f;			// 海流の速度の倍率
 	const float ALBATROSS_SPAWN_TIME = 3.0f;			// アホウドリ出現時間
-	const int MAX_ALBATROSS = 2;						// アホウドリ最大数
+	const int MAX_ALBATROSS = 1;						// アホウドリ最大数
 	const int MAX_RANGE_LEFT = -1800;					// ランダムレンジ左最大数
 	const int MAX_RANGE_RIGHT = 1500;					// ランダムレンジ右最大数
 	const int MAX_RANGE_UP = 1200;						// ランダムレンジ上最大数

@@ -3314,7 +3314,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.350000;0.350000;0.350000;;
    TextureFilename {
-    "data\\TEXTURE\\MATERIAL\\selectstage_bannner_wood.jpg";
+    "data\\TEXTURE\\MATERIAL\\bannner_wood.jpg";
    }
   }
   Material {
