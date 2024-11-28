@@ -664,6 +664,9 @@ bool CPlayer::CheckGridChange(void)
 		return false;
 	}
 
+	if (pIce == nullptr)
+		return false;
+
 	if (pIce->IsPeck())
 		return false;
 
