@@ -19,7 +19,7 @@
 class CEffect2D : public CPolygon2D
 {
 public:
-	CEffect2D(int nPriority = 5);	// コンストラクタ
+	CEffect2D(int nPriority = 7);	// コンストラクタ
 	~CEffect2D();	// デストラクタ
 
 	static CEffect2D *Create(D3DXVECTOR3 pos,  float fRadius, int nLife, D3DXCOLOR col, D3DXVECTOR3 move = { 0.0f,0.0f,0.0f });
