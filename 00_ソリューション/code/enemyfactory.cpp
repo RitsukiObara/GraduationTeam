@@ -168,6 +168,9 @@ void CEnemyFct::Uninit(void)
 //=====================================================
 void CEnemyFct::Update(void)
 {
+	if (CGame::GetState() != CGame::E_State::STATE_NORMAL)
+		return;
+
 	// Œo‰ßŽžŠÔ‰ÁŽZ
 	float fTimeOld = m_fTimerSpawn;
 	m_fTimerSpawn += CManager::GetDeltaTime();

@@ -13,6 +13,7 @@
 #include "manager.h"
 #include "iceManager.h"
 #include "enemy.h"
+#include "particle.h"
 
 //*****************************************************
 // マクロ定義
@@ -28,6 +29,8 @@ const float HEIGHT = 140.0f;									// 高さ
 const float DIST_APPER = 500.0f;								// 出現する距離
 const float RATE_DEST = 0.7f;									// 目標位置の割合
 
+const int FRAME_BUBBLE = 5;										// 泡を出す頻度
+
 //-----------------------------------
 // アニメーションの定数定義
 //-----------------------------------
@@ -41,7 +44,7 @@ const int FRAME_ANIM = 5;	// アニメーションが切り替わるフレーム数
 //====================================================
 // コンストラクタ
 //====================================================
-CFishShadow::CFishShadow(int nPriority) : CAnim3D(nPriority), m_fTimerFade(0.0f) ,m_fTimerVanish(0.0f)
+CFishShadow::CFishShadow(int nPriority) : CAnim3D(nPriority), m_fTimerVanish(0.0f), m_nCntBubble(0)
 {
 
 }
@@ -91,7 +94,7 @@ HRESULT CFishShadow::Init(void)
 	SetColor(COL_INIT);
 
 	// サイズ設定
-	SetSize(WIDTH, HEIGHT);
+	SetSize(0.0f, 0.0f);
 
 	// アニメーション設定
 	SetNumAnim(anim::PATERN_ANIM);
@@ -189,11 +192,19 @@ void CFishShadow::Update(void)
 		UpdateFadeIn();
 	else if (m_fTimerVanish >= fishshadow::TIME_VANISH - TIME_FADEOUT)	// フェードアウト状態
 		UpdateFadeOut();
-	else
-		m_fTimerFade = 0.0f;	// タイマーリセット
 
 	// 移動処理
 	Move();
+
+	m_nCntBubble++;
+
+	if (m_nCntBubble == FRAME_BUBBLE)
+	{
+		// パーティクルを出す
+		CParticle::Create(GetPosition(), CParticle::TYPE::TYPE_BUBBLE_SINK);
+
+		m_nCntBubble = 0;
+	}
 }
 
 //====================================================
@@ -238,6 +249,9 @@ void CFishShadow::Move(void)
 	D3DXVECTOR3 pos = m_posInit + vecDiff * fRate;
 
 	SetPosition(pos);
+
+	// サイズ設定
+	SetSize(WIDTH * fRate,HEIGHT * fRate);
 }
 
 //====================================================

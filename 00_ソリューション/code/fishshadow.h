@@ -17,7 +17,7 @@
 //*****************************************************
 namespace fishshadow
 {
-const float TIME_VANISH = 3.0f;								// 消滅までの時間
+const float TIME_VANISH = 6.0f;								// 消滅までの時間
 const float DELAY_AFTER_VANISH = 0.6f;						// 影が消えた後のディレイ
 const float TIME_APPER = DELAY_AFTER_VANISH + TIME_VANISH;	// 魚影が出る時間
 }
@@ -47,8 +47,8 @@ private:
 	void Move(void);				// 移動処理
 
 	// メンバ変数
-	float m_fTimerFade;		// フェードのタイマー
 	float m_fTimerVanish;	// 消えるまでのタイマー
+	int m_nCntBubble;		// 泡カウンター
 	D3DXVECTOR3 m_posInit;	// 初期位置
 	D3DXVECTOR3 m_posDest;	// 目標位置
 };
