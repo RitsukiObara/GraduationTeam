@@ -52,6 +52,9 @@ const float RANGE_ROT_FORWARD = D3DX_PI * 2 / CIceManager::E_Direction::DIRECTIO
 const float DEATH_VIBRATION_POWER = 0.7f;	// Ž€–SŽž‚ÌU“®‹­‚³
 const int DEATH_VIBRATION_TIME = 30;			// Ž€–SŽž‚ÌU“®ŽžŠÔ
 
+const float PECK_VIBRATION_POWER = 0.5f;	// Š„‚éŽž‚ÌU“®‹­‚³
+const int PECK_VIBRATION_TIME = 10;			// Š„‚éŽž‚ÌU“®ŽžŠÔ
+
 //-------------------------------
 // ƒWƒƒƒ“ƒv‚Ì’è”
 //-------------------------------
@@ -908,6 +911,11 @@ bool CPlayer::Peck(void)
 	if (pIceManager == nullptr)
 		return false;
 
+	CInputJoypad* pInputJoypad = CInputJoypad::GetInstance();
+
+	if (pInputJoypad == nullptr)
+		return false;
+
 	// “Ë‚Á‚Â‚­ˆ—
 	D3DXVECTOR3 rot = GetRotation();
 	D3DXVECTOR3 pos = GetPosition();
@@ -919,6 +927,9 @@ bool CPlayer::Peck(void)
 
 	if (pIceManager->PeckIce(m_nGridV, m_nGridH, rot.y, pos,&bResultBreak))
 		m_nTimePeck++;
+
+	// joypadU“®‚³‚¹‚é
+	pInputJoypad->Vibration(m_nID, CInputJoypad::PADVIB_USE, PECK_VIBRATION_POWER, PECK_VIBRATION_TIME);
 
 	return bResultBreak;
 }
