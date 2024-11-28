@@ -49,6 +49,9 @@ const float FACT_ROTATION_TURN = 0.2f;	// U‚èŒü‚«‰ñ“]ŒW”
 
 const float RANGE_ROT_FORWARD = D3DX_PI * 2 / CIceManager::E_Direction::DIRECTION_MAX;	// ‘Oi‚·‚é‚Ì‚É”»’f‚·‚éŠp“x
 
+const float DEATH_VIBRATION_POWER = 0.7f;	// Ž€–SŽž‚ÌU“®‹­‚³
+const int DEATH_VIBRATION_TIME = 30;			// Ž€–SŽž‚ÌU“®ŽžŠÔ
+
 //-------------------------------
 // ƒWƒƒƒ“ƒv‚Ì’è”
 //-------------------------------
@@ -655,6 +658,11 @@ bool CPlayer::CheckGridChange(void)
 
 	if (m_state != E_State::STATE_INVINCIBLE && pIce == nullptr)
 	{// –³“Gó‘Ô‚Å‚È‚¢ê‡A•X‚ª‚È‚¢ƒOƒŠƒbƒh‚Ìã‚És‚Á‚Ä‚à”Ô†‚ð•Ï‚¦‚È‚¢
+
+		int nTemp;	// ‚»‚Ìê‚É•X‚ª–³‚©‚Á‚½‚çŽž‚Ì‚Ý•Y—¬
+		if (!pIceMgr->GetIdxGridFromPosition(GetPosition(), &nTemp, &nTemp))
+			return false;
+
 		// •Y—¬‚ðŠJŽn
 		StartFlows();
 
@@ -704,6 +712,10 @@ bool CPlayer::FindFlowIce(void)
 	if (pIceMgr == nullptr)
 		return false;
 
+	int nTemp;	// ‚»‚Ìê‚É•X‚ª–³‚©‚Á‚½‚çŽž‚Ì‚Ý•Y—¬
+	if (!pIceMgr->GetIdxGridFromPosition(GetPosition(), &nTemp, &nTemp, 1.0f))
+		return false;
+
 	vector<CFlowIce*> apSystemFlow = CFlowIce::GetInstance();
 
 	for (auto itSystem : apSystemFlow)
@@ -719,7 +731,7 @@ bool CPlayer::FindFlowIce(void)
 			D3DXVECTOR3 posPlayer = GetPosition();
 			D3DXVECTOR3 posIce = itIce->GetPosition();
 
-			if (pIceMgr->IsInIce(posPlayer, itIce, 1.0f))
+			if (pIceMgr->IsInIce(posPlayer, itIce, 0.7f))
 			{// ‚Ç‚ê‚©‚Éæ‚Á‚Ä‚¢‚½‚çŒ»Ý‚ÌƒVƒXƒeƒ€‚ð•Û‘¶‚µ‚ÄŠÖ”‚ðI—¹
 				m_pLandSystemFlow = itSystem;
 
@@ -1195,6 +1207,11 @@ void CPlayer::Hit(float fDamage)
 		m_state == E_State::STATE_INVINCIBLE)
 		return;	// ðŒ‚É‚æ‚Á‚ÄHitˆ—‚ð–³Œø‰»
 
+	CInputJoypad* pInputJoypad = CInputJoypad::GetInstance();
+
+	if (pInputJoypad == nullptr)
+		return;
+
 	// Ž€–Só‘Ô‚É‚·‚é
 	m_state = E_State::STATE_DEATH;
 
@@ -1205,6 +1222,9 @@ void CPlayer::Hit(float fDamage)
 
 	// ‘€ì‰Â”\ƒtƒ‰ƒO‚ðÜ‚é
 	m_bEnableInput = false;
+
+	// joypadU“®‚³‚¹‚é
+	pInputJoypad->Vibration(m_nID, CInputJoypad::PADVIB_USE, DEATH_VIBRATION_POWER, DEATH_VIBRATION_TIME);
 
 	// ƒyƒ“ƒMƒ“‚Ì–Â‚«º
 	CSound::GetInstance()->Play(CSound::LABEL_SE_PENGUIN_VOICE00);

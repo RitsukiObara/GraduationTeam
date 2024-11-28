@@ -40,7 +40,7 @@ const float FACT_ROTATION_TURN = 0.07f;	// U‚èŒü‚«‰ñ“]ŒW”
 
 const float LINE_ENABLE_MOVE = 0.1f;	// ˆÚ“®ŠJŽn‚Å‚«‚éŠp“x‚Ì‚µ‚«‚¢’l
 
-const float RATE_STOP_FLOW_ICE_RADIUS = 1.0f;	// •Y—¬’âŽ~‚·‚éÛ‚ÉŒŸo‚·‚é•X‚Ì”¼Œa‚ÌŠ„‡
+const float RATE_STOP_FLOW_ICE_RADIUS = 0.5f;	// •Y—¬’âŽ~‚·‚éÛ‚ÉŒŸo‚·‚é•X‚Ì”¼Œa‚ÌŠ„‡
 
 const float RATE_STOP_CHARGE = 0.6f;	// “Ëi‚ðŽ~‚ß‚é‚Æ‚«‚Ì•X‚ÌƒTƒCƒY‚ÌŠ„‡
 const float RANGE_STOP_MOVE = D3DX_PI * 1 / CIceManager::E_Direction::DIRECTION_MAX;	// ˆÚ“®‚ðŽ~‚ß‚éŠp“x‚Ì”ÍˆÍ
@@ -746,6 +746,10 @@ bool CEnemy::FindFlowIce(void)
 	CIceManager *pIceMgr = CIceManager::GetInstance();
 
 	if (pIceMgr == nullptr)
+		return false;
+
+	int nTemp;	// ‚»‚Ìê‚É•X‚ª–³‚©‚Á‚½‚çŽž‚Ì‚Ý•Y—¬
+	if (!pIceMgr->GetIdxGridFromPosition(GetPosition(), &nTemp, &nTemp,1.0f))
 		return false;
 
 	vector<CFlowIce*> apSystemFlow = CFlowIce::GetInstance();
