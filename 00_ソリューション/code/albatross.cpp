@@ -12,6 +12,8 @@
 #include "particle.h"
 #include "debugproc.h"
 #include "ocean.h"
+#include "manager.h"
+#include "sound.h"
 
 //*****************************************************
 // 定数定義
@@ -25,12 +27,14 @@ namespace
 	const float POS_X = 1750.0f;	// アホウドリの出現位置X
 	const float POS_Z = 1300.0f;	// アホウドリの出現位置Z
 	const float POS_Y = 500.0f;	// アホウドリの出現位置Y
+
+	const float PLAYSE_TIME = 1.2f;	// 鳴き声流す間隔
 }
 
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
-CAlbatross::CAlbatross(int nPriority)
+CAlbatross::CAlbatross(int nPriority) : m_Move(D3DXVECTOR3(0.0f,0.0f,0.0f)), m_fPlaySETime(0.0f)
 {
 
 }
@@ -190,6 +194,9 @@ void CAlbatross::Update(void)
 	// モーション更新
 	CMotion::Update();
 
+	// SE再生処理
+	CheckPlaySE();
+
 	CDebugProc* pDebugProc = CDebugProc::GetInstance();
 
 	pDebugProc->Print("\nアホウドリ==========================");
@@ -218,4 +225,23 @@ void CAlbatross::Draw(void)
 {
 	// 継承クラスの描画
 	CMotion::Draw();
+}
+
+//=====================================================
+// 鳴き声流す処理
+//=====================================================
+void CAlbatross::CheckPlaySE(void)
+{
+	CManager* pManager = CManager::GetInstance();
+	CSound* pSound = CSound::GetInstance();
+	if (pManager == nullptr || pSound == nullptr)
+		return;
+
+	// カウント
+	m_fPlaySETime += pManager->GetDeltaTime();
+	if (m_fPlaySETime >= PLAYSE_TIME)
+	{
+		m_fPlaySETime -= PLAYSE_TIME;
+		pSound->Play(CSound::LABEL_SE_ALBATROSS);	// 流す
+	}
 }

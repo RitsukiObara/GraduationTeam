@@ -545,7 +545,7 @@ void CBears::UpdateMove(void)
 void CBears::Charge(void)
 {
 	DisableTurn();
-	PlayAssaultSE();
+	CheckPlayAssaultSE();
 }
 
 //=====================================================
@@ -790,22 +790,19 @@ void CBears::Event(EVENT_INFO* pEventInfo)
 //=====================================================
 // 突撃SE流す
 //=====================================================
-void CBears::PlayAssaultSE(void)
+void CBears::CheckPlayAssaultSE(void)
 {
-	// サウンド再生
 	CManager* pManager = CManager::GetInstance();
-	if (pManager != nullptr)
-	{
-		m_fAssaultSETimer += pManager->GetDeltaTime();
-		if (m_fAssaultSETimer >= ASSAULT_SE_TIME)
-		{// SE流す時間
-			m_fAssaultSETimer -= ASSAULT_SE_TIME;	// 時間減算
-			CSound* pSound = CSound::GetInstance();
-			if (pSound != nullptr)
-			{
-				pSound->Play(CSound::LABEL_SE_POLARBEAR_ASSALT);
-			}
-		}
+	CSound* pSound = CSound::GetInstance();
+	if (pManager == nullptr || pSound == nullptr)
+		return;
+
+	// カウント
+	m_fAssaultSETimer += pManager->GetDeltaTime();
+	if (m_fAssaultSETimer >= ASSAULT_SE_TIME)
+	{// SE流す時間
+		m_fAssaultSETimer -= ASSAULT_SE_TIME;	// 時間減算
+		pSound->Play(CSound::LABEL_SE_POLARBEAR_ASSALT);	// 流す
 	}
 }
 

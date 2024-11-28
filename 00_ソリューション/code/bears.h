@@ -78,7 +78,7 @@ private:
 	void DecideNextStrollGrid(void);				// 次の散歩先を決める
 	void Death(void) override;						// 死亡時の処理
 	void Event(EVENT_INFO* pEventInfo) override;	// モーションイベント
-	void PlayAssaultSE(void);						// 突撃SE流す
+	void CheckPlayAssaultSE(void);						// 突撃SE流す
 
 	// メンバ変数
 	CPlayer *m_pPlayerTarget;	// ターゲットプレイヤー

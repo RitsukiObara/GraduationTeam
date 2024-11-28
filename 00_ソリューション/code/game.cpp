@@ -182,8 +182,7 @@ void CGame::Update(void)
 
 	if (pKeyboard->GetTrigger(DIK_L))
 	{// ƒAƒUƒ‰ƒV¶¬
-		//CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
-		CFishShadow::Create(CEnemy::TYPE::TYPE_SEALS);
+		CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
 	}
 
 	if (pKeyboard->GetTrigger(DIK_K))
