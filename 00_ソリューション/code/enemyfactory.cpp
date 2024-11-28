@@ -12,6 +12,7 @@
 #include "manager.h"
 #include "enemy.h"
 #include "game.h"
+#include "fishshadow.h"
 
 //*****************************************************
 // 定数定義
@@ -173,6 +174,12 @@ void CEnemyFct::Update(void)
 
 	for (S_InfoEnemy *pInfo : m_apInfoEnemy)
 	{
+		if (pInfo->fDelaySpawn > fTimeOld && pInfo->fDelaySpawn <= m_fTimerSpawn)
+		{// スポーンディレイの何秒前に魚影をだす
+			CFishShadow::Create(CEnemy::TYPE::TYPE_SEALS, D3DXVECTOR3(0.5f, 0.5f, 0.0f));
+		}
+
+
 		if (pInfo->fDelaySpawn > fTimeOld && pInfo->fDelaySpawn <= m_fTimerSpawn)
 		{// スポーンディレイを越えた瞬間にスポーン
 			CEnemy::Create(pInfo->nType,(CEnemy::E_Spawn)pInfo->nPaternSpawn);

@@ -18,7 +18,7 @@ public:
 	CFishShadow();	// コンストラクタ
 	~CFishShadow();	// デストラクタ
 
-	static CFishShadow* Create(CEnemy::TYPE type);
+	static CFishShadow* Create(CEnemy::TYPE type, D3DXVECTOR3 pos);
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
@@ -26,6 +26,7 @@ public:
 
 private:
 
+	int nCntFishShadow;
 };
 
 #endif
