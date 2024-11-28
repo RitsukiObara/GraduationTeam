@@ -38,7 +38,10 @@ const float HEIGHT_UI_PLAYERNUMBER = 0.8f;	// プレイヤーナンバーUIの位置の高さ
 const string PATH_UI_STANDBY = "data\\TEXTURE\\UI\\standby.png";	// スタンドバイテクスチャのパス
 const string PATH_UI_READY = "data\\TEXTURE\\UI\\ready.png";	// 準備完了テクスチャのパス
 
-const D3DXVECTOR3 INIT_MOVE_PLAYER = D3DXVECTOR3(0.0f, 100.0f, 0.0f);	// プレイヤーの初期の移動量
+const D3DXVECTOR3 INIT_MOVE_PLAYER = D3DXVECTOR3(0.0f, 30.0f, 0.0f);	// プレイヤーの初期の移動量
+const D3DXVECTOR3 POS_PLAYER_INIT = D3DXVECTOR3(0.0f, -200.0f, 0.0f);		// プレイヤーの初期の位置
+
+const float GRAVITY = 0.6f;	// 重力
 
 //----------------------------------
 // ステージの定数
@@ -214,6 +217,9 @@ void CPlayerSelect::Update(void)
 	// プレイヤーの位置制限
 	LimitPlayerPos();
 
+	// プレイヤーの重力処理
+	GravityPlayer();
+
 	// 開始するかの確認
 	CheckStart();
 	
@@ -256,7 +262,37 @@ void CPlayerSelect::LimitPlayerPos(void)
 		universal::LimitDistCylinderInSide(stage::RADIUS_COLLIDE, &posPlayer, D3DXVECTOR3(0.0f, posPlayer.y, 0.0f));
 
 		pPlayer->SetPosition(posPlayer);
+
+		posPlayer.y = stage::HEIGHT;	// 影の位置をステージの高さに固定
 		pPlayer->SetShadowPos(posPlayer);
+	}
+}
+
+//=====================================================
+// プレイヤーの重力処理
+//=====================================================
+void CPlayerSelect::GravityPlayer(void)
+{
+	for (CPlayer *pPlayer : m_apPlayer)
+	{
+		if (pPlayer == nullptr)
+			continue;
+
+		// 移動量の加算
+		D3DXVECTOR3 move = pPlayer->GetMove();
+		move.y -= GRAVITY;
+		pPlayer->SetMove(move);
+
+		// 床との判定
+		D3DXVECTOR3 pos = pPlayer->GetPosition();
+
+		if (pos.y <= stage::HEIGHT && move.y < 0)
+		{
+			pos.y = stage::HEIGHT;
+			pPlayer->SetMove(D3DXVECTOR3(move.x, 0.0f, move.z));
+		}
+
+		pPlayer->SetPosition(pos);
 	}
 }
 
@@ -282,9 +318,9 @@ void CPlayerSelect::CreatePlayer(int nIdx)
 	if (m_apPlayer[nIdx] != nullptr)
 	{
 		// プレイヤー初期設定
-		//m_apPlayer[nIdx]->SetMove(INIT_MOVE_PLAYER);
+		m_apPlayer[nIdx]->SetMove(INIT_MOVE_PLAYER);
 		m_apPlayer[nIdx]->SetState(CPlayer::STATE_NORMAL);
-		m_apPlayer[nIdx]->SetPosition(D3DXVECTOR3(0.0f, stage::HEIGHT, 0.0f));
+		m_apPlayer[nIdx]->SetPosition(POS_PLAYER_INIT);
 
 		// 入力マネージャーの割り当て
 		m_apPlayer[nIdx]->BindInputMgr(m_apInputMgr[nIdx]);	

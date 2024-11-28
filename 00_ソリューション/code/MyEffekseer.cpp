@@ -30,6 +30,7 @@ const char* CMyEffekseer::m_apEfkName[CMyEffekseer::TYPE_MAX] =		// エフェクトの
 	"data\\EFFEKSEER\\Effect\\splashwater.efkefc",	// さざ波
 	"data\\EFFEKSEER\\Effect\\bearstep.efkefc",		// シロクマの足煙
 	"data\\EFFEKSEER\\Effect\\blizzard.efkefc",		// 吹雪
+	"data\\EFFEKSEER\\Effect\\icebreak.efkefc",		// 氷の破壊
 };
 CMyEffekseer *CMyEffekseer::s_pMyEffekseer = nullptr;	// 自身のポインタ
 

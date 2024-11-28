@@ -444,7 +444,8 @@ void CPlayer::DecreaseMove(void)
 	D3DXVECTOR3 move = GetMove();
 
 	// 移動量の減衰
-	move *= RATE_DECREASE_MOVE;
+	move.x *= RATE_DECREASE_MOVE;
+	move.z *= RATE_DECREASE_MOVE;
 
 	SetMove(move);
 }
@@ -515,7 +516,7 @@ void CPlayer::JudgeTurn(void)
 	if (LINE_START_TURN * LINE_START_TURN < fRotDiff * fRotDiff)
 	{
 		// 現在の向きと正反対を目標の向きに設定
-		m_fRotTurn = rot.y + D3DX_PI;
+		m_fRotTurn = fAngleInput;
 		universal::LimitRot(&m_fRotTurn);
 
 		m_bTurn = true;	// しきい値を越えていたら振り返る判定
@@ -662,6 +663,9 @@ bool CPlayer::CheckGridChange(void)
 
 		return false;
 	}
+
+	if (pIce == nullptr)
+		return false;
 
 	if (pIce->IsPeck())
 		return false;
@@ -1219,7 +1223,7 @@ void CPlayer::Debug(void)
 	CInputJoypad *pJoypad = CInputJoypad::GetInstance();
 	CInputManager *pInputMgr = CInputManager::GetInstance();
 
-	if (pDebugProc == nullptr || pInputKeyboard == nullptr || pJoypad == nullptr || pInputMgr == nullptr)
+	if (pDebugProc == nullptr || pInputKeyboard == nullptr || pJoypad == nullptr || pInputMgr == nullptr || m_pShadow == nullptr)
 		return;
 
 	pDebugProc->Print("\nプレイヤー情報==========================");
