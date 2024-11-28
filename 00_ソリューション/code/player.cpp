@@ -516,7 +516,7 @@ void CPlayer::JudgeTurn(void)
 	if (LINE_START_TURN * LINE_START_TURN < fRotDiff * fRotDiff)
 	{
 		// Œ»Ý‚ÌŒü‚«‚Æ³”½‘Î‚ð–Ú•W‚ÌŒü‚«‚ÉÝ’è
-		m_fRotTurn = rot.y + D3DX_PI;
+		m_fRotTurn = fAngleInput;
 		universal::LimitRot(&m_fRotTurn);
 
 		m_bTurn = true;	// ‚µ‚«‚¢’l‚ð‰z‚¦‚Ä‚¢‚½‚çU‚è•Ô‚é”»’è
