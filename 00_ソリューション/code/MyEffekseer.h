@@ -33,6 +33,7 @@ public:
 		TYPE_RIPPLES,	// ‚³‚´”g
 		TYPE_BEARSTEP,	// ƒVƒƒNƒ}‚Ì•à‚«‰Œ
 		TYPE_BLIZZARD,	// á
+		TYPE_ICEBREAK,	// •X‚ª‰ó‚ê‚é‚Æ‚«
 		TYPE_MAX
 	};
 
