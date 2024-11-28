@@ -24,6 +24,7 @@
 #include "peckLine.h"
 #include "sound.h"
 #include "shadow.h"
+#include "MyEffekseer.h"
 
 //*****************************************************
 // 定数定義
@@ -1174,6 +1175,7 @@ void CPlayer::ManageMotion(void)
 			{
 				SetMotion(MOTION::MOTION_STAYJUMP);
 				CSound::GetInstance()->Play(CSound::LABEL_SE_PENGUIN_JUMP);
+				MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_JUMP, GetPosition());
 			}
 		}
 		else if (nMotion != MOTION::MOTION_STARTJUMP)	// ジャンプ開始モーションの開始
