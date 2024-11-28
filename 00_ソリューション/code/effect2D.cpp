@@ -59,6 +59,11 @@ void CEffect2D::Uninit(void)
 //=====================================================
 void CEffect2D::Update(void)
 {
+	D3DXVECTOR3 pos = GetPosition();
+	D3DXVECTOR3 move = GetMove();
+
+	pos += move;
+
 	// éıñΩå∏êä
 	m_nLife--;
 
@@ -72,6 +77,8 @@ void CEffect2D::Update(void)
 	{// é©ï™ÇÃçÌèú
 		Uninit();
 	}
+
+	SetPosition(pos);
 
 	// í∏ì_ç¿ïWê›íË
 	SetVtx();

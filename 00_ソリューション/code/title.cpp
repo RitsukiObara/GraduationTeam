@@ -31,13 +31,14 @@
 //*****************************************************
 #define MOVE_FACT	(0.01f)	// 移動速度
 #define LINE_UNINIT	(0.2f)	// 終了するまでのしきい値
+#define EFFECTMAX	(15)	// つるはしで壊したときのエフェクトの最大数
 
 //*****************************************************
 // 定数定義
 //*****************************************************
 namespace
 {
-	const string PATH_TEX = "data\\TEXTURE\\MATERIAL\\ice001.jpg";	// テクスチャパス
+	const string PATH_TEX = "data\\TEXTURE\\EFFECT\\snow01.png";	// テクスチャパス
 	const D3DXCOLOR COL_INITIAL_MENU = { 0.4f,0.4f,0.4f,1.0f };	// メニュー項目の初期色
 	const D3DXCOLOR COL_CURRENT_MENU = { 1.0f,1.0f,1.0f,1.0f };	// メニュー項目の選択色
 	const D3DXVECTOR3 UI_POS[CTitle::TITLE_UI_MAX] =  // UIの初期位置
@@ -73,13 +74,14 @@ namespace
 CTitle::CTitle()
 {
 	m_nCntState = 0;
+	m_nCntMove = 0;
+	m_nStateLogo = 0;
 	m_State = STATE_NONE;
 	m_TitleState = TITLESTATE_ICEFLOW;
 	m_Title_UI = TITLE_UI_LEFT;
 	m_apMenu_UI = nullptr;
 	m_bFade = false;
 	m_bMove = false;
-	m_nCntMove = 0;
 
 	for (int nCntUI = 0; nCntUI < TITLE_UI_MAX; nCntUI++)
 	{
@@ -325,11 +327,6 @@ void CTitle::Update(void)
 		break;
 	}
 
-	CEffect2D* pEffect2D = CEffect2D::Create(D3DXVECTOR3(500.0f, 400.0f, 0.0f), 60.0f, 120, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
-	int nIdx =  Texture::GetIdx(&PATH_TEX[0]);
-	pEffect2D->SetIdxTexture(nIdx);
-
 	// シーンの更新
 	CScene::Update();
 
@@ -373,7 +370,17 @@ void CTitle::Input(void)
 			CSound::GetInstance()->Play(CSound::LABEL_SE_DECISION);
 
 			m_nCntState = 0;
+			m_nStateLogo = 0;
 			m_TitleState = TITLESTATE_PICKAXE;
+
+			for (int nCntUI = 0; nCntUI < EFFECTMAX; nCntUI++)
+			{
+				float fmoveX = universal::RandRange(40, -40) * 0.1f;
+				float fmoveY = universal::RandRange(40, -40) * 0.1f;
+				CEffect2D* pEffect2D = CEffect2D::Create(D3DXVECTOR3(640.0f, 550.0f, 0.0f), 60.0f, 80, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(fmoveX, fmoveY, 0.0f));
+				int nIdx = Texture::GetIdx(&PATH_TEX[0]);
+				pEffect2D->SetIdxTexture(nIdx);
+			}
 		}
 	}
 }
@@ -513,12 +520,14 @@ void CTitle::PickaxeState(void)
 
 	rot.z += 0.07f;	// つるはしの向きを傾ける
 
+	m_nStateLogo++;
+
 	if (rot.z > 0.5f)
 	{
 		rot.z = 0.5f;
-
-		m_apMenu_UI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));	// スタートロゴの透明度を0にする
 	}
+
+	m_apMenu_UI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));	// スタートロゴの透明度を0にする
 
 	m_apTitle_UI[TITLE_UI_PICKAXE]->SetRotation(rot);
 
