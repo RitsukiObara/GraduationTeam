@@ -55,6 +55,7 @@ private:
 	void CreatePlayer(int nIdx);	// プレイヤーの生成
 	void Input(void);				// 操作
 	void LimitPlayerPos(void);		// プレイヤーの位置制限
+	void GravityPlayer(void);		// プレイヤーの重力処理
 	void Ready(int nIdx);			// 準備
 	void CheckStart(void);			// 開始するかの確認
 	void StartFade(void);			// フェードの開始

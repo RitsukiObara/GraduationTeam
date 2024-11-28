@@ -19,6 +19,7 @@
 #include "ocean.h"
 #include "polygon3D.h"
 #include "sound.h"
+#include "MyEffekseer.h"
 
 //*****************************************************
 // 定数定義
@@ -751,6 +752,7 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 
 	if (nIdxV == -1 && nIdxH == -1)
 	{
+		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_ICEBREAK, pIce->GetPosition());
 		pIce->Uninit();
 		return;
 	}
@@ -758,7 +760,8 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 	bool bOk = SetIceInGrid(nIdxV, nIdxH, pIce);
 
 	if (!bOk)
-	{
+	{// グリッドに無かったら壊す
+		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_ICEBREAK, pIce->GetPosition());
 		DeleteIce(pIce);
 		pIce->Uninit();
 	}
