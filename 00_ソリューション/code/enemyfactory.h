@@ -42,6 +42,8 @@ private:
 		float fDelaySpawn;	// スポーンディレイ
 		int nType;			// 種類
 		int nPaternSpawn;	// スポーンパターン
+
+		S_InfoEnemy::S_InfoEnemy() : fDelaySpawn(0.0f), nType(0), nPaternSpawn(0) {}
 	};
 
 	// メンバ関数

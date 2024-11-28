@@ -168,7 +168,7 @@ void CIce::CreateMesh(void)
 {
 	if (m_pUp == nullptr)
 	{
-		m_pUp = CFan3D::Create(3, NUM_CORNER);
+		m_pUp = CFan3D::Create(4, NUM_CORNER);
 
 		if (m_pUp != nullptr)
 		{
