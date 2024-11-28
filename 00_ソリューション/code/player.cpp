@@ -655,6 +655,11 @@ bool CPlayer::CheckGridChange(void)
 
 	if (m_state != E_State::STATE_INVINCIBLE && pIce == nullptr)
 	{// 無敵状態でない場合、氷がないグリッドの上に行っても番号を変えない
+
+		int nTemp;	// その場に氷が無かったら時のみ漂流
+		if (!pIceMgr->GetIdxGridFromPosition(GetPosition(), &nTemp, &nTemp))
+			return false;
+
 		// 漂流を開始
 		StartFlows();
 
@@ -704,6 +709,10 @@ bool CPlayer::FindFlowIce(void)
 	if (pIceMgr == nullptr)
 		return false;
 
+	int nTemp;	// その場に氷が無かったら時のみ漂流
+	if (!pIceMgr->GetIdxGridFromPosition(GetPosition(), &nTemp, &nTemp, 1.0f))
+		return false;
+
 	vector<CFlowIce*> apSystemFlow = CFlowIce::GetInstance();
 
 	for (auto itSystem : apSystemFlow)
@@ -719,7 +728,7 @@ bool CPlayer::FindFlowIce(void)
 			D3DXVECTOR3 posPlayer = GetPosition();
 			D3DXVECTOR3 posIce = itIce->GetPosition();
 
-			if (pIceMgr->IsInIce(posPlayer, itIce, 1.0f))
+			if (pIceMgr->IsInIce(posPlayer, itIce, 0.7f))
 			{// どれかに乗っていたら現在のシステムを保存して関数を終了
 				m_pLandSystemFlow = itSystem;
 
