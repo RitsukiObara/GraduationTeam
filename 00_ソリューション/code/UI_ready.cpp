@@ -13,6 +13,7 @@
 #include "texture.h"
 #include "game.h"
 #include "player.h"
+#include "sound.h"
 
 //*****************************************************
 // 定数定義
@@ -115,6 +116,13 @@ HRESULT CUIready::Init(void)
 	// ゲームを準備状態にする
 	CGame::SetState(CGame::E_State::STATE_READY);
 
+	// サウンド再生
+	CSound* pSound = CSound::GetInstance();
+	if (pSound != nullptr)
+	{
+		pSound->Play(CSound::LABEL_SE_COUNTDOWN);
+	}
+
 	return S_OK;
 }
 
@@ -179,6 +187,13 @@ void CUIready::Update(void)
 
 			// サイズリセット
 			m_fsize = SIZE_READY_INIT;
+
+			// サウンド再生
+			CSound* pSound = CSound::GetInstance();
+			if (pSound != nullptr)
+			{
+				pSound->Play(CSound::LABEL_SE_COUNTSTART);
+			}
 		}
 
 		break;
@@ -255,6 +270,13 @@ void CUIready::UpdateNumber()
 		for (int i = 0; i < E_Number::NUMBER_MAX; i++)
 		{
 			m_aNumber[i]->SetSizeAll(m_fsize, m_fsize);
+		}
+
+		// サウンド再生
+		CSound* pSound = CSound::GetInstance();
+		if (pSound != nullptr && m_nSecond > 0)
+		{
+			pSound->Play(CSound::LABEL_SE_COUNTDOWN);
 		}
 	}
 
