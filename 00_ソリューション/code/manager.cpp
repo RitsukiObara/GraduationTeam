@@ -37,7 +37,7 @@
 CCamera *CManager::m_pCamera = nullptr;						// カメラのポインタ
 CMyEffekseer* CManager::m_pMyEffekseer = nullptr;			// エフェクシアのポインタ
 CScene *CManager::m_pScene = nullptr;						// シーンへのポインタ
-CScene::MODE CManager::m_mode = CScene::MODE_SELECTPLAYER;			// 現在のモード
+CScene::MODE CManager::m_mode = CScene::MODE_GAME;			// 現在のモード
 float CManager::m_fDeltaTime = 0.0f;						// 前回のフレームから経過した時間
 CManager *CManager::m_pManager = nullptr;					// 自身のポインタ
 
