@@ -34,6 +34,7 @@ public:
 		TYPE_BEARSTEP,	// シロクマの歩き煙
 		TYPE_BLIZZARD,	// 吹雪
 		TYPE_ICEBREAK,	// 氷が壊れるとき
+		TYPE_JUMP,		// ジャンプ
 		TYPE_MAX
 	};
 

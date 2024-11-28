@@ -119,6 +119,9 @@ HRESULT CGame::Init(void)
 	// ゲームマネージャーの生成
 	m_pGameManager = CGameManager::Create(m_GameMode);
 
+	// ゲームBGMの再生
+	Sound::Play(CSound::LABEL_BGM_GAME01);
+
 	return S_OK;
 }
 

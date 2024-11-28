@@ -48,6 +48,9 @@ public:
 		LABEL_SE_PAUSE_ENTER01,			// 決定
 
 		LABEL_SE_GAME_START,			// ゲームスタート
+
+		LABEL_SE_TITLE_FADE,			// タイトルフェード
+
 		LABEL_MAX
 	} LABEL;
 	typedef enum
@@ -101,7 +104,7 @@ private:
 	{
 		{ "data/SOUND/BGM/BGM_Title.wav",-1 },			// タイトル画面BGM
 		{ "data/SOUND/BGM/BGM_Result.wav",-1 },			// チュートリアル画面BGM（未）
-		{ "data/SOUND/BGM/BGM_Game04.wav",-1 },			// ゲーム画面BGM
+		{ "data/SOUND/BGM/BGM_Game00.wav",-1 },			// ゲーム画面BGM
 		{ "data/SOUND/BGM/BGM_Result.wav",-1 },			// リザルト画面BGM
 		{ "data/SOUND/BGM/BGM_Option.wav",-1 },			// オプション画面BGM
 
@@ -130,6 +133,8 @@ private:
 		{ "data/SOUND/SE/SE_Enter02.wav",0 },			// 決定
 
 		{ "data/SOUND/SE/SE_GameStart.wav",0 },			// ゲームスタート
+
+		{ "data/SOUND/SE/SE_Fade.wav",0 },				// タイトルフェード音
 	};
 
 	static CSound *m_pSound;	// 自身のポインタ

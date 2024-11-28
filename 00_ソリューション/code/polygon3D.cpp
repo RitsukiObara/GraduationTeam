@@ -230,6 +230,11 @@ void CPolygon3D::SetVtxNormal(void)
 		pVtx[3].pos = D3DXVECTOR3(m_width, 0.0f, -m_heigth);
 	}
 
+	pVtx[0].col = m_col;
+	pVtx[1].col = m_col;
+	pVtx[2].col = m_col;
+	pVtx[3].col = m_col;
+
 	//頂点バッファをアンロック
 	m_pVtxBuff->Unlock();
 }
