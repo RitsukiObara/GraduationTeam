@@ -27,6 +27,8 @@
 #include "fan3D.h"
 #include "particle.h"
 #include "inputjoypad.h"
+#include "collision.h"
+#include "shadow.h"
 
 //*****************************************************
 // 定数定義
@@ -38,6 +40,11 @@ const float HEIGHT_UI_PLAYERNUMBER = 0.8f;	// プレイヤーナンバーUIの位置の高さ
 
 const string PATH_UI_STANDBY = "data\\TEXTURE\\UI\\standby.png";	// スタンドバイテクスチャのパス
 const string PATH_UI_READY = "data\\TEXTURE\\UI\\ready.png";	// 準備完了テクスチャのパス
+const string PATH_BANNER = "data\\MODEL\\other\\entry_banner.x";	// 看板のモデルパス
+const D3DXVECTOR3 BANNER_POS = D3DXVECTOR3(0.0f, 0.0f, 500.0f);	// 看板の初期の位置
+const D3DXVECTOR3 BANNER_ROT = D3DXVECTOR3(0.1f, 0.0f, 0.07f);		// 看板の初期の向き
+const float BANNER_SCALE = 6.5f;	// 看板のサイズ
+const float BANNER_COLLISION_SIZE = 20.0f;
 
 const D3DXVECTOR3 INIT_MOVE_PLAYER = D3DXVECTOR3(0.0f, 30.0f, 0.0f);	// プレイヤーの初期の移動量
 const D3DXVECTOR3 POS_PLAYER_INIT = D3DXVECTOR3(0.0f, -200.0f, 0.0f);		// プレイヤーの初期の位置
@@ -75,6 +82,8 @@ CPlayerSelect::CPlayerSelect()
 	ZeroMemory(&m_apInputMgr[0], sizeof(m_apInputMgr));
 	m_pCylinder = nullptr;
 	m_pFan = nullptr;
+	m_pCollisionSphere = nullptr;
+	m_pShadow = nullptr;
 }
 
 //=====================================================
@@ -133,6 +142,30 @@ HRESULT CPlayerSelect::Init(void)
 	// 海の生成
 	COcean::Create();
 
+	// 看板配置
+	CObjectX* pBanner = CObjectX::Create(BANNER_POS, BANNER_ROT, 5);
+	if (pBanner != nullptr)
+	{
+		pBanner->BindModel(CModel::Load(&PATH_BANNER[0]));	// モデル読み込んで設定
+		pBanner->SetScale(BANNER_SCALE);	// サイズ設定
+
+		//// 球の判定生成
+		//m_pCollisionSphere = CCollisionSphere::Create(CCollision::TAG::TAG_PLAYER, CCollision::TYPE::TYPE_SPHERE, pBanner);
+
+		//if (m_pCollisionSphere != nullptr)
+		//{
+		//	m_pCollisionSphere->SetRadius(BANNER_COLLISION_SIZE);
+		//	m_pCollisionSphere->SetPosition(D3DXVECTOR3(BANNER_POS.x, 50.0f, BANNER_POS.z + 141.0f));
+		//}
+
+		// 影の生成
+		m_pShadow = CShadow::Create(4);
+		if (m_pShadow != nullptr)
+		{
+			m_pShadow->SetPosition(D3DXVECTOR3(BANNER_POS.x, 0.0f, BANNER_POS.z + 141.0f));
+		}
+	}
+
 	return S_OK;
 }
 
@@ -174,6 +207,8 @@ void CPlayerSelect::Uninit(void)
 {
 	Object::DeleteObject((CObject**)&m_pCylinder);
 	Object::DeleteObject((CObject**)&m_pFan);
+	Object::DeleteObject((CObject**)&m_pShadow);
+	//Object::DeleteObject((CObject**)&m_pCollisionSphere);
 
 	// 各種オブジェクトの破棄
 	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
@@ -234,6 +269,14 @@ void CPlayerSelect::Update(void)
 //=====================================================
 void CPlayerSelect::Input(void)
 {
+	// フェードの開始
+	CFade* pFade = CFade::GetInstance();
+
+	CInputManager* pInput = CInputManager::GetInstance();
+
+	if (pInput == nullptr)
+		return;
+
 	for (int i = 0; i < MAX_PLAYER; i++)
 	{
 		if (m_apInputMgr[i] == nullptr)
@@ -246,6 +289,10 @@ void CPlayerSelect::Input(void)
 			m_apInputMgr[i]->GetTrigger(CInputManager::E_Button::BUTTON_READY))
 			Ready(i);	// 準備
 
+		if (m_apInputMgr[i]->GetTrigger(CInputManager::BUTTON_BACK))	// BACK押したとき
+		{
+			pFade->SetFade(CScene::MODE::MODE_SELECTMODE);
+		}
 	}
 }
 

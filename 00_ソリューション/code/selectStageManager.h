@@ -79,6 +79,8 @@ private:
 	void StayEnter(void);	// エンター中の処理
 	void EndEnter(void);	// エンター終了
 
+	void ModeSelectBack(void);	// モードセレクトに戻る関数
+
 	void Debug(void);	// デバッグ処理
 
 	// 静的メンバ関数

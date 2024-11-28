@@ -120,8 +120,9 @@ HRESULT CNPCPenguin::Init(void)
 //=====================================================
 void CNPCPenguin::Uninit(void)
 {
-	// ‰eíœ
+	// ‰eE“–‚½‚è”»’èíœ
 	Object::DeleteObject((CObject**)&m_pShadow);
+	Object::DeleteObject((CObject**)&m_pCollisionSphere);
 
 	if (m_pState != nullptr)
 	{

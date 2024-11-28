@@ -437,7 +437,7 @@ void CResultSingleWin::UpdateWait(void)
 
 			if (pFade != nullptr)
 			{
-				pFade->SetFade(CScene::MODE::MODE_TITLE);
+				pFade->SetFade(CScene::MODE::MODE_SELECTSTAGE);
 				CSound::GetInstance()->Play(CSound::LABEL_SE_DECISION);
 			}
 		}
