@@ -76,6 +76,7 @@ const string PATH_TEX[CTutorial::E_State::STATE_MAX] =	// テクスチャパス
 	"data\\TEXTURE\\UI\\tutorial_separate.png",		// 破壊説明
 	"data\\TEXTURE\\UI\\tutorial_jump.png",			// ジャンプ
 	"data\\TEXTURE\\UI\\tutorial_enemy.png",		// 敵説明
+	"data\\TEXTURE\\UI\\tutorial_albatross.png",	// アホウドリ
 	"",												// 終了状態
 };
 const string PATH_TEX_ENEMY = "data\\TEXTURE\\UI\\tutorial_rival.png";	// マルチ用の敵説明パス
@@ -103,6 +104,7 @@ CTutorial::FuncUpdateState CTutorial::s_aFuncUpdateState[] =	// 状態更新関数
 	nullptr,					// 破壊説明
 	nullptr,					// ジャンプ
 	nullptr,					// 敵説明
+	nullptr,					// アホウドリ説明
 	&CTutorial::UpdateEnd,		// 終了状態
 };
 
@@ -399,6 +401,9 @@ void CTutorial::ProgressState(void)
 {
 	// 状態を進める
 	m_state = (E_State)(m_state + 1);
+
+	if (m_state == E_State::STATE_ALBATROSS)
+		int n = 0;
 
 	// カウンターのリセット
 	m_nCntProgress = 0;

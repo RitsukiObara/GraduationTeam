@@ -1017,11 +1017,11 @@ bool IsInScreen(const D3DXVECTOR3 pos, D3DXVECTOR3 *pPos)
 		*pPos = screenPosition;
 	}
 
-	if (screenPosition.x >= viewport.X && 
-		screenPosition.x <= viewport.X + viewport.Width &&
-		screenPosition.y >= viewport.Y && 
-		screenPosition.y <= viewport.Y + viewport.Height &&
-		screenPosition.z >= 0.0f && screenPosition.z <= 1.0f)
+	if (screenPosition.x > viewport.X && 
+		screenPosition.x < viewport.X + viewport.Width &&
+		screenPosition.y > viewport.Y && 
+		screenPosition.y < viewport.Y + viewport.Height &&
+		screenPosition.z > 0.0f && screenPosition.z < 1.0f)
 	{
 		return true;
 	}

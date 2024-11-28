@@ -28,6 +28,7 @@ CTutorialManager::FuncUpdateState CTutorialManager::s_aFuncUpdateState[] =	// 状
 	&CTutorialManager::UpdatePeck,		// 突っつき状態
 	&CTutorialManager::UpdateBreak,		// 破壊状態
 	&CTutorialManager::UpdateExplain,	// 説明状態
+	nullptr,	// アホウドリ説明状態
 	nullptr,	// 終了状態
 };
 

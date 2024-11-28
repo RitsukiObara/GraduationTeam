@@ -24,6 +24,7 @@
 #include "polygon2D.h"
 #include "UI.h"
 #include "effect2D.h"
+#include "inputjoypad.h"
 
 //*****************************************************
 // マクロ定義
@@ -61,6 +62,9 @@ namespace
 		D3DXVECTOR2(0.08f,0.15f),
 		D3DXVECTOR2(0.5f,0.5f),
 	};
+
+	const float VIBRATION_POWER = 0.2f;	//バイブの強さ
+	const int VIBRATION_TIME = 20;	//バイブの時間
 }
 
 //=====================================================
@@ -353,10 +357,18 @@ void CTitle::Input(void)
 	if (pInput == nullptr)
 		return;
 
+	CInputJoypad* pInputJoypad = CInputJoypad::GetInstance();
+
+	if (pInputJoypad == nullptr)
+		return;
+
 	if (m_bFade == true)
 	{
 		if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))	// ENTER押したとき
 		{
+			// joypad振動させる
+			pInputJoypad->Vibration(0, CInputJoypad::PADVIB_USE, VIBRATION_POWER, VIBRATION_TIME);
+
 			// 決定音を鳴らす
 			CSound::GetInstance()->Play(CSound::LABEL_SE_DECISION);
 
