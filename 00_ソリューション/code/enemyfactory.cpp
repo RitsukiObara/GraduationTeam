@@ -174,11 +174,13 @@ void CEnemyFct::Update(void)
 
 	for (S_InfoEnemy *pInfo : m_apInfoEnemy)
 	{
-		if (pInfo->fDelaySpawn > fTimeOld && pInfo->fDelaySpawn <= m_fTimerSpawn)
-		{// スポーンディレイの何秒前に魚影をだす
-			CFishShadow::Create(CEnemy::TYPE::TYPE_SEALS, D3DXVECTOR3(0.5f, 0.5f, 0.0f));
-		}
+		float fTimeShadow = pInfo->fDelaySpawn - fishshadow::TIME_APPER;	// 魚影用のタイマー
+		universal::LimitValuefloat(&fTimeShadow, fTimeShadow, 0.0f);
 
+		if (fTimeShadow > fTimeOld && fTimeShadow <= m_fTimerSpawn)
+		{// スポーンディレイの何秒前に魚影をだす
+			CFishShadow::Create(pInfo->nPaternSpawn);
+		}
 
 		if (pInfo->fDelaySpawn > fTimeOld && pInfo->fDelaySpawn <= m_fTimerSpawn)
 		{// スポーンディレイを越えた瞬間にスポーン

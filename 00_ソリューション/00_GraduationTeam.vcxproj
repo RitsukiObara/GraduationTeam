@@ -184,6 +184,7 @@
     <ClCompile Include="code\collision.cpp" />
     <ClCompile Include="code\enemyfactory.cpp" />
     <ClCompile Include="code\fade2D.cpp" />
+    <ClCompile Include="code\fade3D.cpp" />
     <ClCompile Include="code\fade_fallice.cpp" />
     <ClCompile Include="code\fishshadow.cpp" />
     <ClCompile Include="code\gameManager.cpp" />
@@ -311,6 +312,7 @@
     <ClInclude Include="code\debug.h" />
     <ClInclude Include="code\enemyfactory.h" />
     <ClInclude Include="code\fade2D.h" />
+    <ClInclude Include="code\fade3D.h" />
     <ClInclude Include="code\fade_fallice.h" />
     <ClInclude Include="code\fishshadow.h" />
     <ClInclude Include="code\gameManager.h" />

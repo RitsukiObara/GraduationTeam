@@ -133,6 +133,9 @@
     <Filter Include="ソース ファイル\anim2D">
       <UniqueIdentifier>{c084b14d-45e9-41c7-a93a-76d5583c7278}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\anim3D">
+      <UniqueIdentifier>{cc97266c-7496-429c-a047-06bc8dc12008}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="code\scene.cpp">
@@ -497,6 +500,9 @@
     </ClCompile>
     <ClCompile Include="code\fishshadow.cpp">
       <Filter>ソース ファイル\character\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="code\fade3D.cpp">
+      <Filter>ソース ファイル\anim3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -874,6 +880,9 @@
     </ClInclude>
     <ClInclude Include="code\fishshadow.h">
       <Filter>ソース ファイル\character\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="code\fade3D.h">
+      <Filter>ソース ファイル\anim3D</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
