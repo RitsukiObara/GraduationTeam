@@ -242,9 +242,6 @@ void CPlayer::Update(void)
 	if (m_state == STATE_FLOW)
 		StayFlow();	// 漂流中の処理
 
-	// モーションの管理
-	ManageMotion();
-
 	// モーション更新
 	CMotion::Update();
 
@@ -256,6 +253,9 @@ void CPlayer::Update(void)
 
 	// 氷の追従
 	FollowIce();
+
+	// モーションの管理
+	ManageMotion();
 
 	// 影の追従
 	if (m_pShadow != nullptr)
@@ -302,9 +302,6 @@ void CPlayer::Input(void)
 		// ジャンプの処理
 		InputJump();
 	}
-
-	if (false)
-		StayJump();	// ジャンプ中の処理
 }
 
 //=====================================================

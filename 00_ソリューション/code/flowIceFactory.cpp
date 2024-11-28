@@ -22,7 +22,7 @@ namespace
 const string PATH_TEXT = "data\\TEXT\\flowIce.txt";	// 流氷情報のファイルパス
 
 const float TIME_CREATE_FLOWICE = 5.0f;	// 流氷を作る時間
-const int ADD_CREATE_FLOWICE = 5;	// 流氷の生成する位置の増やすグリッド数
+const int ADD_CREATE_FLOWICE = 8;	// 流氷の生成する位置の増やすグリッド数
 }
 
 //=====================================================
