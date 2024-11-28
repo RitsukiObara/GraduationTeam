@@ -254,11 +254,10 @@ void CPlayerSelect::Input(void)
 			m_apInputMgr[i]->GetTrigger(CInputManager::E_Button::BUTTON_READY))
 			Ready(i);	// €”õ
 
-	}
-
-	if (pInput->GetTrigger(CInputManager::BUTTON_BACK))	// BACK‰Ÿ‚µ‚½‚Æ‚«
-	{
-		pFade->SetFade(CScene::MODE::MODE_SELECTMODE);
+		if (m_apInputMgr[i]->GetTrigger(CInputManager::BUTTON_BACK))	// BACK‰Ÿ‚µ‚½‚Æ‚«
+		{
+			pFade->SetFade(CScene::MODE::MODE_SELECTMODE);
+		}
 	}
 }
 
