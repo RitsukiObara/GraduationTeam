@@ -46,8 +46,10 @@ private:
 	};
 
 	void Stream(COcean::E_Stream dir);
+	void CheckPlaySE(void);	// –Â‚«º—¬‚·
 
-	D3DXVECTOR3 m_Move; // ˆÚ“®—Ê
+	D3DXVECTOR3 m_Move;		// ˆÚ“®—Ê
+	float m_fPlaySETime;	// –Â‚«º—¬‚·ŠÔ
 };
 
 #endif
