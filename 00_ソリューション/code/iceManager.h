@@ -45,6 +45,12 @@ public:
 		PECKER_PLAYER3,		// 3番目のプレイヤー
 		PECKER_MAX
 	};
+	// 構造体定義
+	struct S_Grid
+	{// グリッド情報
+		D3DXVECTOR3 pos;	// 位置
+		CIce *pIce;	// 氷のポインタ
+	};
 
 	CIceManager(int nPriority = 2);	// コンストラクタ
 	~CIceManager();	// デストラクタ
@@ -73,6 +79,12 @@ public:
 	CIce* GetLeftUpIdx(int *pNumV, int *pNumH);	// 左上の氷取得
 	CIce* GetRightDownIdx(int *pNumV, int *pNumH);	// 右上の氷取得
 	CIce* GetRightUpIdx(int *pNumV, int *pNumH);	// 右上の氷取得
+
+	S_Grid GetLeftDownGrid(void) { return m_aGrid[0][0]; }												// 左下のグリッド取得
+	S_Grid GetLeftUpGrid(void) { return m_aGrid[m_nNumGridVirtical - 1][0]; }								// 左上のグリッド取得
+	S_Grid GetRightDownGrid(void) { return m_aGrid[0][m_nNumGridHorizontal - 1]; };						// 右下のグリッド取得
+	S_Grid GetRightUpGrid(void) { return m_aGrid[m_nNumGridVirtical - 1][m_nNumGridHorizontal - 1]; }		// 右上のグリッド取得
+
 	void DisableFind(void);	// 探索フラグの無効化
 	void Load(const char* pPath);	// 初期配置読み込み
 	void BindRippleElements(void);	// さざ波の属性を割り当てる処理
@@ -97,22 +109,6 @@ public:
 	static CIceManager *GetInstance() { return s_pIceManager; }	// インスタンスの取得
 
 private:
-	// 列挙型定義
-	enum E_StateGrid
-	{// グリッドの状態
-		STATE_NONE = 0,	// 何でもない状態
-		STATE_MID,	// 氷の真ん中がある状態
-		STATE_CORNER,	// 氷の角がある状態
-		STATE_MAX
-	};
-	// 構造体定義
-	struct S_Grid
-	{// グリッド情報
-		D3DXVECTOR3 pos;	// 位置
-		E_StateGrid state;	// 状態
-		CIce *pIce;	// 氷のポインタ
-	};
-	
 	// メンバ関数
 	void SetGridPos(void);	// グリッドの位置を計算
 	void ManageStateIce(void);	// 氷の状態管理

@@ -1150,35 +1150,6 @@ void CIceManager::BreakPeck(int nNumV, int nNumH)
 //=====================================================
 void CIceManager::Debug(void)
 {
-	// グリッドの場所をデバッグ表示
-	for (int i = 0; i < m_nNumGridVirtical; i++)
-	{
-		for (int j = 0; j < m_nNumGridHorizontal; j++)
-		{
-			D3DXCOLOR col = { (float)i / m_nNumGridHorizontal,(float)i / m_nNumGridHorizontal,(float)i / m_nNumGridHorizontal,1.0f };
-
-			if (m_aGrid[i][j].state == E_StateGrid::STATE_MID)
-				col = { 0.0f,1.0f,0.0f,1.0f };
-			else if(m_aGrid[i][j].state == E_StateGrid::STATE_CORNER)
-				col = { 0.0f,0.0f,1.0f,1.0f };
-
-			if (m_aGrid[i][j].pIce != nullptr)
-			{
-				if (m_aGrid[i][j].pIce->IsBreak())
-				{
-					col = { 0.0f,0.0f,1.0f,1.0f };
-				}
-
-				if (m_aGrid[i][j].pIce->IsPeck())
-				{
-					col = { 0.0f,1.0f,0.0f,1.0f };
-				}
-			}
-
-			//CEffect3D::Create(m_aGrid[i][j].pos, 50.0f, 6, col);
-		}
-	}
-
 	CDebugProc *pDebugProc = CDebugProc::GetInstance();
 
 	if (pDebugProc == nullptr)
