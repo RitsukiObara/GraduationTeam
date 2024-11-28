@@ -234,6 +234,14 @@ void CPlayerSelect::Update(void)
 //=====================================================
 void CPlayerSelect::Input(void)
 {
+	// フェードの開始
+	CFade* pFade = CFade::GetInstance();
+
+	CInputManager* pInput = CInputManager::GetInstance();
+
+	if (pInput == nullptr)
+		return;
+
 	for (int i = 0; i < MAX_PLAYER; i++)
 	{
 		if (m_apInputMgr[i] == nullptr)
@@ -246,6 +254,11 @@ void CPlayerSelect::Input(void)
 			m_apInputMgr[i]->GetTrigger(CInputManager::E_Button::BUTTON_READY))
 			Ready(i);	// 準備
 
+	}
+
+	if (pInput->GetTrigger(CInputManager::BUTTON_BACK))	// BACK押したとき
+	{
+		pFade->SetFade(CScene::MODE::MODE_SELECTMODE);
 	}
 }
 

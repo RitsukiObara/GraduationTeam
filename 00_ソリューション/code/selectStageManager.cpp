@@ -266,6 +266,10 @@ void CSelectStageManager::Update(void)
 
 	if (m_bEnter)
 		StayEnter();	// エンター中の処理
+	else
+		// モードセレクトに戻る処理
+		ModeSelectBack();
+	
 
 #ifdef _DEBUG
 	Debug();
@@ -478,4 +482,23 @@ void CSelectStageManager::Debug(void)
 void CSelectStageManager::Draw(void)
 {
 
+}
+
+//=====================================================
+// モードセレクトに戻る処理
+//=====================================================
+void CSelectStageManager::ModeSelectBack(void)
+{
+	// フェードの開始
+	CFade* pFade = CFade::GetInstance();
+
+	CInputManager* pInput = CInputManager::GetInstance();
+
+	if (pInput == nullptr)
+		return;
+
+	if (pInput->GetTrigger(CInputManager::BUTTON_BACK))	// BACK押したとき
+	{
+		pFade->SetFade(CScene::MODE::MODE_SELECTMODE);
+	}
 }
