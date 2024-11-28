@@ -103,6 +103,7 @@ namespace
 	const float SNOW_MOVE_SPED = -10.0f;			// 雪の移動速度
 	const int MAX_SNOW_POS = 2200;					// 雪の最大生成場所
 	const int MIN_SNOW_POS = -2200;					// 雪の最低生成場所
+	const int BLIZZARD_CNT = 800;					// 吹雪が来るまでのカウント
 }
 
 //=====================================================
@@ -240,16 +241,14 @@ void CSelectMode::Update(void)
 		pSound->Play(CSound::LABEL_SE_SELECT);
 	}
 
+	// フェード中の場合抜ける
+	CFade* pFade = CFade::GetInstance();
+	if (pFade == nullptr)
+		assert(false);
+
 	// モード選択完了
 	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_ENTER))
 	{
-		// フェード中の場合抜ける
-		CFade* pFade = CFade::GetInstance();
-		if (pFade == nullptr)
-			assert(false);
-		if (pFade->GetState() != CFade::FADE_NONE)
-			return;
-
 		vector<bool> abEnter = { true };
 
 		switch (m_selectMode)
@@ -270,10 +269,16 @@ void CSelectMode::Update(void)
 		pSound->Play(CSound::LABEL_SE_DECISION);
 	}
 
+	//タイトルに戻る
+	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_BACK))
+	{
+		pFade->SetFade(CScene::MODE_TITLE);
+	}
+
 	m_nSnowStormCnt++;
 
 	// 吹雪を生成
-	if (m_nSnowStormCnt == 800)
+	if (m_nSnowStormCnt == BLIZZARD_CNT)
 	{
 		D3DXVECTOR3 posEffect = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		D3DXVECTOR3 rotEffect = { 0.0f,0.0f,0.0f };

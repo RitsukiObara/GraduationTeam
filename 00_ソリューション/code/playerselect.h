@@ -26,6 +26,8 @@ class CPlayer;
 class CInputManager;
 class CMeshCylinder;
 class CFan3D;
+class CCollisionSphere;
+class CShadow;
 
 //*****************************************************
 // クラスの定義
@@ -70,6 +72,8 @@ private:
 	CInputManager *m_apInputMgr[MAX_PLAYER];	// 入力マネージャーの配列
 	CMeshCylinder *m_pCylinder;	// 側面のシリンダー
 	CFan3D *m_pFan;				// 上側の円ポリゴン
+	CCollisionSphere* m_pCollisionSphere;	// 球の判定
+	CShadow* m_pShadow;						// 影のポインタ
 
 	// 静的メンバ変数
 };
