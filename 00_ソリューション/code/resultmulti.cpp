@@ -104,7 +104,7 @@ HRESULT CResultMulti::Init(void)
 	// メッシュフィールド
 	CMeshField* pMeshField = CMeshField::Create();
 	pMeshField->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	pMeshField->SetIdxTexture(CTexture::GetInstance()->Regist("data\\TEXTURE\\MATERIAL\\ice000.jpg"));
+	pMeshField->SetIdxTexture(CTexture::GetInstance()->Regist("data\\TEXTURE\\MATERIAL\\field.jpg"));
 	pMeshField->SetDivTex(128);
 
 	// かまくら
