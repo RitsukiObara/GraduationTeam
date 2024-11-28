@@ -1219,7 +1219,7 @@ void CPlayer::Debug(void)
 	CInputJoypad *pJoypad = CInputJoypad::GetInstance();
 	CInputManager *pInputMgr = CInputManager::GetInstance();
 
-	if (pDebugProc == nullptr || pInputKeyboard == nullptr || pJoypad == nullptr || pInputMgr == nullptr)
+	if (pDebugProc == nullptr || pInputKeyboard == nullptr || pJoypad == nullptr || pInputMgr == nullptr || m_pShadow == nullptr)
 		return;
 
 	pDebugProc->Print("\nƒvƒŒƒCƒ„[î•ñ==========================");
