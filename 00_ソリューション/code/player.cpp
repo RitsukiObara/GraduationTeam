@@ -444,7 +444,8 @@ void CPlayer::DecreaseMove(void)
 	D3DXVECTOR3 move = GetMove();
 
 	// à⁄ìÆó ÇÃå∏êä
-	move *= RATE_DECREASE_MOVE;
+	move.x *= RATE_DECREASE_MOVE;
+	move.z *= RATE_DECREASE_MOVE;
 
 	SetMove(move);
 }
