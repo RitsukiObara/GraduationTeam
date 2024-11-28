@@ -40,6 +40,7 @@ const float SPEED_ONESTEP = 1.1f;	// 一歩のスピード
 const float FACT_DECMOVE = 0.96f;	// 移動減衰係数
 
 const float RADIUS_HIT = 150.0f;	// ヒット判定の半径
+const float ASSAULT_SE_TIME = 1.0f;	// 突撃SE流す間隔
 
 //-----------------------------
 // 突進の定数
@@ -55,7 +56,7 @@ const float SPEED_ONESTEP = 1.0f;	// 一歩の速度
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
-CBears::CBears(int nPriority) : CEnemy(nPriority), m_pPlayerTarget(nullptr), m_vecCharge(), m_fTimerAcceleCharge(0.0f), m_bCharge(false)
+CBears::CBears(int nPriority) : CEnemy(nPriority), m_pPlayerTarget(nullptr), m_vecCharge(), m_fTimerAcceleCharge(0.0f), m_bCharge(false), m_fAssaultSETimer(0.0f)
 {
 
 }
@@ -501,8 +502,9 @@ void CBears::EndCharge(void)
 	// ターゲットのプレイヤーをnullにする
 	m_pPlayerTarget = nullptr;
 
-	// 加速タイマーリセット
+	// タイマーリセット
 	m_fTimerAcceleCharge = 0.0f;
+	m_fAssaultSETimer = 0.0f;
 
 	// 次の散歩先を探す
 	DecideNextStrollGrid();
@@ -543,6 +545,7 @@ void CBears::UpdateMove(void)
 void CBears::Charge(void)
 {
 	DisableTurn();
+	PlayAssaultSE();
 }
 
 //=====================================================
@@ -672,7 +675,9 @@ void CBears::ManageMotion(void)
 		if (m_bCharge)
 		{// 突進中
 			if (nMotion != E_Motion::MOTION_CHARGE || bFinish)
+			{
 				SetMotion(E_Motion::MOTION_CHARGE);
+			}
 		}
 		else
 		{// 振り向き中の時
@@ -779,6 +784,28 @@ void CBears::Event(EVENT_INFO* pEventInfo)
 
 		// エフェクトの発生
 		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_BEARSTEP, GetPosition());
+	}
+}
+
+//=====================================================
+// 突撃SE流す
+//=====================================================
+void CBears::PlayAssaultSE(void)
+{
+	// サウンド再生
+	CManager* pManager = CManager::GetInstance();
+	if (pManager != nullptr)
+	{
+		m_fAssaultSETimer += pManager->GetDeltaTime();
+		if (m_fAssaultSETimer >= ASSAULT_SE_TIME)
+		{// SE流す時間
+			m_fAssaultSETimer -= ASSAULT_SE_TIME;	// 時間減算
+			CSound* pSound = CSound::GetInstance();
+			if (pSound != nullptr)
+			{
+				pSound->Play(CSound::LABEL_SE_POLARBEAR_ASSALT);
+			}
+		}
 	}
 }
 

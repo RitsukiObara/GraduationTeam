@@ -78,12 +78,14 @@ private:
 	void DecideNextStrollGrid(void);				// 次の散歩先を決める
 	void Death(void) override;						// 死亡時の処理
 	void Event(EVENT_INFO* pEventInfo) override;	// モーションイベント
+	void PlayAssaultSE(void);						// 突撃SE流す
 
 	// メンバ変数
 	CPlayer *m_pPlayerTarget;	// ターゲットプレイヤー
 	D3DXVECTOR3 m_vecCharge;	// 突撃するベクトル
 	float m_fTimerAcceleCharge;	// 突撃加速カウンター
 	bool m_bCharge;				// 突撃フラグ
+	float m_fAssaultSETimer;	// 突撃SEを定期的に流すためのタイマー
 };
 
 #endif
