@@ -38,6 +38,7 @@ public:
 		LABEL_SE_PENGUIN_WALKING,		// ペンギンの歩く音
 		LABEL_SE_POLARBEAR_VOICE,		// シロクマ鳴き声
 		LABEL_SE_POLARBEAR_ASSALT,		// シロクマ突撃
+		LABEL_SE_ALBATROSS,				// アホウドリ鳴き声
 
 		LABEL_SE_PAUSE_MENU,			// ポーズ
 		LABEL_SE_PAUSE_ARROW,			// 移動
@@ -117,6 +118,7 @@ private:
 		{ "data/SOUND/SE/SE_Walking_Sound.wav",0 },		// ペンギンの歩く音
 		{ "data/SOUND/SE/SE_Polarbear_Voice.wav",0 },	// シロクマ鳴き声
 		{ "data/SOUND/SE/SE_Polarbear_Assault.wav",0 },	// シロクマ突撃
+		{ "data/SOUND/SE/SE_Albatross.wav",0 },			// アホウドリ鳴き声
 
 		{ "data/SOUND/SE/pause.wav",0 },				// ポーズ
 		{ "data/SOUND/SE/SE_ENTER00.wav",0 },			// 選択
