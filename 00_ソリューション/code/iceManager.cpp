@@ -129,14 +129,6 @@ void CIceManager::SetGridPos(void)
 			}
 
 			m_aGrid[i][j].pos = pos;
-
-#ifdef _DEBUG
-			//CPolygon3D *pPolygon = CPolygon3D::Create(pos);
-			
-			//pPolygon->SetMode(CPolygon3D::MODE::MODE_BILLBOARD);
-			//pPolygon->SetSize(WIDTH_GRID * 0.2f, WIDTH_GRID * 0.2f);
-			//pPolygon->SetVtx();
-#endif
 		}
 	}
 }
@@ -227,9 +219,6 @@ void CIceManager::SearchInvailStopIce(void)
 //=====================================================
 void CIceManager::SearchNotConnectIce(vector<CIce*> &rpIce)
 {
-	// 探索フラグの無効化
-	DisableFind();
-
 	for (int i = 0; i < m_nNumGridVirtical; i++)
 	{
 		for (int j = 0; j < m_nNumGridHorizontal; j++)
@@ -239,9 +228,6 @@ void CIceManager::SearchNotConnectIce(vector<CIce*> &rpIce)
 
 			if (m_aGrid[i][j].pIce->IsCanPeck())
 				continue;
-
-			// 探索フラグの無効化
-			DisableFind();
 
 			// 壊れないブロックが行う信号解除
 			DisableFromHardIce(i, j,false);
@@ -443,9 +429,6 @@ bool CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos, bool
 
 	// 氷探索の再帰関数
 	FindIce(nNumBreakV, nNumBreakH, 0, pIceStand, apIce,false);
-
-	// 探索フラグの無効化
-	DisableFind();
 
 	for (int i = 0; i < m_nNumGridVirtical; i++)
 	{
@@ -750,7 +733,10 @@ bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand, vecto
 		if (apIce[i] == nullptr)
 			continue;
 
-		if (apIce[i]->IsCanFind() == false)
+		if (!apIce[i]->IsCanFind())
+			continue;
+
+		if (!apIce[i]->IsCanPeck())
 			continue;
 
 		FindIce(aV[i], aH[i], nIdx, pIceStand, apIce, true);
@@ -799,8 +785,7 @@ void CIceManager::DisableFromHardIce(int nNumV, int nNumH, bool bPeck)
 	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
 		return;
 
-	if (m_aGrid[nNumV][nNumH].pIce->IsPeck())
-		return;
+	CEffect3D::Create(m_aGrid[nNumV][nNumH].pos, 100.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 
 	// 探索済みフラグを立てる
 	m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
@@ -809,7 +794,6 @@ void CIceManager::DisableFromHardIce(int nNumV, int nNumH, bool bPeck)
 	// 周辺グリッドの計算
 	int aV[DIRECTION_MAX] = {};
 	int aH[DIRECTION_MAX] = {};
-
 	Grid::CalcAroundGrids(nNumV, nNumH, aV, aH);
 
 	vector<CIce*> apIce(DIRECTION_MAX);
@@ -1015,6 +999,9 @@ void CIceManager::SummarizeIce(int nNumV, int nNumH)
 			continue;
 
 		if (!apIce[i]->IsBreak())
+			continue;
+
+		if (!apIce[i]->IsCanPeck())
 			continue;
 
 		// 流氷システムの生成
