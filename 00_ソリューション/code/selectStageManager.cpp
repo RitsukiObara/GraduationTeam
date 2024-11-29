@@ -22,6 +22,7 @@
 #include "particle.h"
 #include "ocean.h"
 #include "gameManager.h"
+#include "tutorial.h"
 
 //*****************************************************
 // ƒ}ƒNƒ’è‹`
@@ -453,7 +454,12 @@ void CSelectStageManager::EndEnter(void)
 	if (pFade == nullptr)
 		return;
 
-	pFade->SetFade(CScene::MODE::MODE_TUTORIAL);
+	bool bEnterTutorial = tutorial::LoadFrag();
+
+	if(bEnterTutorial)
+		pFade->SetFade(CScene::MODE::MODE_TUTORIAL);
+	else
+		pFade->SetFade(CScene::MODE::MODE_GAME);
 }
 
 //=====================================================
