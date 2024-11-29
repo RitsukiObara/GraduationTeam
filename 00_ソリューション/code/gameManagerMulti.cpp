@@ -14,6 +14,13 @@
 #include "UIplayer.h"
 #include "fade.h"
 
+//*****************************************************
+// 定数定義
+//*****************************************************
+namespace
+{
+}
+
 //=====================================================
 // コンストラクタ
 //=====================================================
@@ -50,6 +57,8 @@ HRESULT CGameManagerMulti::Init(void)
 		pPlayer->BindInputMgr(pInpuMgr);
 		pPlayer->SetID(i);
 		m_apPlayer.push_back(pPlayer);
+
+		pPlayer->ReLoadModel(&player::PATH_BODY[i][0]);
 	}
 
 	// プレイヤーUIの生成
