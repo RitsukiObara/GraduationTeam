@@ -179,6 +179,8 @@ HRESULT CTutorial::Init(void)
 
 		pPlayer->BindInputMgr(pInpuMgr);
 		pPlayer->SetID(i);
+
+		pPlayer->ReLoadModel(&player::PATH_BODY[i][0]);
 	}
 
 	if (CPlayer::GetNumPlayer() > 1)

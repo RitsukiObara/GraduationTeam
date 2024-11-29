@@ -386,6 +386,8 @@ void CPlayerSelect::CreatePlayer(int nIdx)
 	
 	if (m_apPlayer[nIdx] != nullptr)
 	{
+		m_apPlayer[nIdx]->ReLoadModel(&player::PATH_BODY[nIdx][0]);
+
 		// ƒvƒŒƒCƒ„[‰ŠúÝ’è
 		m_apPlayer[nIdx]->SetMove(INIT_MOVE_PLAYER);
 		m_apPlayer[nIdx]->SetState(CPlayer::STATE_NORMAL);

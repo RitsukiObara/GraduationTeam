@@ -276,10 +276,7 @@ void CEnemy::UpdateStop(void)
 //=====================================================
 void CEnemy::UpdateMove(void)
 {
-	if (m_bMoveByGrid)
-		MoveByGrid();		// グリッド基準の移動
-	else
-		MoveByNotGrid();	// グリッド基準じゃない移動
+	MoveByGrid();		// グリッド基準の移動
 }
 
 //=====================================================

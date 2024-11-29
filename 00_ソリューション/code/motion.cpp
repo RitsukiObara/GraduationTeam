@@ -488,10 +488,8 @@ void CMotion::Load(char* pPath)
 		}
 	}
 
-	//ZeroMemory(&m_aMotionInfo, sizeof(m_aMotionInfo));
 	ZeroMemory(&m_aKeyOld, sizeof(m_aKeyOld));
 	ZeroMemory(&m_apParts[0], sizeof(m_apParts));
-	//ZeroMemory(&m_abMotion[0], sizeof(m_abMotion));
 	m_nKey = 0;
 	m_nNumMotion = 0;
 
@@ -774,6 +772,77 @@ void CMotion::Load(char* pPath)
 
 				nCntMotion++;
 				m_nNumMotion++;
+			}
+			//===========================================================
+
+			if (strcmp(cTemp, "END_SCRIPT") == 0)
+			{
+				break;
+			}
+		}//while閉じ
+
+		fclose(pFile);
+	}
+	else
+	{
+		assert(("モーションデータ読み込みに失敗", false));
+	}
+}
+
+//=====================================================
+// モデルの再読み込み処理
+//=====================================================
+void CMotion::ReLoadModel(const char* pPath)
+{
+	//変数宣言
+	char cTemp[MAX_STRING];
+	int nCntMotion = 0;
+	int nCntModel = 0;
+
+	//ファイルから読み込む
+	FILE* pFile = fopen(pPath, "r");
+
+	if (pFile != nullptr)
+	{//ファイルが開けた場合
+		while (true)
+		{
+			//文字読み込み
+			(void)fscanf(pFile, "%s", &cTemp[0]);
+
+			//ファイル名読み込み=========================================
+			if (strcmp(cTemp, "NUM_MODEL") == 0)
+			{
+				//"="読み込み
+				(void)fscanf(pFile, "%s", &cTemp[0]);
+
+				//モデル数読み込み
+				(void)fscanf(pFile, "%d", &m_nNumParts);
+
+				for (int nCntFile = 0; nCntFile < m_nNumParts;)
+				{//ファイル名読み込み
+
+					(void)fscanf(pFile, "%s", &cTemp[0]);
+
+					if (strcmp(cTemp, "MODEL_FILENAME") == 0)
+					{//ファイル名読み込み
+						(void)fscanf(pFile, "%s", &cTemp[0]);
+
+						char aPath[MAX_STRING];
+
+						// モデルパス読込
+						(void)fscanf(pFile, "%s", &aPath[0]);
+
+						if (m_apParts[nCntFile]->pParts != nullptr)
+						{
+							int nIdx = CModel::Load(&aPath[0]);
+
+							// モデル読込
+							m_apParts[nCntFile]->pParts->BindModel(nIdx);
+						}
+
+						nCntFile++;
+					}
+				}
 			}
 			//===========================================================
 
