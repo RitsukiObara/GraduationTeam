@@ -99,12 +99,6 @@ HRESULT CBears::Init(void)
 		return E_FAIL;
 	}
 
-	// モーションを初期設定
-	SetMotion(E_Motion::MOTION_STARTJUMP);
-
-	// ポーズ初期化
-	InitPose(0);
-
 	// スピードを0に設定
 	SetSpeedMove(0.0f);
 
@@ -129,6 +123,7 @@ void CBears::SetApperTransform(void)
 
 	// 最初はグリッド位置をコピー
 	D3DXVECTOR3 posApper = posGrid;
+	m_posApper = posApper;
 
 	// 左下にずらす
 	posApper.x += WIDTH_APPER;
@@ -152,6 +147,9 @@ void CBears::SetApperTransform(void)
 
 	// 出現する場所に水しぶきを発生
 	CParticle::Create(posApper, CParticle::TYPE::TYPE_DROP);
+
+	// モーションを初期設定
+	SetMotion(E_Motion::MOTION_STARTJUMP);
 }
 
 //=====================================================
@@ -228,7 +226,10 @@ bool CBears::CollideLand(void)
 	CIce *pIce = pIceMgr->GetGridIce(&nIdxV, &nIdxH);
 
 	if (pIce == nullptr)
+	{
+		JudgeRetry();
 		return false;
+	}
 
 	// 位置取得
 	D3DXVECTOR3 pos = GetPosition();
@@ -246,6 +247,26 @@ bool CBears::CollideLand(void)
 	}
 
 	return false;
+}
+
+//=====================================================
+// 再度出現する判定
+//=====================================================
+void CBears::JudgeRetry(void)
+{
+	D3DXVECTOR3 pos = GetPosition();
+
+	if (pos.y < 0)
+	{
+		// 出現する場所に水しぶきを発生
+		CParticle::Create(m_posApper, CParticle::TYPE::TYPE_DROP);
+
+		E_Spawn spawn = GetSpawn();
+
+		// 再度出現処理に入る
+		InitGridIdx(spawn);
+		SetApperTransform();
+	}
 }
 
 //=====================================================

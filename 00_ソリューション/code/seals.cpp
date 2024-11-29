@@ -85,12 +85,6 @@ HRESULT CSeals::Init(void)
 		return E_FAIL;
 	}
 
-	// モーションを初期設定
-	SetMotion(E_Motion::MOTION_STARTJUMP);
-
-	// ポーズ初期化
-	InitPose(0);
-
 	// スピードを0に設定
 	SetSpeedMove(0.0f);
 
@@ -115,6 +109,7 @@ void CSeals::SetApperTransform(void)
 
 	// 最初はグリッド位置をコピー
 	D3DXVECTOR3 posApper = posGrid;
+	m_posApper = posApper;
 
 	// 左下にずらす
 	posApper.x += WIDTH_APPER;
@@ -138,6 +133,9 @@ void CSeals::SetApperTransform(void)
 
 	// 出現する場所に水しぶきを発生
 	CParticle::Create(posApper, CParticle::TYPE::TYPE_DROP);
+
+	// モーションを初期設定
+	SetMotion(E_Motion::MOTION_STARTJUMP);
 }
 
 //=====================================================
@@ -214,7 +212,10 @@ bool CSeals::CollideLand(void)
 	CIce *pIce = pIceMgr->GetGridIce(&nIdxV, &nIdxH);
 
 	if (pIce == nullptr)
+	{
+		JudgeRetry();
 		return false;
+	}
 
 	// 位置取得
 	D3DXVECTOR3 pos = GetPosition();
@@ -235,27 +236,37 @@ bool CSeals::CollideLand(void)
 }
 
 //=====================================================
+// 再度出現する判定
+//=====================================================
+void CSeals::JudgeRetry(void)
+{
+	D3DXVECTOR3 pos = GetPosition();
+
+	if (pos.y < 0)
+	{
+		// 出現する場所に水しぶきを発生
+		CParticle::Create(m_posApper, CParticle::TYPE::TYPE_DROP);
+
+		E_Spawn spawn = GetSpawn();
+
+		// 再度出現処理に入る
+		InitGridIdx(spawn);
+		SetApperTransform();
+	}
+}
+
+//=====================================================
 // 氷に向かって移動する
 //=====================================================
 void CSeals::MoveToIce(void)
 {
-	CIceManager *pIceMgr = CIceManager::GetInstance();
-
-	if (pIceMgr == nullptr)
-		return;
-
 	// 着地するグリッドの氷を取得
 	int nIdxV = GetGridV();
 	int nIdxH = GetGridH();
 
-	CIce *pIce = pIceMgr->GetGridIce(&nIdxV, &nIdxH);
-
-	if (pIce == nullptr)
-		return;
-
 	// 位置取得
 	D3DXVECTOR3 pos = GetPosition();
-	D3DXVECTOR3 posIce = pIce->GetPosition();
+	D3DXVECTOR3 posIce = m_posApper;
 
 	D3DXVECTOR3 posMove = pos;
 	
