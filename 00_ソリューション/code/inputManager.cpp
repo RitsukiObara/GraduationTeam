@@ -211,7 +211,7 @@ void CInputManager::Update(void)
 	(
 		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_B, m_nID) ||
 		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_BACK, m_nID) ||
-		pMouse->GetTrigger(CInputMouse::BUTTON_RMB)
+		pKeyboard->GetTrigger(DIK_BACK)
 	);
 
 	// スキップボタン
