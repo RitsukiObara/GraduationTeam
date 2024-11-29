@@ -17,6 +17,14 @@
 #include "debugproc.h"
 
 //*****************************************************
+// 定数定義
+//*****************************************************
+namespace
+{
+const float DEADZONE_DEFAULT = 0.2f;	// スティックのデッドゾーン
+}
+
+//*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
 vector<CInputManager*> CInputManager::s_aInputMgr;	// 格納用の配列
@@ -29,6 +37,7 @@ CInputManager::CInputManager()
 	ZeroMemory(&m_info, sizeof(S_Info));
 	ZeroMemory(&m_axis, sizeof(S_Axis));
 	m_nID = -1;
+	m_fDeadZone = 0.0f;
 }
 
 //=====================================================
@@ -317,7 +326,13 @@ void CInputManager::Update(void)
 
 	// 移動方向の設定=============
 	// ジョイパッド
-	m_axis.axisMove = D3DXVECTOR3(pJoypad->GetJoyStickLX(m_nID), 0.0f, pJoypad->GetJoyStickLY(m_nID));
+	D3DXVECTOR3 vecInput = D3DXVECTOR3(pJoypad->GetJoyStickLX(m_nID), 0.0f, pJoypad->GetJoyStickLY(m_nID));
+	float fLengthInput = sqrtf(vecInput.x * vecInput.x + vecInput.z * vecInput.z);
+
+	if (fLengthInput < DEADZONE_DEFAULT)
+		vecInput = { 0.0f,0.0f,0.0f };
+
+	m_axis.axisMove = vecInput;
 
 	// キーボード
 	if (pKeyboard->GetPress(DIK_W))

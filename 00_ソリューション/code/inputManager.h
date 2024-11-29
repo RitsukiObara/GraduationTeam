@@ -77,9 +77,10 @@ private:
 		bool abRelease[BUTTON_MAX];	// リリース情報
 	};
 
-	S_Info m_info;	// 情報
-	S_Axis m_axis;	// 方向の情報
-	int m_nID;	// 番号
+	S_Info m_info;		// 情報
+	S_Axis m_axis;		// 方向の情報
+	int m_nID;			// 番号
+	float m_fDeadZone;	// デッドゾーン
 
 	static vector<CInputManager*> s_aInputMgr;	// 格納用配列
 };
