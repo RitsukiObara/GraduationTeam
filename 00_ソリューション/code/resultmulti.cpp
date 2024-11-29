@@ -31,6 +31,7 @@
 #include "npcpenguin.h"
 #include "npcpenguinstate_resultmulti.h"
 #include "resultseal.h"
+#include "gameManager.h"
 
 //*****************************************************
 // 定数定義
@@ -52,6 +53,7 @@ namespace
 			D3DXVECTOR3(0.0f, 0.5471f * D3DX_PI, 0.0f),
 			D3DXVECTOR3(0.0f, 0.5f * D3DX_PI, 0.0f)
 		};
+		const int MAX_PLAYER = 4;	// 最大人数
 	}
 	namespace manual
 	{
@@ -117,17 +119,40 @@ HRESULT CResultMulti::Init(void)
 	assert(pSound != nullptr);
 	pSound->Play(pSound->LABEL_BGM_TITLE);
 
+	// 対戦結果取得
+	int playerNum = Penguin::MAX_PLAYER;
+	int winner = 0;
+	vector<bool> enablePlayer;
+	gameManager::LoadWinner(&playerNum, &winner);
+	for (int cnt = 0; cnt < Penguin::MAX_PLAYER; cnt++)
+	{
+		if (cnt < playerNum)
+		{
+			enablePlayer.push_back(true);
+		}
+		else
+		{
+			enablePlayer.push_back(false);
+		}
+	}
+
 	// 各ペンギン召喚
 	CNPCPenguin* pPenguin = nullptr;
 	// 勝者ペンギン
-	pPenguin = CNPCPenguin::Create(new CNPCPenguinState_BANZAI);
+	pPenguin = CNPCPenguin::Create(new CNPCPenguinState_BANZAI,(CNPCPenguin::SKIN)winner);
 	pPenguin->SetPosition(Penguin::WINNER_POS);
+	enablePlayer[winner] = false;	// 勝者を表示済みとしてfalseにしておく
 	// 敗者ペンギン
-	for (int cnt = 0; cnt < (int)Penguin::LOSER_POS.size(); cnt++)
+	int loser = 0;
+	for (int cnt = 0; cnt < Penguin::MAX_PLAYER; cnt++)
 	{
-		pPenguin = CNPCPenguin::Create(new CNPCPenguinState_Flee(D3DXVECTOR3(800.0f, -10.0f, 600.0f)));
-		pPenguin->SetPosition(Penguin::LOSER_POS[cnt]);
-		pPenguin->SetRotation(Penguin::LOSER_ROT[cnt]);
+		if (enablePlayer[cnt] == true)
+		{// まだ表示していない
+			pPenguin = CNPCPenguin::Create(new CNPCPenguinState_Flee(D3DXVECTOR3(800.0f, -10.0f, 600.0f)), (CNPCPenguin::SKIN)cnt);
+			pPenguin->SetPosition(Penguin::LOSER_POS[loser]);
+			pPenguin->SetRotation(Penguin::LOSER_ROT[loser]);
+			loser++;
+		}
 	}
 
 	// アザラシ召喚
