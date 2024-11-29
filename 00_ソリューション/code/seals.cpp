@@ -335,6 +335,10 @@ void CSeals::SarchTarget(void)
 
 		SetMotion(E_Motion::MOTION_WALK);
 	}
+	else
+	{
+
+	}
 }
 
 //=====================================================
@@ -481,16 +485,8 @@ void CSeals::ManageMotion(void)
 	}
 	else if (GetState() == CEnemy::E_State::STATE_MOVE)
 	{
-		if (m_pPlayerTarget == nullptr)
-		{// Ç‰Ç¡Ç≠ÇËï‡Ç´
-			if (nMotion != E_Motion::MOTION_NEUTRAL)
-				SetMotion(E_Motion::MOTION_NEUTRAL);
-		}
-		else
-		{// ëÅï‡Ç´
-			if (nMotion != E_Motion::MOTION_WALK)
-				SetMotion(E_Motion::MOTION_WALK);
-		}
+		if (nMotion != E_Motion::MOTION_WALK)
+			SetMotion(E_Motion::MOTION_WALK);
 	}
 }
 
