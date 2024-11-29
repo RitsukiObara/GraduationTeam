@@ -50,6 +50,16 @@ public:
 		MOTION_FALL,
 		MOTION_MAX
 	};
+	// ペンギンスキン列挙
+	enum SKIN
+	{
+		SKIN_NONE = 0,	// 自然体
+		SKIN_HEADBANG,	// ハチマキペンギン
+		SKIN_PILOT,		// パイロット
+		SKIN_PIRATE,	// 海賊
+		SKIN_SWIMSUIT,	// 水着（いるん？）
+		SKIN_MAX
+	};
 
 	CNPCPenguin(int nPriority = 4);	// コンストラクタ
 	~CNPCPenguin();	// デストラクタ
@@ -61,11 +71,10 @@ public:
 	void Draw(void);
 
 	// 静的メンバ関数
-	static CNPCPenguin* Create(INPCPenguinState* pState = nullptr);	// 生成処理
+	static CNPCPenguin* Create(INPCPenguinState* pState = nullptr, SKIN skin = SKIN_NONE);	// 生成処理
 
 	// 設定
 	void SetState(INPCPenguinState* pState);
-	void MotionState(void);	// モーション状態
 
 private:
 
@@ -73,8 +82,6 @@ private:
 	CCollisionSphere *m_pCollisionSphere;	// 球の判定
 	INPCPenguinState *m_pState;				// 動きステート
 	CShadow *m_pShadow;						// 影のポインタ
-
-	int nCntMove;	// 移動のカウント
 };
 
 //****************************************
