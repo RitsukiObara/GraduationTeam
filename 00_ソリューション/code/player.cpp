@@ -1312,7 +1312,7 @@ void CPlayer::Debug(void)
 	if (pIceMgr == nullptr)
 		return;
 
-	//CEffect3D::Create(pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH), 100.0f, 5, D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
+	CEffect3D::Create(pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH), 50.0f, 5, D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
 }
 
 //=====================================================

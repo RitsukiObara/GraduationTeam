@@ -34,7 +34,7 @@ const float DEPTH_GRID = Grid::SIZE - Grid::SIZE * RATE_HEX_Z;	// グリッドの奥行
 const float OCEAN_FLOW_MIN = 1.00f;								// 海流の速度最小
 const float OCEAN_FLOW_MAX = 5.00f;								// 海流の速度最大
 
-const float RANGE_SELECT_ICE = D3DX_PI / 6;	// 氷を選択するときの角度の範囲
+const float RANGE_SELECT_ICE = D3DX_PI;	// 氷を選択するときの角度の範囲
 
 const D3DXCOLOR COL_ICE[CIceManager::E_Pecker::PECKER_MAX] =	// 突っつく人による色
 {
@@ -349,6 +349,7 @@ bool CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, E
 	CIce* pIcePeck = nullptr;
 
 	// 向きに合わせて氷を選択
+	float fDiffMin = D3DX_PI * 2;
 	for (int i = 0; i < (int)apIce.size(); i++)
 	{
 		if (apIce[i] == nullptr)
@@ -356,18 +357,26 @@ bool CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, E
 
 		// 氷とスティック角度の比較
 		D3DXVECTOR3 posIce = apIce[i]->GetPosition();
-		bool bSelect = universal::IsInFanTargetYFlat(pos, posIce, fRot, RANGE_SELECT_ICE);
+		// 差分ベクトルの角度を取得
+		D3DXVECTOR3 vecDiff = posIce - pos;
+		float fRotToTarget = atan2f(vecDiff.x, vecDiff.z);
 
-		if (bSelect)
-		{// 氷が選べたらfor文を終了
-			pIcePeck = apIce[i];
+		// 差分角度が範囲内かどうか取得
+		float fRotDiff = fRotToTarget - fRot;
+		universal::LimitRot(&fRotDiff);
 
-			if (pDir != nullptr)	// 番号保存
-				*pDir = (E_Direction)i;
-			
-			*ppIce = pIcePeck;	// 選んでる氷保存
+		if (RANGE_SELECT_ICE * RANGE_SELECT_ICE > fRotDiff * fRotDiff)
+		{// 最低限選べる氷の判定
+			if (fRotDiff * fRotDiff < fDiffMin * fDiffMin)
+			{// 最小の角度なのを保存
+				fDiffMin = fRotDiff;
+				pIcePeck = apIce[i];
 
-			break;
+				if (pDir != nullptr)	// 番号保存
+					*pDir = (E_Direction)i;
+
+				*ppIce = pIcePeck;	// 選んでる氷保存
+			}
 		}
 	}
 
@@ -396,6 +405,8 @@ bool CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos, bool
 	CIce* pIcePeck = nullptr;
 
 	// 向きに合わせて氷を選択
+	float fDiffMin = D3DX_PI * 2;
+
 	for (auto it : apIce)
 	{
 		if (it == nullptr)
@@ -403,14 +414,27 @@ bool CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos, bool
 
 		// 氷とスティック角度の比較
 		D3DXVECTOR3 posIce = it->GetPosition();
-		bool bSelect = universal::IsInFanTargetYFlat(pos, posIce, fRot, RANGE_SELECT_ICE);
 
-		if (bSelect)
-		{// 氷が選べたらfor文を終了
-			pIcePeck = it;
-			break;
+		// 差分ベクトルの角度を取得
+		D3DXVECTOR3 vecDiff = posIce - pos;
+		float fRotToTarget = atan2f(vecDiff.x, vecDiff.z);
+
+		// 差分角度が範囲内かどうか取得
+		float fRotDiff = fRotToTarget - fRot;
+		universal::LimitRot(&fRotDiff);
+
+		if (RANGE_SELECT_ICE * RANGE_SELECT_ICE > fRotDiff * fRotDiff)
+		{// 最低限選べる氷の判定
+			if (fRotDiff * fRotDiff < fDiffMin * fDiffMin)
+			{
+				fDiffMin = fRotDiff;
+				pIcePeck = it;
+			}
 		}
 	}
+
+	if (pIcePeck == nullptr)
+		return false;
 
 	// 番号を取得
 	GetIceIndex(pIcePeck, &nNumBreakV, &nNumBreakH);

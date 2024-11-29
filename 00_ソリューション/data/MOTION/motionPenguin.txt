@@ -446,7 +446,7 @@ MOTIONSET
     EVENTSET
         KEY = 1
         FRAME = 7
-        NUM_FRAME = 1.0
+        NUM_FRAME = 0.5
         RADIUS = 20.500000
         PARENT = 0
         POS = 0.000000 0.0 0.0
