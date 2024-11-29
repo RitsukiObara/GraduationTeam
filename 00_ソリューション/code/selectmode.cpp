@@ -33,6 +33,7 @@
 #include "snow.h"
 #include "inputkeyboard.h"
 #include "MyEffekseer.h"
+#include "tutorial.h"
 
 //*****************************************************
 // 定数定義
@@ -182,6 +183,9 @@ HRESULT CSelectMode::Init(void)
 
 	// 入力マネージャー生成
 	CInputManager::Create();
+
+	// チュートリアルフラグをリセット
+	tutorial::SaveFrag(true);
 
 	return S_OK;
 }

@@ -89,4 +89,10 @@ private:
 	static CTutorial *s_pTutorial;					// 自身のポインタ
 };
 
+namespace tutorial
+{
+void SaveFrag(bool bValue);
+bool LoadFrag(void);
+}
+
 #endif
