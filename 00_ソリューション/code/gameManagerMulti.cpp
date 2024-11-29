@@ -188,4 +188,20 @@ void CGameManagerMulti::EndGame(void)
 
 	if (pFade != nullptr)
 		pFade->SetFade(CScene::MODE_RESULTMULTI);
+
+	// ŸÒî•ñæ“¾
+	int winner = -1;
+	for (int cnt = 0; cnt < (int)m_apPlayer.size(); cnt++)
+	{
+		if(m_apPlayer[cnt] != nullptr)
+		{
+			winner = cnt;
+			break;
+		}
+	}
+	// Q‰Ál”æ“¾
+	int playerNum = m_nNumDeathPlayer + 1;
+
+	// ŸÒî•ñ‘‚«o‚µ
+	gameManager::SaveWinner(playerNum, winner);
 }

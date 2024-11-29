@@ -13,6 +13,7 @@
 #include "debugproc.h"
 #include "motion.h"
 #include "shadow.h"
+#include "player.h"
 
 //*****************************************************
 // 定数定義
@@ -24,12 +25,13 @@ namespace
 		const vector<string> PATH_MODEL =
 		{
 			"data\\MOTION\\motionPenguin.txt",	// 自然体
-			"data\\MOTION\\motionPenguin_HeadBang.txt",	// ハチマキ
 			"data\\MOTION\\motionPenguin_Pilot.txt",	// パイロット
+			"data\\MOTION\\motionPenguin_HeadBang.txt",	// ハチマキ
 			"data\\MOTION\\motionPenguin_Pirate.txt",	// 海賊
 			"data\\MOTION\\motionPenguin_SwimSuit.txt",	// 水着
 		};
 	}
+	const string DEFAULT_PATH_MODEL = "data\\MOTION\\motionPenguin.txt";
 	const float SCALE_BODY = 1.8f;	// 体のスケール
 	
 	const float FACT_DECREASE_MOVE = 0.9f;	// 移動量の減衰係数
@@ -66,7 +68,14 @@ CNPCPenguin* CNPCPenguin::Create(INPCPenguinState* pState, SKIN skin)
 	if (pNPCPenguin != nullptr)
 	{
 		// 初期化前にスキン設定
-		pNPCPenguin->Load((char*)&Skin::PATH_MODEL[skin][0]);
+		if (skin == SKIN::SKIN_NONE)
+		{
+			pNPCPenguin->Load((char*)&DEFAULT_PATH_MODEL[0]);
+		}
+		else
+		{
+			pNPCPenguin->Load((char*)&player::PATH_BODY[skin][0]);
+		}
 
 		// 初期化
 		pNPCPenguin->Init();
