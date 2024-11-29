@@ -53,11 +53,11 @@ public:
 	// ペンギンスキン列挙
 	enum SKIN
 	{
-		SKIN_NONE = 0,	// 自然体
-		SKIN_HEADBANG,	// ハチマキペンギン
-		SKIN_PILOT,		// パイロット
-		SKIN_PIRATE,	// 海賊
-		SKIN_SWIMSUIT,	// 水着（いるん？）
+		SKIN_PILOT = 0,		// パイロット
+		SKIN_HEADBANG,		// ハチマキペンギン
+		SKIN_PIRATE,		// 海賊
+		SKIN_SWIMSUIT,		// 水着（いるん？）
+		SKIN_NONE,			// 自然体
 		SKIN_MAX
 	};
 

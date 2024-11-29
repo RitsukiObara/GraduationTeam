@@ -30,6 +30,7 @@ namespace
 {
 const string PATH_TEX = "data\\TEMP\\mode.txt";	// モードのパス
 const string PATH_IDXMAP = "data\\TEMP\\mapIdx.bin";	// マップ番号のパス
+const string PATH_WINNER = "data\\TEMP\\winner.bin";	// 勝者のパス
 const int PLAY_SOUND_SEA_COUNT = 60 * 24;	// 静かな海サウンド再生時間（右側変更で秒数変更）
 }
 
@@ -253,6 +254,8 @@ void LoadMode(CGame::E_GameMode *pMode, vector<bool> &rbPlayerEnter)
 	{
 		assert(("ファイルが開けませんでした", false));
 	}
+
+
 }
 
 // マップ番号保存
@@ -286,5 +289,38 @@ int LoadIdxMap(void)
 	inputFile.close();
 
 	return nIdx;
+}
+
+// 勝者保存
+void SaveWinner(int playerNum, int winner)
+{
+	// ファイルを開く
+	std::ofstream outputFile(PATH_WINNER, std::ios::binary);
+
+	if (!outputFile.is_open())
+		assert(false);
+
+	// データの保存
+	outputFile.write(reinterpret_cast<char*>(&playerNum), sizeof(int));
+	outputFile.write(reinterpret_cast<char*>(&winner), sizeof(int));
+
+	outputFile.close();
+}
+
+// 勝者読込
+bool LoadWinner(int *playerNum, int *winner)
+{
+	// ファイルを開く
+	std::ifstream inputFile(PATH_WINNER, std::ios::binary);
+
+	if (!inputFile.is_open())
+		return false;
+
+	inputFile.read(reinterpret_cast<char*>(playerNum), sizeof(int));
+	inputFile.read(reinterpret_cast<char*>(winner), sizeof(int));
+
+	inputFile.close();
+
+	return true;
 }
 }

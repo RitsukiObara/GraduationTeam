@@ -59,6 +59,7 @@ public:
 	~CEnemy();	// デストラクタ
 
 	// メンバ関数
+	void InitGridIdx(E_Spawn spawn);	// グリッド番号の初期化
 	HRESULT Init(void);	// 初期化
 	void Uninit(void);	// 終了
 	void Update(void);	// 更新
@@ -114,8 +115,12 @@ public:
 
 	void SetState(E_State state) { m_state = state; }	// 状態
 	E_State GetState(void) { return m_state; }
+
 	void SetMove(D3DXVECTOR3 move) { m_move = move; }	// 移動量
 	D3DXVECTOR3 GetMove(void) { return m_move; }
+
+	void SetSpawn(E_Spawn spawn) { m_spawn = spawn; }	// スポーンパターン
+	E_Spawn GetSpawn(void) { return m_spawn; }
 
 	// 静的メンバ関数
 	static CEnemy* Create(int nType, E_Spawn spawn = E_Spawn::SPAWN_RU);	// 生成処理
@@ -123,7 +128,6 @@ public:
 
 private:
 	// メンバ関数
-	void InitGridIdx(E_Spawn spawn);	// グリッド番号の初期化
 	virtual void SetApperTransform(void) = 0;	// 出現時のトランスフォーム設定
 
 	void SarchNearIceToDest(void);								// 目標に近い氷を探す
@@ -163,6 +167,7 @@ private:
 	bool m_bMoveByGrid;		// グリッド基準の移動フラグ
 	E_State m_state;		// 状態
 	
+	E_Spawn m_spawn;				// スポーンパターン
 	CIce *m_pIceLand;				// 乗っている氷
 	CFlowIce *m_pLandSystemFlow;	// 乗ってる流氷システム
 	CShadow *m_pShadow;				// 影のポインタ

@@ -83,6 +83,8 @@ public:
 	void Update(void);
 	void Draw(void);
 	void Load(char* pPath);
+	void ReLoadModel(const char* pPath);
+
 	void MultiplyMtx(bool bDrawParts = true);	// マトリックスをかけ合わせる
 	void SetPosShadow(D3DXVECTOR3 pos) { m_posShadow = pos; }	// 設定処理
 	void SetPositionOld(D3DXVECTOR3 pos) { m_posOld = pos; }	// 設定処理

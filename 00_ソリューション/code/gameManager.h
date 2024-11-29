@@ -60,6 +60,9 @@ void LoadMode(CGame::E_GameMode *pMode, vector<bool> &rbPlayerEnter);	// ÉÇÅ[Éhì
 
 void SaveIdxMap(int nIdx);
 int LoadIdxMap(void);
+
+void SaveWinner(int playerNum,int winner);
+bool LoadWinner(int *playerNum, int *winner);
 }
 
 #endif

@@ -35,6 +35,7 @@ public:
 	
 	void UpdateApper(void) override;	// 出現状態の更新
 	bool CollideLand(void);	// 着地判定
+	void JudgeRetry(void);	// 再度出現判定
 
 	void UpdateStop(void) override;		// 停止状態の更新
 
@@ -76,6 +77,7 @@ private:
 
 	// メンバ変数
 	CPlayer *m_pPlayerTarget;	// ターゲットプレイヤー
+	D3DXVECTOR3 m_posApper;		// 出現する位置
 };
 
 #endif

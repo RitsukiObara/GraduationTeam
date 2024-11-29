@@ -14,6 +14,13 @@
 #include "UIplayer.h"
 #include "fade.h"
 
+//*****************************************************
+// 定数定義
+//*****************************************************
+namespace
+{
+}
+
 //=====================================================
 // コンストラクタ
 //=====================================================
@@ -50,6 +57,8 @@ HRESULT CGameManagerMulti::Init(void)
 		pPlayer->BindInputMgr(pInpuMgr);
 		pPlayer->SetID(i);
 		m_apPlayer.push_back(pPlayer);
+
+		pPlayer->ReLoadModel(&player::PATH_BODY[i][0]);
 	}
 
 	// プレイヤーUIの生成
@@ -179,4 +188,20 @@ void CGameManagerMulti::EndGame(void)
 
 	if (pFade != nullptr)
 		pFade->SetFade(CScene::MODE_RESULTMULTI);
+
+	// 勝者情報取得
+	int winner = -1;
+	for (int cnt = 0; cnt < (int)m_apPlayer.size(); cnt++)
+	{
+		if(m_apPlayer[cnt] != nullptr)
+		{
+			winner = cnt;
+			break;
+		}
+	}
+	// 参加人数取得
+	int playerNum = m_nNumDeathPlayer + 1;
+
+	// 勝者情報書き出し
+	gameManager::SaveWinner(playerNum, winner);
 }

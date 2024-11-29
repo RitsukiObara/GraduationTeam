@@ -30,6 +30,7 @@ public:
 	
 	void UpdateApper(void) override;	// 出現状態の更新
 	bool CollideLand(void);	// 着地判定
+	void JudgeRetry(void);	// 再度出現判定
 
 	void UpdateStop(void) override;		// 停止状態の更新
 
@@ -86,6 +87,7 @@ private:
 	float m_fTimerAcceleCharge;	// 突撃加速カウンター
 	bool m_bCharge;				// 突撃フラグ
 	float m_fAssaultSETimer;	// 突撃SEを定期的に流すためのタイマー
+	D3DXVECTOR3 m_posApper;		// 出現する位置
 };
 
 #endif

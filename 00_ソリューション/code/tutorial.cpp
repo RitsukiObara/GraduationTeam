@@ -90,6 +90,8 @@ namespace gauge
 const float TIME_SKIP = 3.0f;				// スキップにかかる時間
 const D3DXVECTOR3 POS = { 0.85f,0.9f,0.0f };	// 位置
 }
+
+const string PATH_TEMP_FRAG = "data\\TEMP\\tutorialfrag.bin";	// チュートリアルフラグの保存パス
 }
 
 //*****************************************************
@@ -179,6 +181,8 @@ HRESULT CTutorial::Init(void)
 
 		pPlayer->BindInputMgr(pInpuMgr);
 		pPlayer->SetID(i);
+
+		pPlayer->ReLoadModel(&player::PATH_BODY[i][0]);
 	}
 
 	if (CPlayer::GetNumPlayer() > 1)
@@ -217,6 +221,9 @@ HRESULT CTutorial::Init(void)
 		return E_FAIL;
 
 	m_pGaugeSkip->SetPosition(gauge::POS);
+
+	// チュートリアルフラグをリセット
+	tutorial::SaveFrag(false);
 
 	return S_OK;
 }
@@ -458,4 +465,40 @@ void CTutorial::Debug(void)
 	pDebugProc->Print("\nチュートリアル情報========================================");
 	pDebugProc->Print("\n状態[%d]", m_state);
 	pDebugProc->Print("\nカウンター[%d]", m_nCntProgress);
+}
+
+namespace tutorial
+{
+// フラグのセーブ
+void SaveFrag(bool bValue)
+{
+	// ファイルを開く
+	std::ofstream outputFile(PATH_TEMP_FRAG, std::ios::binary);
+
+	if (!outputFile.is_open())
+		assert(false);
+
+	// データの保存
+	outputFile.write(reinterpret_cast<char*>(&bValue), sizeof(bool));
+
+	outputFile.close();
+}
+
+// フラグのロード
+bool LoadFrag(void)
+{
+	// ファイルを開く
+	std::ifstream inputFile(PATH_TEMP_FRAG, std::ios::binary);
+
+	if (!inputFile.is_open())
+		assert(false);
+
+	bool bFrag;
+
+	inputFile.read(reinterpret_cast<char*>(&bFrag), sizeof(bool));
+
+	inputFile.close();
+
+	return bFrag;
+}
 }
