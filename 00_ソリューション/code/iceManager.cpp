@@ -350,6 +350,10 @@ void CIceManager::StopIce(CIce *pIce)
 //=====================================================
 bool CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, E_Direction *pDir, CIce **ppIce)
 {
+	if (nNumV < 0 || nNumV >= m_nNumGridVirtical ||
+		nNumH < 0 || nNumH >= m_nNumGridHorizontal)
+		return false;
+
 	CIce *pIceStand = m_aGrid[nNumV][nNumH].pIce;
 	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
 
@@ -393,6 +397,10 @@ bool CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, E
 //=====================================================
 bool CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos, bool *pResultBreak)
 {
+	if (nNumV < 0 || nNumV >= m_nNumGridVirtical ||
+		nNumH < 0 || nNumH >= m_nNumGridHorizontal)
+		return false;
+
 	CIce *pIceStand = m_aGrid[nNumV][nNumH].pIce;
 	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
 
@@ -599,6 +607,10 @@ void CIceManager::DeleteIce(CIce *pIce)
 //=====================================================
 void CIceManager::Collide(D3DXVECTOR3 *pPos, int nIdxV, int nIdxH, float fRate)
 {
+	if (nIdxV < 0 || nIdxV >= m_nNumGridVirtical ||
+		nIdxH < 0 || nIdxH >= m_nNumGridHorizontal)
+		return;
+
 	if (pPos == nullptr)
 		return;
 
@@ -625,6 +637,10 @@ void CIceManager::Collide(D3DXVECTOR3 *pPos, CIce *pIce, float fRate)
 //=====================================================
 void CIceManager::LimitInIce(D3DXVECTOR3 *pPos, int nNumV, int nNumH)
 {
+	if (nNumV < 0 || nNumV >= m_nNumGridVirtical ||
+		nNumH < 0 || nNumH >= m_nNumGridHorizontal)
+		return;
+
 	if (pPos == nullptr)
 		return;
 
@@ -681,6 +697,10 @@ CIce *CIceManager::GetNearestIce(D3DXVECTOR3 pos, int *pNumV, int *pNumH)
 //=====================================================
 bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand, vector<CIce*> apIceLast, bool bBreakLast)
 {
+	if (nNumV < 0 || nNumV >= m_nNumGridVirtical ||
+		nNumH < 0 || nNumH >= m_nNumGridHorizontal)
+		return false;
+
 	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
 		return false;
 	
@@ -772,6 +792,10 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 //=====================================================
 void CIceManager::DisableFromHardIce(int nNumV, int nNumH, bool bPeck)
 {
+	if (nNumV < 0 || nNumV >= m_nNumGridVirtical ||
+		nNumH < 0 || nNumH >= m_nNumGridHorizontal)
+		return;
+
 	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
 		return;
 
@@ -826,6 +850,10 @@ void CIceManager::DisableFromHardIce(int nNumV, int nNumH, bool bPeck)
 //=====================================================
 void CIceManager::DisableFromPlayer(int nNumV, int nNumH, CIce *pIcePeck, vector<CIce*> apIce)
 {
+	if (nNumV < 0 || nNumV >= m_nNumGridVirtical ||
+		nNumH < 0 || nNumH >= m_nNumGridHorizontal)
+		return;
+
 	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
 		return;
 
@@ -888,6 +916,10 @@ void CIceManager::DisableFromPlayer(int nNumV, int nNumH, CIce *pIcePeck, vector
 //=====================================================
 void CIceManager::DisableBreak(int nNumV, int nNumH)
 {
+	if (nNumV < 0 || nNumV >= m_nNumGridVirtical ||
+		nNumH < 0 || nNumH >= m_nNumGridHorizontal)
+		return;
+
 	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
 		return;
 
@@ -945,6 +977,10 @@ void CIceManager::DisableBreak(int nNumV, int nNumH)
 //=====================================================
 void CIceManager::SummarizeIce(int nNumV, int nNumH)
 {
+	if (nNumV < 0 || nNumV >= m_nNumGridVirtical ||
+		nNumH < 0 || nNumH >= m_nNumGridHorizontal)
+		return;
+
 	// 周辺グリッドの計算
 	vector<CIce*> apIce(DIRECTION_MAX);
 	int aV[DIRECTION_MAX] = {};
@@ -994,6 +1030,10 @@ void CIceManager::SummarizeIce(int nNumV, int nNumH)
 //=====================================================
 void CIceManager::SaveFlowIce(int nNumV, int nNumH, CFlowIce *pFlowIce)
 {
+	if (nNumV < 0 || nNumV >= m_nNumGridVirtical ||
+		nNumH < 0 || nNumH >= m_nNumGridHorizontal)
+		return;
+
 	// 周辺グリッドの計算
 	vector<CIce*> apIce(DIRECTION_MAX);
 	int aV[DIRECTION_MAX] = {};
@@ -1111,6 +1151,10 @@ bool CIceManager::CheckCorner(int nNumV, int nNumH)
 //=====================================================
 void CIceManager::BreakPeck(int nNumV, int nNumH)
 {
+	if (nNumV < 0 || nNumV >= m_nNumGridVirtical ||
+		nNumH < 0 || nNumH >= m_nNumGridHorizontal)
+		return;
+
 	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
 
 	int nNumIce = 0;
@@ -1322,6 +1366,10 @@ bool CIceManager::IsInIce(D3DXVECTOR3 pos, CIce *pIce, float fRate)
 //=====================================================
 bool CIceManager::SetIceInGrid(int nNumV, int nNumH, CIce *pIce)
 {
+	if (nNumV < 0 || nNumV >= m_nNumGridVirtical ||
+		nNumH < 0 || nNumH >= m_nNumGridHorizontal)
+		return false;
+
 	if (m_aGrid.empty())
 		return false;
 
