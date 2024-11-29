@@ -19,7 +19,17 @@
 //*****************************************************
 namespace
 {
-	const std::string PATH_BODY = "data\\MOTION\\motionPenguin.txt";	// ボディのパス
+	namespace Skin
+	{
+		const vector<string> PATH_MODEL =
+		{
+			"data\\MOTION\\motionPenguin.txt",	// 自然体
+			"data\\MOTION\\motionPenguin_HeadBang.txt",	// ハチマキ
+			"data\\MOTION\\motionPenguin_Pilot.txt",	// パイロット
+			"data\\MOTION\\motionPenguin_Pirate.txt",	// 海賊
+			"data\\MOTION\\motionPenguin_SwimSuit.txt",	// 水着
+		};
+	}
 	const float SCALE_BODY = 1.8f;	// 体のスケール
 	
 	const float FACT_DECREASE_MOVE = 0.9f;	// 移動量の減衰係数
@@ -34,7 +44,6 @@ namespace
 CNPCPenguin::CNPCPenguin(int nPriority) : CMotion(nPriority)
 {
 	m_pCollisionSphere = nullptr;
-	nCntMove = 0;
 }
 
 //=====================================================
@@ -48,7 +57,7 @@ CNPCPenguin::~CNPCPenguin()
 //=====================================================
 // 生成処理
 //=====================================================
-CNPCPenguin* CNPCPenguin::Create(INPCPenguinState* pState)
+CNPCPenguin* CNPCPenguin::Create(INPCPenguinState* pState, SKIN skin)
 {
 	CNPCPenguin *pNPCPenguin = nullptr;
 
@@ -56,6 +65,10 @@ CNPCPenguin* CNPCPenguin::Create(INPCPenguinState* pState)
 
 	if (pNPCPenguin != nullptr)
 	{
+		// 初期化前にスキン設定
+		pNPCPenguin->Load((char*)&Skin::PATH_MODEL[skin][0]);
+
+		// 初期化
 		pNPCPenguin->Init();
 		if (pState != nullptr)
 		{
@@ -89,9 +102,6 @@ void CNPCPenguin::SetState(INPCPenguinState* pState)
 //=====================================================
 HRESULT CNPCPenguin::Init(void)
 {
-	// 読込
-	Load((char*)&PATH_BODY[0]);
-
 	// 継承クラスの初期化
 	CMotion::Init();
 
@@ -163,27 +173,6 @@ void CNPCPenguin::Update(void)
 	{
 		m_pState->Update(this);
 	}
-}
-
-//=====================================================
-// モーション状態
-//=====================================================
-void CNPCPenguin::MotionState(void)
-{
-	nCntMove++;
-
-	if (nCntMove > 70)
-	{
-		int nRandNextMotion = universal::RandRange(CNPCPenguin::MOTION::MOTION_WALK, CNPCPenguin::MOTION::MOTION_WALK);
-
-
-		nCntMove = 0;
-	}
-
-	//else
-	//{
-	//	pPenguin->SetMotion(CNPCPenguin::MOTION::MOTION_NEUTRAL);
-	//}
 }
 
 //=====================================================
