@@ -59,6 +59,9 @@ const int PECK_VIBRATION_TIME = 10;			// Š„‚éŽž‚ÌU“®ŽžŠÔ
 const float POW_VIB_BREAK = 0.8f;	// ‰ó‚µ‚½Žž‚ÌU“®‹­‚³
 const int TIME_VIB_BREAK = 50;		// ‰ó‚µ‚½Žž‚ÌU“®ŽžŠÔ
 
+const float POW_VIB_FLOW = 0.7f;	// —¬‚³‚ê‚Ä‚éŽž‚ÌU“®‹­‚³
+const int TIME_VIB_FLOW = 10;		// —¬‚³‚ê‚Ä‚éŽž‚ÌU“®ŽžŠÔ
+
 //-------------------------------
 // ƒWƒƒƒ“ƒv‚Ì’è”
 //-------------------------------
@@ -781,6 +784,13 @@ void CPlayer::StayFlow(void)
 
 	// —¬•X“à‚ÉˆÊ’u‚ð§ŒÀ
 	LimitInSideFlowIce();
+
+	// ƒRƒ“ƒgƒ[ƒ‰[‚ðU“®‚³‚¹‚é
+	CInputJoypad* pInputJoypad = CInputJoypad::GetInstance();
+	if (pInputJoypad == nullptr)
+		return;
+
+	pInputJoypad->Vibration(m_nID, POW_VIB_FLOW, TIME_VIB_FLOW);
 
 	// •Y—¬’†‚ÌŽ€
 	FlowDeath();
