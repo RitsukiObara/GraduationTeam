@@ -50,6 +50,7 @@ const float SPEED_PARTICLE = 22.0f;								// パーティクルの速度
 const D3DXVECTOR3 BANNER_POS = D3DXVECTOR3(0.0f, 0.0, 1300.0);	// 看板の位置
 
 const float HEIGHT_NUMBER = 0.14f;				// 名前の高さ
+const float ADULTWALL_LENGTH = 3000.0f;	// 大人の壁
 const D3DXVECTOR2 SIZE_NAME = { 0.25f, 0.06f };	// 名前のサイズ
 }
 
@@ -298,6 +299,9 @@ void CSelectStageManager::Update(void)
 	else
 		// モードセレクトに戻る処理
 		ModeSelectBack();
+
+	// 大人の壁判定
+	CollisionAdultWall();
 	
 
 #ifdef _DEBUG
@@ -491,6 +495,24 @@ void CSelectStageManager::EndEnter(void)
 	else
 		pFade->SetFade(CScene::MODE::MODE_GAME);
 }
+
+//=====================================================
+// 大人の壁判定
+//=====================================================
+void CSelectStageManager::CollisionAdultWall(void)
+{
+	D3DXVECTOR3 pos = m_pPenguin->GetPosition();
+	float length = D3DXVec3Length(&pos);	// 距離計算
+
+	if (length >= ADULTWALL_LENGTH)
+	{// 大人の壁範囲外
+		D3DXVECTOR3 vec;
+		D3DXVec3Normalize(&vec, &pos);	// 正規化
+		pos = vec * ADULTWALL_LENGTH;	// 大人の壁範囲内に収める
+		m_pPenguin->SetPosition(pos);	// 位置設定
+	}
+}
+
 
 //=====================================================
 // デバッグ処理

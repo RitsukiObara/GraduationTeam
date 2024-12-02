@@ -81,6 +81,7 @@ private:
 	void StartEnter(void);	// エンター開始
 	void StayEnter(void);	// エンター中の処理
 	void EndEnter(void);	// エンター終了
+	void CollisionAdultWall(void);	// 大人の壁判定
 
 	void ModeSelectBack(void);	// モードセレクトに戻る関数
 
