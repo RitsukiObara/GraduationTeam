@@ -16,6 +16,7 @@
 #include "sound.h"
 #include "player.h"
 #include "camera.h"
+#include "inputjoypad.h"
 
 //*****************************************************
 // 定数定義
@@ -26,6 +27,9 @@ const float TIME_DELETE = 20.0f;	// 氷が消えるまでの時間
 
 const float POW_CAMERAQUAKE_DEFAULT = 0.1f;		// カメラの揺れのデフォルト値
 const int FRAME_CAMERAQUAKE_DEFAULT = 30;		// カメラの揺れのデフォルトフレーム数
+
+const float POW_VIB_CHAIN = 0.6f;	// 連結時のコントローラー揺れ強さ
+const int TIME_VIB_CHAIN = 40;		// 連結時のコントローラー揺れ長さ
 }
 
 //*****************************************************
@@ -182,6 +186,14 @@ void CFlowIce::StopAllIce(void)
 
 	if (pCamera != nullptr)
 		pCamera->SetQuake(POW_CAMERAQUAKE_DEFAULT, POW_CAMERAQUAKE_DEFAULT, FRAME_CAMERAQUAKE_DEFAULT);
+
+	// コントローラーを振動させる
+	CInputJoypad* pInputJoypad = CInputJoypad::GetInstance();
+
+	if (pInputJoypad == nullptr)
+		return;
+
+	pInputJoypad->Vibration(POW_VIB_CHAIN, TIME_VIB_CHAIN);
 }
 
 //=====================================================

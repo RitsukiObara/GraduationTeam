@@ -364,7 +364,7 @@ void CTitle::Input(void)
 		if (pInput->GetTrigger(CInputManager::BUTTON_ENTER))	// ENTER‰Ÿ‚µ‚½‚Æ‚«
 		{
 			// joypadU“®‚³‚¹‚é
-			pInputJoypad->Vibration(0, CInputJoypad::PADVIB_USE, VIBRATION_POWER, VIBRATION_TIME);
+			pInputJoypad->Vibration(0, VIBRATION_POWER, VIBRATION_TIME);
 
 			// Œˆ’è‰¹‚ð–Â‚ç‚·
 			CSound::GetInstance()->Play(CSound::LABEL_SE_DECISION);

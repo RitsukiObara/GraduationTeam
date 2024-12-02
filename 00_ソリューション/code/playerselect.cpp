@@ -420,7 +420,7 @@ void CPlayerSelect::CreatePlayer(int nIdx)
 		m_apPlayer[nIdx]->SetMotion(CPlayer::MOTION::MOTION_MULTIAPPEAR);
 
 		// joypad振動させる
-		pInputJoypad->Vibration(nIdx, CInputJoypad::PADVIB_USE, 0.6f, 15);
+		pInputJoypad->Vibration(nIdx, 0.6f, 15);
 
 		// パーティクルの発生
 		CParticle::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), CParticle::TYPE::TYPE_ENTERPLAYER);
