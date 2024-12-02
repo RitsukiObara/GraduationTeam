@@ -88,7 +88,10 @@ public:
 	float GetTriggerL(int nPlayer);
 	float GetTriggerR(int nPlayer);
 	D3DXVECTOR3 GetVecStickL(void);
-	void Vibration(int nPlayer, PADVIB state, float fVib, int nTime);
+	void Vibration(int nPlayer, float fVib, int nTime);
+	void Vibration(float fVib, int nTime);
+
+	// Ã“Iƒƒ“ƒoŠÖ”
 	static CInputJoypad *GetInstance(void) { return m_pJoyPad; }
 
 private:
