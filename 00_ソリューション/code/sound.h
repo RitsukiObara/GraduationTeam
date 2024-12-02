@@ -31,7 +31,7 @@ public:
 		LABEL_SE_SEAL_CRY,				// アザラシ鳴き声
 		LABEL_SE_SEA_SPLASH_01,			// 敵が海から上がってきた（重ねその1）
 		LABEL_SE_SEA_SPLASH_02,			// 敵が海から上がってきた（重ねその2）
-		LABEL_SE_ICE_UNION,				// 氷同士ぶつかった
+		LABEL_SE_ICE_CHAIN,				// 氷同士ぶつかった
 		LABEL_SE_DECISION,				// 決定音
 		LABEL_SE_SELECT,				// 選択音
 		LABEL_SE_PENGUIN_VOICE00,		// ペンギンの鳴き声1

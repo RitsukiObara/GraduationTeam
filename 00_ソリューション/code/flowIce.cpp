@@ -15,6 +15,7 @@
 #include "manager.h"
 #include "sound.h"
 #include "player.h"
+#include "camera.h"
 
 //*****************************************************
 // 定数定義
@@ -22,6 +23,9 @@
 namespace
 {
 const float TIME_DELETE = 20.0f;	// 氷が消えるまでの時間
+
+const float POW_CAMERAQUAKE_DEFAULT = 0.1f;		// カメラの揺れのデフォルト値
+const int FRAME_CAMERAQUAKE_DEFAULT = 30;		// カメラの揺れのデフォルトフレーム数
 }
 
 //*****************************************************
@@ -171,7 +175,13 @@ void CFlowIce::StopAllIce(void)
 		pIceManager->AddIce(it, it->GetPosition());
 	}
 
-	CSound::GetInstance()->Play(CSound::LABEL_SE_ICE_UNION);
+	Sound::Play(CSound::LABEL_SE_ICE_CHAIN);
+
+	// カメラを揺らす
+	CCamera *pCamera = CManager::GetCamera();
+
+	if (pCamera != nullptr)
+		pCamera->SetQuake(POW_CAMERAQUAKE_DEFAULT, POW_CAMERAQUAKE_DEFAULT, FRAME_CAMERAQUAKE_DEFAULT);
 }
 
 //=====================================================

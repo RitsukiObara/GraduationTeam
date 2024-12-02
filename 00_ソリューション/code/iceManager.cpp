@@ -20,6 +20,8 @@
 #include "polygon3D.h"
 #include "sound.h"
 #include "MyEffekseer.h"
+#include "camera.h"
+#include "manager.h"
 
 //*****************************************************
 // 定数定義
@@ -44,6 +46,9 @@ const D3DXCOLOR COL_ICE[CIceManager::E_Pecker::PECKER_MAX] =	// 突っつく人による
 	D3DXCOLOR(0.0f,1.0f,1.0f,1.0f),
 };
 const D3DXCOLOR COL_ICE_DEFAULT = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);	// デフォルト色
+
+const float POW_CAMERAQUAKE_DEFAULT = 0.1f;		// カメラの揺れのデフォルト値
+const int FRAME_CAMERAQUAKE_DEFAULT = 30;		// カメラの揺れのデフォルトフレーム数
 }
 
 //*****************************************************
@@ -1122,6 +1127,14 @@ bool CIceManager::BreakIce(void)
 
 			bBreakAny = true;
 		}
+	}
+
+	if (bBreakAny)
+	{// カメラを揺らす
+		CCamera *pCamera = CManager::GetCamera();
+		
+		if (pCamera != nullptr)
+			pCamera->SetQuake(POW_CAMERAQUAKE_DEFAULT, POW_CAMERAQUAKE_DEFAULT, FRAME_CAMERAQUAKE_DEFAULT);
 	}
 
 	return bBreakAny;

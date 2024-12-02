@@ -22,7 +22,7 @@ class CSelectStagePenguin;
 class CGameObject;
 class CMeshCylinder;
 class CFan3D;
-class CNumber;
+class CUI;
 
 //*****************************************************
 // クラスの定義
@@ -50,10 +50,10 @@ public:
 		CCollisionSphere *pCollision;	// 当たり判定
 		E_StateStage state;				// 状態
 		float fScaleDest;				// 目標のスケール
-		CNumber *pNumber;				// 数字のポインタ
+		CUI *pName;						// 名前のポインタ
 
 		// コンストラクタ
-		S_InfoStage() : pModel(nullptr), pos(), pCollision(nullptr), state(E_StateStage::STATE_NONE), fScaleDest(0.0f),pNumber(nullptr) {}
+		S_InfoStage() : pModel(nullptr), pos(), pCollision(nullptr), state(E_StateStage::STATE_NONE), fScaleDest(0.0f), pName(nullptr) {}
 	};
 
 	CSelectStageManager();	// コンストラクタ
