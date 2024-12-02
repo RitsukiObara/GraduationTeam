@@ -80,6 +80,18 @@ const string PATH_TEX[CTutorial::E_State::STATE_MAX] =	// テクスチャパス
 	"",												// 終了状態
 };
 const string PATH_TEX_ENEMY = "data\\TEXTURE\\UI\\tutorial_rival.png";	// マルチ用の敵説明パス
+const D3DXVECTOR2 SIZE[CTutorial::E_State::STATE_MAX] =	// サイズ
+{
+	{ 0.0f,0.0f },	// 何でもない状態
+	{ 0.2f,0.1f },	// 移動状態
+	{ 0.2f,0.1f },	// 突っつき状態
+	{ 0.2f,0.1f },	// 氷説明
+	{ 0.2f,0.1f },	// 破壊説明
+	{ 0.15f,0.1f },	// ジャンプ
+	{ 0.17f,0.1f },	// 敵説明
+	{ 0.15f,0.1f },	// アホウドリ
+	{ 0.0f,0.0f },	// 終了状態
+};
 }
 
 //------------------------------
@@ -199,7 +211,7 @@ HRESULT CTutorial::Init(void)
 	if (m_pCaption == nullptr)
 		return E_FAIL;
 
-	m_pCaption->SetSize(caption::WIDTH, caption::HEIGHT);
+	m_pCaption->SetSize(caption::SIZE[E_State::STATE_MOVE].x, caption::SIZE[E_State::STATE_MOVE].y);
 	m_pCaption->SetPosition(caption::POS_INIT);
 	m_pCaption->SetVtx();
 
@@ -423,11 +435,13 @@ void CTutorial::ProgressState(void)
 
 	if (m_pFade2D != nullptr)
 	{
+		// フェードアウトにして、次の情報を設定
 		m_pFade2D->SetState(CFade2D::E_State::STATE_OUT);
 		m_pFade2D->SetPathNext(caption::PATH_TEX[m_state]);
+		m_pFade2D->SetSizeNext(caption::SIZE[m_state]);
 
 		if (m_state == E_State::STATE_EXPLAIN_ENEMY)
-		{
+		{// マルチプレイ用のテクスチャ分岐
 			if (CPlayer::GetNumPlayer() > 1)
 				m_pFade2D->SetPathNext(caption::PATH_TEX_ENEMY);
 		}

@@ -32,7 +32,7 @@ CFade2D::FuncUpdateState CFade2D::s_aFuncUpdateState[] =
 //====================================================
 // コンストラクタ
 //====================================================
-CFade2D::CFade2D() : m_state(E_State::STATE_NONE), m_fTimer(0.0f), m_bBouceIn(false), m_bBouceOut(false), m_pathNext("")
+CFade2D::CFade2D() : m_state(E_State::STATE_NONE), m_fTimer(0.0f), m_bBouceIn(false), m_bBouceOut(false), m_pathNext(""), m_sizeNext()
 {
 
 }
@@ -69,6 +69,9 @@ CFade2D *CFade2D::Create(CPolygon2D *pPolygon, float fTimeMax)
 //====================================================
 HRESULT CFade2D::Init(void)
 {
+	// 次のサイズを同じにする
+	m_sizeNext = m_pPoygon->GetSize();
+
 	return S_OK;
 }
 
@@ -112,6 +115,9 @@ void CFade2D::Update(void)
 					int nIdxTexture = Texture::GetIdx(&m_pathNext[0]);
 					m_pPoygon->SetIdxTexture(nIdxTexture);
 				}
+
+				m_pPoygon->SetSize(m_sizeNext.x, m_sizeNext.y);
+				m_pPoygon->SetVtx();
 
 				m_state = CFade2D::STATE_IN;
 			}
