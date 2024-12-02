@@ -429,7 +429,7 @@ void CPause::Fade(MENU menu)
 		break;
 	case CPause::MENU_QUIT:
 	{
-		pFade->SetFade(CScene::MODE_TITLE);
+		pFade->SetFade(CScene::MODE_SELECTSTAGE);
 	}
 		break;
 	default:
