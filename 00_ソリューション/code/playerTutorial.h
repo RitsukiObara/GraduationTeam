@@ -24,7 +24,7 @@ class CPlayerTutorial : public CPlayer
 {
 public:
 	CPlayerTutorial(int nPriority = 5);	// コンストラクタ
-	~CPlayerTutorial();	// デストラクタ
+	~CPlayerTutorial();					// デストラクタ
 
 	// メンバ関数
 	HRESULT Init(void);
