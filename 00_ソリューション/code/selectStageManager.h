@@ -45,6 +45,7 @@ public:
 		string pathModel;				// モデルのパス
 		string pathMap;					// マップのパス
 		string pathEnemy;				// 敵のパス
+		string pathName;				// ステージ名のパス
 		int nDirStream;					// 海流の向き
 		D3DXVECTOR3 pos;				// 位置
 		CCollisionSphere *pCollision;	// 当たり判定

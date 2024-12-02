@@ -12,6 +12,7 @@ SETSTAGE	#0 第1ステージ　最初のステージ、やさしい　はじま�
 	POS = -1500.0 0.0 1000.0
 	PATHMAP = data\\TEXT\\ice_stage_00.txt
 	PATHENEMY = data\\TEXT\\enemy00.txt
+	PATHNAME = data\\TEXTURE\\UI\\stagename00.png
 	DIR_STREAM = 2
 END_SETSTAGE
 
@@ -20,6 +21,7 @@ SETSTAGE	#1 第2ステージ　二個つっつきで流す　ドーナツ海流
 	POS = 1500.0 0.0 1000.0
 	PATHMAP = data\\TEXT\\ice_stage_01.txt
 	PATHENEMY = data\\TEXT\\enemy01.txt
+	PATHNAME = data\\TEXTURE\\UI\\stagename01.png
 	DIR_STREAM = 0
 END_SETSTAGE
 
@@ -28,6 +30,7 @@ SETSTAGE	#2 第3ステージ　しろくま単体　しろくまのねどこ
 	POS = -2000.0 0.0 -900.0
 	PATHMAP = data\\TEXT\\ice_stage_02.txt
 	PATHENEMY = data\\TEXT\\enemy02.txt
+	PATHNAME = data\\TEXTURE\\UI\\stagename02.png
 	DIR_STREAM = 0
 END_SETSTAGE
 
@@ -36,6 +39,7 @@ SETSTAGE	#3 第4ステージ　あざらし一体、しろくま一体　コン�
 	POS = 2000.0 0.0 -900.0
 	PATHMAP = data\\TEXT\\ice_stage_03.txt
 	PATHENEMY = data\\TEXT\\enemy03.txt
+	PATHNAME = data\\TEXTURE\\UI\\stagename03.png
 	DIR_STREAM = 0
 END_SETSTAGE
 
@@ -44,6 +48,7 @@ SETSTAGE	#4 第5ステージ　あざらし二体、しろくま二体　ハン�
 	POS = 0.0 0.0 -1500.0
 	PATHMAP = data\\TEXT\\ice_stage_04.txt
 	PATHENEMY = data\\TEXT\\enemy04.txt
+	PATHNAME = data\\TEXTURE\\UI\\stagename04.png
 	DIR_STREAM = 0
 END_SETSTAGE
 
