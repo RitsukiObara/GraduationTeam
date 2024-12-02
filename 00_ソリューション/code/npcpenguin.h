@@ -77,6 +77,8 @@ public:
 	void SetState(INPCPenguinState* pState);
 
 private:
+	// ƒƒ“ƒoŠÖ”
+	void FollowIce(void);
 
 	// ƒƒ“ƒo•Ï”
 	CCollisionSphere *m_pCollisionSphere;	// ‹…‚Ì”»’è

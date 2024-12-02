@@ -211,8 +211,8 @@ void CResultMulti::Update(void)
 		if (pFade->GetState() != CFade::FADE_NONE)
 			return;
 
-		// タイトル遷移
-		pFade->SetFade(CScene::MODE_TITLE);
+		// ステージセレクト遷移
+		pFade->SetFade(CScene::MODE_SELECTSTAGE);
 
 		// サウンドの再生
 		pSound->Play(CSound::LABEL_SE_DECISION);
