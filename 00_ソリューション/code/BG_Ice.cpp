@@ -11,6 +11,7 @@
 #include "BG_Ice.h"
 #include "ice.h"
 #include "ocean.h"
+#include "MyEffekseer.h"
 
 //*****************************************************
 // マクロ定義
@@ -44,6 +45,7 @@ CBgIce::CBgIce()
 	m_state = STATE_FLOW;
 	m_fspeed = 0.0f;
 	m_binscrean = false;
+	m_nRippleCount = 0;
 }
 
 //====================================================
@@ -92,6 +94,9 @@ HRESULT CBgIce::Init(void)
 	if (pIceManager == nullptr)
 		return S_OK;
 
+	// 最初の波紋出現時間設定
+	m_nRippleCount = bgice::RIPPLE_DEFAULT + universal::RandRange(bgice::RIPPLE_DEGREE, -bgice::RIPPLE_DEGREE);
+
 	CObjectX::Init();
 
 	return S_OK;
@@ -112,6 +117,9 @@ void CBgIce::Update(void)
 {
 	//移動処理
 	Move();
+
+	// 波紋出現確認
+	RippleCheck();
 
 	CObjectX::Update();
 }
@@ -270,4 +278,21 @@ void CBgIce::Flow(void)
 	pos.y = pOcean->GetHeight(pos, &move);
 
 	SetPosition(pos);
+}
+
+//====================================================
+// 波紋出現確認処理
+//====================================================
+void CBgIce::RippleCheck(void)
+{
+	m_nRippleCount--;	// カウント減らす
+
+	if (m_nRippleCount <= 0)
+	{
+		// 海の上を特定
+		D3DXVECTOR3 pos = GetPosition();
+		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_RIPPLE, D3DXVECTOR3(pos.x, 30.0f, pos.z),
+			D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(80.0f, 80.0f, 80.0f));	// 波紋出現
+		m_nRippleCount = bgice::RIPPLE_DEFAULT + universal::RandRange(bgice::RIPPLE_DEGREE, -bgice::RIPPLE_DEGREE);	// 波紋出現時間設定
+	}
 }
