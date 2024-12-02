@@ -333,6 +333,9 @@ void CSelectStageManager::Select(void)
 		// プレイヤーが入っていたら選択状態にする
 		bool bEnter = pInfoStage->pCollision->OnEnter(CCollision::TAG_PLAYER);
 
+		// 判定の大きさを戻す
+		pInfoStage->pCollision->SetRadius(RADIUS_COLLISION_PUSHOUT_STAGE);
+
 		if (bEnter)
 		{
 			pInfoStage->state = E_StateStage::STATE_SELECT;
@@ -349,12 +352,11 @@ void CSelectStageManager::Select(void)
 					return;
 				}
 			}
+
+			break;
 		}
 		else
 			pInfoStage->state = E_StateStage::STATE_NORMAL;
-
-		// 判定の大きさを戻す
-		pInfoStage->pCollision->SetRadius(RADIUS_COLLISION_PUSHOUT_STAGE);
 	}
 }
 
