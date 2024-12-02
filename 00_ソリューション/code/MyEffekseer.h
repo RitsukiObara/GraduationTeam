@@ -50,6 +50,7 @@ public:
 	void SetupEffekseerModules(::Effekseer::ManagerRef efkManager);
 	void Release(int idx);
 	void ReleaseEffect(CEffekseerEffect *pEffect);	// エフェクトの解放
+	void StopAllEffect(void) { m_efkManager->StopAllEffects(); };					// 全エフェクトの停止
 	const char* GetPathEffect(CMyEffekseer::TYPE type);
 	std::list<CEffekseerEffect*> *GetList(void) { return &m_listEffect; };	// リストの取得
 

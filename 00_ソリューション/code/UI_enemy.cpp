@@ -23,7 +23,11 @@ namespace
 {
 const D3DXVECTOR3 POS_INIT_ICON = { 0.9f,0.08f,0.0f };	// アイコンの初期位置
 const D3DXVECTOR2 SIZE_INIT_ICON = { 0.02f,0.03f };	// 数字の初期サイズ
-const string PATH_ICON = "data\\TEXTURE\\UI\\icon_seals.png";	// アイコンのパス
+const string PATH_ICON[CEnemy::TYPE_MAX] =			// アイコンのパス
+{
+	"data\\TEXTURE\\UI\\icon_seals.png",		// アザラシ
+	"data\\TEXTURE\\UI\\icon_whitebear.png"		// シロクマ
+};
 
 const int NUM_ROW = 2; // 行の数
 const int NUM_COLUMN = 5; // 列の数
@@ -126,7 +130,8 @@ void CUIEnemy::Debug(void)
 	}
 	else if (pInputKeyboard->GetTrigger(DIK_DOWN))
 	{
-		DeleteEnemy();
+		DeleteEnemy(0);
+		DeleteEnemy(1);
 	}
 }
 
@@ -144,7 +149,7 @@ void CUIEnemy::Draw(void)
 void CUIEnemy::AddEnemy(int nType)
 {
 	// アイコンを増やす
-	CIcon *pIcon = CIcon::Create();
+	CIcon *pIcon = CIcon::Create(nType);
 
 	if (pIcon == nullptr)
 		return;
@@ -161,7 +166,7 @@ void CUIEnemy::AddEnemy(int nType)
 	pIcon->SetVtx();
 
 	// テクスチャ設定
-	int nIdx = Texture::GetIdx(&PATH_ICON[0]);
+	int nIdx = Texture::GetIdx(PATH_ICON[nType].c_str());
 	pIcon->SetIdxTexture(nIdx);
 
 	m_apIcon.push_back(pIcon);
@@ -170,25 +175,31 @@ void CUIEnemy::AddEnemy(int nType)
 //=====================================================
 // 敵の削除
 //=====================================================
-void CUIEnemy::DeleteEnemy(void)
+void CUIEnemy::DeleteEnemy(int nType)
 {
 	if (m_apIcon.empty())
 		return;
 	
-	// アイコンを落下させる
-	int nSizeArray = (int)m_apIcon.size();
+	for (int i = 0; i < (int)m_apIcon.size(); i++)
+	{
+		CIcon *pIcon = m_apIcon[i];
 
-	CIcon* pIcon = m_apIcon[nSizeArray - 1];
+		if (nType == pIcon->GetType())
+		{
+			pIcon->StartFall();	// 落下を開始させる
 
-	pIcon->StartFall();	// 落下を開始させる
+			m_apIcon.erase(m_apIcon.begin() + i);
 
-	m_apIcon.erase(m_apIcon.end() - 1);
+			// ゲームの敵の最大数減少
+			CGame *pGame = CGame::GetInstance();
 
-	// ゲームの敵の最大数減少
-	CGame *pGame = CGame::GetInstance();
+			if (pGame != nullptr)
+				pGame->DecreaseNumEnemy();
 
-	if (pGame != nullptr)
-		pGame->DecreaseNumEnemu();
+			break;
+		}
+	}
+
 }
 
 //******************************************************************
@@ -197,13 +208,14 @@ void CUIEnemy::DeleteEnemy(void)
 //=====================================================
 // 生成
 //=====================================================
-CIcon *CIcon::Create(void)
+CIcon *CIcon::Create(int nType)
 {
 	CIcon *pIcon = new CIcon;
 
 	if (pIcon == nullptr)
 		return nullptr;
 
+	pIcon->m_nType = nType;
 	pIcon->Init();
 
 	return pIcon;

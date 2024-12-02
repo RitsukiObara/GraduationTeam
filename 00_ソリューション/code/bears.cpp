@@ -648,7 +648,7 @@ void CBears::Death(void)
 	CUIEnemy *pUIEnemy = CUIEnemy::GetInstance();
 
 	if (pUIEnemy != nullptr)
-		pUIEnemy->DeleteEnemy();
+		pUIEnemy->DeleteEnemy(TYPE::TYPE_BEARS);
 
 	CEnemy::Death();
 

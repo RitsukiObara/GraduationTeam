@@ -446,7 +446,7 @@ void CSeals::Death(void)
 	CUIEnemy *pUIEnemy = CUIEnemy::GetInstance();
 
 	if (pUIEnemy != nullptr)
-		pUIEnemy->DeleteEnemy();
+		pUIEnemy->DeleteEnemy(TYPE::TYPE_SEALS);
 
 	CEnemy::Death();
 

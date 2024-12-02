@@ -72,7 +72,7 @@ public:
 	// 変数取得・設定関数
 	int GetTimeSecond(void) { if (m_pTimer != nullptr) { return m_pTimer->GetSecond(); } return 0; }
 	CScore *GetScore(void) { return m_pScore; };	// スコア
-	void DecreaseNumEnemu(void) { m_nNumEnemyMax--; }	// 敵の最大数
+	void DecreaseNumEnemy(void) { m_nNumEnemyMax--; }	// 敵の最大数
 	void AddEnemy(int nType);
 	int GetNumEnemyMax(void) { return m_nNumEnemyMax; }
 

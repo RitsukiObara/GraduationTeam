@@ -35,7 +35,7 @@ public:
 	void Update(void);
 	void Draw(void);
 	void AddEnemy(int nType);	// 敵の追加
-	void DeleteEnemy(void);	// 敵の削除
+	void DeleteEnemy(int nType);	// 敵の削除
 
 	// 変数取得・設定関数
 
@@ -67,7 +67,7 @@ public:
 		STATE_MAX
 	};
 
-	CIcon() : CUI(), m_state(E_State::STATE_NONE) {};	// コンストラクタ
+	CIcon() : CUI(), m_state(E_State::STATE_NONE), m_nType(0) {};	// コンストラクタ
 	~CIcon() {};	// デストラクタ
 
 	// メンバ関数
@@ -80,9 +80,11 @@ public:
 	// 変数取得・設定関数
 	void SetState(E_State state) { m_state = state; }	// 状態
 	E_State GetState(void) { return m_state; }
+	void SetType(int nValue) { m_nType = nValue; }		// 種類
+	int GetType(void) { return m_nType; }
 
 	// 静的メンバ関数
-	static CIcon *Create(void);
+	static CIcon *Create(int nType);
 
 private:
 	// メンバ関数
@@ -91,6 +93,7 @@ private:
 	// メンバ変数
 	E_State m_state;	// 状態
 	D3DXVECTOR3 m_move;	// 移動量
+	int m_nType;		// 種類
 };
 
 #endif
