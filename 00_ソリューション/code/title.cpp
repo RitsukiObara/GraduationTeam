@@ -185,7 +185,7 @@ HRESULT CTitle::Init(void)
 
 	// ƒyƒ“ƒMƒ“”z’u
 	CNPCPenguin* pPenguin = nullptr;
-	for (int cnt = 0; cnt < PENGUIN_POS.size(); cnt++)
+	for (int cnt = 0; cnt < (int)PENGUIN_POS.size(); cnt++)
 	{
 		pPenguin = CNPCPenguin::Create(new CNPCPenguinState_StandTitle);
 

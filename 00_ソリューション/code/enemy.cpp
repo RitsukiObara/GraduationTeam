@@ -620,6 +620,18 @@ void CEnemy::MoveToNextGrid(void)
 	// ˆÚ“®‰Â”\”»’è
 	JudgeCanMove();
 
+	// ‚Â‚Á‚Â‚¢‚½•X‚¾‚Á‚½‚çU‚è•Ô‚éˆ—‚É“ü‚é
+	CIce *pIce = pIceMgr->GetGridIce(&m_nGridVNext, &m_nGridHNext);
+
+	if (pIce != nullptr)
+	{
+		if (pIce->IsPeck())
+		{
+			m_bTurn = true;
+			return;
+		}
+	}
+
 	if (!m_bEnableMove)
 		return;
 
@@ -929,6 +941,7 @@ void CEnemy::Debug(void)
 	if (pIceMgr == nullptr)
 		return;
 
+	debug::Effect3DShort(pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 	debug::Effect3DShort(pIceMgr->GetGridPosition(&m_nGridVDest, &m_nGridHDest), D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
 }
 
