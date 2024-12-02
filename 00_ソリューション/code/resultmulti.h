@@ -34,9 +34,11 @@ public:
 	
 private:
 	// メンバ関数
+	void SetUI(CUI** pUI, string path, D3DXVECTOR3 pos, float fWidth, float fHeight);
 
 	// メンバ変数
-	CUI *m_pWinner;		// 勝者UI
+	CUI *m_pWinnerNum;		// 勝者番号UI
+	CUI *m_pWinnerText;		// 勝者テキストUI
 };
 
 #endif

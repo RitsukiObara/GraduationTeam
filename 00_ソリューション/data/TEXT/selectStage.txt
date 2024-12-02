@@ -24,7 +24,7 @@ SETSTAGE	#1 第2ステージ
 END_SETSTAGE
 
 SETSTAGE	#2 第3ステージ
-	MODEL = data\\MODEL\\object\\Stage_Obj000.x
+	MODEL = data\\MODEL\\object\\Stage_Obj002.x
 	POS = -1500.0 0.0 -1000.0
 	PATHMAP = data\\TEXT\\ice_stage_02.txt
 	PATHENEMY = data\\TEXT\\enemy02.txt
