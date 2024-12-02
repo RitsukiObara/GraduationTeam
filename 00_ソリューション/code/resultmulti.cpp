@@ -9,29 +9,19 @@
 // インクルード
 //*****************************************************
 #include "resultmulti.h"
-#include "object.h"
 #include "inputManager.h"
-#include "manager.h"
 #include "fade.h"
 #include "texture.h"
 #include "camera.h"
 #include "CameraState.h"
-#include "renderer.h"
 #include "sound.h"
-#include "polygon3D.h"
 #include "objectX.h"
-#include "skybox.h"
-#include "meshcylinder.h"
 #include "meshfield.h"
-#include "particle.h"
-#include "orbit.h"
-#include "debugproc.h"
 #include "UI.h"
 #include "gameManager.h"
 #include "npcpenguin.h"
 #include "npcpenguinstate_resultmulti.h"
 #include "resultseal.h"
-#include "gameManager.h"
 
 //*****************************************************
 // 定数定義
@@ -55,12 +45,24 @@ namespace
 		};
 		const int MAX_PLAYER = 4;	// 最大人数
 	}
-	namespace manual
+
+	namespace Map
 	{
-		const char* PATH = "data\\TEXTURE\\UI\\tutorial00.jpg";	// パス
-		const float WIDTH		= 0.5f;	// 幅
-		const float HEIGHT		= 0.5f;	// 高さ
-		const D3DXVECTOR3 POS	= D3DXVECTOR3(0.5f, 0.5f, 0.0f);	// 位置
+		const string FIELD_TEX_PATH = "data\\TEXTURE\\MATERIAL\\field.jpg";	// 地面テクスチャパス
+		const string SNOWDOME_PATH = "data\\MODEL\\object\\Snowdome.x";		// かまくらモデルパス
+	}
+
+	namespace UI
+	{
+		const string NUMBER_PATH = "data\\TEXTURE\\UI\\player_Count.png";	// 何Pとかのテクスチャ
+		const string TEXT_PATH = "data\\TEXTURE\\UI\\win.png";				// 「の勝利」のテクスチャ
+		const float NUMBER_WIDTH = 0.1f;	// 幅（何P）
+		const float NUMBER_HEIGHT = 0.15f;	// 高さ（何P）
+		const float TEXT_WIDTH = 0.15f;		// 幅（「の勝利」）
+		const float TEXT_HEIGHT = 0.15f;	// 高さ（「の勝利」）
+		const D3DXVECTOR3 NUMBER_POS = D3DXVECTOR3(0.3125f, 0.85f, 0.0f);	// 何Pとかの位置
+		const D3DXVECTOR3 TEXT_POS = D3DXVECTOR3(0.55f, 0.85f, 0.0f);		// 「の勝利」の位置
+		const int MAX_PLAYER = 4;
 	}
 }
 
@@ -69,7 +71,8 @@ namespace
 //=====================================================
 CResultMulti::CResultMulti()
 {
-
+	m_pWinnerNum = nullptr;
+	m_pWinnerText = nullptr;
 }
 
 //=====================================================
@@ -92,27 +95,26 @@ HRESULT CResultMulti::Init(void)
 	// カメラ
 	Camera::ChangeState(new CCameraStateResultMulti);
 
-	// 勝者UI生成
-	//m_pManual = CUI::Create();
-	//if (m_pManual != nullptr)
-	//{
-	//	// 説明の設定
-	//	m_pManual->SetIdxTexture(CTexture::GetInstance()->Regist(manual::PATH));	// テクスチャ割当
-	//	m_pManual->SetPosition(manual::POS);				// 位置
-	//	m_pManual->SetSize(manual::WIDTH, manual::HEIGHT);	// 大きさ
-	//	m_pManual->SetVtx();	// 頂点反映
-	//}
+	// 勝者番号UI生成
+	SetUI(&m_pWinnerNum, UI::NUMBER_PATH, UI::NUMBER_POS, UI::NUMBER_WIDTH, UI::NUMBER_HEIGHT);
+	SetUI(&m_pWinnerText, UI::TEXT_PATH, UI::TEXT_POS, UI::TEXT_WIDTH, UI::TEXT_HEIGHT);
 
 	// メッシュフィールド
 	CMeshField* pMeshField = CMeshField::Create();
-	pMeshField->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	pMeshField->SetIdxTexture(CTexture::GetInstance()->Regist("data\\TEXTURE\\MATERIAL\\field.jpg"));
-	pMeshField->SetDivTex(128);
+	if (pMeshField != nullptr)
+	{
+		pMeshField->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		pMeshField->SetIdxTexture(CTexture::GetInstance()->Regist(&Map::FIELD_TEX_PATH[0]));
+		pMeshField->SetDivTex(128);
+	}
 
 	// かまくら
 	CObjectX *pIgloo = CObjectX::Create();
-	pIgloo->BindModel(CModel::Load("data\\MODEL\\object\\Snowdome.x"));
-	pIgloo->SetPosition(D3DXVECTOR3(800.0f, -10.0f, 600.0f));
+	if (pIgloo != nullptr)
+	{
+		pIgloo->BindModel(CModel::Load(&Map::SNOWDOME_PATH[0]));
+		pIgloo->SetPosition(D3DXVECTOR3(800.0f, -10.0f, 600.0f));
+	}
 
 	// BGMの再生
 	CSound* pSound = CSound::GetInstance();
@@ -134,6 +136,13 @@ HRESULT CResultMulti::Init(void)
 		{
 			enablePlayer.push_back(false);
 		}
+	}
+
+	// 勝者番号設定
+	if (m_pWinnerNum != nullptr)
+	{
+		m_pWinnerNum->SetTex(D3DXVECTOR2((float)(winner) / UI::MAX_PLAYER, 0.0f), D3DXVECTOR2((float)(winner + 1) / UI::MAX_PLAYER, 1.0f));
+		m_pWinnerNum->SetVtx();
 	}
 
 	// 各ペンギン召喚
@@ -171,7 +180,8 @@ HRESULT CResultMulti::Init(void)
 //=====================================================
 void CResultMulti::Uninit(void)
 {
-	Object::DeleteObject((CObject**)&m_pWinner);
+	Object::DeleteObject((CObject**)&m_pWinnerNum);
+	Object::DeleteObject((CObject**)&m_pWinnerText);
 
 	// オブジェクト全破棄
 	CObject::ReleaseAll();
@@ -219,5 +229,24 @@ void CResultMulti::Draw(void)
 {
 	// シーンの描画
 	CScene::Draw();
+}
+
+//=====================================================
+// UI配置処理
+//=====================================================
+void CResultMulti::SetUI(CUI** pUI, string path, D3DXVECTOR3 pos, float fWidth, float fHeight)
+{
+	*pUI = CUI::Create();
+	if (*pUI != nullptr)
+	{// 説明の設定
+		(*pUI)->SetIdxTexture(CTexture::GetInstance()->Regist(&path[0]));	// テクスチャ割当
+		(*pUI)->SetPosition(pos);		// 位置
+		(*pUI)->SetSize(fWidth, fHeight);	// 大きさ
+		(*pUI)->SetVtx();	// 頂点反映
+	}
+	else
+	{
+		assert(false);
+	}
 }
 

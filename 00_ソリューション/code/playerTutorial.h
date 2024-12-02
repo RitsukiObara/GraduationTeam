@@ -24,13 +24,14 @@ class CPlayerTutorial : public CPlayer
 {
 public:
 	CPlayerTutorial(int nPriority = 5);	// コンストラクタ
-	~CPlayerTutorial();	// デストラクタ
+	~CPlayerTutorial();					// デストラクタ
 
 	// メンバ関数
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	void Hit(float fDamage) override {};	// ヒット処理
 
 	// 静的メンバ関数
 	static CPlayerTutorial *Create(void);	// 生成処理
