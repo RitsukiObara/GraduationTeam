@@ -14,6 +14,8 @@
 #include "motion.h"
 #include "shadow.h"
 #include "player.h"
+#include "iceManager.h"
+#include "ice.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -161,6 +163,9 @@ void CNPCPenguin::Update(void)
 	// ƒ‚[ƒVƒ‡ƒ“XV
 	CMotion::Update();
 
+	// •X‚Éæ‚Á‚Ä‚¢‚é‚Æ‚«æ‚éˆ—
+	FollowIce();
+
 	D3DXVECTOR3 pos = GetPosition();
 
 	if (m_pCollisionSphere != nullptr)
@@ -191,4 +196,28 @@ void CNPCPenguin::Draw(void)
 {
 	// Œp³ƒNƒ‰ƒX‚Ì•`‰æ
 	CMotion::Draw();
+}
+
+//=====================================================
+// •X‚Ì’Ç]
+//=====================================================
+void CNPCPenguin::FollowIce(void)
+{
+	CIceManager* pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	int nGridV, nGridH;
+	if (pIceMgr->GetIdxGridFromPosition(GetPosition(), &nGridV, &nGridH))
+	{
+		CIce* pIceStand = pIceMgr->GetGridIce(&nGridV, &nGridH);
+
+		if (pIceStand != nullptr)
+		{
+			D3DXVECTOR3 pos = GetPosition();
+			pos.y = pIceStand->GetPosition().y;
+			SetPosition(pos);
+		}
+	}
 }

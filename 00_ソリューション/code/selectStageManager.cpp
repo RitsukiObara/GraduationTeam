@@ -24,6 +24,7 @@
 #include "gameManager.h"
 #include "tutorial.h"
 #include "number.h"
+#include "texture.h"
 
 //*****************************************************
 // マクロ定義
@@ -49,14 +50,7 @@ const float SPEED_PARTICLE = 22.0f;								// パーティクルの速度
 const D3DXVECTOR3 BANNER_POS = D3DXVECTOR3(0.0f, 0.0, 1300.0);	// 看板の位置
 
 const float HEIGHT_NUMBER = 0.14f;				// 名前の高さ
-const D3DXVECTOR2 SIZE_NAME = { 0.1f, 0.06f };	// 名前のサイズ
-const string PATH_TEX_NAME[] =					// テクスチャのパス
-{
-	"",
-	"",
-	"",
-	"",
-};
+const D3DXVECTOR2 SIZE_NAME = { 0.25f, 0.06f };	// 名前のサイズ
 }
 
 //*****************************************************
@@ -210,6 +204,11 @@ void CSelectStageManager::LoadStage(std::ifstream& file, string str, S_InfoStage
 			iss >> str >> pInfoStage->pathEnemy;
 		}
 
+		if (key == "PATHNAME")
+		{// ステージ名のパス
+			iss >> str >> pInfoStage->pathName;
+		}
+
 		if (key == "DIR_STREAM")
 		{// 海流の向き
 			iss >> str >> pInfoStage->nDirStream;
@@ -224,8 +223,6 @@ void CSelectStageManager::SetStage(void)
 {
 	if (s_aInfoStage.empty())
 		return;
-
-	int nIdx = 1;
 
 	for (S_InfoStage *pInfoStage : s_aInfoStage)
 	{
@@ -274,7 +271,9 @@ void CSelectStageManager::SetStage(void)
 		pInfoStage->pName->SetSize(SIZE_NAME.x, SIZE_NAME.y);
 		pInfoStage->pName->SetVtx();
 
-		nIdx++;
+		// テクスチャ反映
+		int nIdxTexture = Texture::GetIdx(&pInfoStage->pathName[0]);
+		pInfoStage->pName->SetIdxTexture(nIdxTexture);
 	}
 }
 
@@ -333,6 +332,9 @@ void CSelectStageManager::Select(void)
 		// プレイヤーが入っていたら選択状態にする
 		bool bEnter = pInfoStage->pCollision->OnEnter(CCollision::TAG_PLAYER);
 
+		// 判定の大きさを戻す
+		pInfoStage->pCollision->SetRadius(RADIUS_COLLISION_PUSHOUT_STAGE);
+
 		if (bEnter)
 		{
 			pInfoStage->state = E_StateStage::STATE_SELECT;
@@ -349,12 +351,11 @@ void CSelectStageManager::Select(void)
 					return;
 				}
 			}
+
+			break;
 		}
 		else
 			pInfoStage->state = E_StateStage::STATE_NORMAL;
-
-		// 判定の大きさを戻す
-		pInfoStage->pCollision->SetRadius(RADIUS_COLLISION_PUSHOUT_STAGE);
 	}
 }
 

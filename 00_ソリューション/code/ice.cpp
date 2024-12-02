@@ -1015,14 +1015,6 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 	m_bDrift = (this->*directionFuncs[stream])(pIce, m_nIdxDriftV, m_nIdxDriftH, apIceHit);
 
 #ifdef _DEBUG
-	D3DXVECTOR3 posGrid = pIceManager->GetGridPosition(&m_nIdxDriftV, &m_nIdxDriftH);
-
-	CEffect3D::Create(posIce, 100.0f, 5, D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
-
-	if (nIdxV > 0 && nIdxH > 0)
-		CEffect3D::Create(posGrid, 100.0f, 5, D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f));
-	else
-		int n = 0;
 #endif
 
 	if (m_bDrift)

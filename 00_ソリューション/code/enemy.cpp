@@ -134,6 +134,8 @@ HRESULT CEnemy::Init(void)
 
 	// ‰e‚Ì¶¬
 	m_pShadow = CShadow::Create();
+	if (m_pShadow != nullptr)
+		m_pShadow->SetPosition(GetPosition());
 
 	return S_OK;
 }

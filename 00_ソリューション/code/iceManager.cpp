@@ -816,8 +816,6 @@ void CIceManager::DisableFromHardIce(int nNumV, int nNumH, bool bPeck)
 	if (m_aGrid[nNumV][nNumH].pIce == nullptr)
 		return;
 
-	CEffect3D::Create(m_aGrid[nNumV][nNumH].pos, 100.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-
 	// ’TõÏ‚İƒtƒ‰ƒO‚ğ—§‚Ä‚é
 	m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
 	m_aGrid[nNumV][nNumH].pIce->EnableBreak(false);
