@@ -394,21 +394,29 @@ int CInputJoypad::GetRepeat(PADBUTTOS nKey, int nPlayer)
 //====================================================
 // バイブ情報設定
 //====================================================
-void CInputJoypad::Vibration(int nPlayer, PADVIB state, float fVib,int nTime)
+void CInputJoypad::Vibration(int nPlayer, float fVib, int nTime)
 {
-	switch (state)
-	{
-	case PADVIB_USE:
-		m_aVibration[nPlayer].wLeftMotorSpeed = (WORD)(USHRT_MAX * fVib);
-		m_aVibration[nPlayer].wRightMotorSpeed = (WORD)(USHRT_MAX * fVib);
-		m_aVibState[nPlayer] = state;
-		break;
-	default:
-		break;
-	}
+#ifdef _DEBUG
+	return;
+#endif
+
+	m_aVibration[nPlayer].wLeftMotorSpeed = (WORD)(USHRT_MAX * fVib);
+	m_aVibration[nPlayer].wRightMotorSpeed = (WORD)(USHRT_MAX * fVib);
+	m_aVibState[nPlayer] = PADVIB_USE;
 
 	m_aVibTimer[nPlayer] = nTime;
 
 	//振動状態を伝達
 	XInputSetState(nPlayer, &m_aVibration[nPlayer]);
+}
+
+//====================================================
+// バイブ情報設定
+//====================================================
+void CInputJoypad::Vibration(float fVib, int nTime)
+{
+	for (int i = 0; i < NUM_PLAYER; i++)
+	{
+		Vibration(i, fVib, nTime);
+	}
 }

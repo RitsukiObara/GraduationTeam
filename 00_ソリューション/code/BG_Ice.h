@@ -33,6 +33,8 @@ public:
 	void Flow(void);
 
 private:
+	// メンバ関数
+	void RippleCheck(void);
 
 	//背景氷の状態
 	typedef enum
@@ -45,6 +47,7 @@ private:
 	STATE m_state;			// 状態分け変数
 	float fgravity_speed;	// 沈んでいく速度;
 	float m_fspeed;			// 沈み始める速度
+	int m_nRippleCount;		// 波紋出現カウンタ
 	bool m_binscrean;		// 画面内に入ったかチェックする変数
 };
 
@@ -54,6 +57,8 @@ private:
 namespace bgice
 {
 	const int BGICE_MODEL = 3;	// 背景の氷総数
+	const int RIPPLE_DEFAULT = 150;	// 波紋出現の基本時間
+	const int RIPPLE_DEGREE = 90;	// 波紋出現時間のぶれ幅
 }
 
 #endif

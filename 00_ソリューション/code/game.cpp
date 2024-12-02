@@ -262,7 +262,7 @@ void CGame::ManageState(void)
 //=====================================================
 void CGame::ToggleStop(void)
 {
-	//m_bStop = m_bStop ? false : true;
+	m_bStop = m_bStop ? false : true;
 
 	if (true)
 	{

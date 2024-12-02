@@ -72,6 +72,8 @@ void CCamera::Update(void)
 	{
 		m_pState->Update(this);
 	}
+
+	Quake();
 }
 
 //====================================================

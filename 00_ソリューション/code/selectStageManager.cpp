@@ -35,22 +35,28 @@ const string PATH_BANNER = "data\\MODEL\\other\\stageselect_banner.x";
 
 const float RADIUS_COLLISION_PUSHOUT_STAGE = 500.0f;	// 押し出し判定の半径（ステージ）
 const float RADIUS_COLLISION_PUSHOUT_BANNER = 250.0f;	// 押し出し判定の半径（看板）
-const float RATE_SELECT_COLLISION = 1.4f;	// 選択時の半径の割合
+const float RATE_SELECT_COLLISION = 1.4f;				// 選択時の半径の割合
 
 const float SCALE_STATE[CSelectStageManager::E_StateStage::STATE_MAX] = { 0.0f, 1.0f, 1.4f };	// 状態ごとのスケール
 
 const float SPEED_SCALING_STAGE = 0.3f;	// スケーリングの速度
-const float TIME_ENTER = 2.0f;	// エンターにかかる時間
+const float TIME_ENTER = 2.0f;			// エンターにかかる時間
 
 const float SPEED_SCALING_PENGUIN = 0.05f;	// ペンギンのスケーリング速度
-const float SPEED_MOVE_ENTER = 0.01f;	// エンター時の移動速度
+const float SPEED_MOVE_ENTER = 0.01f;		// エンター時の移動速度
 
-const float SPEED_PARTICLE = 22.0f;	// パーティクルの速度
+const float SPEED_PARTICLE = 22.0f;								// パーティクルの速度
 const D3DXVECTOR3 BANNER_POS = D3DXVECTOR3(0.0f, 0.0, 1300.0);	// 看板の位置
 
-const int NUM_PLACE = 2;					// 桁数
-const float HEIGHT_NUMBER = 0.14f;			// 数字の高さ
-D3DXVECTOR2 SIZE_NUMBER = { 0.02f, 0.06f };	// 数字のサイズ
+const float HEIGHT_NUMBER = 0.14f;				// 名前の高さ
+const D3DXVECTOR2 SIZE_NAME = { 0.1f, 0.06f };	// 名前のサイズ
+const string PATH_TEX_NAME[] =					// テクスチャのパス
+{
+	"",
+	"",
+	"",
+	"",
+};
 }
 
 //*****************************************************
@@ -254,19 +260,19 @@ void CSelectStageManager::SetStage(void)
 			pObject->SetPosition(pInfoStage->pos);
 		}
 
-		// 数字の生成
-		pInfoStage->pNumber = CNumber::Create(NUM_PLACE, 0);
+		// 名前の生成
+		pInfoStage->pName = CUI::Create();
 
-		if (pInfoStage->pNumber == nullptr)
+		if (pInfoStage->pName == nullptr)
 			return;
 
 		D3DXVECTOR3 posScreen;
 		universal::IsInScreen(pInfoStage->pos,&posScreen);
 		universal::ConvertScreenRate(posScreen);
 
-		pInfoStage->pNumber->SetPosition(D3DXVECTOR3(posScreen.x, posScreen.y - HEIGHT_NUMBER, 0.0f));
-		pInfoStage->pNumber->SetSizeAll(SIZE_NUMBER.x, SIZE_NUMBER.y);
-		pInfoStage->pNumber->SetValue(nIdx);
+		pInfoStage->pName->SetPosition(D3DXVECTOR3(posScreen.x, posScreen.y - HEIGHT_NUMBER, 0.0f));
+		pInfoStage->pName->SetSize(SIZE_NAME.x, SIZE_NAME.y);
+		pInfoStage->pName->SetVtx();
 
 		nIdx++;
 	}
