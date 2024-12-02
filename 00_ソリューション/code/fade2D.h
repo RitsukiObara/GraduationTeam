@@ -51,6 +51,7 @@ public:
 	void EnableBouceIn(bool bValue) { m_bBouceIn = bValue; }
 	void EnableBouceOut(bool bValue) { m_bBouceOut = bValue; }
 	void SetPathNext(string sValue) { m_pathNext = sValue; }	// 次のテクスチャパス
+	void SetSizeNext(D3DXVECTOR2 size) { m_sizeNext = size; }	// 次のサイズ
 
 	// 静的メンバ関数
 	static CFade2D *Create(CPolygon2D *pPolygon,float fTimeMax = 4.0f);
@@ -63,6 +64,7 @@ private:
 	bool m_bBouceIn;		// イン状態のバウンス
 	bool m_bBouceOut;		// アウト状態のバウンス
 	string m_pathNext;		// 次のテクスチャパス
+	D3DXVECTOR2 m_sizeNext;	// 次のサイズ
 
 	// 状態更新の関数ポインタ型エイリアス定義
 	typedef void (CFade2D::*FuncUpdateState)(void);
