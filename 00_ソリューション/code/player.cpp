@@ -56,6 +56,12 @@ const int DEATH_VIBRATION_TIME = 30;			// Ž€–SŽž‚ÌU“®ŽžŠÔ
 const float PECK_VIBRATION_POWER = 0.5f;	// Š„‚éŽž‚ÌU“®‹­‚³
 const int PECK_VIBRATION_TIME = 10;			// Š„‚éŽž‚ÌU“®ŽžŠÔ
 
+const float POW_VIB_BREAK = 0.8f;	// ‰ó‚µ‚½Žž‚ÌU“®‹­‚³
+const int TIME_VIB_BREAK = 50;		// ‰ó‚µ‚½Žž‚ÌU“®ŽžŠÔ
+
+const float POW_VIB_FLOW = 0.7f;	// —¬‚³‚ê‚Ä‚éŽž‚ÌU“®‹­‚³
+const int TIME_VIB_FLOW = 10;		// —¬‚³‚ê‚Ä‚éŽž‚ÌU“®ŽžŠÔ
+
 //-------------------------------
 // ƒWƒƒƒ“ƒv‚Ì’è”
 //-------------------------------
@@ -779,6 +785,13 @@ void CPlayer::StayFlow(void)
 	// —¬•X“à‚ÉˆÊ’u‚ð§ŒÀ
 	LimitInSideFlowIce();
 
+	// ƒRƒ“ƒgƒ[ƒ‰[‚ðU“®‚³‚¹‚é
+	CInputJoypad* pInputJoypad = CInputJoypad::GetInstance();
+	if (pInputJoypad == nullptr)
+		return;
+
+	pInputJoypad->Vibration(m_nID, POW_VIB_FLOW, TIME_VIB_FLOW);
+
 	// •Y—¬’†‚ÌŽ€
 	FlowDeath();
 }
@@ -929,8 +942,11 @@ bool CPlayer::Peck(void)
 	if (pIceManager->PeckIce(m_nGridV, m_nGridH, rot.y, pos,&bResultBreak))
 		m_nTimePeck++;
 
-	// joypadU“®‚³‚¹‚é
-	pInputJoypad->Vibration(m_nID, CInputJoypad::PADVIB_USE, PECK_VIBRATION_POWER, PECK_VIBRATION_TIME);
+	// ‚Â‚Á‚Â‚«‚ÌƒRƒ“ƒgƒ[ƒ‰[U“®
+	pInputJoypad->Vibration(m_nID, PECK_VIBRATION_POWER, PECK_VIBRATION_TIME);
+
+	if(bResultBreak)	// ”j‰óŽž‚ÌƒRƒ“ƒgƒ[ƒ‰[U“®
+		pInputJoypad->Vibration(m_nID, POW_VIB_BREAK, TIME_VIB_BREAK);
 
 	return bResultBreak;
 }
@@ -1237,7 +1253,7 @@ void CPlayer::Hit(float fDamage)
 	m_bEnableInput = false;
 
 	// joypadU“®‚³‚¹‚é
-	pInputJoypad->Vibration(m_nID, CInputJoypad::PADVIB_USE, DEATH_VIBRATION_POWER, DEATH_VIBRATION_TIME);
+	pInputJoypad->Vibration(m_nID, DEATH_VIBRATION_POWER, DEATH_VIBRATION_TIME);
 
 	// ƒyƒ“ƒMƒ“‚Ì–Â‚«º
 	CSound::GetInstance()->Play(CSound::LABEL_SE_PENGUIN_VOICE00);
