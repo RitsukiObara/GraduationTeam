@@ -1,0 +1,21 @@
+#====================================================================
+#
+# 敵配置情報[enemy.txt]
+# Author：Momoya Takayama
+#
+#====================================================================
+
+SETENEMY
+	DELAY = 5.0f
+	TYPE = 0
+END_SETENEMY
+
+SETENEMY
+	DELAY = 10.0f
+	TYPE = 0
+END_SETENEMY
+
+SETENEMY
+	DELAY = 17.0f
+	TYPE = 1
+END_SETENEMY
