@@ -24,6 +24,7 @@
 #include "fade2D.h"
 #include "texture.h"
 #include "gauge.h"
+#include "flowIceFactory.h"
 
 //*****************************************************
 // 定数定義
@@ -103,6 +104,30 @@ const float TIME_SKIP = 3.0f;				// スキップにかかる時間
 const D3DXVECTOR3 POS = { 0.85f,0.9f,0.0f };	// 位置
 }
 
+//------------------------------
+// ヒントの定数
+//------------------------------
+namespace hint
+{
+const float WIDTH = 0.1f;											// 幅
+const float HEIGTH = 0.05f;											// 高さ
+const string PATH_TRYIT = "data\\TEXTURE\\UI\\tutorialtryit.png";	// やってみようのテクスチャパス
+const string PATH_SKIP = "data\\TEXTURE\\UI\\tutorialskip.png";		// スキップのテクスチャパス
+D3DXVECTOR3 POS = { 0.85f,0.15f,0.0f };								// 位置
+const bool FRAG_TRY[CTutorial::E_State::STATE_MAX] =				// やってみようフラグ
+{
+	false,	// 何でもない状態
+	true,	// 移動状態
+	true,	// 突っつき状態
+	false,	// 氷説明
+	false,	// 破壊説明
+	true,	// ジャンプ
+	false,	// 敵説明
+	false,	// アホウドリ
+	false,	// 終了状態
+};
+}
+
 const string PATH_TEMP_FRAG = "data\\TEMP\\tutorialfrag.bin";	// チュートリアルフラグの保存パス
 }
 
@@ -128,7 +153,7 @@ CTutorial *CTutorial::s_pTutorial = nullptr;	// 自身のポインタ
 // コンストラクタ
 //=====================================================
 CTutorial::CTutorial() : m_state(E_State::STATE_NONE), m_pManager(nullptr), m_fTimeEnd(0.0f) , m_nCntProgress(0), m_pUIPlayer(nullptr), m_abComplete(),
-m_pCaption(nullptr), m_pFade2D(nullptr), m_pGaugeSkip(nullptr), m_fTimerSkip(0.0f)
+m_pCaption(nullptr), m_pFadeCaption(nullptr), m_pGaugeSkip(nullptr), m_fTimerSkip(0.0f), m_pHint(nullptr),m_pFadeHint(nullptr)
 {
 	s_pTutorial = this;
 }
@@ -218,12 +243,35 @@ HRESULT CTutorial::Init(void)
 	int nIdxTexture = Texture::GetIdx(&caption::PATH_TEX[E_State::STATE_MOVE][0]);
 	m_pCaption->SetIdxTexture(nIdxTexture);
 
-	m_pFade2D = CFade2D::Create(m_pCaption, caption::TIME_FADE);
+	m_pFadeCaption = CFade2D::Create(m_pCaption, caption::TIME_FADE);
 
-	if (m_pFade2D != nullptr)
+	if (m_pFadeCaption != nullptr)
 	{
-		m_pFade2D->EnableBouceOut(true);
-		m_pFade2D->SetState(CFade2D::E_State::STATE_IN);
+		m_pFadeCaption->EnableBouceOut(true);
+		m_pFadeCaption->SetState(CFade2D::E_State::STATE_IN);
+	}
+
+	//--------------------------------
+	// ヒントの生成
+	//--------------------------------
+	m_pHint = CUI::Create();
+
+	if (m_pHint == nullptr)
+		return E_FAIL;
+
+	m_pHint->SetSize(hint::WIDTH, hint::HEIGTH);
+	m_pHint->SetPosition(hint::POS);
+	m_pHint->SetVtx();
+
+	nIdxTexture = Texture::GetIdx(&hint::PATH_TRYIT[0]);
+	m_pHint->SetIdxTexture(nIdxTexture);
+
+	m_pFadeHint = CFade2D::Create(m_pHint, caption::TIME_FADE);
+
+	if (m_pFadeHint != nullptr)
+	{
+		m_pFadeHint->EnableBouceOut(true);
+		m_pFadeHint->SetState(CFade2D::E_State::STATE_IN);
 	}
 
 	// ゲージの生成
@@ -237,6 +285,9 @@ HRESULT CTutorial::Init(void)
 	// チュートリアルフラグをリセット
 	tutorial::SaveFrag(false);
 
+	// 流氷ファクトリーの生成
+	CFlowIceFct::Create();
+
 	return S_OK;
 }
 
@@ -248,7 +299,7 @@ void CTutorial::Uninit(void)
 	Object::DeleteObject((CObject**)&m_pManager);
 	Object::DeleteObject((CObject**)&m_pUIPlayer);
 	Object::DeleteObject((CObject**)&m_pCaption);
-	Object::DeleteObject((CObject**)&m_pFade2D);
+	Object::DeleteObject((CObject**)&m_pFadeCaption);
 
 	// シーンの終了
 	CScene::Uninit();
@@ -320,9 +371,9 @@ void CTutorial::CheckProgress(void)
 //=====================================================
 void CTutorial::AddCntProgress(CPlayer *pPlayer)
 {
-	if (m_pFade2D != nullptr)
+	if (m_pFadeCaption != nullptr)
 	{
-		if (m_pFade2D->GetState() != CFade2D::E_State::STATE_NONE)
+		if (m_pFadeCaption->GetState() != CFade2D::E_State::STATE_NONE)
 			return;
 	}
 
@@ -433,18 +484,29 @@ void CTutorial::ProgressState(void)
 
 	m_apCheck.clear();
 
-	if (m_pFade2D != nullptr)
-	{
+	if (m_pFadeCaption != nullptr)
+	{// キャプションのフェード設定
 		// フェードアウトにして、次の情報を設定
-		m_pFade2D->SetState(CFade2D::E_State::STATE_OUT);
-		m_pFade2D->SetPathNext(caption::PATH_TEX[m_state]);
-		m_pFade2D->SetSizeNext(caption::SIZE[m_state]);
+		m_pFadeCaption->SetState(CFade2D::E_State::STATE_OUT);
+		m_pFadeCaption->SetPathNext(caption::PATH_TEX[m_state]);
+		m_pFadeCaption->SetSizeNext(caption::SIZE[m_state]);
 
 		if (m_state == E_State::STATE_EXPLAIN_ENEMY)
 		{// マルチプレイ用のテクスチャ分岐
 			if (CPlayer::GetNumPlayer() > 1)
-				m_pFade2D->SetPathNext(caption::PATH_TEX_ENEMY);
+				m_pFadeCaption->SetPathNext(caption::PATH_TEX_ENEMY);
 		}
+	}
+
+	if (m_pFadeHint != nullptr)
+	{// キャプションのフェード設定
+		// フェードアウトにして、次の情報を設定
+		m_pFadeHint->SetState(CFade2D::E_State::STATE_OUT);
+
+		if(hint::FRAG_TRY[m_state])
+			m_pFadeHint->SetPathNext(hint::PATH_TRYIT);
+		else
+			m_pFadeHint->SetPathNext(hint::PATH_SKIP);
 	}
 
 	// 完了フラグリセット

@@ -31,6 +31,7 @@
 #include "objectX.h"
 #include "meshcylinder.h"
 #include "polygon3D.h"
+#include "MyEffekseer.h"
 
 //*****************************************************
 // 定数定義
@@ -132,6 +133,12 @@ void CScene::Uninit(void)
 	CLight::ReleaseAll();
 
 	CInputManager::ReleaseAll();
+
+	// 全エフェクトの解放
+	CMyEffekseer *pMyEffekseer = CMyEffekseer::GetInstance();
+
+	if (pMyEffekseer != nullptr)
+		pMyEffekseer->StopAllEffect();
 }
 
 //=====================================================

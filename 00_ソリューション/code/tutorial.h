@@ -75,11 +75,13 @@ private:
 	float m_fTimeEnd;				// 終了タイマー
 	int m_nCntProgress;				// 進行カウンター
 	CUI *m_pCaption;				// キャプション
-	CFade2D *m_pFade2D;				// 2Dフェード
+	CFade2D *m_pFadeCaption;		// キャプションのフェード
 	vector<CUI*> m_apCheck;			// チェックマークの配列
 	bool m_abComplete[NUM_PLAYER];	// 完了フラグ
 	CGauge *m_pGaugeSkip;			// スキップゲージ
 	float m_fTimerSkip;				// スキップタイマー
+	CUI *m_pHint;					// ヒントのポリゴン
+	CFade2D *m_pFadeHint;		// ヒントのフェード
 
 	// 関数ポインタ型を定義
 	typedef void (CTutorial::*FuncUpdateState)(void);

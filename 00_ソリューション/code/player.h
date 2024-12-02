@@ -69,7 +69,7 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	void Hit(float fDamage) override;	// ヒット処理
+	virtual void Hit(float fDamage) override;	// ヒット処理
 	virtual bool Peck(void);		// 突っつく処理
 
 	// 取得・設定
