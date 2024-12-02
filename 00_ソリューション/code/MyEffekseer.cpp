@@ -28,6 +28,7 @@ const char* CMyEffekseer::m_apEfkName[CMyEffekseer::TYPE_MAX] =		// エフェクトの
 	"",												// なんもない
 	"data\\EFFEKSEER\\Effect\\peckWave.efkefc",		// つっつきの波紋
 	"data\\EFFEKSEER\\Effect\\splashwater.efkefc",	// さざ波
+	"data\\EFFEKSEER\\Effect\\ripplesring.efkefc",	// 波紋
 	"data\\EFFEKSEER\\Effect\\bearstep.efkefc",		// シロクマの足煙
 	"data\\EFFEKSEER\\Effect\\blizzard.efkefc",		// 吹雪
 	"data\\EFFEKSEER\\Effect\\icebreak.efkefc",		// 氷の破壊

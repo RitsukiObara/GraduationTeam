@@ -30,7 +30,8 @@ public:
 	{// Ží—Þ
 		TYPE_NONE = 0,	// ‚È‚ñ‚à‚È‚¢
 		TYPE_PECKWAVE,	// ‚Â‚Á‚Â‚«”g–ä
-		TYPE_RIPPLES,	// ‚³‚´”g
+		TYPE_RIPPLESTRINGS,	// ‚³‚´”g
+		TYPE_RIPPLE,	// ”g–ä
 		TYPE_BEARSTEP,	// ƒVƒƒNƒ}‚Ì•à‚«‰Œ
 		TYPE_BLIZZARD,	// á
 		TYPE_ICEBREAK,	// •X‚ª‰ó‚ê‚é‚Æ‚«
