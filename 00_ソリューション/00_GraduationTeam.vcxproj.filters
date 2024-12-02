@@ -504,6 +504,9 @@
     <ClCompile Include="code\fade3D.cpp">
       <Filter>ソース ファイル\anim3D</Filter>
     </ClCompile>
+    <ClCompile Include="code\npcpenguinstate_title.cpp">
+      <Filter>ソース ファイル\character\npcpenguin\state</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\scene.h">
@@ -883,6 +886,9 @@
     </ClInclude>
     <ClInclude Include="code\fade3D.h">
       <Filter>ソース ファイル\anim3D</Filter>
+    </ClInclude>
+    <ClInclude Include="code\npcpenguinstate_title.h">
+      <Filter>ソース ファイル\character\npcpenguin\state</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -25,6 +25,10 @@
 #include "UI.h"
 #include "effect2D.h"
 #include "inputjoypad.h"
+#include "iceManager.h"
+#include "ocean.h"
+#include "npcpenguin.h"
+#include "npcpenguinstate_title.h"
 
 //*****************************************************
 // マクロ定義
@@ -39,6 +43,7 @@
 namespace
 {
 	const string PATH_TEX = "data\\TEXTURE\\EFFECT\\snow01.png";	// テクスチャパス
+	const string MAP_PATH = "data\\TEXT\\ice_stage_title.txt";		// 配置ステージパス
 	const D3DXCOLOR COL_INITIAL_MENU = { 0.4f,0.4f,0.4f,1.0f };	// メニュー項目の初期色
 	const D3DXCOLOR COL_CURRENT_MENU = { 1.0f,1.0f,1.0f,1.0f };	// メニュー項目の選択色
 	const D3DXVECTOR3 UI_POS[CTitle::TITLE_UI_MAX] =  // UIの初期位置
@@ -62,6 +67,20 @@ namespace
 		D3DXVECTOR2(0.4f,0.1f),
 		D3DXVECTOR2(0.08f,0.15f),
 		D3DXVECTOR2(0.5f,0.5f),
+	};
+	const vector<D3DXVECTOR3> PENGUIN_POS =
+	{
+		D3DXVECTOR3(0.0f,0.0f,-350.0f),
+		D3DXVECTOR3(-220.0f,0.0f,150.0f),
+		D3DXVECTOR3(300.0f,0.0f,0.0f),
+		D3DXVECTOR3(600.0f,0.0f,700.0f),
+	};
+	const vector<D3DXVECTOR3> PENGUIN_ROT =
+	{
+		D3DXVECTOR3(0.0f,0.0f,0.0f),
+		D3DXVECTOR3(0.0f,D3DX_PI,0.0f),
+		D3DXVECTOR3(0.0f,-0.8f * D3DX_PI,0.0f),
+		D3DXVECTOR3(0.0f,0.2f * D3DX_PI,0.0f),
 	};
 
 	const float VIBRATION_POWER = 0.2f;	//バイブの強さ
@@ -149,15 +168,32 @@ HRESULT CTitle::Init(void)
 	CCamera::Camera* pInfoCamera = pCamera->GetCamera();
 
 	pInfoCamera->posV = { 45.38f,84.71f,270.10f };
-	pInfoCamera->posR = { -454.28f,331.03f,878.09f };
+	pInfoCamera->posR = { 0.0f,100.0f,0.0f };
+	pInfoCamera->fLength = 1500.0f;
 
-	// 背景オブジェクトの生成
-	CObjectX* pArsenal = CObjectX::Create();
+	//海の生成
+	COcean::Create();
 
-	if (pArsenal != nullptr)
+	// マップ配置
+	CIceManager* pIceManager = CIceManager::Create(15, 15);
+	if (pIceManager == nullptr)
+		return E_FAIL;
+
+	pIceManager->SetDirStream(COcean::E_Stream::STREAM_UP);
+	pIceManager->SetDirStreamNext(COcean::E_Stream::STREAM_UP);
+	pIceManager->Load(&MAP_PATH[0]);
+
+	// ペンギン配置
+	CNPCPenguin* pPenguin = nullptr;
+	for (int cnt = 0; cnt < PENGUIN_POS.size(); cnt++)
 	{
-		int nIdx = CModel::Load("data\\MODEL\\other\\arsenal.x");
-		pArsenal->BindModel(nIdx);
+		pPenguin = CNPCPenguin::Create(new CNPCPenguinState_StandTitle);
+
+		if (pPenguin != nullptr)
+		{
+			pPenguin->SetPosition(PENGUIN_POS[cnt]);
+			pPenguin->SetRotation(PENGUIN_ROT[cnt]);
+		}
 	}
 
 	int nIdxTexture;
