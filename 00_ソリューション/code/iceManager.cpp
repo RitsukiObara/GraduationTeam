@@ -783,6 +783,7 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 	if (nIdxV == -1 && nIdxH == -1)
 	{
 		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_ICEBREAK, pIce->GetPosition());
+		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_RIPPLE, pIce->GetPosition());
 		pIce->Uninit();
 		return;
 	}
@@ -792,6 +793,7 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 	if (!bOk)
 	{// ƒOƒŠƒbƒh‚É–³‚©‚Á‚½‚ç‰ó‚·
 		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_ICEBREAK, pIce->GetPosition());
+		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_RIPPLE, pIce->GetPosition());
 		DeleteIce(pIce);
 		pIce->Uninit();
 	}

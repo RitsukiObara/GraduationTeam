@@ -441,7 +441,7 @@ void CIce::Ripples(void)
 	rotEffect.y = atan2f(vecStream.x, vecStream.z);
 
 	// エフェクトの生成
-	MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_RIPPLES, posEffect, rotEffect);
+	MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_RIPPLESTRINGS, posEffect, rotEffect);
 
 	// タイマーの再設定
 	m_fTimerRipples = 0.0f;
