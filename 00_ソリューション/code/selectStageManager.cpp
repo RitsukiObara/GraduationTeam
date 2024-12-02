@@ -23,6 +23,7 @@
 #include "ocean.h"
 #include "gameManager.h"
 #include "tutorial.h"
+#include "number.h"
 
 //*****************************************************
 // マクロ定義
@@ -46,6 +47,10 @@ const float SPEED_MOVE_ENTER = 0.01f;	// エンター時の移動速度
 
 const float SPEED_PARTICLE = 22.0f;	// パーティクルの速度
 const D3DXVECTOR3 BANNER_POS = D3DXVECTOR3(0.0f, 0.0, 1300.0);	// 看板の位置
+
+const int NUM_PLACE = 2;					// 桁数
+const float HEIGHT_NUMBER = 0.14f;			// 数字の高さ
+D3DXVECTOR2 SIZE_NUMBER = { 0.02f, 0.06f };	// 数字のサイズ
 }
 
 //*****************************************************
@@ -214,6 +219,8 @@ void CSelectStageManager::SetStage(void)
 	if (s_aInfoStage.empty())
 		return;
 
+	int nIdx = 1;
+
 	for (S_InfoStage *pInfoStage : s_aInfoStage)
 	{
 		// ステージのXモデルの設置
@@ -246,6 +253,22 @@ void CSelectStageManager::SetStage(void)
 			m_aParticlePos.push_back(pObject);
 			pObject->SetPosition(pInfoStage->pos);
 		}
+
+		// 数字の生成
+		pInfoStage->pNumber = CNumber::Create(NUM_PLACE, 0);
+
+		if (pInfoStage->pNumber == nullptr)
+			return;
+
+		D3DXVECTOR3 posScreen;
+		universal::IsInScreen(pInfoStage->pos,&posScreen);
+		universal::ConvertScreenRate(posScreen);
+
+		pInfoStage->pNumber->SetPosition(D3DXVECTOR3(posScreen.x, posScreen.y - HEIGHT_NUMBER, 0.0f));
+		pInfoStage->pNumber->SetSizeAll(SIZE_NUMBER.x, SIZE_NUMBER.y);
+		pInfoStage->pNumber->SetValue(nIdx);
+
+		nIdx++;
 	}
 }
 
