@@ -23,7 +23,11 @@ namespace
 {
 const D3DXVECTOR3 POS_INIT_ICON = { 0.9f,0.08f,0.0f };	// アイコンの初期位置
 const D3DXVECTOR2 SIZE_INIT_ICON = { 0.02f,0.03f };	// 数字の初期サイズ
-const string PATH_ICON = "data\\TEXTURE\\UI\\icon_seals.png";	// アイコンのパス
+const string PATH_ICON[CEnemy::TYPE_MAX] =			// アイコンのパス
+{
+	"data\\TEXTURE\\UI\\icon_seals.png",		// アザラシ
+	"data\\TEXTURE\\UI\\icon_whitebear.png"		// シロクマ
+};
 
 const int NUM_ROW = 2; // 行の数
 const int NUM_COLUMN = 5; // 列の数
@@ -161,7 +165,7 @@ void CUIEnemy::AddEnemy(int nType)
 	pIcon->SetVtx();
 
 	// テクスチャ設定
-	int nIdx = Texture::GetIdx(&PATH_ICON[0]);
+	int nIdx = Texture::GetIdx(PATH_ICON[nType].c_str());
 	pIcon->SetIdxTexture(nIdx);
 
 	m_apIcon.push_back(pIcon);
