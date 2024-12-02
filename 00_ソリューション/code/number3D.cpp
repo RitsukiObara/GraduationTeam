@@ -19,6 +19,15 @@
 //*****************************************************
 LPDIRECT3DTEXTURE9 CNumber3D::m_pTexture = nullptr;	// テクスチャのポインタ
 
+//*****************************************************
+// 定数定義
+//*****************************************************
+namespace
+{
+const float WIDTH = 140.0f;		// 幅
+const float HEIGHT = 200.0f;	// 高さ
+}
+
 //=====================================================
 // コンストラクタ
 //=====================================================
@@ -46,13 +55,13 @@ CNumber3D::~CNumber3D()
 HRESULT CNumber3D::Init(void)
 {
 	// テクスチャ番号取得
-	m_nIdxTexture = CTexture::GetInstance()->Regist("data\\TEXTURE\\UI\\number01.png");
+	m_nIdxTexture = CTexture::GetInstance()->Regist("data\\TEXTURE\\UI\\number00.png");
 
 	for (int nCount = 0; nCount < m_nNumPlace; nCount++)
 	{
 		if (m_apObject[nCount] != nullptr)
 		{
-			m_apObject[nCount]->SetSize(40.0f, 100.0f);
+			m_apObject[nCount]->SetSize(WIDTH, HEIGHT);
 			m_apObject[nCount]->SetPosition(D3DXVECTOR3(GetPosition().x + 80.0f * nCount, GetPosition().y, GetPosition().z));
 			m_apObject[nCount]->SetIdxTexture(m_nIdxTexture);
 			m_apObject[nCount]->SetVtx();
@@ -79,7 +88,7 @@ void CNumber3D::Uninit(void)
 }
 
 //=====================================================
-//	更新処理
+// 更新処理
 //=====================================================
 void CNumber3D::Update(void)
 {
@@ -87,7 +96,7 @@ void CNumber3D::Update(void)
 }
 
 //=====================================================
-//	値設定処理
+// 値設定処理
 //=====================================================
 void CNumber3D::SetValue(int nValue,int nNumPlace)
 {

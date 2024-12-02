@@ -30,7 +30,8 @@ public:
 	{// 種類
 		TYPE_NONE = 0,	// なんもない
 		TYPE_PECKWAVE,	// つっつき波紋
-		TYPE_RIPPLES,	// さざ波
+		TYPE_RIPPLESTRINGS,	// さざ波
+		TYPE_RIPPLE,	// 波紋
 		TYPE_BEARSTEP,	// シロクマの歩き煙
 		TYPE_BLIZZARD,	// 吹雪
 		TYPE_ICEBREAK,	// 氷が壊れるとき
@@ -49,6 +50,7 @@ public:
 	void SetupEffekseerModules(::Effekseer::ManagerRef efkManager);
 	void Release(int idx);
 	void ReleaseEffect(CEffekseerEffect *pEffect);	// エフェクトの解放
+	void StopAllEffect(void) { m_efkManager->StopAllEffects(); };					// 全エフェクトの停止
 	const char* GetPathEffect(CMyEffekseer::TYPE type);
 	std::list<CEffekseerEffect*> *GetList(void) { return &m_listEffect; };	// リストの取得
 

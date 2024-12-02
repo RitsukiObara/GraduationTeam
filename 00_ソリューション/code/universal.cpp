@@ -1242,4 +1242,13 @@ float EaseOutBack(float fTime)
 
 	return 1 + c3 * powf(fTime - 1, 3) + c1 * powf(fTime - 1, 2);
 }
+
+//========================================
+// ƒXƒNƒŠ[ƒ“Š„‡‚É•ÏŠ·‚·‚éˆ—
+//========================================
+void ConvertScreenRate(D3DXVECTOR3 &pos)
+{
+	pos.x /= SCREEN_WIDTH;
+	pos.y /= SCREEN_HEIGHT;
+}
 }	// namespace universal

@@ -247,6 +247,7 @@ void ChangeState(CCameraState *pBehavior)
 	if (pCamera != nullptr)
 	{
 		pCamera->ChangeState(pBehavior);
+		pCamera->SetCamera();
 	}
 }
 
