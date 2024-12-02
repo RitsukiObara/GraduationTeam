@@ -42,10 +42,7 @@ namespace
 	const float Z_DOWN = -1500.0f;						// Zï˚å¸â∫ï˚å¸
 	const float X_LEFT = -2500.0f;						// Xï˚å¸è„ï˚å¸
 	const float X_RIGHT = 2500.0f;						// Xï˚å¸â∫ï˚å¸
-	const int BGICE_CREATE_CNT_L = 200;					// îwåiïXÇ™ê∂ê¨Ç≥ÇÍÇÈïb(ç∂)
-	const int BGICE_CREATE_CNT_R = 200;					// îwåiïXÇ™ê∂ê¨Ç≥ÇÍÇÈïb(âE)
-	const int BGICE_CREATE_CNT_UP = 200;				// îwåiïXÇ™ê∂ê¨Ç≥ÇÍÇÈïb(è„)
-	const int BGICE_CREATE_CNT_DOWN = 200;				// îwåiïXÇ™ê∂ê¨Ç≥ÇÍÇÈïb(â∫)
+	const int BGICE_CREATE_CNT = 80;					// îwåiïXÇ™ê∂ê¨Ç≥ÇÍÇÈÉtÉåÅ[ÉÄêî
 }
 
 //*****************************************************
@@ -315,7 +312,7 @@ void COcean::BgIceSetPosUp(void)
 
 	m_nBgiceCnt++;
 
-	if (m_nBgiceCnt >= BGICE_CREATE_CNT_UP)
+	if (m_nBgiceCnt >= BGICE_CREATE_CNT)
 	{
 		// îwåiïXÇÃÉçÅ[Éh
 		CBgIce::Create(D3DXVECTOR3(posX, 0.0f, Z_UP), D3DXVECTOR3(0.0f, 0.0f, 0.0f), type);
@@ -334,7 +331,7 @@ void COcean::BgIceSetPosDown(void)
 
 	m_nBgiceCnt++;
 
-	if (m_nBgiceCnt >= BGICE_CREATE_CNT_DOWN)
+	if (m_nBgiceCnt >= BGICE_CREATE_CNT)
 	{
 		// îwåiïXÇÃÉçÅ[Éh
 		CBgIce::Create(D3DXVECTOR3(posX, 0.0f, Z_DOWN), D3DXVECTOR3(0.0f, 0.0f, 0.0f), type);
@@ -353,7 +350,7 @@ void COcean::BgIceSetPosL(void)
 
 	m_nBgiceCnt++;
 
-	if (m_nBgiceCnt >= BGICE_CREATE_CNT_L)
+	if (m_nBgiceCnt >= BGICE_CREATE_CNT)
 	{
 		// îwåiïXÇÃÉçÅ[Éh
 		CBgIce::Create(D3DXVECTOR3(X_LEFT, 0.0f, posZ), D3DXVECTOR3(0.0f, 0.0f, 0.0f), type);
@@ -372,7 +369,7 @@ void COcean::BgIceSetPosR(void)
 
 	m_nBgiceCnt++;
 
-	if (m_nBgiceCnt >= BGICE_CREATE_CNT_R)
+	if (m_nBgiceCnt >= BGICE_CREATE_CNT)
 	{
 		// îwåiïXÇÃÉçÅ[Éh
 		CBgIce::Create(D3DXVECTOR3(X_RIGHT, 0.0f, posZ), D3DXVECTOR3(0.0f, 0.0f, 0.0f), type);
