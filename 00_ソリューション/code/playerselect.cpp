@@ -87,7 +87,6 @@ CPlayerSelect::CPlayerSelect()
 	m_nNumPlayer = 0;
 	ZeroMemory(&m_StandbyState[0], sizeof(m_StandbyState));
 	ZeroMemory(&m_apPlayerUI[0], sizeof(m_apPlayerUI));
-	ZeroMemory(&m_apPlayer[0], sizeof(m_apPlayer));
 	ZeroMemory(&m_apInputMgr[0], sizeof(m_apInputMgr));
 	ZeroMemory(&m_apBillboard[0], sizeof(m_apBillboard));
 	m_pCylinder = nullptr;
@@ -159,15 +158,6 @@ HRESULT CPlayerSelect::Init(void)
 		pBanner->BindModel(CModel::Load(&PATH_BANNER[0]));	// モデル読み込んで設定
 		pBanner->SetScale(BANNER_SCALE);	// サイズ設定
 
-		//// 球の判定生成
-		//m_pCollisionSphere = CCollisionSphere::Create(CCollision::TAG::TAG_PLAYER, CCollision::TYPE::TYPE_SPHERE, pBanner);
-
-		//if (m_pCollisionSphere != nullptr)
-		//{
-		//	m_pCollisionSphere->SetRadius(BANNER_COLLISION_SIZE);
-		//	m_pCollisionSphere->SetPosition(D3DXVECTOR3(BANNER_POS.x, 50.0f, BANNER_POS.z + 141.0f));
-		//}
-
 		// 影の生成
 		m_pShadow = CShadow::Create(4);
 		if (m_pShadow != nullptr)
@@ -218,8 +208,18 @@ void CPlayerSelect::Uninit(void)
 	Object::DeleteObject((CObject**)&m_pCylinder);
 	Object::DeleteObject((CObject**)&m_pFan);
 	Object::DeleteObject((CObject**)&m_pShadow);
-	//Object::DeleteObject((CObject**)&m_pCollisionSphere);
 
+	// プレイヤーの破棄
+	for (const auto& pair : m_mapPlayer)
+	{
+		CPlayer *pPlayer = pair.second;
+
+		if (pPlayer != nullptr)
+		{
+			pPlayer->Uninit();
+			pPlayer = nullptr;
+		}
+	}
 	// 各種オブジェクトの破棄
 	for (int nCount = 0; nCount < MAX_PLAYER; nCount++)
 	{
@@ -232,11 +232,6 @@ void CPlayerSelect::Uninit(void)
 		{
 			m_apPlayerUI[nCount]->Uninit();
 			m_apPlayerUI[nCount] = nullptr;
-		}
-		if (m_apPlayer[nCount] != nullptr)
-		{
-			m_apPlayer[nCount]->Uninit();
-			m_apPlayer[nCount] = nullptr;
 		}
 		if (m_apBillboard[nCount] != nullptr)
 		{
@@ -300,11 +295,14 @@ void CPlayerSelect::Input(void)
 			continue;
 
 		if (m_apInputMgr[i]->GetTrigger(CInputManager::E_Button::BUTTON_ENTER))
-			CreatePlayer(i);	// プレイヤーのエントリー
+			CreatePlayer(m_nNumPlayer, m_apInputMgr[i]);	// プレイヤーのエントリー
 
-		if (m_apPlayer[i] != nullptr &&
+		if (m_mapPlayer[m_apInputMgr[i]] != nullptr &&	
 			m_apInputMgr[i]->GetTrigger(CInputManager::E_Button::BUTTON_READY))
-			Ready(i);	// 準備
+		{// プレイヤーがエントリーしていて準備ボタンで準備OK
+			int nIDPlayer = m_mapPlayer[m_apInputMgr[i]]->GetID();
+			Ready(nIDPlayer);	// 準備
+		}
 
 		if (m_apInputMgr[i]->GetTrigger(CInputManager::BUTTON_BACK))	// BACK押したとき
 		{
@@ -318,8 +316,10 @@ void CPlayerSelect::Input(void)
 //=====================================================
 void CPlayerSelect::LimitPlayerPos(void)
 {
-	for (CPlayer *pPlayer : m_apPlayer)
+	for (const auto& pair : m_mapPlayer)
 	{
+		CPlayer *pPlayer = pair.second;
+
 		if (pPlayer == nullptr)
 			continue;
 
@@ -339,8 +339,10 @@ void CPlayerSelect::LimitPlayerPos(void)
 //=====================================================
 void CPlayerSelect::GravityPlayer(void)
 {
-	for (CPlayer *pPlayer : m_apPlayer)
+	for (const auto& pair : m_mapPlayer)
 	{
+		CPlayer *pPlayer = pair.second;
+
 		if (pPlayer == nullptr)
 			continue;
 
@@ -365,9 +367,9 @@ void CPlayerSelect::GravityPlayer(void)
 //=====================================================
 // プレイヤーの生成
 //=====================================================
-void CPlayerSelect::CreatePlayer(int nIdx)
+void CPlayerSelect::CreatePlayer(int nIdx, CInputManager* pInputMgr)
 {
-	if (m_apPlayer[nIdx] != nullptr)
+	if (m_mapPlayer[pInputMgr] != nullptr)
 		return;	// 枠が埋まってたら処理を通らない
 
 	CSound* pSound = CSound::GetInstance();
@@ -387,22 +389,24 @@ void CPlayerSelect::CreatePlayer(int nIdx)
 	m_StandbyState[nIdx] = STANDBY_PLAY;
 	
 	// プレイヤーの生成
-	m_apPlayer[nIdx] = CPlayer::Create();
+	m_mapPlayer[pInputMgr] = CPlayer::Create();
 	
-	if (m_apPlayer[nIdx] != nullptr)
+	if (m_mapPlayer[pInputMgr] != nullptr)
 	{
-		m_apPlayer[nIdx]->ReLoadModel(&player::PATH_BODY[nIdx][0]);
+		CPlayer *pPlayer = m_mapPlayer[pInputMgr];
+
+		pPlayer->ReLoadModel(&player::PATH_BODY[nIdx][0]);
 
 		// プレイヤー初期設定
-		m_apPlayer[nIdx]->SetMove(INIT_MOVE_PLAYER);
-		m_apPlayer[nIdx]->SetState(CPlayer::STATE_NORMAL);
-		m_apPlayer[nIdx]->SetPosition(POS_PLAYER_INIT);
+		pPlayer->SetMove(INIT_MOVE_PLAYER);
+		pPlayer->SetState(CPlayer::STATE_NORMAL);
+		pPlayer->SetPosition(POS_PLAYER_INIT);
 
 		// 入力マネージャーの割り当て
-		m_apPlayer[nIdx]->BindInputMgr(m_apInputMgr[nIdx]);	
+		pPlayer->BindInputMgr(m_apInputMgr[nIdx]);
 
 		// プレイヤーIDの割り当て
-		m_apPlayer[nIdx]->SetID(nIdx);
+		pPlayer->SetID(nIdx);
 
 		// 頭にビルボード配置
 		m_apBillboard[nIdx] = CPolygon3D::Create(D3DXVECTOR3(POS_PLAYER_INIT.x,POS_PLAYER_INIT.y + PLAYERNUM_POS_Y, POS_PLAYER_INIT.z));
@@ -412,20 +416,17 @@ void CPlayerSelect::CreatePlayer(int nIdx)
 			m_apBillboard[nIdx]->SetSize(PLAYERNUM_SIZE, PLAYERNUM_SIZE);
 			m_apBillboard[nIdx]->SetTex(D3DXVECTOR2((float)(nIdx + 1) / MAX_PLAYER, 1.0f), D3DXVECTOR2((float)(nIdx) / MAX_PLAYER, 0.0f));
 
-			CTexture* pTexture = CTexture::GetInstance();
-			if (pTexture != nullptr)
-			{
-				m_apBillboard[nIdx]->SetIdxTexture(pTexture->Regist(&PATH_PLAYERNUM[0]));
-			}
+			nIdxTexture = Texture::GetIdx(&PATH_PLAYERNUM[0]);
+			m_apBillboard[nIdx]->SetIdxTexture(nIdxTexture);
 			
 			m_apBillboard[nIdx]->SetVtx();
 		}
 
 		// モーション設定
-		m_apPlayer[nIdx]->SetMotion(CPlayer::MOTION::MOTION_MULTIAPPEAR);
+		pPlayer->SetMotion(CPlayer::MOTION::MOTION_MULTIAPPEAR);
 
 		// joypad振動させる
-		m_apPlayer[nIdx]->VibJoypad(POW_VIB_APPER, TIME_VIB_APPER);
+		pPlayer->VibJoypad(POW_VIB_APPER, TIME_VIB_APPER);
 
 		// パーティクルの発生
 		CParticle::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), CParticle::TYPE::TYPE_ENTERPLAYER);
@@ -458,9 +459,14 @@ void CPlayerSelect::CheckStart(void)
 
 	bool bStart = true;
 
+
 	for (int i = 0; i < MAX_PLAYER; i++)
-		if (m_StandbyState[i] != E_StandyrState::STANDBY_OK && m_apPlayer[i] != nullptr)
+	{
+		CPlayer *pPlayer = m_mapPlayer[m_apInputMgr[i]];
+
+		if (m_StandbyState[i] != E_StandyrState::STANDBY_OK && pPlayer != nullptr)
 			bStart = false;
+	}
 
 	if (bStart)
 		StartFade();
@@ -483,7 +489,7 @@ void CPlayerSelect::StartFade(void)
 	vector<bool> abEnter(MAX_PLAYER);
 
 	for (int i = 0; i < MAX_PLAYER; i++)
-		abEnter[i] = m_apPlayer[i] != nullptr;
+		abEnter[i] = m_mapPlayer[m_apInputMgr[i]] != nullptr;
 
 	// モードの保存
 	gameManager::SaveMode(CGame::E_GameMode::MODE_MULTI, abEnter);
@@ -501,7 +507,10 @@ void CPlayerSelect::UpdateBillboard(void)
 	{
 		if (m_apBillboard[cnt] != nullptr)
 		{
-			D3DXVECTOR3 pos = m_apPlayer[cnt]->GetPosition();
+			if (m_mapPlayer[m_apInputMgr[cnt]] == nullptr)
+				continue;
+
+			D3DXVECTOR3 pos = m_mapPlayer[m_apInputMgr[cnt]]->GetPosition();
 			m_apBillboard[cnt]->SetPosition(D3DXVECTOR3(pos.x, pos.y + PLAYERNUM_POS_Y, pos.z));
 			m_apBillboard[cnt]->SetVtx();
 		}
