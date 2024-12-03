@@ -140,6 +140,7 @@ private:
 	void MoveByNotGrid(void);				// グリッド基準じゃない移動
 	void CheckChangeGrid(void);				// グリッドが変わったかの確認
 	virtual void AliveDestGrid(void) {};	// 目的地に着いた時の仮想関数
+	void CollideIce(void);					// 氷との判定
 
 	void Debug(void);		// デバッグ処理
 
