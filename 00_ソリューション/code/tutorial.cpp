@@ -218,12 +218,22 @@ HRESULT CTutorial::Init(void)
 
 		pPlayer->BindInputMgr(pInpuMgr);
 		pPlayer->SetID(i);
-
-		pPlayer->ReLoadModel(&player::PATH_BODY[i][0]);
 	}
 
 	if (CPlayer::GetNumPlayer() > 1)
 	{// 複数人プレイ時のみ行う処理
+		for (int i = 0; i < CPlayer::GetNumPlayer(); i++)
+		{
+			// プレイヤーの人数を取得
+			CPlayer* pPlayer = CPlayerTutorial::GetInstance().at(i);
+
+			if (pPlayer == nullptr)
+				continue;
+
+			// プレイヤーのモデル再読み込み
+			pPlayer->ReLoadModel(&player::PATH_BODY[i][0]);
+		}
+
 		// プレイヤーUIの生成
 		m_pUIPlayer = CUIPlayer::Create();
 	}
