@@ -23,6 +23,7 @@
 #include "manager.h"
 #include "sound.h"
 #include "shadow.h"
+#include "player.h"
 
 //*****************************************************
 // 定数定義
@@ -901,9 +902,14 @@ void CEnemy::EndFlows(void)
 //=====================================================
 void CEnemy::Death(void)
 {
+	if (CPlayer::GetInstance().empty())
+	{
+		return;
+	}
+
 	// コンボ、撃破時のスコア加算
 	CDestroyScore *pDestroyScore = CDestroyScore::GetInstance();
-	CUI_Combo *pUICombo = CUI_Combo::GetInstance();
+	CUI_Combo* pUICombo = CUI_Combo::GetInstance();
 
 	if (pDestroyScore != nullptr && pUICombo != nullptr)
 	{
