@@ -30,15 +30,14 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	bool IsCanPeck(void) override { return false; };	// 突っつけるかの判定を返す
-
-	// 変数取得・設定関数
-	void EnableBreak(bool bBreak) override {};
-
-	// 静的メンバ関数
 
 private:
+	// メンバ関数
+	void IsOnPlayer(void);	// プレイヤーの検出
+	void UpdateState(void);	// 状態ごとの更新
 
+	// メンバ変数
+	float m_fTimerSink;	// 沈むカウンター
 };
 
 #endif

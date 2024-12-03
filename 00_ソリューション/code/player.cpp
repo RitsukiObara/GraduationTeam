@@ -651,6 +651,9 @@ CIce *CPlayer::SelectIceByRot(float fRot)
 //=====================================================
 bool CPlayer::CheckGridChange(void)
 {
+	if (m_state == STATE_FLOW)
+		return false;	// 漂流中は入らない
+
 	CIceManager* pIceMgr = CIceManager::GetInstance();
 
 	if (pIceMgr == nullptr)
@@ -659,30 +662,30 @@ bool CPlayer::CheckGridChange(void)
 	int nIdxV = -1;
 	int nIdxH = -1;
 
+	int nTemp;	// その場に氷が無いかの判定
+	if (pIceMgr->GetIdxGridFromPosition(GetPosition(), &nIdxV, &nIdxH))
+	{
+		if (pIceMgr->GetGridIce(&nIdxV, &nIdxH) == nullptr)
+		{// 氷が無ければ漂流開始
+			// 漂流を開始
+			if (!StartFlows())
+				Hit(0.0f);	// 開始できなければその場で死亡
+
+			return false;
+		}
+	}
+
 	// グリッド番号の取得
 	D3DXVECTOR3 posNext = GetPosition() + GetMove();
 	if (!pIceMgr->GetIdxGridFromPosition(posNext, &nIdxV, &nIdxH, RATE_CHANGE_GRID))
 		return false;	// グリッド番号取得失敗で偽を返す
 
-	CIce *pIce = pIceMgr->GetGridIce(&nIdxV, &nIdxH);
+	CIce *pIceForward = pIceMgr->GetGridIce(&nIdxV, &nIdxH);
 
-	if (m_state != E_State::STATE_INVINCIBLE && pIce == nullptr)
-	{// 無敵状態でない場合、氷がないグリッドの上に行っても番号を変えない
-
-		int nTemp;	// その場に氷が無かったら時のみ漂流
-		if (!pIceMgr->GetIdxGridFromPosition(GetPosition(), &nTemp, &nTemp))
-			return false;
-
-		// 漂流を開始
-		StartFlows();
-
-		return false;
-	}
-
-	if (pIce == nullptr)
+	if (pIceForward == nullptr)
 		return false;
 
-	if (pIce->IsPeck())
+	if (pIceForward->IsPeck())
 		return false;
 
 	if ((nIdxV == m_nGridV &&
@@ -704,12 +707,15 @@ bool CPlayer::CheckGridChange(void)
 //=====================================================
 // 漂流の開始
 //=====================================================
-void CPlayer::StartFlows(void)
+bool CPlayer::StartFlows(void)
 {
 	if (FindFlowIce())
 	{// 漂流する氷が見つかれば、漂流状態へ移行
 		m_state = E_State::STATE_FLOW;
+		return true;
 	}
+
+	return false;
 }
 
 //=====================================================

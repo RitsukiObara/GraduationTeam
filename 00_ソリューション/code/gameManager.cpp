@@ -254,8 +254,17 @@ void LoadMode(CGame::E_GameMode *pMode, vector<bool> &rbPlayerEnter)
 	{
 		assert(("ファイルが開けませんでした", false));
 	}
+}
 
+// マルチかの判定
+bool IsMulti(void)
+{
+	CGame::E_GameMode mode;
+	vector<bool> abFrag;
 
+	LoadMode(&mode, abFrag);
+
+	return mode == CGame::E_GameMode::MODE_MULTI;
 }
 
 // マップ番号保存

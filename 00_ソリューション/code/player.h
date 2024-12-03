@@ -132,7 +132,7 @@ private:
 	CIce *SelectIceByRot(float fRot);	// 氷を向きで取得
 	bool CheckGridChange(void);			// グリッドが変わったかどうかの判定
 	
-	void StartFlows(void);	// 漂流開始
+	bool StartFlows(void);	// 漂流開始
 	bool FindFlowIce(void);	// 漂流する氷の検出
 	void StayFlow(void);	// 漂流中の処理
 	void FlowDeath(void);	// 漂流中の死
