@@ -662,7 +662,6 @@ bool CPlayer::CheckGridChange(void)
 	int nIdxV = -1;
 	int nIdxH = -1;
 
-	int nTemp;	// ‚»‚Ìê‚É•X‚ª–³‚¢‚©‚Ì”»’è
 	if (pIceMgr->GetIdxGridFromPosition(GetPosition(), &nIdxV, &nIdxH))
 	{
 		if (pIceMgr->GetGridIce(&nIdxV, &nIdxH) == nullptr)
@@ -792,11 +791,7 @@ void CPlayer::StayFlow(void)
 	LimitInSideFlowIce();
 
 	// ƒRƒ“ƒgƒ[ƒ‰[‚ðU“®‚³‚¹‚é
-	CInputJoypad* pInputJoypad = CInputJoypad::GetInstance();
-	if (pInputJoypad == nullptr)
-		return;
-
-	pInputJoypad->Vibration(m_nID, POW_VIB_FLOW, TIME_VIB_FLOW);
+	VibJoypad(POW_VIB_FLOW, TIME_VIB_FLOW);
 
 	// •Y—¬’†‚ÌŽ€
 	FlowDeath();
@@ -949,12 +944,26 @@ bool CPlayer::Peck(void)
 		m_nTimePeck++;
 
 	// ‚Â‚Á‚Â‚«‚ÌƒRƒ“ƒgƒ[ƒ‰[U“®
-	pInputJoypad->Vibration(m_nID, PECK_VIBRATION_POWER, PECK_VIBRATION_TIME);
+	VibJoypad(PECK_VIBRATION_POWER, PECK_VIBRATION_TIME);
 
 	if(bResultBreak)	// ”j‰óŽž‚ÌƒRƒ“ƒgƒ[ƒ‰[U“®
-		pInputJoypad->Vibration(m_nID, POW_VIB_BREAK, TIME_VIB_BREAK);
+		VibJoypad(POW_VIB_BREAK, TIME_VIB_BREAK);
 
 	return bResultBreak;
+}
+
+//=====================================================
+// ƒWƒ‡ƒCƒpƒbƒh‚ðU“®‚³‚¹‚é
+//=====================================================
+void CPlayer::VibJoypad(float fPow, int nFrame)
+{
+	CInputJoypad* pInputJoypad = CInputJoypad::GetInstance();
+
+	if (pInputJoypad == nullptr)
+		return;
+
+	// joypadU“®‚³‚¹‚é
+	pInputJoypad->Vibration(m_nID, fPow, nFrame);
 }
 
 //=====================================================
@@ -1242,11 +1251,6 @@ void CPlayer::Hit(float fDamage)
 		m_state == E_State::STATE_INVINCIBLE)
 		return;	// ðŒ‚É‚æ‚Á‚ÄHitˆ—‚ð–³Œø‰»
 
-	CInputJoypad* pInputJoypad = CInputJoypad::GetInstance();
-
-	if (pInputJoypad == nullptr)
-		return;
-
 	// Ž€–Só‘Ô‚É‚·‚é
 	m_state = E_State::STATE_DEATH;
 
@@ -1259,7 +1263,7 @@ void CPlayer::Hit(float fDamage)
 	m_bEnableInput = false;
 
 	// joypadU“®‚³‚¹‚é
-	pInputJoypad->Vibration(m_nID, DEATH_VIBRATION_POWER, DEATH_VIBRATION_TIME);
+	VibJoypad(DEATH_VIBRATION_POWER, DEATH_VIBRATION_TIME);
 
 	// ƒyƒ“ƒMƒ“‚Ì–Â‚«º
 	CSound::GetInstance()->Play(CSound::LABEL_SE_PENGUIN_VOICE00);

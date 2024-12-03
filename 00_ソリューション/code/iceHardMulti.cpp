@@ -24,6 +24,9 @@ const float TIME_SINK = 10.0f;						// 沈むまでの時間
 const float SPEED_REPAIR = 0.3f;					// 回復の速度(1.0fで進行と同じ速度)
 const D3DXCOLOR COL_INIT = { 1.0f,1.0f,1.0f,1.0f };	// 初期の色
 const float SIZE_COLLIDE = Grid::SIZE * 0.5f;		// 判定のサイズ
+
+const float POW_VIB_SINK = 0.7f;	// 沈みそうな時の振動強さ
+const int TIME_VIB_SINK = 10;		// 沈みそうな時の振動時間
 }
 
 //*****************************************************
@@ -98,6 +101,11 @@ void CIceHardMulti::IsOnPlayer(void)
 		if (universal::DistCmpFlat(pos, posPlayer, SIZE_COLLIDE, nullptr))
 		{// 一定距離以内にいたらカウンターを加算
 			m_fTimerSink += CManager::GetDeltaTime();
+
+			// コントローラーを振動させる
+			float fRate = m_fTimerSink / TIME_SINK;
+			pPlayer->VibJoypad(POW_VIB_SINK * fRate, TIME_VIB_SINK);
+
 			break;
 		}
 		else

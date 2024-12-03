@@ -70,7 +70,8 @@ public:
 	void Update(void);
 	void Draw(void);
 	virtual void Hit(float fDamage) override;	// ヒット処理
-	virtual bool Peck(void);		// 突っつく処理
+	virtual bool Peck(void);					// 突っつく処理
+	void VibJoypad(float fPow, int nFrame);		// ジョイパッドを振動させる
 
 	// 取得・設定
 	void SetMove(D3DXVECTOR3 move) { m_move = move; }				// 移動量
