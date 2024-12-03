@@ -453,8 +453,8 @@ void CPlayerSelect::Ready(int nIdx)
 //=====================================================
 void CPlayerSelect::CheckStart(void)
 {
-	if (m_nNumPlayer == 0)
-		return;
+	if (m_nNumPlayer <= 1)
+		return;	// プレイヤーが複数人いない場合、通らない
 
 	bool bStart = true;
 

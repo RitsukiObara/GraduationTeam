@@ -667,8 +667,9 @@ bool CPlayer::CheckGridChange(void)
 		if (pIceMgr->GetGridIce(&nIdxV, &nIdxH) == nullptr)
 		{// 氷が無ければ漂流開始
 			// 漂流を開始
-			if (!StartFlows())
-				; //Hit(0.0f);	// 開始できなければその場で死亡
+			//if (!StartFlows())
+			//	; //Hit(0.0f);	// 開始できなければその場で死亡
+			StartFlows();
 
 			return false;
 		}
@@ -789,7 +790,7 @@ void CPlayer::StayFlow(void)
 
 	// 流氷内に位置を制限
 	LimitInSideFlowIce();
-
+	
 	// コントローラーを振動させる
 	VibJoypad(POW_VIB_FLOW, TIME_VIB_FLOW);
 
