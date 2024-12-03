@@ -35,7 +35,7 @@ SETSTAGE	#2 第3ステージ　しろくま単体　しろくまのねどこ
 END_SETSTAGE
 
 SETSTAGE	#3 第4ステージ　あざらし一体、しろくま一体　コンビのなわばり
-	MODEL = data\\MODEL\\object\\Stage_Obj001.x
+	MODEL = data\\MODEL\\object\\Stage_Obj003.x
 	POS = 2000.0 0.0 -900.0
 	PATHMAP = data\\TEXT\\ice_stage_03.txt
 	PATHENEMY = data\\TEXT\\enemy03.txt
