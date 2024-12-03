@@ -57,9 +57,9 @@ std::vector<CEnemy*> CEnemy::s_vector = {};	// 自身のポインタ
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
-CEnemy::CEnemy(int nPriority) : m_nGridV(0), m_nGridH(0),m_state(E_State::STATE_NONE), m_pIceLand(nullptr), m_bFollowIce(false),
-m_move(),m_nGridVDest(0), m_nGridHDest(0), m_fSpeedMove(0.0f), m_fTimerDeath(0.0f), m_bTurn(false), m_bEnableMove(false), m_pLandSystemFlow(nullptr), 
-m_bMoveByGrid(false), m_pShadow(nullptr), m_spawn(E_Spawn::SPAWN_RU)
+CEnemy::CEnemy(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(E_State::STATE_NONE), m_pIceLand(nullptr), m_bFollowIce(false),
+m_move(), m_nGridVDest(0), m_nGridHDest(0), m_fSpeedMove(0.0f), m_fTimerDeath(0.0f), m_bTurn(false), m_bEnableMove(false), m_pLandSystemFlow(nullptr),
+m_bMoveByGrid(false), m_pShadow(nullptr), m_spawn(E_Spawn::SPAWN_RU), m_type(TYPE_SEALS)
 {
 	s_vector.push_back(this);
 }
@@ -97,6 +97,8 @@ CEnemy* CEnemy::Create(int nType, E_Spawn spawn)
 		// グリッド番号初期化
 		pEnemy->InitGridIdx(spawn);
 		pEnemy->m_spawn = spawn;
+
+		pEnemy->m_type = (TYPE)nType;
 
 		// 初期化処理
 		pEnemy->Init();
@@ -913,7 +915,7 @@ void CEnemy::Death(void)
 
 	if (pDestroyScore != nullptr && pUICombo != nullptr)
 	{
-		pDestroyScore->AddDestroyScore(CEnemy::TYPE_SEALS);
+		pDestroyScore->AddDestroyScore(m_type);
 		pUICombo->AddCombo();
 	}
 
