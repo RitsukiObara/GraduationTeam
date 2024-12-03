@@ -194,9 +194,6 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindow)
 	// オブジェクトのリリース処理
 	CObject::ReleaseAll();
 
-	// ブラーの生成
-	CBlur::Create();
-
 	m_fogInfo.fStart = FOG_START;
 	m_fogInfo.fEnd = FOG_END;
 

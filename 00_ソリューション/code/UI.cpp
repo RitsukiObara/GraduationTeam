@@ -56,9 +56,7 @@ CUI *CUI::Create(void)
 HRESULT CUI::Init(void)
 {
 	CPolygon2D::Init();
-
-	EnableBlur(false);
-
+	
 	return S_OK;
 }
 

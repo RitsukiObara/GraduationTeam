@@ -20,7 +20,6 @@
 //*****************************************************
 CObject *CObject::m_apTop[NUM_PRIORITY] = {};	// 先頭のオブジェクトのポインタ
 CObject *CObject::m_apCur[NUM_PRIORITY] = {};	// 最後尾のオブジェクトのポインタ
-CObject *CObject::m_apNotStop[NUM_OBJECT] = {};	// 停止中も動くオブジェクトの配列
 int CObject::m_nNumAll = 0;	// 総数
 
 //=====================================================
@@ -42,8 +41,6 @@ CObject::CObject(int nPriority)
 	m_bFog = true;
 	m_bCull = true;
 	m_bBlur = true;
-	m_type = TYPE::TYPE_NONE;
-	m_nID = -1;
 	m_dAlpha = 0;
 
 	m_nPriority = nPriority;
@@ -74,33 +71,6 @@ CObject::CObject(int nPriority)
 //=====================================================
 CObject::~CObject()
 {
-	m_nNumAll--;
-}
-
-//=====================================================
-// 個別リリース処理
-//=====================================================
-void CObject::Release(void)
-{
-	// 死亡フラグを立てる
-	m_bDeath = true;
-
-	for (int i = 0; i < NUM_OBJECT; i++)
-	{// 停止しないオブジェクトの削除
-		if (m_apNotStop[i] == this)
-		{
-			m_apNotStop[i] = nullptr;
-
-			break;
-		}
-	}
-}
-
-//=====================================================
-// 破棄処理
-//=====================================================
-void CObject::Delete(void)
-{
 	if (m_apCur[m_nPriority] != this && m_apTop[m_nPriority] != this)
 	{// 真ん中のアドレスの破棄
 		if (m_pPrev != nullptr)
@@ -126,7 +96,7 @@ void CObject::Delete(void)
 		// 先頭アドレスを次のアドレスに引き継ぐ
 		m_apTop[m_nPriority] = m_pNext;
 	}
-	
+
 	if (m_apCur[m_nPriority] == this)
 	{// 最後尾アドレスの破棄
 		if (m_pPrev != nullptr)
@@ -138,6 +108,23 @@ void CObject::Delete(void)
 		m_apCur[m_nPriority] = m_pPrev;
 	}
 
+	m_nNumAll--;
+}
+
+//=====================================================
+// 個別リリース処理
+//=====================================================
+void CObject::Release(void)
+{
+	// 死亡フラグを立てる
+	m_bDeath = true;
+}
+
+//=====================================================
+// 破棄処理
+//=====================================================
+void CObject::Delete(void)
+{
 	// 自身の破棄
 	delete this;
 }
@@ -167,26 +154,8 @@ void CObject::ReleaseAll(void)
 		}
 	}
 
-	for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
-	{
-		// 先頭オブジェクトを代入
-		CObject *pObject = m_apTop[nCntPri];
-
-		while (pObject != nullptr)
-		{
-			// 次のアドレスを保存
-			CObject *pObjectNext = pObject->m_pNext;
-
-			if (pObject->m_bDeath)
-			{
-				// 削除
-				pObject->Delete();
-			}
-
-			// 次のアドレスを代入
-			pObject = pObjectNext;
-		}
-	}
+	// オブジェクトの削除
+	DeleteAll();
 }
 
 //=====================================================
@@ -212,26 +181,8 @@ void CObject::UpdateAll(void)
 		}
 	}
 
-	for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
-	{
-		// 先頭オブジェクトを代入
-		CObject *pObject = m_apTop[nCntPri];
-
-		while (pObject != nullptr)
-		{
-			// 次のアドレスを保存
-			CObject *pObjectNext = pObject->m_pNext;
-
-			if (pObject->m_bDeath)
-			{
-				// 終了処理
-				pObject->Delete();
-			}
-
-			// 次のアドレスを代入
-			pObject = pObjectNext;
-		}
-	}
+	// オブジェクトの削除
+	DeleteAll();
 }
 
 //=====================================================
@@ -262,63 +213,12 @@ void CObject::DeleteAll(void)
 }
 
 //=====================================================
-// 止まらないオブジェクトの更新処理
-//=====================================================
-void CObject::UpdateNotStop(void)
-{
-	// 更新処理
-	for (int i = 0; i < NUM_OBJECT; i++)
-	{
-		if (m_apNotStop[i] != nullptr)
-		{
-			m_apNotStop[i]->Update();
-		}
-	}
-
-	// 死亡フラグの立っているオブジェクトの削除
-	for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
-	{
-		// 先頭オブジェクトを代入
-		CObject *pObject = m_apTop[nCntPri];
-
-		while (pObject != nullptr)
-		{
-			// 次のアドレスを保存
-			CObject *pObjectNext = pObject->m_pNext;
-
-			if (pObject->m_bDeath)
-			{
-				// 終了処理
-				pObject->Delete();
-			}
-
-			// 次のアドレスを代入
-			pObject = pObjectNext;
-		}
-	}
-}
-
-//=====================================================
 // 全描画処理
 //=====================================================
 void CObject::DrawAll(void)
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
-
-	//// ブラーの取得
-	//CBlur * pBlur = CBlur::GetInstance();
-
-	//if (pBlur != nullptr)
-	//{
-	//	pBlur->SaveRenderInfo();	// 描画の情報を保存
-	//	pBlur->ChangeTarget();	// レンダーターゲットの変更
-
-	//	// クリアする
-	//	pDevice->Clear(0, nullptr,
-	//		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-	//		COLOR_CLEAR, 1.0f, 0);
-	//}
 
 	// カメラの取得
 	CCamera *pCamera = CManager::GetCamera();
@@ -337,15 +237,6 @@ void CObject::DrawAll(void)
 		CMyEffekseer::GetInstance()->Draw();
 	}
 
-	//if (pBlur != nullptr)
-	//{
-	//	pBlur->OverlapLastTexture();	// 前回のテクスチャを重ねる
-	//	pBlur->RestoreTarget();	// レンダーターゲットの復元
-	//	pBlur->DrawBuckBuffer();	// バックバッファへの描画
-	//	pBlur->SwapBuffer();	// バッファーの入れ替え
-	//	pBlur->ClearNotBlur();	// ブラーしないレンダラーのクリア
-	//}
-	
 	// 死亡フラグのたったオブジェクトの破棄
 	DeleteAll();
 }
@@ -405,8 +296,6 @@ void CObject::DrawObject(bool bBlur)
 
 			pDevice->SetRenderState(D3DRS_FOGENABLE, pObject->m_bFog && CRenderer::GetInstance()->IsFog());
 
-			CBlur *pBlur = CBlur::GetInstance();
-
 			// 描画処理
 			pObject->Draw();
 
@@ -449,48 +338,6 @@ void CObject::DrawObject(bool bBlur)
 			pObject = pObjectNext;
 		}
 	}
-}
-
-//=====================================================
-// 停止しないオブジェクトに設定する
-//=====================================================
-void CObject::EnableNotStop(bool bNotStop)
-{
-	m_bNotStop = bNotStop;
-
-	if (bNotStop)
-	{// 止めないオブジェクトに設定
-
-		for (int i = 0; i < NUM_OBJECT; i++)
-		{
-			if (m_apNotStop[i] == nullptr)
-			{
-				m_apNotStop[i] = this;
-
-				break;
-			}
-		}
-	}
-	else
-	{// 止めないオブジェクトから削除
-		for (int i = 0; i < NUM_OBJECT; i++)
-		{
-			if (m_apNotStop[i] == this)
-			{
-				m_apNotStop[i] = nullptr;
-
-				break;
-			}
-		}
-	}
-}
-
-//=====================================================
-//タイプ設定処理
-//=====================================================
-void CObject::SetType(TYPE type)
-{
-	m_type = type;
 }
 
 namespace Object

@@ -28,8 +28,6 @@ CDebrisSpawner::CDebrisSpawner(int nPriority) : CObject(nPriority)
 	m_nPriorityDebris = 0;
 	m_nLife = 0;
 	m_ModelIdx = 0;
-
-	SetType(TYPE_PARTICLE);
 }
 
 //=====================================================

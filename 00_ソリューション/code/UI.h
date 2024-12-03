@@ -18,8 +18,8 @@
 class CUI	: public CPolygon2D
 {
 public:
-	CUI(int nPriority = 7);	// コンストラクタ
-	~CUI();					//	デストラクタ
+	CUI(int nPriority = 6);	// コンストラクタ
+	~CUI() override;		//	デストラクタ
 
 	// メンバ関数
 	static CUI *Create(void);	// 生成処理

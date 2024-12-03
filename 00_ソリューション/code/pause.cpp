@@ -172,8 +172,6 @@ HRESULT CPause::Init(void)
 
 	m_state = STATE_IN;
 
-	EnableNotStop(true);
-
 	return S_OK;
 }
 
@@ -182,16 +180,8 @@ HRESULT CPause::Init(void)
 //====================================================
 void CPause::Uninit(void)
 {
-	// ƒQ[ƒ€‚ðÄŠJ‚·‚é
-	CGame *pGame = CGame::GetInstance();
-
-	if (pGame != nullptr)
-	{
-		pGame->EnableStop(false);
-	}
-
 	if (m_pBg != nullptr)
-	{
+	{// ”wŒiƒ|ƒŠƒSƒ“‚Ì”jŠü
 		m_pBg->Uninit();
 		m_pBg = nullptr;
 	}
@@ -206,9 +196,16 @@ void CPause::Uninit(void)
 		}
 	}
 
-	if (pGame != nullptr)
-		pGame->ReleasePause();
+	// ƒQ[ƒ€‚ðÄŠJ‚·‚é
+	CGame *pGame = CGame::GetInstance();
 
+	if (pGame != nullptr)
+	{
+		pGame->EnableStop(false);
+		pGame->ReleasePause();
+	}
+
+	// Ž©g‚Ì”jŠü
 	Release();
 }
 
@@ -230,7 +227,7 @@ void CPause::ManageState(void)
 	{
 		Input();
 	}
-
+	
 	// ”wŒi‚ÌŠÇ—
 	ManageBg();
 
@@ -260,7 +257,6 @@ void CPause::ManageState(void)
 			{// I—¹‚Ìƒ‰ƒCƒ“
 				nEnd++;
 			}
-
 		}
 	}
 
@@ -268,6 +264,7 @@ void CPause::ManageState(void)
 		m_state == STATE_OUT)
 	{
 		Uninit();
+		return;
 	}
 }
 
@@ -338,13 +335,12 @@ void CPause::Input(void)
 	
 	if ((pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE) || 
 		pInputManager->GetTrigger(CInputManager::BUTTON_BACK)) && 
-		m_state == STATE::STATE_NONE)
-	{// ƒ|[ƒY‰ðœAˆÈ~‚Ì‘€ì‚ðŽó‚¯•t‚¯‚È‚¢
+		m_state != STATE::STATE_IN)
+	{
 		m_state = STATE_OUT;
 
 		//	‰æ–ÊŠO–Ú•W‚ðÝ’è
 		OffPosition();
-
 		return;
 	}
 
@@ -470,10 +466,13 @@ void CPause::OffPosition(void)
 }
 
 //====================================================
-//	‘I‘ð‚µ‚½Žž‚ÉUI‚ª“®‚­ˆ—
+// ‘I‘ð‚µ‚½Žž‚ÉUI‚ª“®‚­ˆ—
 //====================================================
 void CPause::SelectMove(void)
 {
+	if (m_apMenu[m_menu] == nullptr)
+		return;
+
 	D3DXVECTOR3 pos = m_apMenu[m_menu]->GetPosition();
 	nCountMove++;
 

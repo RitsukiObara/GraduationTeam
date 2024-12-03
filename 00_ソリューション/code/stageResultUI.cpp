@@ -124,8 +124,6 @@ HRESULT CStageResultUI::Init(void)
 
 	m_aPosDest[0].x = RESULT_WIDTH;
 
-	EnableNotStop(true);
-
 	return S_OK;
 }
 

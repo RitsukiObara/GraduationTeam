@@ -27,8 +27,6 @@ CParticle::CParticle(int nPriority) : CObject(nPriority)
 	m_pPosOwner = nullptr;
 	m_nPriorityEffect = 0;
 	m_nLife = 0;
-
-	SetType(TYPE_PARTICLE);
 }
 
 //=====================================================

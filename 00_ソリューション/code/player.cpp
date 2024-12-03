@@ -1282,12 +1282,14 @@ void CPlayer::Debug(void)
 	if (pDebugProc == nullptr || pInputKeyboard == nullptr || pJoypad == nullptr || pInputMgr == nullptr || m_pShadow == nullptr)
 		return;
 
+#if 0
 	pDebugProc->Print("\nプレイヤー情報==========================");
 	pDebugProc->Print("\n番号[%d]", m_nID);
 	pDebugProc->Print("\n縦[%d]横[%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\n位置[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
 	pDebugProc->Print("\n影の位置[%f,%f,%f]", m_pShadow->GetPosition().x, m_pShadow->GetPosition().y, m_pShadow->GetPosition().z);
 	pDebugProc->Print("\n移動量[%f,%f,%f]", GetMove().x, GetMove().y, GetMove().z);
+#endif
 
 	if (pInputMgr->GetTrigger(CInputManager::BUTTON_SETICE))
 	{

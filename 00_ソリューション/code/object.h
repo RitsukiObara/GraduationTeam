@@ -51,13 +51,10 @@ public:
 	virtual void Draw(void) {};	// 描画処理
 	static void ReleaseAll(void);	// 全てリリース
 	static void UpdateAll(void);	// 全て更新
-	static void UpdateNotStop(void);	// 動かないオブジェクトの更新
 	static void DeleteAll(void);	// 全削除処理
 	static void DrawAll(void);	// 全て描画
 	static void DrawObject(bool bBlur);	// オブジェクトの描画
 	virtual void Hit(float fDamage){}	// ヒット処理
-	void SetType(TYPE type);
-	TYPE GetType(void) { return m_type; }
 	virtual void SetPosition(D3DXVECTOR3 pos) {};	// 設定処理
 	virtual D3DXVECTOR3 GetPosition(void) { return D3DXVECTOR3(); }	// 位置取得処理
 	virtual D3DXVECTOR3 GetPositionOld(void) { return D3DXVECTOR3(); }	// 位置取得処理
@@ -69,7 +66,6 @@ public:
 	void EnableZtest(bool bZtest) { m_bZtest = bZtest; }
 	void EnableLighting(bool bLighting) { m_bLighting = bLighting; }
 	void EnableAdd(bool bAdd) { m_bAdd = bAdd; }
-	void EnableNotStop(bool bNotStop);
 	void EnableFog(bool bFog) { m_bFog = bFog; }
 	void EnableCull(bool bCull) { m_bCull = bCull; }
 	void SetAlphaTest(DWORD dValue) { m_dAlpha = dValue; }
@@ -83,11 +79,7 @@ private:
 	void Delete(void);	// 個別削除処理
 
 	static int m_nNumAll;	// 総数
-	int m_nID;	// 自分のID
-	TYPE m_type;	// 種類
 	int m_nPriority;	// 描画の優先順位
-	static CObject *m_apTop[NUM_PRIORITY];	// 先頭のオブジェクトのアドレス
-	static CObject *m_apCur[NUM_PRIORITY];	// 最後尾のオブジェクトのアドレス
 	CObject *m_pPrev;	// 前のオブジェクトのアドレス
 	CObject *m_pNext;	// 次のオブジェクトのアドレス
 	bool m_bDeath;	// 死亡フラグ
@@ -100,7 +92,10 @@ private:
 	bool m_bCull;	// カリングするかどうか
 	DWORD m_dAlpha;	// アルファテストの値
 	bool m_bBlur;	// ブラーをかけるかどうか
-	static CObject *m_apNotStop[NUM_OBJECT];	// 停止中にも動くオブジェクトの配列
+
+	// 静的メンバ変数
+	static CObject *m_apTop[NUM_PRIORITY];	// 先頭のオブジェクトのアドレス
+	static CObject *m_apCur[NUM_PRIORITY];	// 最後尾のオブジェクトのアドレス
 };
 
 namespace Object
