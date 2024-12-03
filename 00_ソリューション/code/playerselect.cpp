@@ -254,7 +254,6 @@ void CPlayerSelect::Uninit(void)
 void CPlayerSelect::Update(void)
 {
 	CFade* pFade = CFade::GetInstance();
-	CSound* pSound = CSound::GetInstance();
 	
 	// シーンの更新
 	CScene::Update();
@@ -367,6 +366,14 @@ void CPlayerSelect::CreatePlayer(int nIdx)
 {
 	if (m_apPlayer[nIdx] != nullptr)
 		return;	// 枠が埋まってたら処理を通らない
+
+	CSound* pSound = CSound::GetInstance();
+
+	if (pSound == nullptr)
+		return;
+
+	// ペンギンエントリー音
+	pSound->Play(CSound::LABEL_SE_PENGUIN_VOICE00);
 
 	CInputJoypad* pInputJoypad = CInputJoypad::GetInstance();
 
