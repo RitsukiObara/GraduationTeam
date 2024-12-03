@@ -265,7 +265,7 @@ void SaveIdxInput(vector<int> vectorIdxInput)
 	if (file.is_open())
 	{
 		for (int nIdx : vectorIdxInput)
-			file << nIdx << '\n';	// ”Ô†
+			file << "IDX = " << nIdx << '\n';	// ”Ô†
 
 		file.close();
 	}

@@ -66,6 +66,8 @@ HRESULT CGameManagerMulti::Init(void)
 	if (pUIPlayer != nullptr)
 		pUIPlayer->StartScatter();
 
+	CPlayer::EnableInputAll(false);
+
 	return S_OK;
 }
 
