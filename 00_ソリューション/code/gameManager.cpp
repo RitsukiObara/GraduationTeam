@@ -31,6 +31,7 @@ namespace
 const string PATH_TEX = "data\\TEMP\\mode.txt";	// モードのパス
 const string PATH_IDXMAP = "data\\TEMP\\mapIdx.bin";	// マップ番号のパス
 const string PATH_WINNER = "data\\TEMP\\winner.bin";	// 勝者のパス
+const string PATH_IDXINPUT = "data\\TEMP\\idxInput.txt";	// 入力番号のパス
 const int PLAY_SOUND_SEA_COUNT = 60 * 24;	// 静かな海サウンド再生時間（右側変更で秒数変更）
 }
 
@@ -242,6 +243,60 @@ void LoadMode(CGame::E_GameMode *pMode, vector<bool> &rbPlayerEnter)
 				rbPlayerEnter.push_back(nData);
 			}
 
+			if (file.eof())
+			{// 読み込み終了
+				break;
+			}
+		}
+
+		file.close();
+	}
+	else
+	{
+		assert(("ファイルが開けませんでした", false));
+	}
+}
+
+// 入力番号保存
+void SaveIdxInput(vector<int> vectorIdxInput)
+{
+	std::ofstream file(PATH_IDXINPUT);
+
+	if (file.is_open())
+	{
+		for (int nIdx : vectorIdxInput)
+			file << nIdx << '\n';	// 番号
+
+		file.close();
+	}
+	else
+	{
+		assert(("ファイルが開けませんでした", false));
+	}
+}
+
+// 入力番号読込
+void LoadIdxInput(vector<int> &rVectorIdxInput)
+{
+	std::ifstream file(PATH_IDXINPUT);
+
+	if (file.is_open())
+	{
+		std::string temp;
+
+		while (std::getline(file, temp))
+		{// 読み込むものがなくなるまで読込
+			std::istringstream iss(temp);
+			std::string key;
+			iss >> key;
+
+			if (key == "IDX")
+			{// モード
+				int nIdx;
+				iss >> temp >> nIdx;
+				rVectorIdxInput.push_back(nIdx);
+			}
+			
 			if (file.eof())
 			{// 読み込み終了
 				break;

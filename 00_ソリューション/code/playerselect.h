@@ -55,7 +55,7 @@ public:
 private:
 	// メンバ関数
 	void CreateMesh(void);			// メッシュの生成
-	void CreatePlayer(int nIdx, CInputManager* pInputMgr);	// プレイヤーの生成
+	void CreatePlayer(int nIdx, int nIdxInput);	// プレイヤーの生成
 	void Input(void);				// 操作
 	void LimitPlayerPos(void);		// プレイヤーの位置制限
 	void GravityPlayer(void);		// プレイヤーの重力処理
@@ -72,9 +72,9 @@ private:
 	CUI *m_apStateUI[MAX_PLAYER];				// プレイヤー用2Dオブジェクトのポインタ
 	map<CInputManager*, CPlayer*> m_mapPlayer;	// プレイヤーのマップコンテナ
 	CInputManager *m_apInputMgr[MAX_PLAYER];	// 入力マネージャーの配列
+	vector<int> m_aIdxInput;					// 入力番号保存用の配列
 	CMeshCylinder *m_pCylinder;					// 側面のシリンダー
 	CFan3D *m_pFan;								// 上側の円ポリゴン
-	CCollisionSphere* m_pCollisionSphere;		// 球の判定
 	CShadow* m_pShadow;							// 影のポインタ
 	CPolygon3D* m_apBillboard[MAX_PLAYER];		// プレイヤー番号ビルボード
 

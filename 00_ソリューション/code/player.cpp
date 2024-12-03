@@ -25,6 +25,7 @@
 #include "sound.h"
 #include "shadow.h"
 #include "MyEffekseer.h"
+#include "gameManager.h"
 
 //*****************************************************
 // 定数定義
@@ -1369,4 +1370,30 @@ void CPlayer::EnableInputAll(bool bValue)
 {
 	for (CPlayer *pPlayer : s_apPlayer)
 		pPlayer->EnableInput(bValue);
+}
+
+//=====================================================
+// 全プレイヤーに入力を割り振る
+//=====================================================
+void CPlayer::BindInputAllPlayer(void)
+{
+	// 入力番号取得
+	vector<int> aIdxInput;
+	gameManager::LoadIdxInput(aIdxInput);
+
+	for (int i = 0; i < NUM_PLAYER; i++)
+		CInputManager::Create();
+
+	for (int i = 0; i < (int)s_apPlayer.size(); i++)
+	{
+		if (s_apPlayer[i] == nullptr)
+			return;
+
+		CInputManager *pInputMgr = CInputManager::GetInstance(aIdxInput[i]);
+		if (pInputMgr == nullptr)
+			continue;
+
+		s_apPlayer[i]->BindInputMgr(pInputMgr);
+		s_apPlayer[i]->SetID(i);
+	}
 }

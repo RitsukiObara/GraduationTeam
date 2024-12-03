@@ -91,7 +91,6 @@ CPlayerSelect::CPlayerSelect()
 	ZeroMemory(&m_apBillboard[0], sizeof(m_apBillboard));
 	m_pCylinder = nullptr;
 	m_pFan = nullptr;
-	m_pCollisionSphere = nullptr;
 	m_pShadow = nullptr;
 }
 
@@ -295,7 +294,9 @@ void CPlayerSelect::Input(void)
 			continue;
 
 		if (m_apInputMgr[i]->GetTrigger(CInputManager::E_Button::BUTTON_ENTER))
-			CreatePlayer(m_nNumPlayer, m_apInputMgr[i]);	// プレイヤーのエントリー
+		{
+			CreatePlayer(m_nNumPlayer, i);	// プレイヤーのエントリー
+		}
 
 		if (m_mapPlayer[m_apInputMgr[i]] != nullptr &&	
 			m_apInputMgr[i]->GetTrigger(CInputManager::E_Button::BUTTON_READY))
@@ -367,10 +368,15 @@ void CPlayerSelect::GravityPlayer(void)
 //=====================================================
 // プレイヤーの生成
 //=====================================================
-void CPlayerSelect::CreatePlayer(int nIdx, CInputManager* pInputMgr)
+void CPlayerSelect::CreatePlayer(int nIdx, int nIdxInput)
 {
+	CInputManager *pInputMgr = m_apInputMgr[nIdxInput];
+
 	if (m_mapPlayer[pInputMgr] != nullptr)
 		return;	// 枠が埋まってたら処理を通らない
+
+	// 入力番号保存
+	m_aIdxInput.push_back(nIdxInput);
 
 	CSound* pSound = CSound::GetInstance();
 
@@ -493,6 +499,9 @@ void CPlayerSelect::StartFade(void)
 
 	// モードの保存
 	gameManager::SaveMode(CGame::E_GameMode::MODE_MULTI, abEnter);
+
+	// 入力番号の保存
+	gameManager::SaveIdxInput(m_aIdxInput);
 
 	// ゲームに遷移
 	pFade->SetFade(CScene::MODE_SELECTSTAGE);
