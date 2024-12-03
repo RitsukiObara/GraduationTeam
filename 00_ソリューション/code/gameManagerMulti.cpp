@@ -145,8 +145,8 @@ void CGameManagerMulti::DeathPlayer(int nIdx)
 //=====================================================
 void CGameManagerMulti::CheckEndGame(void)
 {
-	// プレイヤー数と死亡数が一致したらゲーム終了
-	if ((int)m_apPlayer.size() - 1 == m_nNumDeathPlayer)
+	// プレイヤー数が死亡数が下回ったらゲーム終了
+	if ((int)m_apPlayer.size() - 1 <= m_nNumDeathPlayer)
 	{
 		CGame::SetState(CGame::E_State::STATE_END);
 	}

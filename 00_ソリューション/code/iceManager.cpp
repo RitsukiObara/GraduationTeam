@@ -22,6 +22,7 @@
 #include "MyEffekseer.h"
 #include "camera.h"
 #include "manager.h"
+#include "gameManager.h"
 
 //*****************************************************
 // 定数定義
@@ -1562,6 +1563,8 @@ void CIceManager::Draw(void)
 //=====================================================
 void CIceManager::Load(const char* pPath)
 {
+	bool bMulti = gameManager::IsMulti();	// マルチフラグ取得
+
 	bool bLoad = false;
 	int nGridV = 0;
 	std::ifstream ifs(pPath);
@@ -1604,7 +1607,10 @@ void CIceManager::Load(const char* pPath)
 						}
 						else if (cData == '2')
 						{// 硬い氷
-							CreateIce(nGridV, nGridH, CIce::E_Type::TYPE_HARD);
+							if(bMulti)	// マルチ用の硬い氷
+								CreateIce(nGridV, nGridH, CIce::E_Type::TYPE_HARDMULTI);
+							else	// シングル用の硬い氷
+								CreateIce(nGridV, nGridH, CIce::E_Type::TYPE_HARD);
 						}
 						nGridH++;
 					}

@@ -70,7 +70,8 @@ public:
 	void Update(void);
 	void Draw(void);
 	virtual void Hit(float fDamage) override;	// ヒット処理
-	virtual bool Peck(void);		// 突っつく処理
+	virtual bool Peck(void);					// 突っつく処理
+	void VibJoypad(float fPow, int nFrame);		// ジョイパッドを振動させる
 
 	// 取得・設定
 	void SetMove(D3DXVECTOR3 move) { m_move = move; }				// 移動量
@@ -132,7 +133,7 @@ private:
 	CIce *SelectIceByRot(float fRot);	// 氷を向きで取得
 	bool CheckGridChange(void);			// グリッドが変わったかどうかの判定
 	
-	void StartFlows(void);	// 漂流開始
+	bool StartFlows(void);	// 漂流開始
 	bool FindFlowIce(void);	// 漂流する氷の検出
 	void StayFlow(void);	// 漂流中の処理
 	void FlowDeath(void);	// 漂流中の死

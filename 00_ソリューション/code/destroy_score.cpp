@@ -40,8 +40,12 @@ namespace
 	const float	THINITY_COL = 0.0f;	// 透明になる
 	const float	SCORE_SCALE = 1.0f;	// スコアのスケール
 	const D3DXCOLOR	NORMAL_COLOR = { 1.0f,1.0f,1.0f,1.0f };	// スコアの初期色
-	const int	ADD_SEALS_SCORE = 1000;	// アザラシのスコア
-	const int	VALUE_SEALS_SCORE = 5;	// アザラシの桁数
+	const int	ADD_SCORE[CEnemy::TYPE_MAX] =				// アザラシのスコア
+	{
+		1000,		// スコア
+		2000,		// シロクマ
+	};
+	const int	VALUE_SCORE = 5;		// 桁数
 	const float	SCORE_POS_X = 150.0f;	// スコアのX座標
 	const float	SCORE_POS_Z = 50.0f;	// スコアのZ座標
 }
@@ -96,9 +100,9 @@ CDestroyScore* CDestroyScore::Create()
 HRESULT CDestroyScore::Init(void)
 {
 	m_nScore = SCORE_MIN;	// スコアの初期化
-	m_nValue = VALUE_SEALS_SCORE; //桁数の初期化
+	m_nValue = VALUE_SCORE; // 桁数の初期化
 	m_fScaleNumber = SCORE_SCALE;	// 初期スケール設定
-	m_State = STATE_VERTICAL;	//状態の初期化
+	m_State = STATE_VERTICAL;	// 状態の初期化
 	m_ShiftPos = D3DXVECTOR3(0.0f, 0.0f, SCORE_POS_Z);
 
 	// 初期位置の設定
@@ -287,17 +291,11 @@ void CDestroyScore::SetScore(int nDigit)
 //=====================================================
 void CDestroyScore::SetEnemyScore(CEnemy::TYPE type)
 {
-	switch (type)
-	{
-	case CEnemy::TYPE_SEALS:
+	// 種類が存在しない場合、この関数を抜ける
+	if (type >= CEnemy::TYPE_MAX) { assert(false); return; }
 
-		m_nAddScore = ADD_SEALS_SCORE;
-
-		break;
-
-	default:
-		break;
-	}
+	// スコアを代入する
+	m_nAddScore = ADD_SCORE[type];
 }
 
 //=====================================================

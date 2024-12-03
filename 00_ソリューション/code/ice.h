@@ -38,7 +38,8 @@ public:
 	enum E_Type
 	{// 種類
 		TYPE_NORMAL = 0,	// 通常
-		TYPE_HARD,	// 硬い氷
+		TYPE_HARD,			// 硬い氷
+		TYPE_HARDMULTI,		// マルチ用の硬い氷
 		TYPE_MAX
 	};
 	enum E_TypeShake
@@ -81,7 +82,8 @@ public:
 	bool IsSink(void) { return m_bSink; }
 	void EnableStop(bool bStop) { m_bStop = bStop; }	// 止まるフラグ
 	bool IsStop(void) { return m_bStop; }
-	CFan3D *GetFan3D(void) { return m_pUp; }	// 上側の扇ポリゴン取得
+	CFan3D *GetFan3D(void) { return m_pUp; }				// 上側の扇ポリゴン取得
+	CMeshCylinder *GetMeshCyliner(void) { return m_pSide; }	// 側面のメッシュシリンダー取得
 	void SetRippleFrag(COcean::E_Stream stream, bool bValue) { m_abRipleFrag[stream] = bValue; }	// 流れごとのフラグ取得
 	bool GetRippleFrag(COcean::E_Stream stream) { return m_abRipleFrag[stream]; }
 

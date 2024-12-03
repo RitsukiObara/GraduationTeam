@@ -9,14 +9,15 @@
 // インクルード
 //*****************************************************
 #include "ice.h"
+#include "iceHard.h"
+#include "iceHardMulti.h"
+#include "iceManager.h"
 #include "texture.h"
 #include "gameObject.h"
 #include "fan3D.h"
 #include "meshcylinder.h"
 #include "ocean.h"
-#include "iceHard.h"
 #include "objectX.h"
-#include "iceManager.h"
 #include "manager.h"
 #include "particle.h"
 #include "model.h"
@@ -120,6 +121,9 @@ CIce *CIce::Create(E_Type type,E_State state)
 			break;
 		case CIce::TYPE_HARD:
 			pIce = new CIceHard;
+			break;
+		case CIce::TYPE_HARDMULTI:
+			pIce = new CIceHardMulti;
 			break;
 		default:
 			assert(false);
@@ -226,6 +230,12 @@ void CIce::Uninit(void)
 		m_pState->Uninit(this);
 		m_pState = nullptr;
 	}
+
+	// グリッドから削除
+	CIceManager *pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager != nullptr)
+		pIceManager->DeleteIce(this);
 
 	// 継承クラスの終了
 	CObject3D::Uninit();
