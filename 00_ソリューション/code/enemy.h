@@ -172,8 +172,8 @@ private:
 	CIce *m_pIceLand;				// 乗っている氷
 	CFlowIce *m_pLandSystemFlow;	// 乗ってる流氷システム
 	CShadow *m_pShadow;				// 影のポインタ
-
 	D3DXVECTOR3 m_move;		// 移動量
+	TYPE m_type;			//	敵の種類
 	
 	// 静的メンバ変数
 	static std::vector<CEnemy*> s_vector;	// 自身のポインタ
