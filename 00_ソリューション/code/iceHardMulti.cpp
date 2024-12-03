@@ -14,6 +14,7 @@
 #include "manager.h"
 #include "fan3D.h"
 #include "meshcylinder.h"
+#include "MyEffekseer.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -121,6 +122,7 @@ void CIceHardMulti::UpdateState(void)
 	if (m_fTimerSink > TIME_SINK)
 	{// ˆê’èŠÔæ‚Á‚Ä‚½‚çíœ
 		Uninit();
+		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_ICEBREAK, GetPosition());
 		return;
 	}
 
