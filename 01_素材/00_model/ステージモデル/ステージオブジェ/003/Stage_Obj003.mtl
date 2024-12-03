@@ -10,12 +10,19 @@ illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd ice_UV002.jpg
+map_Kd ice_UV003.jpg
+Ni 1.00
+newmtl lambert54SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd ice_UV001.jpg
 Ni 1.00
 newmtl pasted__lambert20SG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd sirokuma000.jpg
+map_Kd 450-20160106123728246180.jpg
 Ni 1.00
