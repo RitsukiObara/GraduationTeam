@@ -33,7 +33,7 @@ namespace
 	const D3DXVECTOR2 SIZE_NORMAL_NUM = { 40.0f, 40.0f };	// 通常数字のサイズ
 	const D3DXVECTOR2 SIZE_MINI_NUM = { 0.014f, 0.028f };	// ミニ数字のサイズ
 	const D3DXVECTOR3 POS_INITIAL = { 0.0f,0.0f,0.0f };	// 初期位置
-	const int	WAITTIME = 60;	// 滞留時間
+	const int	WAITTIME = 100;	// 滞留時間
 	const float	GOAL_X = 0.5f;	// Xのゴール地点
 	const float	MOVE_SPEED = 10.0f;	// 移動速度
 	const float	VERTICAL_STOP = 100.0f;	// 縦移動の停止地点
