@@ -171,7 +171,7 @@ HRESULT CTitle::Init(void)
 	pInfoCamera->posR = { 0.0f,100.0f,0.0f };
 	pInfoCamera->fLength = 1500.0f;
 
-	//海の生成
+	// 海の生成
 	COcean::Create();
 
 	// マップ配置

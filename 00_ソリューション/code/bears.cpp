@@ -39,7 +39,7 @@ const float RANGE_FIND_PLAYER = 1000.0f;	// プレイヤー発見範囲
 const float SPEED_ONESTEP = 1.1f;	// 一歩のスピード
 const float FACT_DECMOVE = 0.96f;	// 移動減衰係数
 
-const float RADIUS_HIT = 150.0f;	// ヒット判定の半径
+const float RADIUS_HIT = 70.0f;	// ヒット判定の半径
 const float ASSAULT_SE_TIME = 1.0f;	// 突撃SE流す間隔
 
 //-----------------------------

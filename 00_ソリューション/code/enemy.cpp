@@ -44,6 +44,8 @@ const float RATE_STOP_FLOW_ICE_RADIUS = 0.5f;	// •Y—¬’âŽ~‚·‚éÛ‚ÉŒŸo‚·‚é•X‚Ì”¼Œ
 
 const float RATE_STOP_CHARGE = 0.6f;	// “Ëi‚ðŽ~‚ß‚é‚Æ‚«‚Ì•X‚ÌƒTƒCƒY‚ÌŠ„‡
 const float RANGE_STOP_MOVE = D3DX_PI * 1 / CIceManager::E_Direction::DIRECTION_MAX;	// ˆÚ“®‚ðŽ~‚ß‚éŠp“x‚Ì”ÍˆÍ
+
+const float RATE_COLLIDEICE = 1.0f;	// •X‚Æ‚Ì”»’è‚ÌŠ„‡
 }
 
 //*****************************************************
@@ -231,6 +233,9 @@ void CEnemy::Update(void)
 
 	// •Y—¬ŠJŽn‚Ì”»’è
 	StartFlows();
+
+	// •X‚Æ‚Ì”»’è
+	CollideIce();
 
 	// ‰e‚Ì’Ç]
 	if (m_pShadow != nullptr)
@@ -713,6 +718,27 @@ void CEnemy::CheckChangeGrid(void)
 
 		return;
 	}
+}
+
+//=====================================================
+// •X‚Æ‚Ì”»’è
+//=====================================================
+void CEnemy::CollideIce(void)
+{
+	if (m_state == E_State::STATE_DRIFT)
+		return;
+
+	CIceManager* pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	CIce *pIce = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
+
+	D3DXVECTOR3 pos = GetPosition();
+	pIceMgr->Collide(&pos, pIce, RATE_COLLIDEICE);
+
+	SetPosition(pos);
 }
 
 //=====================================================
