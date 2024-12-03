@@ -258,6 +258,20 @@ void CCameraResultSingle::Update(CCamera* pCamera)
 {
 	// プレイヤーの前まで移動する処理
 	MoveToPlayerFront(pCamera);
+
+	//-------------------------------
+	// 目標位置の設定
+	//-------------------------------
+	vector<CPlayer*> apPlayer = CPlayer::GetInstance();	// プレイヤーの取得
+	assert(!apPlayer.empty());
+
+	CPlayer* pPlayer = *apPlayer.begin();
+	assert(pPlayer != nullptr);
+	D3DXVECTOR3 rot = pPlayer->GetRotation();
+
+	universal::FactingRot(&rot.y, 0.0f, 0.02f);
+
+	pPlayer->SetRotation(rot);
 }
 
 //=====================================================
