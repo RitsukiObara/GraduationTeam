@@ -38,7 +38,7 @@ class CPlayerSelect : public CScene
 public:
 	enum E_StandyrState
 	{// プレイヤーの準備状態
-		STANDBY_WATE,
+		STANDBY_WAIT,
 		STANDBY_OK,
 		STANDBY_PLAY,
 		STANDBY_MAX
@@ -55,7 +55,7 @@ public:
 private:
 	// メンバ関数
 	void CreateMesh(void);			// メッシュの生成
-	void CreatePlayer(int nIdx);	// プレイヤーの生成
+	void CreatePlayer(int nIdx, CInputManager* pInputMgr);	// プレイヤーの生成
 	void Input(void);				// 操作
 	void LimitPlayerPos(void);		// プレイヤーの位置制限
 	void GravityPlayer(void);		// プレイヤーの重力処理
@@ -68,14 +68,14 @@ private:
 	// メンバ変数
 	int m_nNumPlayer;	// プレイヤーの数
 	E_StandyrState m_StandbyState[MAX_PLAYER];	// プレイヤーの状態
-	CUI *m_apPlayerUI[MAX_PLAYER];	// プレイヤー用2Dオブジェクトのポインタ
-	CUI *m_apStateUI[MAX_PLAYER];	// プレイヤー用2Dオブジェクトのポインタ
-	CPlayer *m_apPlayer[MAX_PLAYER];// プレイヤーのポインタ
+	CUI *m_apPlayerUI[MAX_PLAYER];				// プレイヤー用2Dオブジェクトのポインタ
+	CUI *m_apStateUI[MAX_PLAYER];				// プレイヤー用2Dオブジェクトのポインタ
+	map<CInputManager*, CPlayer*> m_mapPlayer;	// プレイヤーのマップコンテナ
 	CInputManager *m_apInputMgr[MAX_PLAYER];	// 入力マネージャーの配列
-	CMeshCylinder *m_pCylinder;	// 側面のシリンダー
-	CFan3D *m_pFan;				// 上側の円ポリゴン
-	CCollisionSphere* m_pCollisionSphere;	// 球の判定
-	CShadow* m_pShadow;						// 影のポインタ
+	CMeshCylinder *m_pCylinder;					// 側面のシリンダー
+	CFan3D *m_pFan;								// 上側の円ポリゴン
+	CCollisionSphere* m_pCollisionSphere;		// 球の判定
+	CShadow* m_pShadow;							// 影のポインタ
 	CPolygon3D* m_apBillboard[MAX_PLAYER];		// プレイヤー番号ビルボード
 
 	// 静的メンバ変数
