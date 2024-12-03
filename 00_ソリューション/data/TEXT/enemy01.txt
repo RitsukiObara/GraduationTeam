@@ -4,13 +4,17 @@
 # Author：Momoya Takayama
 #
 #====================================================================
+# スポーンパターン：[右上：0][左上：1][右下：2][左下：3]
+#====================================================================
 
 SETENEMY
-	DELAY = 5.0f
+	DELAY = 3.0f
 	TYPE = 0
+	SPAWN = 0
 END_SETENEMY
 
 SETENEMY
-	DELAY = 15.0f
+	DELAY = 7.0f
 	TYPE = 0
+	SPAWN = 1
 END_SETENEMY
