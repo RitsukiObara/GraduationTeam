@@ -25,6 +25,7 @@
 #include "tutorial.h"
 #include "number.h"
 #include "texture.h"
+#include "sound.h"
 
 //*****************************************************
 // マクロ定義
@@ -314,6 +315,8 @@ void CSelectStageManager::Update(void)
 //=====================================================
 void CSelectStageManager::Select(void)
 {
+	CSound* pSound = CSound::GetInstance();
+
 	for (int i = 0; i < (int)s_aInfoStage.size(); i++)
 	{
 		S_InfoStage *pInfoStage = s_aInfoStage[i];
@@ -348,6 +351,13 @@ void CSelectStageManager::Select(void)
 			{
 				if (m_pPenguin->IsEnter())
 				{// エンターの開始
+
+					if (pSound != nullptr)
+					{
+						// ステージに入っていく音
+						pSound->Play(pSound->LABEL_SE_STAGE_ENTRY);
+					}
+
 					m_nIdxSelect = i;
 
 					StartEnter();
