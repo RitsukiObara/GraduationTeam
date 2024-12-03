@@ -136,6 +136,9 @@
     <Filter Include="ソース ファイル\anim3D">
       <UniqueIdentifier>{cc97266c-7496-429c-a047-06bc8dc12008}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\gameobject\ice">
+      <UniqueIdentifier>{e4dfbff2-bf00-40a3-ac27-ce8f9ea4d6ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="code\scene.cpp">
@@ -321,26 +324,11 @@
     <ClCompile Include="code\random.cpp">
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
-    <ClCompile Include="code\iceManager.cpp">
-      <Filter>ソース ファイル\gameobject</Filter>
-    </ClCompile>
-    <ClCompile Include="code\ice.cpp">
-      <Filter>ソース ファイル\gameobject</Filter>
-    </ClCompile>
     <ClCompile Include="code\player.cpp">
       <Filter>ソース ファイル\character</Filter>
     </ClCompile>
     <ClCompile Include="code\ocean.cpp">
       <Filter>ソース ファイル\mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="code\iceHard.cpp">
-      <Filter>ソース ファイル\gameobject</Filter>
-    </ClCompile>
-    <ClCompile Include="code\flowIce.cpp">
-      <Filter>ソース ファイル\gameobject</Filter>
-    </ClCompile>
-    <ClCompile Include="code\BG_Ice.cpp">
-      <Filter>ソース ファイル\gameobject</Filter>
     </ClCompile>
     <ClCompile Include="code\flowIceFactory.cpp">
       <Filter>ソース ファイル\factory</Filter>
@@ -506,6 +494,24 @@
     </ClCompile>
     <ClCompile Include="code\npcpenguinstate_title.cpp">
       <Filter>ソース ファイル\character\npcpenguin\state</Filter>
+    </ClCompile>
+    <ClCompile Include="code\BG_Ice.cpp">
+      <Filter>ソース ファイル\gameobject\ice</Filter>
+    </ClCompile>
+    <ClCompile Include="code\flowIce.cpp">
+      <Filter>ソース ファイル\gameobject\ice</Filter>
+    </ClCompile>
+    <ClCompile Include="code\ice.cpp">
+      <Filter>ソース ファイル\gameobject\ice</Filter>
+    </ClCompile>
+    <ClCompile Include="code\iceHard.cpp">
+      <Filter>ソース ファイル\gameobject\ice</Filter>
+    </ClCompile>
+    <ClCompile Include="code\iceManager.cpp">
+      <Filter>ソース ファイル\gameobject\ice</Filter>
+    </ClCompile>
+    <ClCompile Include="code\iceHardMulti.cpp">
+      <Filter>ソース ファイル\gameobject\ice</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -695,26 +701,11 @@
     <ClInclude Include="code\random.h">
       <Filter>ソース ファイル\base</Filter>
     </ClInclude>
-    <ClInclude Include="code\iceManager.h">
-      <Filter>ソース ファイル\gameobject</Filter>
-    </ClInclude>
-    <ClInclude Include="code\ice.h">
-      <Filter>ソース ファイル\gameobject</Filter>
-    </ClInclude>
     <ClInclude Include="code\player.h">
       <Filter>ソース ファイル\character</Filter>
     </ClInclude>
     <ClInclude Include="code\ocean.h">
       <Filter>ソース ファイル\mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="code\iceHard.h">
-      <Filter>ソース ファイル\gameobject</Filter>
-    </ClInclude>
-    <ClInclude Include="code\flowIce.h">
-      <Filter>ソース ファイル\gameobject</Filter>
-    </ClInclude>
-    <ClInclude Include="code\BG_Ice.h">
-      <Filter>ソース ファイル\gameobject</Filter>
     </ClInclude>
     <ClInclude Include="code\flowIceFactory.h">
       <Filter>ソース ファイル\factory</Filter>
@@ -889,6 +880,24 @@
     </ClInclude>
     <ClInclude Include="code\npcpenguinstate_title.h">
       <Filter>ソース ファイル\character\npcpenguin\state</Filter>
+    </ClInclude>
+    <ClInclude Include="code\BG_Ice.h">
+      <Filter>ソース ファイル\gameobject\ice</Filter>
+    </ClInclude>
+    <ClInclude Include="code\flowIce.h">
+      <Filter>ソース ファイル\gameobject\ice</Filter>
+    </ClInclude>
+    <ClInclude Include="code\ice.h">
+      <Filter>ソース ファイル\gameobject\ice</Filter>
+    </ClInclude>
+    <ClInclude Include="code\iceHard.h">
+      <Filter>ソース ファイル\gameobject\ice</Filter>
+    </ClInclude>
+    <ClInclude Include="code\iceManager.h">
+      <Filter>ソース ファイル\gameobject\ice</Filter>
+    </ClInclude>
+    <ClInclude Include="code\iceHardMulti.h">
+      <Filter>ソース ファイル\gameobject\ice</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

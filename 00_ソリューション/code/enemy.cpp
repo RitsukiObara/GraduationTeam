@@ -735,6 +735,9 @@ void CEnemy::CollideIce(void)
 
 	CIce *pIce = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
 
+	if (pIce == nullptr)
+		return;
+
 	D3DXVECTOR3 pos = GetPosition();
 	pIceMgr->Collide(&pos, pIce, RATE_COLLIDEICE);
 
