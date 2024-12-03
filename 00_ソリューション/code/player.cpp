@@ -668,7 +668,7 @@ bool CPlayer::CheckGridChange(void)
 		{// 氷が無ければ漂流開始
 			// 漂流を開始
 			if (!StartFlows())
-				Hit(0.0f);	// 開始できなければその場で死亡
+				; //Hit(0.0f);	// 開始できなければその場で死亡
 
 			return false;
 		}

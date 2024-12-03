@@ -57,6 +57,9 @@ const float PLAYERNUM_POS_Y = 250.0f;
 
 const float GRAVITY = 0.6f;	// 重力
 
+const float POW_VIB_APPER = 0.6f;	// 出現時の振動強さ
+const int TIME_VIB_APPER = 15;		// 出現時の振動長さ
+
 //----------------------------------
 // ステージの定数
 //----------------------------------
@@ -375,11 +378,6 @@ void CPlayerSelect::CreatePlayer(int nIdx)
 	// ペンギンエントリー音
 	pSound->Play(CSound::LABEL_SE_PENGUIN_VOICE00);
 
-	CInputJoypad* pInputJoypad = CInputJoypad::GetInstance();
-
-	if (pInputJoypad == nullptr)
-		return;
-
 	// テクスチャ変更
 	int nIdxTexture = Texture::GetIdx(&PATH_UI_STANDBY[0]);
 	if(m_apStateUI[nIdx] != nullptr)
@@ -427,7 +425,7 @@ void CPlayerSelect::CreatePlayer(int nIdx)
 		m_apPlayer[nIdx]->SetMotion(CPlayer::MOTION::MOTION_MULTIAPPEAR);
 
 		// joypad振動させる
-		pInputJoypad->Vibration(nIdx, 0.6f, 15);
+		m_apPlayer[nIdx]->VibJoypad(POW_VIB_APPER, TIME_VIB_APPER);
 
 		// パーティクルの発生
 		CParticle::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), CParticle::TYPE::TYPE_ENTERPLAYER);
