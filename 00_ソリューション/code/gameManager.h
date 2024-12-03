@@ -60,6 +60,9 @@ void LoadMode(CGame::E_GameMode *pMode, vector<bool> &rbPlayerEnter);	// ƒ‚[ƒh“
 
 bool IsMulti(void);	// ƒ}ƒ‹ƒ`‚©‚Ì”»’è
 
+void SaveIdxInput(vector<int> vectorIdxInput);		// “ü—Í”Ô†
+void LoadIdxInput(vector<int> &rVectorIdxInput);
+
 void SaveIdxMap(int nIdx);
 int LoadIdxMap(void);
 

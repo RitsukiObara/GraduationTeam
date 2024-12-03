@@ -206,19 +206,14 @@ HRESULT CTutorial::Init(void)
 
 	for (int i = 0; i < (int)abFrag.size(); i++)
 	{// プレイヤーの生成
-		CInputManager *pInpuMgr = CInputManager::Create();
-
 		if (!abFrag[i])
 			continue;
 
 		CPlayerTutorial *pPlayer = CPlayerTutorial::Create();
-
-		if (pPlayer == nullptr)
-			continue;
-
-		pPlayer->BindInputMgr(pInpuMgr);
-		pPlayer->SetID(i);
 	}
+
+	// 全プレイヤーの入力割り当て
+	CPlayer::BindInputAllPlayer();
 
 	if (CPlayer::GetNumPlayer() > 1)
 	{// 複数人プレイ時のみ行う処理

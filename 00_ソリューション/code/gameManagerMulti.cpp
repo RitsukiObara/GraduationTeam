@@ -44,8 +44,6 @@ HRESULT CGameManagerMulti::Init(void)
 
 	for (int i = 0; i < (int)abFrag.size(); i++)
 	{
-		CInputManager *pInpuMgr = CInputManager::Create();
-
 		if (!abFrag[i])
 			continue;
 
@@ -54,12 +52,13 @@ HRESULT CGameManagerMulti::Init(void)
 		if (pPlayer == nullptr)
 			continue;
 
-		pPlayer->BindInputMgr(pInpuMgr);
-		pPlayer->SetID(i);
 		m_apPlayer.push_back(pPlayer);
 
 		pPlayer->ReLoadModel(&player::PATH_BODY[i][0]);
 	}
+
+	// 全プレイヤーの入力割り当て
+	CPlayer::BindInputAllPlayer();
 
 	// プレイヤーUIの生成
 	CUIPlayer *pUIPlayer = CUIPlayer::Create();
