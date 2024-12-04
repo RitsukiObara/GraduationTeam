@@ -256,6 +256,9 @@ void CPlayer::Update(void)
 	// “ü—Íˆ—
 	Input();
 
+	// •X‚ª‚È‚¢”»’è
+	JudgeNoIce();
+
 	if (m_state == STATE_FLOW)
 		StayFlow();	// •Y—¬’†‚Ìˆ—
 
@@ -264,9 +267,6 @@ void CPlayer::Update(void)
 
 	if (m_pPeckLine != nullptr)
 		m_pPeckLine->SetPosition(GetPosition());
-
-	// •X‚ª‚È‚¢”»’è
-	JudgeNoIce();
 
 	// •X‚Ì’Ç]
 	FollowIce();
@@ -798,6 +798,8 @@ void CPlayer::StayFlow(void)
 	{
 		// •Y—¬‚ÌI—¹
 		EndFlows();
+
+		return;
 	}
 
 	// ŠC—¬‚ÌƒxƒNƒgƒ‹Žæ“¾
@@ -878,6 +880,12 @@ void CPlayer::EndFlows(void)
 {
 	m_state = E_State::STATE_NORMAL;
 	m_pLandSystemFlow = nullptr;
+
+	CIceManager* pIceMgr = CIceManager::GetInstance();
+	if (pIceMgr == nullptr)
+		return;
+
+	pIceMgr->GetNearestIce(GetPosition(), &m_nGridV, &m_nGridH);
 }
 
 //=====================================================
@@ -1305,9 +1313,8 @@ void CPlayer::Debug(void)
 	if (pDebugProc == nullptr || pInputKeyboard == nullptr || pJoypad == nullptr || pInputMgr == nullptr || m_pShadow == nullptr)
 		return;
 
-#if 0
+#if 1
 	pDebugProc->Print("\nƒvƒŒƒCƒ„[î•ñ==========================");
-	pDebugProc->Print("\n”Ô†[%d]", m_nID);
 	pDebugProc->Print("\nc[%d]‰¡[%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\nˆÊ’u[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
 	pDebugProc->Print("\n‰e‚ÌˆÊ’u[%f,%f,%f]", m_pShadow->GetPosition().x, m_pShadow->GetPosition().y, m_pShadow->GetPosition().z);
