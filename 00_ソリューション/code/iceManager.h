@@ -79,6 +79,7 @@ public:
 	CIce* GetLeftUpIdx(int *pNumV, int *pNumH);	// 左上の氷取得
 	CIce* GetRightDownIdx(int *pNumV, int *pNumH);	// 右上の氷取得
 	CIce* GetRightUpIdx(int *pNumV, int *pNumH);	// 右上の氷取得
+	bool IsInGrid(D3DXVECTOR3 pos, float fRate);	// グリッド内かの取得
 
 	S_Grid GetLeftDownGrid(void) { return m_aGrid[0][0]; }												// 左下のグリッド取得
 	S_Grid GetLeftUpGrid(void) { return m_aGrid[m_nNumGridVirtical - 1][0]; }								// 左上のグリッド取得
@@ -118,14 +119,14 @@ private:
 	bool CanPeck(CIce* pIce,int nNumV, int nNumH);	// つっつける氷かのチェック
 	void DisableFromHardIce(int nNumV, int nNumH,bool bPeck = true);	// 硬い氷から信号を出して、破壊信号を解除
 	void DisableFromPlayer(int nNumV, int nNumH, CIce *pIcePeck,vector<CIce*> apIce);	// プレイヤーから信号を出して、破壊信号を解除
-	void DisableBreak(int nNumV, int nNumH);	// 氷の破壊を解除
-	void SummarizeIce(int nNumV, int nNumH);	// 氷をまとめる処理
+	void DisableBreak(int nNumV, int nNumH);					// 氷の破壊を解除
+	void SummarizeIce(int nNumV, int nNumH);					// 氷をまとめる処理
 	void SaveFlowIce(int nNumV, int nNumH, CFlowIce *pFlowIce);	// 流氷にまとめる処理
-	bool BreakIce(void);	// 氷の破壊
-	bool CheckCorner(int nNumV, int nNumH);	// 角の確認
-	void BreakPeck(int nNumV, int nNumH);	// 突っついた氷を沈める
+	bool BreakIce(void);										// 氷の破壊
+	bool CheckCorner(int nNumV, int nNumH);						// 角の確認
+	void BreakPeck(int nNumV, int nNumH);						// 突っついた氷を沈める
 	void LimitInIce(D3DXVECTOR3 *pPos, int nNumV, int nNumH);	// 氷内に収める処理
-	void Debug(void);	// デバッグ処理
+	void Debug(void);											// デバッグ処理
 
 	// メンバ変数
 	int m_nNumGridVirtical;	// 縦グリッドの数

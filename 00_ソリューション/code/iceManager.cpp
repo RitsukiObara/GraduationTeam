@@ -1545,6 +1545,34 @@ CIce* CIceManager::GetRightUpIdx(int *pNumV, int *pNumH)
 }
 
 //=====================================================
+// ƒOƒŠƒbƒh“à‚©‚Ì”»’è
+//=====================================================
+bool CIceManager::IsInGrid(D3DXVECTOR3 pos, float fRate)
+{
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			// ‹——£‚ÌŒvŽZ
+			D3DXVECTOR3 posGrid = m_aGrid[i][j].pos;
+
+			pos.y = posGrid.y;
+
+			D3DXVECTOR3 vecDiff = posGrid - pos;
+
+			float fDist = D3DXVec3Length(&vecDiff);
+
+			if (fDist < WIDTH_GRID * fRate)
+			{// •X‚ÌƒTƒCƒY•ª‚Ì”¼Œa‚æ‚è¬‚³‚©‚Á‚½‚çæ‚Á‚Ä‚é”»’è
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+//=====================================================
 // •`‰æˆ—
 //=====================================================
 void CIceManager::Draw(void)
