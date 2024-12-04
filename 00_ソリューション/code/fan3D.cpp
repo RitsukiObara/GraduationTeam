@@ -69,6 +69,8 @@ HRESULT CFan3D::Init(void)
 {
 	CFan::Init();
 
+	Add3D();
+
 	// 親マトリックスリセット
 	ResetMtxParent();
 
@@ -105,6 +107,8 @@ HRESULT CFan3D::Init(void)
 //=====================================================
 void CFan3D::Uninit(void)
 {
+	Remove3D();
+
 	CFan::Uninit();
 }
 

@@ -69,17 +69,11 @@ public:
 	bool DisableTurn(void);	// 振り返りの無効化
 
 	virtual void Death(void);				// 死亡時の処理
-	virtual void StopMoveByNotGrid(CIce *pIce);	// グリッド基準じゃない移動を止める
-
 	virtual void UpdateApper(void) = 0;		// 出現状態の更新
-
 	virtual void UpdateStop(void);		// 停止状態の更新
-
 	virtual void UpdateMove(void);	// 移動状態の更新
 	void MoveToNextGrid(void);		// 次のグリッドに向かって移動する
-
 	virtual void UpdateAttack(void) = 0;	// 攻撃状態の更新
-
 	virtual void UpdateDrift(void);		// 漂流状態の更新
 
 	// 変数取得・設定関数
@@ -137,7 +131,6 @@ private:
 	void JudgeCanMove(void);	// 移動できるかの判断
 
 	void MoveByGrid(void);					// グリッド基準の移動
-	void MoveByNotGrid(void);				// グリッド基準じゃない移動
 	void CheckChangeGrid(void);				// グリッドが変わったかの確認
 	virtual void AliveDestGrid(void) {};	// 目的地に着いた時の仮想関数
 	void CollideIce(void);					// 氷との判定

@@ -13,16 +13,13 @@
 //*****************************************************
 #include "gameObject.h"
 #include "number3D.h"
+#include "enemy.h"
 
 //*****************************************************
 // 前方宣言
 //*****************************************************
 class CUI;
-
-//*****************************************************
-// マクロ定義
-//*****************************************************
-#define MAX_PLACE	(10)	// 最大桁数
+class CDestroyScore;
 
 class CUI_Combo : public CGameObject
 {
@@ -46,7 +43,8 @@ public:
 	void Update();
 	void Draw();
 	void SetCombo(int nDigit = 6);
-	void AddCombo(void);
+	void AddCombo(CEnemy::TYPE type);
+	void AddComboScore(void);	// コンボスコアを計算して加算
 
 	// 静的メンバ関数
 	void SetColor(D3DXCOLOR col);	// 色
@@ -61,6 +59,7 @@ private:
 	void UpdateNumber();	// 数字の更新
 	void TransformNumber();	// 数字のトランスフォーム設定
 
+	CDestroyScore* m_pScore;	// スコア
 	D3DXCOLOR m_Col;	//色管理
 	int m_nValue;		//桁数
 	int m_nCombo;			// 現在のコンボ

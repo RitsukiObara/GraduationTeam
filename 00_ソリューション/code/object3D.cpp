@@ -51,6 +51,9 @@ HRESULT CObject3D::Init(void)
 	// ÉXÉPÅ[Éãèâä˙âª
 	m_scale = { 1.0f,1.0f,1.0f };
 
+	// 3Dï`âÊÇ…í«â¡
+	Add3D();
+
 	return S_OK;
 }
 
@@ -59,6 +62,8 @@ HRESULT CObject3D::Init(void)
 //=====================================================
 void CObject3D::Uninit(void)
 {
+	Remove3D();
+
 	CGameObject::Uninit();
 }
 

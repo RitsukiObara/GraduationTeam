@@ -368,11 +368,11 @@ void CSeals::UpdateMove(void)
 		FindPlayerGrid();
 	}
 
-	// プレイヤーとの判定
-	CollidePlayer();
-
 	// 継承クラスの更新
 	CEnemy::UpdateMove();
+
+	// プレイヤーとの判定
+	CollidePlayer();
 }
 
 //=====================================================

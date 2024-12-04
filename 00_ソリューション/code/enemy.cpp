@@ -47,6 +47,8 @@ const float RATE_STOP_CHARGE = 0.6f;	// 突進を止めるときの氷のサイズの割合
 const float RANGE_STOP_MOVE = D3DX_PI * 1 / CIceManager::E_Direction::DIRECTION_MAX;	// 移動を止める角度の範囲
 
 const float RATE_COLLIDEICE = 1.0f;	// 氷との判定の割合
+
+const int MAX_DEPTH_FIND = 50;	// これ以上探索しない深さ
 }
 
 //*****************************************************
@@ -309,78 +311,6 @@ void CEnemy::MoveByGrid(void)
 }
 
 //=====================================================
-// グリッド基準じゃない移動
-//=====================================================
-void CEnemy::MoveByNotGrid(void)
-{
-	CIceManager *pIceMgr = CIceManager::GetInstance();
-
-	if (pIceMgr == nullptr)
-		return;
-
-	// 一番近い氷の取得
-	D3DXVECTOR3 pos = GetPosition();
-	
-	CIce *pIce = pIceMgr->GetNearestIce(pos, &m_nGridV, &m_nGridH);
-
-	if (pIce == nullptr)
-		return;
-
-	D3DXVECTOR3 posCurrentGrid = pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH);
-
-	debug::Effect3DShort(posCurrentGrid);
-
-	// 自身のいる角度の先にある氷が無かったら、移動を止める
-	D3DXVECTOR3 rot = GetRotation();
-	rot.y += D3DX_PI;
-	universal::LimitRot(&rot.y);
-
-	// 周辺の氷の取得
-	vector<CIce*> apIce = pIceMgr->GetAroundIce(m_nGridV, m_nGridH);
-
-	for (auto it : apIce)
-	{
-		if (it == nullptr)
-			continue;
-
-		D3DXVECTOR3 posIce = it->GetPosition();
-
-		// 氷と移動角度の比較
-		bool bSelect = universal::IsInFanTargetYFlat(posCurrentGrid, posIce, rot.y, RANGE_STOP_MOVE);
-
-		if (bSelect)
-		{// 氷が選べたらfor文を終了
-			debug::Effect3DShort(posIce);
-
-			return;
-		}
-	}
-
-	// 氷の外に出たら移動を止める
-	if (!pIceMgr->IsInIce(pos, pIce, RATE_STOP_CHARGE))
-		StopMoveByNotGrid(pIce);
-}
-
-//=====================================================
-// グリッド基準じゃない移動を止める
-//=====================================================
-void CEnemy::StopMoveByNotGrid(CIce *pIce)
-{
-	CIceManager *pIceMgr = CIceManager::GetInstance();
-
-	if (pIceMgr == nullptr)
-		return;
-
-	// 移動量のリセット
-	SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-
-	// 位置を補正
-	D3DXVECTOR3 pos = GetPosition();
-	pIceMgr->Collide(&pos, pIce, RATE_STOP_CHARGE);
-	SetPosition(pos);
-}
-
-//=====================================================
 // 目標に近い氷を探す
 //=====================================================
 void CEnemy::SarchNearIceToDest(void)
@@ -461,6 +391,9 @@ bool CEnemy::PathFind(int nIdxV, int nIdxH, vector<CIce*>& rIceSave)
 	CIceManager *pIceMgr = CIceManager::GetInstance();
 
 	if (pIceMgr == nullptr)
+		return false;
+
+	if (rIceSave.size() > MAX_DEPTH_FIND)
 		return false;
 
 	// 周辺グリッドの計算
@@ -910,13 +843,11 @@ void CEnemy::Death(void)
 	}
 
 	// コンボ、撃破時のスコア加算
-	CDestroyScore *pDestroyScore = CDestroyScore::GetInstance();
 	CUI_Combo* pUICombo = CUI_Combo::GetInstance();
 
-	if (pDestroyScore != nullptr && pUICombo != nullptr)
+	if (pUICombo != nullptr)
 	{
-		pDestroyScore->AddDestroyScore(m_type);
-		pUICombo->AddCombo();
+		pUICombo->AddCombo(m_type);
 	}
 
 	// 終了処理を呼ぶ

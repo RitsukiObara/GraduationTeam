@@ -13,9 +13,11 @@
 #include "renderer.h"
 #include "texture.h"
 #include "UI.h"
+#include "game.h"
 #include "inputManager.h"
 #include "debugproc.h"
 #include "player.h"
+#include "destroy_score.h"
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -53,6 +55,7 @@ namespace
 //=====================================================
 CUI_Combo::CUI_Combo()
 {
+	m_pScore = nullptr;
 	m_Col = NORMAL_COLOR;
 	m_nValue = 0;
 	m_nCombo = 0;
@@ -99,6 +102,7 @@ CUI_Combo* CUI_Combo::Create()
 //=====================================================
 HRESULT CUI_Combo::Init(void)
 {
+	m_pScore = CDestroyScore::Create();	// スコア
 	m_nCombo = COMBO_MIN;	// スコアの初期化
 	m_nValue = VALUE_COMBO;	// 桁数の初期化
 	m_fScaleNumber = COMBO_SCALE;	// 初期スケール設定
@@ -116,9 +120,16 @@ HRESULT CUI_Combo::Init(void)
 //=====================================================
 void CUI_Combo::Uninit(void)
 {
+	if (m_pScore != nullptr)
+	{
+		m_pScore->Uninit();
+		m_pScore = nullptr;
+	}
+
 	if (m_aNumber3D != nullptr)
 	{
 		m_aNumber3D->Uninit();
+		m_aNumber3D = nullptr;
 	}
 
 	CGameObject::Uninit();
@@ -192,12 +203,23 @@ void CUI_Combo::Update(void)
 
 		if (m_Col.a <= THINITY_COL)
 		{
+			// コンボ計算処理
+			AddComboScore();
+
 			Uninit();
 
 			return;
 		}
 
 		break;
+	}
+
+	if (m_pScore != nullptr)
+	{
+		m_pScore->Update();
+		m_pScore->SetState(m_State);
+		m_pScore->SetShiftPos(m_ShiftPos);
+		m_pScore->SetAlpha(m_Col.a);
 	}
 
 	SetColor(m_Col);
@@ -280,6 +302,9 @@ void CUI_Combo::UpdateNumber()
 //=====================================================
 void CUI_Combo::SetColor(D3DXCOLOR col)
 {
+	if (m_aNumber3D == nullptr)
+		return;
+
 	m_aNumber3D->SetColor(col);
 }
 
@@ -351,14 +376,37 @@ void CUI_Combo::SetCombo(int nDigit)
 //=====================================================
 // コンボの増加
 //=====================================================
-void CUI_Combo::AddCombo(void)
+void CUI_Combo::AddCombo(CEnemy::TYPE type)
 {
+	if (m_pScore != nullptr)
+	{
+		m_pScore->AddDestroyScore(type);
+	}
+
 	m_nCombo++;
 
 	m_State = STATE_WAIT;
 
 	m_nCntState = 0;
+
+	m_ShiftPos = POS_INITIAL;
 }
+
+//=====================================================
+// コンボスコアを計算して加算
+//=====================================================
+void CUI_Combo::AddComboScore(void)
+{
+	if (m_pScore == nullptr)
+		return;
+
+	//コンボ倍率とのスコア計算
+	int nScore = m_pScore->GetScore() * m_nCombo;
+
+	//スコアを加算
+	game::AddScore(nScore);
+}
+
 
 //=====================================================
 // コンボのインスタンス取得

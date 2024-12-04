@@ -151,9 +151,15 @@ void CSelectStagePenguin::Update(void)
 	SetRotation(rot);
 
 	if (m_pIce != nullptr)
-	{
-		m_pIce->SetPosition(GetPosition() + m_move);
-		m_pIce->SetRotation(GetRotation());
+	{// •X‚Ì’Ç]
+		D3DXVECTOR3 posIce = m_pIce->GetPosition();
+		D3DXVECTOR3 pos = GetPosition();
+
+		m_pIce->SetPosition(D3DXVECTOR3(pos.x + m_move.x, posIce.y, pos.z + m_move.z));
+		m_pIce->SetRotation(rot);
+
+		// ‚‚³‚ğ•X‚Æ“¯‚¶‚É‚·‚é
+		SetPosition(D3DXVECTOR3(pos.x, posIce.y, pos.z));
 	}
 
 #ifdef _DEBUG

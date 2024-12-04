@@ -68,6 +68,8 @@ HRESULT CFan2D::Init(void)
 {
 	CFan::Init();
 
+	Add2D();
+
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
 
@@ -99,6 +101,8 @@ HRESULT CFan2D::Init(void)
 //=====================================================
 void CFan2D::Uninit(void)
 {
+	Remove2D();
+
 	CFan::Uninit();
 }
 
