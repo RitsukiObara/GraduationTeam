@@ -171,6 +171,7 @@ void CGameManagerSingle::ManageEnemy(void)
 		// 現在あるコンボのスコアを加算
 		CUI_Combo *pCombo = CUI_Combo::GetInstance();
 		if (pCombo != nullptr)
+			pCombo->AddComboScore();
 			pCombo->Uninit();
 
 		// リザルトの生成
