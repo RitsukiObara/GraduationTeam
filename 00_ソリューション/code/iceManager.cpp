@@ -577,12 +577,6 @@ vector<CIce*> CIceManager::GetAroundIce(int nNumV, int nNumH)
 	aH[DIRECTION_RIGHT] = nNumH + 1;
 	aH[DIRECTION_LEFT] = nNumH - 1;
 
-	// 四方向氷がないか探索できない状態なら終了
-	bool bNothing = true;
-	int nNumIce = 0;
-	int nNumPeckIce = 0;
-	bool bAliveStandBlock = false;
-
 	// 氷のポインタの保存
 	for (int i = 0; i < DIRECTION_MAX; i++)
 	{
