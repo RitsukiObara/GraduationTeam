@@ -408,18 +408,6 @@ void CBears::SarchTarget(void)
 }
 
 //=====================================================
-// グリッド基準じゃない移動を止める
-//=====================================================
-void CBears::StopMoveByNotGrid(CIce *pIce)
-{
-	// 突進の終了
-	EndCharge();
-
-	// 継承クラスの処理
-	CEnemy::StopMoveByNotGrid(pIce);
-}
-
-//=====================================================
 // 突撃できるかの判定
 //=====================================================
 bool CBears::CanCharge(D3DXVECTOR3 posTarget, int nIdxTargetV, int nIdxTargetH)
@@ -565,8 +553,51 @@ void CBears::UpdateMove(void)
 //=====================================================
 void CBears::Charge(void)
 {
+	// 振り向きの無効化
 	DisableTurn();
+
+	// 突撃サウンド再生
 	CheckPlayAssaultSE();
+
+	// 突撃終了判定
+	if (JudgeEndCharge())
+		EndCharge();
+}
+
+//=====================================================
+// 突進終了の判定
+//=====================================================
+bool CBears::JudgeEndCharge(void)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+	if (pIceMgr == nullptr)
+		return false;
+
+	// 次の氷の取得
+	int nIdxVNext = GetGridVNext();
+	int nIdxHNext = GetGridHNext();
+	CIce *pIceNext = pIceMgr->GetGridIce(&nIdxVNext,&nIdxHNext);
+
+	if (pIceNext == nullptr)
+		return true;
+
+	// 目の前が突っついた氷になったら
+	if (pIceNext->IsPeck())
+		return true;
+
+	// 目標の氷が到達できないものになったら
+	int nIdxVDest = GetGridVDest();
+	int nIdxHDest = GetGridHDest();
+	CIce *pIceDest = pIceMgr->GetGridIce(&nIdxVDest, &nIdxHDest);
+
+	if (pIceDest == nullptr)
+		return true;	// そもそもなかったら突撃を終了
+
+	if (pIceDest->IsPeck())
+		return true;	// つっついてたら終了
+
+	// ここまで通るなら突撃を終了しない
+	return false;
 }
 
 //=====================================================
