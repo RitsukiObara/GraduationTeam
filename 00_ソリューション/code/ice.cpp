@@ -1002,12 +1002,9 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 	D3DXVECTOR3 posIce = pIce->GetPosition();
 	bool bOk = pIceManager->GetIdxGridFromPosition(posIce, &nIdxV, &nIdxH);
 
-	if (bOk)
-	{
-		// ”Ô†‚ð•Û‘¶
-		m_nIdxDriftV = nIdxV;
-		m_nIdxDriftH = nIdxH;
-	}
+	// ”Ô†‚ð•Û‘¶
+	m_nIdxDriftV = nIdxV;
+	m_nIdxDriftH = nIdxH;
 
 	// ŠC—¬‚Ì•ûŒü‚É‡‚í‚¹‚½”»’èŠÖ”‚ÌŒÄ‚Ño‚µ
 	DirectionFunc directionFuncs[COcean::E_Stream::STREAM_MAX] = 
@@ -1021,10 +1018,21 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 	COcean::E_Stream stream = pIceManager->GetDirStream();
 	
 	// •Y’…‚·‚é•X‚ª‚ ‚Á‚½‚çAƒtƒ‰ƒO‚ð—§‚Ä‚Ä•Y’…ƒOƒŠƒbƒh”Ô†‚ð•Û‘¶
+	if (m_nIdxDriftV == -1 || m_nIdxDriftH == -1)
+		return;
+
+	if (pIceManager->GetGridIce(&nIdxV, &nIdxH) != nullptr)
+	{
+		pIce->ChangeState(new CIceStaeteNormal);
+		return;
+	}
+
 	vector<CIce*> apIceHit;
 	m_bDrift = (this->*directionFuncs[stream])(pIce, m_nIdxDriftV, m_nIdxDriftH, apIceHit);
 
 #ifdef _DEBUG
+	D3DXVECTOR3 posEffect = pIceManager->GetGridPosition(&m_nIdxDriftV, &m_nIdxDriftH);
+	debug::Effect3DShort(posEffect, D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
 #endif
 
 	if (m_bDrift)
