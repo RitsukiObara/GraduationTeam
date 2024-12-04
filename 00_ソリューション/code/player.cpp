@@ -250,20 +250,23 @@ void CPlayer::Update(void)
 			m_pIceMoveDest = nullptr;
 	}
 
+	// モーション更新
+	CMotion::Update();
+
 	// 入力処理
 	Input();
 
 	if (m_state == STATE_FLOW)
 		StayFlow();	// 漂流中の処理
 
-	// モーション更新
-	CMotion::Update();
-
 	// 方向UIの追従
 	FollowDirUI();
 
 	if (m_pPeckLine != nullptr)
 		m_pPeckLine->SetPosition(GetPosition());
+
+	// 氷がない判定
+	JudgeNoIce();
 
 	// 氷の追従
 	FollowIce();
@@ -278,6 +281,26 @@ void CPlayer::Update(void)
 #ifdef _DEBUG
 	Debug();
 #endif
+}
+
+//=====================================================
+// 氷がない判定
+//=====================================================
+void CPlayer::JudgeNoIce(void)
+{
+	if (m_state == E_State::STATE_FLOW)
+		return;	// 漂流中であれば通らない
+
+	CIceManager* pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	// 乗っている氷の取得
+	CIce *pIce = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
+
+	if (pIce == nullptr)
+		Hit(0.0f);	// 乗っている氷がなかったら即死
 }
 
 //=====================================================
@@ -668,8 +691,6 @@ bool CPlayer::CheckGridChange(void)
 		if (pIceMgr->GetGridIce(&nIdxV, &nIdxH) == nullptr)
 		{// 氷が無ければ漂流開始
 			// 漂流を開始
-			//if (!StartFlows())
-			//	; //Hit(0.0f);	// 開始できなければその場で死亡
 			StartFlows();
 
 			return false;

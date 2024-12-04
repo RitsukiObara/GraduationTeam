@@ -114,6 +114,7 @@ private:
 	void InitGridIdx(void);	// ƒOƒŠƒbƒh”Ô†‚Ì‰Šú‰»
 	void CreateDirUI(void);	// •ûŒüUI‚Ì¶¬
 
+	void JudgeNoIce(void);	// •X‚ª‚È‚¢”»’è
 	void FollowIce(void);	// •X‚É’Ç]
 	void Input(void);		// “ü—Í
 	
