@@ -1422,6 +1422,5 @@ void CPlayer::BindInputAllPlayer(void)
 			continue;
 
 		s_apPlayer[i]->BindInputMgr(pInputMgr);
-		s_apPlayer[i]->SetID(i);
 	}
 }

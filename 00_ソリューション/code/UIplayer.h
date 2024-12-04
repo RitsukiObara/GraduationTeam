@@ -24,7 +24,7 @@ class CUI;
 class CUIPlayer : public CObject
 {
 public:
-	CUIPlayer(int nPriority = 2);	// コンストラクタ
+	CUIPlayer(int nPriority = 5);	// コンストラクタ
 	~CUIPlayer();	// デストラクタ
 
 	// メンバ関数
@@ -36,7 +36,7 @@ public:
 	void StartScatter(void);	// 散らばり始める処理
 
 	// 取得・設定関数
-	CUI *GetIcon(int nIdx) { return m_apIconPlayer[nIdx]; }	// アイコンの取得
+	CUI *GetIcon(int nIdx) { return m_aIcon[nIdx]->pPolygon; }	// アイコンの取得
 
 	// 静的メンバ関数
 	static CUIPlayer *Create();
@@ -49,14 +49,25 @@ private:
 		STATE_SCATTER,	// 散らばる状態
 		STATE_MAX
 	};
+	// 構造体定義
+	struct S_Icon
+	{// アイコン
+		CUI *pPolygon;		// ポリゴンのポインタ
+		float fTimerFade;	// アイコンのフェードタイマー
+		bool bFade;			// フェードフラグ
+
+		// コンストラクタ
+		S_Icon::S_Icon() : pPolygon(nullptr), fTimerFade(0.0f), bFade(false) {}
+	};
 
 	// メンバ関数
 	void UpdateScatter(void);	// 散らばる状態の更新
+	void UpdateFadeIcon(void);	// アイコンのフェード
 
 	// メンバ変数
-	CUI *m_apIconPlayer[NUM_PLAYER];	// プレイヤーアイコン
-	E_State m_state;					// 状態
-	float m_fTimerScatter;				// 散らばるタイマー
+	vector<S_Icon*> m_aIcon;	// プレイヤーアイコンの配列
+	E_State m_state;			// 状態
+	float m_fTimerScatter;		// 散らばるタイマー
 
 	// 関数ポインタ型を定義
 	typedef void (CUIPlayer::*FuncUpdateState)(void);

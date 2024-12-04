@@ -12,6 +12,7 @@
 #include "gameManager.h"
 #include "manager.h"
 #include "texture.h"
+#include "player.h"
 
 //*****************************************************
 // 定数定義
@@ -38,6 +39,10 @@ const string PATH_TEX[] =		// テクスチャパス
 	"data\\TEXTURE\\UI\\playericon_02.png",
 	"data\\TEXTURE\\UI\\playericon_03.png",
 };
+const D3DXCOLOR COL_INIT = { 1.0f,1.0f,1.0f,1.0f };	// 初期色
+const D3DXCOLOR COL_DEST = { 0.7f,0.7f,0.7f,1.0f };	// 目標色
+const D3DXCOLOR COL_DIFF = COL_DEST - COL_INIT;		// 差分色
+const float TIME_FADE_ICON = 2.0f;					// アイコンが暗くなる時間
 }
 }
 
@@ -53,7 +58,7 @@ CUIPlayer::FuncUpdateState CUIPlayer::s_aFuncUpdateState[] =	// 状態更新関数
 //=====================================================
 // コンストラクタ
 //=====================================================
-CUIPlayer::CUIPlayer(int nPriority) : CObject(nPriority), m_apIconPlayer(), m_state(E_State::STATE_NONE), m_fTimerScatter(0.0f)
+CUIPlayer::CUIPlayer(int nPriority) : CObject(nPriority), m_state(E_State::STATE_NONE), m_fTimerScatter(0.0f)
 {
 
 }
@@ -95,20 +100,27 @@ HRESULT CUIPlayer::Init(void)
 		if (!abFrag[i])	// フラグが立っていなかったら通らない
 			continue;
 
-		m_apIconPlayer[i] = CUI::Create();
+		S_Icon *pIcon = new S_Icon;
 
-		if (m_apIconPlayer[i] == nullptr)
+		if (pIcon == nullptr)
+			continue;
+
+		pIcon->pPolygon = CUI::Create();
+
+		if (pIcon->pPolygon == nullptr)
 			continue;
 
 		// UIの初期設定
-		m_apIconPlayer[i]->SetSize(icon::WIDTH, icon::HEIGHT);
+		pIcon->pPolygon->SetSize(icon::WIDTH, icon::HEIGHT);
 		D3DXVECTOR3 pos = icon::POS_INIT;
 		pos.x += icon::WIDTH * i * 2;
-		m_apIconPlayer[i]->SetPosition(pos);
-		m_apIconPlayer[i]->SetVtx();
+		pIcon->pPolygon->SetPosition(pos);
+		pIcon->pPolygon->SetVtx();
 
 		int nIdxTexture = Texture::GetIdx(&icon::PATH_TEX[i][0]);
-		m_apIconPlayer[i]->SetIdxTexture(nIdxTexture);
+		pIcon->pPolygon->SetIdxTexture(nIdxTexture);
+
+		m_aIcon.push_back(pIcon);
 	}
 
 	return S_OK;
@@ -119,7 +131,18 @@ HRESULT CUIPlayer::Init(void)
 //=====================================================
 void CUIPlayer::Uninit(void)
 {
-	Object::DeleteObject((CObject**)m_apIconPlayer, NUM_PLAYER);
+	for (int i = 0; i < (int)m_aIcon.size(); i++)
+	{
+		if (m_aIcon[i]->pPolygon != nullptr)
+		{
+			m_aIcon[i]->pPolygon->Uninit();
+			m_aIcon[i]->pPolygon = nullptr;
+		}
+
+		delete m_aIcon[i];
+	}
+
+	m_aIcon.clear();
 
 	Release();
 }
@@ -135,6 +158,9 @@ void CUIPlayer::Update(void)
 		// 各状態ごとの更新
 		(this->*(s_aFuncUpdateState[m_state]))();
 	}
+
+	// アイコンのフェード
+	UpdateFadeIcon();
 }
 
 //=====================================================
@@ -155,17 +181,62 @@ void CUIPlayer::UpdateScatter(void)
 
 	float fRate = easing::EaseOutExpo(m_fTimerScatter);
 
-	for (int i = 0; i < NUM_PLAYER; i++)
+	for (int i = 0; i < (int)m_aIcon.size(); i++)
 	{
-		if (m_apIconPlayer[i] == nullptr)
+		if (m_aIcon[i]->pPolygon == nullptr)
 			continue;
 
 		D3DXVECTOR3 vecDiff = icon::POS_DEST[i] - icon::POS_INIT;
 
 		D3DXVECTOR3 pos = icon::POS_INIT + vecDiff * fRate;
 
-		m_apIconPlayer[i]->SetPosition(pos);
-		m_apIconPlayer[i]->SetVtx();
+		m_aIcon[i]->pPolygon->SetPosition(pos);
+		m_aIcon[i]->pPolygon->SetVtx();
+	}
+}
+
+//=====================================================
+// アイコンフェード
+//=====================================================
+void CUIPlayer::UpdateFadeIcon(void)
+{
+	//------------------------------
+	// 死んだプレイヤーの検出
+	//------------------------------
+	vector<CPlayer*> apPlayer = CPlayer::GetInstance();
+
+	for (CPlayer *pPlayer : apPlayer)
+	{
+		if (pPlayer == nullptr)
+			continue;
+
+		CPlayer::E_State state = pPlayer->GetState();
+
+		if (state == CPlayer::E_State::STATE_DEATH)
+		{
+			int nIDPlayer = pPlayer->GetID();
+
+			m_aIcon[nIDPlayer]->bFade = true;
+		}
+	}
+
+	//------------------------------
+	// アイコンのフェード
+	//------------------------------
+	for (S_Icon *pIcon : m_aIcon)
+	{
+		if (!pIcon->bFade)
+			continue;
+
+		pIcon->fTimerFade += CManager::GetDeltaTime();
+
+		float fTime = pIcon->fTimerFade / icon::TIME_FADE_ICON;
+		float fRate = easing::EaseOutExpo(fTime);
+		universal::LimitValuefloat(&fRate, 1.0f, 0.0f);
+
+		D3DXCOLOR col = icon::COL_INIT + icon::COL_DIFF * fRate;
+
+		pIcon->pPolygon->SetCol(col);
 	}
 }
 
