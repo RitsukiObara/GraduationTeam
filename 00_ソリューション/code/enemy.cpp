@@ -829,15 +829,15 @@ void CEnemy::EndFlows(void)
 	D3DXVECTOR3 pos = GetPosition();
 
 	// ƒOƒŠƒbƒh“à‚Å–³‚©‚Á‚½‚ç‘¦Ž€
-	bool bResult = pIceMgr->IsInGrid(pos, 1.0f);
+	bool bResult = pIceMgr->IsInGrid(pos, 1.5f);
 
-	if (bResult)
+	if (!bResult)
 	{
 		Death();
 		return;
 	}
 
-	pIceMgr->GetIdxGridFromPosition(pos, &m_nGridV, &m_nGridH, RATE_STOP_FLOW_ICE_RADIUS);
+	pIceMgr->GetNearestIce(pos, &m_nGridV, &m_nGridH);
 
 	CIce *pIce = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
 }
