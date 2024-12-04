@@ -25,6 +25,7 @@
 #include "enemy.h"
 #include "player.h"
 #include "MyEffekseer.h"
+#include "debugproc.h"
 
 //*****************************************************
 // 定数定義
@@ -246,15 +247,12 @@ void CIce::Uninit(void)
 //=====================================================
 void CIce::Update(void)
 {
-	if (!IsSink())	// 沈むフラグがたっていないときのみ行う
-		FollowWave();	// 波に追従する処理
-
 	// ステイトの更新
 	if (m_pState != nullptr)
 		m_pState->Update(this);
 
-	// 上に乗ってる物の検出
-	SearchOnThis();
+	// 波に追従する処理
+	FollowWave();
 
 	// 傾きの処理
 	Tilt();
@@ -277,28 +275,18 @@ void CIce::Update(void)
 //=====================================================
 void CIce::FollowWave(void)
 {
+	if (IsSink())
+		return;
+
 	COcean *pOcean = COcean::GetInstance();
 
 	if (pOcean == nullptr)
-	{
 		return;
-	}
 
 	// 海と一緒に氷を動かす処理
 	D3DXVECTOR3 pos = GetPosition();
 
-	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-
-	pos.y = pOcean->GetHeight(pos, &move) + HEIGHT_ICE;
-
-	if (m_pUp != nullptr)
-	{
-		m_pUp->SetPosition(pos);
-	}
-	if (m_pSide != nullptr)
-	{
-		m_pSide->SetPosition(pos + D3DXVECTOR3(0.0f, -HEIGHT_ICE, 0.0f));
-	}
+	pos.y = pOcean->GetHeight(pos, nullptr) + HEIGHT_ICE;
 
 	SetPosition(pos);
 }
@@ -939,7 +927,9 @@ void CIceStateFlow::UpdateSearchIce(CIce *pIce)
 	float fSpeedFlow = pIceManager->GetOceanLevel();
 	D3DXVec3Normalize(&vecStream, &vecStream);
 	vecStream *= fSpeedFlow;
-	pIce->Translate(vecStream);
+	pIce->Translate(D3DXVECTOR3(vecStream.x, 0.0f, vecStream.z));
+
+	CDebugProc::GetInstance()->Print("\n高さ[%f]", pIce->GetPosition().y);
 
 	// 氷との判定
 	CollideIce(pIce);
@@ -970,7 +960,7 @@ void CIceStateFlow::UpdateDriftIce(CIce *pIce)
 	float fSpeedFlow = pIceManager->GetOceanLevel();
 	D3DXVec3Normalize(&vecDiff, &vecDiff);
 	vecDiff *= fSpeedFlow;
-	pIce->Translate(vecDiff);
+	pIce->Translate(D3DXVECTOR3(vecDiff.x,0.0f,vecDiff.z));
 
 	// グリッドの位置との距離がしきい値を下回ったら止める
 	bool bStop = universal::DistCmpFlat(posIce, posDrift, LINE_STOP_ICE, nullptr);
