@@ -85,7 +85,7 @@ const int PATERN_ANIM = 5;			// アニメーションのパターン
 // 静的メンバ変数宣言
 //*****************************************************
 int CIce::s_nNumAll = 0;
-std::vector<CIce*> CIce::m_Vector = {};	// 自身のポインタ
+std::vector<CIce*> CIce::s_Vector = {};	// 自身のポインタ
 
 //=====================================================
 // コンストラクタ
@@ -94,7 +94,7 @@ CIce::CIce(int nPriority) : CObject3D(nPriority), m_state(E_State::STATE_NONE), 
 m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false), m_bStop(nullptr), m_abRipleFrag(), m_nCntAnimFlash(0), m_rotDest()
 {
 	s_nNumAll++;
-	m_Vector.push_back(this);
+	s_Vector.push_back(this);
 }
 
 //=====================================================
@@ -212,7 +212,7 @@ void CIce::Uninit(void)
 	// メッシュの削除
 	DeleteMesh();
 
-	for (auto itr = m_Vector.begin(); itr < m_Vector.end(); itr++)
+	for (auto itr = s_Vector.begin(); itr < s_Vector.end(); itr++)
 	{
 		//削除対象じゃない場合
 		if (*itr != this)
@@ -220,7 +220,7 @@ void CIce::Uninit(void)
 			continue;
 		}
 		//Vectorから削除
-		m_Vector.erase(itr);
+		s_Vector.erase(itr);
 
 		break;
 	}
@@ -1029,6 +1029,7 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 
 	if (m_bDrift)
 	{
+		debug::Effect3DShort(pIce->GetPosition(), D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f), 120);
 		// グリッドに氷情報を保存
 		if (pIceManager->SetIceInGrid(nIdxV, nIdxH, pIce))
 		{
@@ -1067,7 +1068,7 @@ bool CIceStateFlow::CheckUp(CIce *pIce, int nIdxV, int nIdxH, vector<CIce*> &rpH
 
 	bool bDrift = false;
 
-	// 左側のグリッドどれかに氷があれば漂着
+	// 上側のグリッドどれかに氷があれば漂着
 	if (apIce[CIceManager::DIRECTION_LEFTUP] != nullptr ||
 		apIce[CIceManager::DIRECTION_RIGHTUP] != nullptr)
 	{
@@ -1095,7 +1096,7 @@ bool CIceStateFlow::CheckRight(CIce *pIce, int nIdxV, int nIdxH, vector<CIce*> &
 
 	bool bDrift = false;
 
-	// 左側のグリッドどれかに氷があれば漂着
+	// 右側のグリッドどれかに氷があれば漂着
 	if (apIce[CIceManager::DIRECTION_RIGHTUP] != nullptr ||
 		apIce[CIceManager::DIRECTION_RIGHT] != nullptr ||
 		apIce[CIceManager::DIRECTION_RIGHTDOWN] != nullptr)
@@ -1125,7 +1126,7 @@ bool CIceStateFlow::CheckDown(CIce *pIce, int nIdxV, int nIdxH, vector<CIce*> &r
 
 	bool bDrift = false;
 
-	// 左側のグリッドどれかに氷があれば漂着
+	// 下側のグリッドどれかに氷があれば漂着
 	if (apIce[CIceManager::DIRECTION_RIGHTDOWN] != nullptr ||
 		apIce[CIceManager::DIRECTION_LEFTDOWN] != nullptr)
 	{

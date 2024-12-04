@@ -47,6 +47,8 @@ const float RATE_STOP_CHARGE = 0.6f;	// 突進を止めるときの氷のサイズの割合
 const float RANGE_STOP_MOVE = D3DX_PI * 1 / CIceManager::E_Direction::DIRECTION_MAX;	// 移動を止める角度の範囲
 
 const float RATE_COLLIDEICE = 1.0f;	// 氷との判定の割合
+
+const int MAX_DEPTH_FIND = 50;	// これ以上探索しない深さ
 }
 
 //*****************************************************
@@ -389,6 +391,9 @@ bool CEnemy::PathFind(int nIdxV, int nIdxH, vector<CIce*>& rIceSave)
 	CIceManager *pIceMgr = CIceManager::GetInstance();
 
 	if (pIceMgr == nullptr)
+		return false;
+
+	if (rIceSave.size() > MAX_DEPTH_FIND)
 		return false;
 
 	// 周辺グリッドの計算
