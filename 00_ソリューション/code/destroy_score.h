@@ -42,10 +42,10 @@ public:
 	// 静的メンバ関数
 	static CDestroyScore* Create();	// 生成
 
-	void SetEnemyScore(CEnemy::TYPE type);	//敵の種類ごとのスコア
-	void SetScore(int nDigit = 6);
-	void SetColor(D3DXCOLOR col);	// 色
+	void SetScore(void);
+	void SetAlpha(float fAlpha);	// 透明度
 	void SetState(CUI_Combo::E_State state);	// 状態
+	void SetShiftPos(D3DXVECTOR3 shiftpos);	// ずらす幅
 	void SetPosition(D3DXVECTOR3 pos) override;	// 位置
 	void SetScaleNumber(float fScale);	// 数字のスケール
 
@@ -54,14 +54,11 @@ private:
 	void UpdateNumber();	// 数字の更新
 	void TransformNumber();	// 数字のトランスフォーム設定
 
-	D3DXCOLOR m_Col;	//色管理
-	int m_nValue;		//桁数
 	int m_nScore;			// 現在の敵を倒した時のスコア
-	int m_nAddScore;			// 現在の敵を倒した時の追加されるスコア
 	float m_fScaleNumber;	// 数字のスケール
 	CNumber3D* m_aNumber3D;	// 数字の配列
 	CUI_Combo::E_State m_state;	//敵を倒した時のスコア状態変数
-	D3DXVECTOR3 m_ShiftPos;	//ずらす位置
+	D3DXVECTOR3 m_ShiftPos;		// ずらす幅
 };
 
 #endif

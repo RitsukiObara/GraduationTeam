@@ -214,6 +214,7 @@ void CUI_Combo::Update(void)
 	{
 		m_pScore->Update();
 		m_pScore->SetState(m_State);
+		m_pScore->SetShiftPos(m_ShiftPos);
 	}
 
 	SetColor(m_Col);
@@ -382,6 +383,8 @@ void CUI_Combo::AddCombo(CEnemy::TYPE type)
 	m_State = STATE_WAIT;
 
 	m_nCntState = 0;
+
+	m_ShiftPos = POS_INITIAL;
 }
 
 //=====================================================

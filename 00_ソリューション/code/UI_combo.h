@@ -21,11 +21,6 @@
 class CUI;
 class CDestroyScore;
 
-//*****************************************************
-// ƒ}ƒNƒ’è‹`
-//*****************************************************
-#define MAX_PLACE	(10)	// Å‘åŒ…”
-
 class CUI_Combo : public CGameObject
 {
 public:

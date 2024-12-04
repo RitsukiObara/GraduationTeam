@@ -29,12 +29,9 @@ namespace
 	const float	GOAL_X = 0.5f;	// Xのゴール地点
 	const float	MOVE_SPEED = 10.0f;	// 移動速度
 	const float	VERTICAL_STOP = 100.0f;	// 縦移動の停止地点
-	const float	SLOW_MOVE = 1.0f;	// スロー速度
-	const float	THINITY_SPEED = 0.02f;	// 透明になっていく速度
 	const float	GOAL_Z = 100.0f;	// Yのゴール地点
-	const float	THINITY_COL = 0.0f;	// 透明になる
 	const float	SCORE_SCALE = 1.0f;	// スコアのスケール
-	const D3DXCOLOR	NORMAL_COLOR = { 1.0f,1.0f,1.0f,1.0f };	// スコアの初期色
+	const float	NORMAL_ALPHA = 1.0f;	// スコアの初期透明度
 	const int	ADD_SCORE[CEnemy::TYPE_MAX] =				// アザラシのスコア
 	{
 		1000,		// スコア
@@ -50,12 +47,9 @@ namespace
 //=====================================================
 CDestroyScore::CDestroyScore()
 {
-	m_Col = NORMAL_COLOR;
-	m_nValue = 0;
 	m_nScore = 0;
 	m_state = CUI_Combo::STATE_BESIDE;
 	m_ShiftPos = POS_INITIAL;
-	m_nAddScore = 0;
 }
 
 //=====================================================
@@ -80,9 +74,9 @@ CDestroyScore* CDestroyScore::Create()
 		pScore->SetScaleNumber(SCORE_SCALE);
 
 		//情報の設定
-		pScore->SetScore(pScore->m_nValue);
+		pScore->SetScore();
 
-		pScore->SetColor(NORMAL_COLOR);
+		pScore->SetAlpha(NORMAL_ALPHA);
 	}
 	
 	return pScore;
@@ -94,7 +88,6 @@ CDestroyScore* CDestroyScore::Create()
 HRESULT CDestroyScore::Init(void)
 {
 	m_nScore = SCORE_MIN;	// スコアの初期化
-	m_nValue = VALUE_SCORE; // 桁数の初期化
 	m_fScaleNumber = SCORE_SCALE;	// 初期スケール設定
 	m_state = CUI_Combo::STATE_BESIDE;	// 状態の初期化
 	m_ShiftPos = D3DXVECTOR3(0.0f, 0.0f, SCORE_POS_Z);
@@ -135,48 +128,6 @@ void CDestroyScore::Update(void)
 	D3DXVECTOR3 pos = (*CPlayer::GetInstance().begin())->GetPosition();
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	switch (m_state)
-	{
-	case CUI_Combo::STATE_BESIDE:
-
-		break;
-
-	case CUI_Combo::STATE_VERTICAL:
-
-		m_ShiftPos.z += MOVE_SPEED;
-
-		if (m_ShiftPos.z >= VERTICAL_STOP)
-		{
-			m_ShiftPos.z = VERTICAL_STOP;
-		}
-
-		break;
-
-	case CUI_Combo::STATE_WAIT:
-
-		m_Col = NORMAL_COLOR;
-
-		break;
-
-	case CUI_Combo::STATE_ERASE:
-
-		m_ShiftPos.z += SLOW_MOVE;
-
-		m_Col.a -= THINITY_SPEED;
-
-		if (m_Col.a <= THINITY_COL)
-		{
-			m_Col.a = THINITY_COL;
-		}
-
-		break;
-
-	default:
-		break;
-	}
-
-	SetColor(D3DXCOLOR(m_Col));
-
 	SetPosition(D3DXVECTOR3(pos.x - SCORE_POS_X, pos.y, pos.z + m_ShiftPos.z));
 
 	UpdateNumber();
@@ -203,12 +154,12 @@ void CDestroyScore::UpdateNumber()
 }
 
 //=====================================================
-// 色の設定
+// 透明度の設定
 //=====================================================
-void CDestroyScore::SetColor(D3DXCOLOR col)
+void CDestroyScore::SetAlpha(float fAlpha)
 {
-	if(m_aNumber3D != nullptr)
-		m_aNumber3D->SetColor(col);
+	if (m_aNumber3D != nullptr)
+		m_aNumber3D->SetColor(D3DXCOLOR(1.0f, 1.0f, 1.0f, fAlpha));
 }
 
 //=====================================================
@@ -217,6 +168,14 @@ void CDestroyScore::SetColor(D3DXCOLOR col)
 void CDestroyScore::SetState(CUI_Combo::E_State state)
 {
 	m_state = state;
+}
+
+//=====================================================
+// ずらす幅の設定
+//=====================================================
+void CDestroyScore::SetShiftPos(D3DXVECTOR3 shiftpos)
+{
+	m_ShiftPos = shiftpos;
 }
 
 //=====================================================
@@ -271,24 +230,12 @@ void CDestroyScore::TransformNumber()
 //=====================================================
 // 情報の設定
 //=====================================================
-void CDestroyScore::SetScore(int nDigit)
+void CDestroyScore::SetScore(void)
 {
-	m_aNumber3D = CNumber3D::Create(nDigit, 0);	// 数字の生成
+	m_aNumber3D = CNumber3D::Create(VALUE_SCORE, 0);	// 数字の生成
 
 	// 数字のトランスフォームの設定
 	TransformNumber();
-}
-
-//=====================================================
-// セットスコア処理
-//=====================================================
-void CDestroyScore::SetEnemyScore(CEnemy::TYPE type)
-{
-	// 種類が存在しない場合、この関数を抜ける
-	if (type >= CEnemy::TYPE_MAX) { assert(false); return; }
-
-	// スコアを代入する
-	m_nAddScore = ADD_SCORE[type];
 }
 
 //=====================================================
@@ -296,10 +243,10 @@ void CDestroyScore::SetEnemyScore(CEnemy::TYPE type)
 //=====================================================
 void CDestroyScore::AddDestroyScore(CEnemy::TYPE type)
 {
-	//敵ごとのスコアの設定
-	SetEnemyScore(type);
+	// 種類が存在しない場合、この関数を抜ける
+	if (type >= CEnemy::TYPE_MAX) { assert(false); return; }
 
-	m_nScore += m_nAddScore;
+	m_nScore += ADD_SCORE[type];
 }
 
 //=====================================================
