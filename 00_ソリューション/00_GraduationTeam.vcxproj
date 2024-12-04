@@ -196,6 +196,7 @@
     <ClCompile Include="code\npcpenguinstate_resultmulti.cpp" />
     <ClCompile Include="code\npcpenguinstate_selectmode.cpp" />
     <ClCompile Include="code\npcpenguinstate_title.cpp" />
+    <ClCompile Include="code\object2D.cpp" />
     <ClCompile Include="code\peckLine.cpp" />
     <ClCompile Include="code\peckWave.cpp" />
     <ClCompile Include="code\playerselect.cpp" />
@@ -327,6 +328,7 @@
     <ClInclude Include="code\npcpenguinstate_resultmulti.h" />
     <ClInclude Include="code\npcpenguinstate_selectmode.h" />
     <ClInclude Include="code\npcpenguinstate_title.h" />
+    <ClInclude Include="code\object2D.h" />
     <ClInclude Include="code\peckLine.h" />
     <ClInclude Include="code\peckWave.h" />
     <ClInclude Include="code\playerselect.h" />

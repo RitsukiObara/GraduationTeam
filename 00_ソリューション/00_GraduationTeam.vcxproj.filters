@@ -513,6 +513,9 @@
     <ClCompile Include="code\iceHardMulti.cpp">
       <Filter>ソース ファイル\gameobject\ice</Filter>
     </ClCompile>
+    <ClCompile Include="code\object2D.cpp">
+      <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="code\scene.h">
@@ -898,6 +901,9 @@
     </ClInclude>
     <ClInclude Include="code\iceHardMulti.h">
       <Filter>ソース ファイル\gameobject\ice</Filter>
+    </ClInclude>
+    <ClInclude Include="code\object2D.h">
+      <Filter>ソース ファイル\base</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

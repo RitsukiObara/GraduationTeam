@@ -4,14 +4,13 @@
 // Author:髙山桃也
 //
 //*****************************************************
-
 #ifndef _OBJECT_H_
 #define _OBJECT_H_
 
 //*****************************************************
 // インクルード
 //*****************************************************
-#include "main.h"
+#include <vector>
 
 //*****************************************************
 // 前方宣言
@@ -53,7 +52,7 @@ public:
 	static void UpdateAll(void);	// 全て更新
 	static void DeleteAll(void);	// 全削除処理
 	static void DrawAll(void);	// 全て描画
-	static void DrawObject(bool bBlur);	// オブジェクトの描画
+	static void DrawObject(std::list<CObject*> *pListDraw);	// オブジェクトの描画
 	virtual void Hit(float fDamage){}	// ヒット処理
 	virtual void SetPosition(D3DXVECTOR3 pos) {};	// 設定処理
 	virtual D3DXVECTOR3 GetPosition(void) { return D3DXVECTOR3(); }	// 位置取得処理
@@ -73,29 +72,35 @@ public:
 	void EnableBlur(bool bBlur) { m_bBlur = bBlur; }
 
 protected:
-	void Release(void);	// 個別リリース処理
+	void Release(void);		// 個別リリース処理
+	void Add3D(void);		// 3Dに追加
+	void Add2D(void);		// 2Dに追加
+	void Remove3D(void);	// 3D除外
+	void Remove2D(void);	// 2D除外
 
 private:
 	void Delete(void);	// 個別削除処理
 
 	static int m_nNumAll;	// 総数
-	int m_nPriority;	// 描画の優先順位
-	CObject *m_pPrev;	// 前のオブジェクトのアドレス
-	CObject *m_pNext;	// 次のオブジェクトのアドレス
-	bool m_bDeath;	// 死亡フラグ
-	bool m_bWire;	// ワイヤーフレームで表示するかどうか
-	bool m_bZtest;	// Zテストで前に出すかどうか
-	bool m_bLighting;	// ライティングを有効化するかどうか
-	bool m_bNotStop;	// 止まらないオブジェクトかどうか
-	bool m_bAdd;	// 加算合成するかどうか
-	bool m_bFog;	// フォグをかけるかどうか
-	bool m_bCull;	// カリングするかどうか
-	DWORD m_dAlpha;	// アルファテストの値
-	bool m_bBlur;	// ブラーをかけるかどうか
+	int m_nPriority;		// 描画の優先順位
+	CObject *m_pPrev;		// 前のオブジェクトのアドレス
+	CObject *m_pNext;		// 次のオブジェクトのアドレス
+	bool m_bDeath;			// 死亡フラグ
+	bool m_bWire;			// ワイヤーフレームで表示するかどうか
+	bool m_bZtest;			// Zテストで前に出すかどうか
+	bool m_bLighting;		// ライティングを有効化するかどうか
+	bool m_bNotStop;		// 止まらないオブジェクトかどうか
+	bool m_bAdd;			// 加算合成するかどうか
+	bool m_bFog;			// フォグをかけるかどうか
+	bool m_bCull;			// カリングするかどうか
+	DWORD m_dAlpha;			// アルファテストの値
+	bool m_bBlur;			// ブラーをかけるかどうか
 
 	// 静的メンバ変数
-	static CObject *m_apTop[NUM_PRIORITY];	// 先頭のオブジェクトのアドレス
-	static CObject *m_apCur[NUM_PRIORITY];	// 最後尾のオブジェクトのアドレス
+	static CObject *s_apTop[NUM_PRIORITY];					// 先頭のオブジェクトのアドレス
+	static CObject *m_apCur[NUM_PRIORITY];					// 最後尾のオブジェクトのアドレス
+	static std::list<CObject*> s_aDraw3D[NUM_PRIORITY];	// 3D描画する配列
+	static std::list<CObject*> s_aDraw2D[NUM_PRIORITY];	// 2D描画する配列
 };
 
 namespace Object

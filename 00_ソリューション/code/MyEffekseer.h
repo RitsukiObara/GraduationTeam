@@ -77,7 +77,7 @@ private:
 	static CMyEffekseer *s_pMyEffekseer;		// 自身のポインタ
 };
 
-class CEffekseerEffect : public CObject
+class CEffekseerEffect
 {
 public:
 	CEffekseerEffect(int nPriority = 5);	// コンストラクタ

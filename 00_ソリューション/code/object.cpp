@@ -18,8 +18,10 @@
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-CObject *CObject::m_apTop[NUM_PRIORITY] = {};	// 先頭のオブジェクトのポインタ
-CObject *CObject::m_apCur[NUM_PRIORITY] = {};	// 最後尾のオブジェクトのポインタ
+CObject *CObject::s_apTop[NUM_PRIORITY] = {};		// 先頭のオブジェクトのポインタ
+CObject *CObject::m_apCur[NUM_PRIORITY] = {};		// 最後尾のオブジェクトのポインタ
+list<CObject*> CObject::s_aDraw3D[NUM_PRIORITY];	// 3D描画する配列
+list<CObject*> CObject::s_aDraw2D[NUM_PRIORITY];	// 2D描画する配列
 int CObject::m_nNumAll = 0;	// 総数
 
 //=====================================================
@@ -45,9 +47,9 @@ CObject::CObject(int nPriority)
 
 	m_nPriority = nPriority;
 
-	if (m_apTop[nPriority] == nullptr)
+	if (s_apTop[nPriority] == nullptr)
 	{// 先頭と最後尾アドレスの代入
-		m_apTop[nPriority] = this;
+		s_apTop[nPriority] = this;
 		m_apCur[nPriority] = this;
 
 		return;
@@ -71,7 +73,7 @@ CObject::CObject(int nPriority)
 //=====================================================
 CObject::~CObject()
 {
-	if (m_apCur[m_nPriority] != this && m_apTop[m_nPriority] != this)
+	if (m_apCur[m_nPriority] != this && s_apTop[m_nPriority] != this)
 	{// 真ん中のアドレスの破棄
 		if (m_pPrev != nullptr)
 		{
@@ -86,7 +88,7 @@ CObject::~CObject()
 		}
 	}
 
-	if (m_apTop[m_nPriority] == this)
+	if (s_apTop[m_nPriority] == this)
 	{// 先頭アドレスの破棄
 		if (m_pNext != nullptr)
 		{
@@ -94,7 +96,7 @@ CObject::~CObject()
 		}
 
 		// 先頭アドレスを次のアドレスに引き継ぐ
-		m_apTop[m_nPriority] = m_pNext;
+		s_apTop[m_nPriority] = m_pNext;
 	}
 
 	if (m_apCur[m_nPriority] == this)
@@ -109,6 +111,38 @@ CObject::~CObject()
 	}
 
 	m_nNumAll--;
+}
+
+//=====================================================
+// 3Dに追加
+//=====================================================
+void CObject::Add3D(void)
+{
+	s_aDraw3D[m_nPriority].push_back(this);
+}
+
+//=====================================================
+// 2Dに追加
+//=====================================================
+void CObject::Add2D(void)
+{
+	s_aDraw2D[m_nPriority].push_back(this);
+}
+
+//=====================================================
+// 3D除外
+//=====================================================
+void CObject::Remove3D(void)
+{
+	s_aDraw3D[m_nPriority].remove(this);
+}
+
+//=====================================================
+// 2D除外
+//=====================================================
+void CObject::Remove2D(void)
+{
+	s_aDraw2D[m_nPriority].remove(this);
 }
 
 //=====================================================
@@ -139,7 +173,7 @@ void CObject::ReleaseAll(void)
 	for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
 	{
 		// 先頭オブジェクトを代入
-		CObject *pObject = m_apTop[nCntPri];
+		CObject *pObject = s_apTop[nCntPri];
 
 		while (pObject != nullptr)
 		{
@@ -166,7 +200,7 @@ void CObject::UpdateAll(void)
 	for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
 	{
 		// 先頭オブジェクトを代入
-		CObject *pObject = m_apTop[nCntPri];
+		CObject *pObject = s_apTop[nCntPri];
 
 		while (pObject != nullptr)
 		{
@@ -193,7 +227,7 @@ void CObject::DeleteAll(void)
 	for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
 	{
 		// 先頭オブジェクトを代入
-		CObject *pObject = m_apTop[nCntPri];
+		CObject *pObject = s_apTop[nCntPri];
 
 		while (pObject != nullptr)
 		{
@@ -229,13 +263,16 @@ void CObject::DrawAll(void)
 	}
 
 	// オブジェクトの描画
-	DrawObject(true);	// ブラーするオブジェクトを全て描き切ってから
+	DrawObject(s_aDraw3D);
 
 	if (CMyEffekseer::GetInstance() != nullptr)
 	{// エフェクシアの更新
 		CMyEffekseer::GetInstance()->Update();
 		CMyEffekseer::GetInstance()->Draw();
 	}
+
+	// オブジェクトの描画
+	DrawObject(s_aDraw2D);
 
 	// 死亡フラグのたったオブジェクトの破棄
 	DeleteAll();
@@ -244,21 +281,15 @@ void CObject::DrawAll(void)
 //=====================================================
 // オブジェクトの描画
 //=====================================================
-void CObject::DrawObject(bool bBlur)
+void CObject::DrawObject(list<CObject*> *pListDraw)
 {
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
 
 	for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
 	{
-		// 先頭オブジェクトを代入
-		CObject *pObject = m_apTop[nCntPri];
-
-		while (pObject != nullptr)
+		for (CObject *pObject : pListDraw[nCntPri])
 		{
-			// 次のアドレスを保存
-			CObject *pObjectNext = pObject->m_pNext;
-
 			if (pObject->m_bWire)
 			{// ワイヤーフレームの設定
 				pDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
@@ -294,6 +325,7 @@ void CObject::DrawObject(bool bBlur)
 			pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 			pDevice->SetRenderState(D3DRS_ALPHAREF, pObject->m_dAlpha);
 
+			// フォグの設定
 			pDevice->SetRenderState(D3DRS_FOGENABLE, pObject->m_bFog && CRenderer::GetInstance()->IsFog());
 
 			// 描画処理
@@ -334,8 +366,6 @@ void CObject::DrawObject(bool bBlur)
 			pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
 			pDevice->SetRenderState(D3DRS_ALPHAREF, 0);
 
-			// 次のアドレスを代入
-			pObject = pObjectNext;
 		}
 	}
 }

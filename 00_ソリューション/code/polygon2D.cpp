@@ -16,7 +16,7 @@
 //=====================================================
 // 優先順位を決めるコンストラクタ
 //=====================================================
-CPolygon2D::CPolygon2D(int nPriority) : CGameObject(nPriority)
+CPolygon2D::CPolygon2D(int nPriority) : CObject2D(nPriority)
 {
 	// 変数のクリア
 	m_pVtxBuff = nullptr;
@@ -82,8 +82,8 @@ HRESULT CPolygon2D::Init(void)
 		// 長さの取得
 		float fLengthUp = sqrtf(m_width * m_width + m_heigth * m_heigth);
 
-		D3DXVECTOR3 pos = CGameObject::GetPosition();
-		D3DXVECTOR3 rot = CGameObject::GetRotation();
+		D3DXVECTOR3 pos = CObject2D::GetPosition();
+		D3DXVECTOR3 rot = CObject2D::GetRotation();
 
 		// 頂点座標の設定
 		pVtx[0].pos = D3DXVECTOR3
@@ -121,6 +121,8 @@ HRESULT CPolygon2D::Init(void)
 		m_pVtxBuff->Unlock();
 	}
 
+	CObject2D::Init();
+
 	return S_OK;
 }
 
@@ -135,7 +137,7 @@ void CPolygon2D::Uninit(void)
 		m_pVtxBuff = nullptr;
 	}
 
-	CGameObject::Uninit();
+	CObject2D::Uninit();
 }
 
 //=====================================================
@@ -143,7 +145,7 @@ void CPolygon2D::Uninit(void)
 //=====================================================
 void CPolygon2D::Update(void)
 {
-
+	CObject2D::Update();
 }
 
 //=====================================================
@@ -164,8 +166,8 @@ void CPolygon2D::SetVtx(void)
 		// 長さの取得
 		float fLengthUp = sqrtf(m_width * m_width + m_heigth * m_heigth);
 
-		D3DXVECTOR3 pos = CGameObject::GetPosition();
-		D3DXVECTOR3 rot = CGameObject::GetRotation();
+		D3DXVECTOR3 pos = CObject2D::GetPosition();
+		D3DXVECTOR3 rot = CObject2D::GetRotation();
 
 		// 頂点座標の設定
 		pVtx[0].pos = D3DXVECTOR3
@@ -228,6 +230,8 @@ void CPolygon2D::Draw(void)
 		// 背景の描画
  		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 	}
+
+	CObject2D::Draw();
 }
 
 //=====================================================

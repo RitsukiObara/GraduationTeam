@@ -326,7 +326,7 @@ const char* CMyEffekseer::GetPathEffect(CMyEffekseer::TYPE type)
 //===========================================================
 // コンストラクタ
 //===========================================================
-CEffekseerEffect::CEffekseerEffect(int nPriority) : CObject(nPriority)
+CEffekseerEffect::CEffekseerEffect(int nPriority)
 {
 
 }
