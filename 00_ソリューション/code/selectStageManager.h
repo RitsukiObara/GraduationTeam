@@ -73,10 +73,11 @@ public:
 
 private:
 	// メンバ関数
-	void SetStage(void);	// ステージの設置
-	void Select(void);	// 選択処理
-	void Scaling(S_InfoStage *pInfoStage);	// スケーリング処理
-	void SetParticle(int nIdx);	// パーティクルの発生
+	void SetStage(void);						// ステージの設置
+	void Select(void);							// 選択処理
+	void Scaling(S_InfoStage *pInfoStage);		// スケーリング処理
+	void FollowOcean(S_InfoStage *pInfoStage);	// 波に追従
+	void SetParticle(int nIdx);					// パーティクルの発生
 
 	void StartEnter(void);	// エンター開始
 	void StayEnter(void);	// エンター中の処理

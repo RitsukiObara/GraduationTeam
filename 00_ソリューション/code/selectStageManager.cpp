@@ -26,6 +26,7 @@
 #include "number.h"
 #include "texture.h"
 #include "sound.h"
+#include "iceManager.h"
 
 //*****************************************************
 // マクロ定義
@@ -48,10 +49,12 @@ const float SPEED_SCALING_PENGUIN = 0.05f;	// ペンギンのスケーリング速度
 const float SPEED_MOVE_ENTER = 0.01f;		// エンター時の移動速度
 
 const float SPEED_PARTICLE = 22.0f;								// パーティクルの速度
+
 const D3DXVECTOR3 BANNER_POS = D3DXVECTOR3(0.0f, 0.0, 1300.0);	// 看板の位置
+const float SCALE_BANNER = 15.0f;								// 看板のスケール
 
 const float HEIGHT_NUMBER = 0.14f;				// 名前の高さ
-const float ADULTWALL_LENGTH = 3000.0f;	// 大人の壁
+const float ADULTWALL_LENGTH = 3000.0f;			// 大人の壁
 const D3DXVECTOR2 SIZE_NAME = { 0.25f, 0.06f };	// 名前のサイズ
 }
 
@@ -99,13 +102,20 @@ HRESULT CSelectStageManager::Init(void)
 
 	// ステージ選択看板設置
 	CObjectX* pBanner = CObjectX::Create(BANNER_POS);
-	pBanner->BindModel(CModel::Load(&PATH_BANNER[0]));
-	pBanner->SetScale(15.0f);
-	CCollisionSphere *pCollision = CCollisionSphere::Create(CCollision::TAG::TAG_BLOCK, CCollision::TYPE::TYPE_SPHERE, this);
-	if (pCollision != nullptr)
+	if (pBanner != nullptr)
 	{
-		pCollision->SetRadius(RADIUS_COLLISION_PUSHOUT_BANNER);
-		pCollision->SetPosition(BANNER_POS);
+		// モデルの割り当て
+		pBanner->BindModel(CModel::Load(&PATH_BANNER[0]));
+		pBanner->SetScale(SCALE_BANNER);
+
+		// 看板用の判定の生成
+		CCollisionSphere *pCollision = CCollisionSphere::Create(CCollision::TAG::TAG_BLOCK, CCollision::TYPE::TYPE_SPHERE, this);
+		
+		if (pCollision != nullptr)
+		{
+			pCollision->SetRadius(RADIUS_COLLISION_PUSHOUT_BANNER);
+			pCollision->SetPosition(BANNER_POS);
+		}
 	}
 
 	// ステージの設置
@@ -116,6 +126,9 @@ HRESULT CSelectStageManager::Init(void)
 
 	// 海の生成
 	COcean::Create();
+
+	// 氷マネージャー生成、Ocean動かすのに必要
+	CIceManager::Create(0, 0);
 
 	return S_OK;
 }
@@ -303,7 +316,6 @@ void CSelectStageManager::Update(void)
 
 	// 大人の壁判定
 	CollisionAdultWall();
-	
 
 #ifdef _DEBUG
 	Debug();
@@ -323,6 +335,9 @@ void CSelectStageManager::Select(void)
 
 		// スケーリング処理
 		Scaling(pInfoStage);
+
+		// 波に追従させる
+		FollowOcean(pInfoStage);
 
 		// パーティクルを出す
 		SetParticle(i);
@@ -365,8 +380,6 @@ void CSelectStageManager::Select(void)
 					return;
 				}
 			}
-
-			break;
 		}
 		else
 			pInfoStage->state = E_StateStage::STATE_NORMAL;
@@ -389,6 +402,26 @@ void CSelectStageManager::Scaling(S_InfoStage *pInfoStage)
 	fScale += (fScaleDest - fScale) * SPEED_SCALING_STAGE;
 
 	pModel->SetScale(fScale);
+}
+
+//=====================================================
+// 波に追従させる
+//=====================================================
+void CSelectStageManager::FollowOcean(S_InfoStage *pInfoStage)
+{
+	COcean*pOcean = COcean::GetInstance();
+	if (pOcean == nullptr)
+		return;
+
+	if (pInfoStage->pModel == nullptr)
+		return;
+
+	D3DXVECTOR3 pos = pInfoStage->pModel->GetPosition();
+	float fHeight = pOcean->GetHeight(pos, nullptr);
+
+	pos.y = fHeight;
+
+	pInfoStage->pModel->SetPosition(pos);
 }
 
 //=====================================================
@@ -522,7 +555,6 @@ void CSelectStageManager::CollisionAdultWall(void)
 		m_pPenguin->SetPosition(pos);	// 位置設定
 	}
 }
-
 
 //=====================================================
 // デバッグ処理

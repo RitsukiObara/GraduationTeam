@@ -89,6 +89,7 @@ const string PATH_SAVE[] =
 	"data\\BYNARY\\ranking01.bin",
 	"data\\BYNARY\\ranking02.bin",
 	"data\\BYNARY\\ranking03.bin",
+	"data\\BYNARY\\ranking04.bin",
 };
 const D3DXVECTOR3 POS_NUMBER_DEFAULT = { 0.3f, 0.68f,0.0f };		// 数字のデフォルト位置
 const float DIST_NUMBER = 0.12f;								// 数字間の距離
