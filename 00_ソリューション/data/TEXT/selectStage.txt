@@ -44,7 +44,7 @@ SETSTAGE	#3 第4ステージ　あざらし一体、しろくま一体　コン�
 END_SETSTAGE
 
 SETSTAGE	#4 第5ステージ　あざらし二体、しろくま二体　ハンターの群れ
-	MODEL = data\\MODEL\\object\\Stage_Obj001.x
+	MODEL = data\\MODEL\\object\\Stage_Obj004.x
 	POS = 0.0 0.0 -1500.0
 	PATHMAP = data\\TEXT\\ice_stage_04.txt
 	PATHENEMY = data\\TEXT\\enemy04.txt
