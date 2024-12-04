@@ -1022,7 +1022,7 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 		return;
 
 	if (pIceManager->GetGridIce(&nIdxV, &nIdxH) != nullptr)
-	{
+	{// Šù‚É‚»‚Ìê‚É•X‚ª‚ ‚Á‚½‚ç’Êíó‘Ô‚ÉˆÚs
 		pIce->ChangeState(new CIceStaeteNormal);
 		return;
 	}
