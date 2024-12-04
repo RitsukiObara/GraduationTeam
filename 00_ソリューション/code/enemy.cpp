@@ -838,13 +838,11 @@ void CEnemy::Death(void)
 	}
 
 	// コンボ、撃破時のスコア加算
-	CDestroyScore *pDestroyScore = CDestroyScore::GetInstance();
 	CUI_Combo* pUICombo = CUI_Combo::GetInstance();
 
-	if (pDestroyScore != nullptr && pUICombo != nullptr)
+	if (pUICombo != nullptr)
 	{
-		pDestroyScore->AddDestroyScore(m_type);
-		pUICombo->AddCombo();
+		pUICombo->AddCombo(m_type);
 	}
 
 	// 終了処理を呼ぶ
