@@ -230,16 +230,14 @@ void CSelectMode::Update(void)
 		SNOW_LIFE, D3DXVECTOR3(0.0f, SNOW_MOVE_SPED, 0.0f), CNT_SNOW);
 
 	// モードの移動
-	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_LEFT) ||
-		pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_UP))
+	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_LEFT))
 	{
 		ChangeSelectMode(-1);	// モード前にずらす
 
 		// サウンドの再生
 		pSound->Play(CSound::LABEL_SE_SELECT);
 	}
-	else if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_RIGHT) ||
-		pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_DOWN))
+	else if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_RIGHT))
 	{
 		ChangeSelectMode(1);	// モード先にずらす
 

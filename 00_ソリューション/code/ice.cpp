@@ -38,7 +38,7 @@ const float HEIGHT_ICE = 50.0f;	// 氷の高さ
 const int NUM_CORNER = 6;	// 角の数
 const D3DXVECTOR3 ROT_UP_INIT = { D3DX_PI * 0.5f,0.0f,0.0f };	// 上側の初期向き
 
-const float TIME_REPAIR_ICE = 11.0f;	// 氷の修復にかかる時間
+const float TIME_REPAIR_ICE = 13.0f;	// 氷の修復にかかる時間
 const int MAX_SCALE = 50; // スケールの最大値
 const int MIN_SCALE = 20; // スケールの最小値
 const string PATH_ICE_DEBRIS = "data\\MODEL\\block\\Drift_ice_piece.x";	// 破片氷のモデルパス
