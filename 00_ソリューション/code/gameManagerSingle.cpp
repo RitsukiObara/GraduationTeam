@@ -15,7 +15,7 @@
 #include "resultSingle.h"
 #include "selectStageManager.h"
 #include "enemyfactory.h"
-#include "destroy_score.h"
+#include "UI_combo.h"
 #include "game.h"
 #include "fade.h"
 
@@ -169,9 +169,9 @@ void CGameManagerSingle::ManageEnemy(void)
 	if (nNumEnemy == 0)	// 敵全滅で勝利
 	{
 		// 現在あるコンボのスコアを加算
-		CDestroyScore *pDestroyScore = CDestroyScore::GetInstance();
-		if (pDestroyScore != nullptr)
-			pDestroyScore->AddComboScore();
+		CUI_Combo *pCombo = CUI_Combo::GetInstance();
+		if (pCombo != nullptr)
+			pCombo->Uninit();
 
 		// リザルトの生成
 		CResultSingle::Create(true);

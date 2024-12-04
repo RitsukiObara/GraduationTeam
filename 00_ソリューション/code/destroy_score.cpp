@@ -16,10 +16,6 @@
 #include "game.h"
 #include "player.h"
 #include "UI_combo.h"
-//*****************************************************
-// 静的メンバ変数宣言
-//*****************************************************
-CDestroyScore* CDestroyScore::s_pDestroyScore;	// 格納用の配列
 
 //*****************************************************
 // 定数定義
@@ -30,7 +26,6 @@ namespace
 	const float DIST_NUMBER = 0.01f;	// 数字間の距離
 	const D3DXVECTOR2 SIZE_NORMAL_NUM = { 30.0f, 30.0f };	// 通常数字のサイズ
 	const D3DXVECTOR3 POS_INITIAL = { 0.0f,0.0f,0.0f };	// 初期位置
-	const int	WAITTIME = 60;	// 滞留時間
 	const float	GOAL_X = 0.5f;	// Xのゴール地点
 	const float	MOVE_SPEED = 10.0f;	// 移動速度
 	const float	VERTICAL_STOP = 100.0f;	// 縦移動の停止地点
@@ -58,8 +53,7 @@ CDestroyScore::CDestroyScore()
 	m_Col = NORMAL_COLOR;
 	m_nValue = 0;
 	m_nScore = 0;
-	m_State = STATE_BESIDE;
-	m_nCntState = 0;
+	m_state = CUI_Combo::STATE_BESIDE;
 	m_ShiftPos = POS_INITIAL;
 	m_nAddScore = 0;
 }
@@ -77,21 +71,21 @@ CDestroyScore::~CDestroyScore()
 //=====================================================
 CDestroyScore* CDestroyScore::Create()
 {
-	if (s_pDestroyScore == nullptr)
+	CDestroyScore* pScore = new CDestroyScore;
+
+	if (pScore != nullptr)
 	{
-		s_pDestroyScore = new CDestroyScore;
+		pScore->Init();
 
-		s_pDestroyScore->Init();
-
-		s_pDestroyScore->SetScaleNumber(SCORE_SCALE);
+		pScore->SetScaleNumber(SCORE_SCALE);
 
 		//情報の設定
-		s_pDestroyScore->SetScore(s_pDestroyScore->m_nValue);
+		pScore->SetScore(pScore->m_nValue);
 
-		s_pDestroyScore->SetColor(NORMAL_COLOR);
+		pScore->SetColor(NORMAL_COLOR);
 	}
 	
-	return s_pDestroyScore;
+	return pScore;
 }
 
 //=====================================================
@@ -102,7 +96,7 @@ HRESULT CDestroyScore::Init(void)
 	m_nScore = SCORE_MIN;	// スコアの初期化
 	m_nValue = VALUE_SCORE; // 桁数の初期化
 	m_fScaleNumber = SCORE_SCALE;	// 初期スケール設定
-	m_State = STATE_VERTICAL;	// 状態の初期化
+	m_state = CUI_Combo::STATE_BESIDE;	// 状態の初期化
 	m_ShiftPos = D3DXVECTOR3(0.0f, 0.0f, SCORE_POS_Z);
 
 	// 初期位置の設定
@@ -122,9 +116,10 @@ void CDestroyScore::Uninit(void)
 		m_aNumber3D = nullptr;
 	}
 
-	CGameObject::Uninit();
+	// コンボ計算処理
+	AddComboScore();
 
-	s_pDestroyScore = nullptr;
+	CGameObject::Uninit();
 }
 
 //=====================================================
@@ -140,40 +135,30 @@ void CDestroyScore::Update(void)
 	D3DXVECTOR3 pos = (*CPlayer::GetInstance().begin())->GetPosition();
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 
-	//コンボUIの状態
-	switch (m_State)
+	switch (m_state)
 	{
-	case STATE_BESIDE:
-
-		m_State = STATE_VERTICAL;
+	case CUI_Combo::STATE_BESIDE:
 
 		break;
 
-	case STATE_VERTICAL:
+	case CUI_Combo::STATE_VERTICAL:
 
 		m_ShiftPos.z += MOVE_SPEED;
 
 		if (m_ShiftPos.z >= VERTICAL_STOP)
 		{
-			m_State = STATE_WAIT;
+			m_ShiftPos.z = VERTICAL_STOP;
 		}
 
 		break;
 
-	case STATE_WAIT:
-
-		m_nCntState++;
+	case CUI_Combo::STATE_WAIT:
 
 		m_Col = NORMAL_COLOR;
 
-		if (m_nCntState >= WAITTIME)
-		{
-			m_State = STATE_ADD;
-		}
-
 		break;
 
-	case STATE_ADD:
+	case CUI_Combo::STATE_ERASE:
 
 		m_ShiftPos.z += SLOW_MOVE;
 
@@ -181,11 +166,12 @@ void CDestroyScore::Update(void)
 
 		if (m_Col.a <= THINITY_COL)
 		{
-			
-
-			return;
+			m_Col.a = THINITY_COL;
 		}
 
+		break;
+
+	default:
 		break;
 	}
 
@@ -223,6 +209,14 @@ void CDestroyScore::SetColor(D3DXCOLOR col)
 {
 	if(m_aNumber3D != nullptr)
 		m_aNumber3D->SetColor(col);
+}
+
+//=====================================================
+// 状態の設定
+//=====================================================
+void CDestroyScore::SetState(CUI_Combo::E_State state)
+{
+	m_state = state;
 }
 
 //=====================================================
@@ -283,7 +277,6 @@ void CDestroyScore::SetScore(int nDigit)
 
 	// 数字のトランスフォームの設定
 	TransformNumber();
-
 }
 
 //=====================================================
@@ -307,10 +300,6 @@ void CDestroyScore::AddDestroyScore(CEnemy::TYPE type)
 	SetEnemyScore(type);
 
 	m_nScore += m_nAddScore;
-
-	m_State = STATE_WAIT;
-
-	m_nCntState = 0;
 }
 
 //=====================================================
@@ -329,16 +318,4 @@ void CDestroyScore::AddComboScore(void)
 
 	//スコアを加算
 	game::AddScore(m_nScore);
-
-	Uninit();
-}
-
-//=====================================================
-// 敵を倒した時のスコアインスタンス取得
-//=====================================================
-CDestroyScore* CDestroyScore::GetInstance()
-{
-	Create();
-
-	return s_pDestroyScore;
 }
