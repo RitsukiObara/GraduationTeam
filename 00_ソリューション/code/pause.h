@@ -41,8 +41,6 @@ public:
 	void Update(void);
 	void Draw(void);
 
-	void SetState(STATE state);
-
 private:
 	enum MENU
 	{// €–Ú‚Ìí—Ş

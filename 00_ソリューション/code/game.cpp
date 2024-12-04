@@ -158,16 +158,11 @@ void CGame::Update(void)
 	}
 
 	// ポーズ========================================
-	if (m_state != STATE_RESULT && pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE))
+	if (m_state != STATE_RESULT &&
+		pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE) &&
+		m_pPause == nullptr)
 	{
-		if (m_pPause == nullptr)
-		{
-			m_pPause = CPause::Create();
-		}
-		else
-		{
-			m_pPause->SetState(m_pPause->STATE_OUT);
-		}
+		m_pPause = CPause::Create();
 	}
 
 	// カメラ更新
