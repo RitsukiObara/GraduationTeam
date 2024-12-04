@@ -13,6 +13,7 @@
 #include "renderer.h"
 #include "texture.h"
 #include "UI.h"
+#include "game.h"
 #include "inputManager.h"
 #include "debugproc.h"
 #include "player.h"
@@ -202,6 +203,9 @@ void CUI_Combo::Update(void)
 
 		if (m_Col.a <= THINITY_COL)
 		{
+			// コンボ計算処理
+			AddComboScore();
+
 			Uninit();
 
 			return;
@@ -215,6 +219,7 @@ void CUI_Combo::Update(void)
 		m_pScore->Update();
 		m_pScore->SetState(m_State);
 		m_pScore->SetShiftPos(m_ShiftPos);
+		m_pScore->SetAlpha(m_Col.a);
 	}
 
 	SetColor(m_Col);
@@ -386,6 +391,22 @@ void CUI_Combo::AddCombo(CEnemy::TYPE type)
 
 	m_ShiftPos = POS_INITIAL;
 }
+
+//=====================================================
+// コンボスコアを計算して加算
+//=====================================================
+void CUI_Combo::AddComboScore(void)
+{
+	if (m_pScore == nullptr)
+		return;
+
+	//コンボ倍率とのスコア計算
+	int nScore = m_pScore->GetScore() * m_nCombo;
+
+	//スコアを加算
+	game::AddScore(nScore);
+}
+
 
 //=====================================================
 // コンボのインスタンス取得
