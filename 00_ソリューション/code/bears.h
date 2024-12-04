@@ -64,7 +64,6 @@ private:
 	void MoveToIce(void);							// 氷に向かって移動
 	void Decreasemove(void);						// 移動量の減衰
 	void SarchTarget(void);							// ターゲットの探索
-	void StopMoveByNotGrid(CIce *pIce) override;	// グリッド基準じゃない移動を止める
 
 	bool CanCharge(D3DXVECTOR3 pos, int nIdxTargetV, int nIdxTargetH);						// 突撃できるかの判定
 	bool IsAliveTarget(int nIdxV, int nIdxH,float fRot,int nIdxTargetV, int nIdxTargetH);	// ターゲットに到達したかの再帰関数
@@ -72,6 +71,7 @@ private:
 	void ReadyCharge(void);		// 突撃の準備
 	void StartCharge(void);		// 突撃の開始
 	void Charge(void);			// 突撃中の処理
+	bool JudgeEndCharge(void);	// 突撃終了の判定
 	void EndCharge(void);		// 突撃の終了
 	void FindPlayerGrid(void);	// プレイヤーグリッドの発見
 
