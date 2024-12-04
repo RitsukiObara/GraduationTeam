@@ -287,6 +287,8 @@ void CPause::ManageBg(void)
 		if (col.a >= ALPHA_BG)
 		{
 			col.a = ALPHA_BG;
+
+			m_state = STATE_NONE;
 		}
 
 		break;
@@ -335,7 +337,7 @@ void CPause::Input(void)
 	
 	if ((pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE) || 
 		pInputManager->GetTrigger(CInputManager::BUTTON_BACK)) && 
-		m_state != STATE::STATE_IN)
+		m_state == STATE::STATE_NONE)
 	{
 		m_state = STATE_OUT;
 
@@ -582,17 +584,4 @@ void CPause::SelectMove(void)
 void CPause::Draw(void)
 {
 
-}
-
-//====================================================
-// èÛë‘ê›íËèàóù
-//====================================================
-void CPause::SetState(STATE state)
-{
-	m_state = state;
-
-	if (m_state == STATE_OUT)
-	{
-		OffPosition();
-	}
 }
