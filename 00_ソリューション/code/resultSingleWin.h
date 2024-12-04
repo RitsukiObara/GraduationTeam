@@ -67,6 +67,8 @@ private:
 	void UpdateApperRanking(void);	// ランキング出現状態の更新
 	void UpdateWait(void);			// 待機状態の更新
 
+	void Input(void);				// 入力処理
+
 	// メンバ変数
 	CUI *m_apCaptionScore[CAPTION_MAX];		// 自身のキャプションのポインタ
 	CNumber *m_apNumberOwn[CAPTION_MAX];	// 自身の成績の数字ポインタ

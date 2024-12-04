@@ -203,6 +203,9 @@ void CResultSingle::Update(void)
 		// Šeó‘Ô‚²‚Æ‚ÌXV
 		(this->*(s_aFuncUpdateState[m_state]))();
 	}
+
+	// “ü—Í
+	Input();
 }
 
 //=====================================================
@@ -260,6 +263,22 @@ void CResultSingle::UpdateApperCaption(void)
 		m_state = E_State::STATE_ENDAPPERCAPTION;
 		m_fTimer = 0.0f;
 	}
+}
+
+//=====================================================
+// “ü—Íˆ—
+//=====================================================
+void CResultSingle::Input(void)
+{
+	CInputManager *pInputMgr = CInputManager::GetInstance();
+
+	if (pInputMgr == nullptr)
+		return;
+
+	float aTimer[E_State::STATE_MAX] = { 0.0f, bg::TIME_FADE, caption::MOVE_TIME, 0.0f, 0.0f, };
+
+	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_ENTER))
+		m_fTimer = aTimer[m_state];
 }
 
 //====================================================

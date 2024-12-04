@@ -57,6 +57,7 @@ private:
 	
 	void UpdateFade(void);			// フェード状態の更新
 	void UpdateApperCaption(void);	// キャプション出現状態の更新
+	void Input(void);				// 入力
 
 	// メンバ変数
 	bool m_bWin;	// 勝利フラグ

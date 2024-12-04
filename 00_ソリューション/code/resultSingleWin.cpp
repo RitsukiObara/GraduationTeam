@@ -329,6 +329,9 @@ void CResultSingleWin::Update(void)
 
 	// 親クラスの更新
 	CResultSingle::Update();
+
+	// 入力処理
+	Input();
 }
 
 //=====================================================
@@ -443,6 +446,22 @@ void CResultSingleWin::UpdateWait(void)
 			}
 		}
 	}
+}
+
+//=====================================================
+// 入力処理
+//=====================================================
+void CResultSingleWin::Input(void)
+{
+	CInputManager *pInputMgr = CInputManager::GetInstance();
+
+	if (pInputMgr == nullptr)
+		return;
+
+	float aTimer[E_State::STATE_MAX] = { 0.0f, 0.0f, scoreCaption::TIME_APPER, ranking::TIME_APPER, 0.0f,0.0f };
+
+	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_ENTER))
+		m_fTimer = aTimer[m_state];
 }
 
 //====================================================
