@@ -579,7 +579,7 @@ bool CBears::JudgeEndCharge(void)
 	CIce *pIceNext = pIceMgr->GetGridIce(&nIdxVNext,&nIdxHNext);
 
 	if (pIceNext == nullptr)
-		return false;
+		return true;
 
 	// –Ú‚Ì‘O‚ª“Ë‚Á‚Â‚¢‚½•X‚É‚È‚Á‚½‚ç
 	if (pIceNext->IsPeck())
