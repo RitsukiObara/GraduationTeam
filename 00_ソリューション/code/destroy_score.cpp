@@ -13,7 +13,6 @@
 #include "texture.h"
 #include "inputManager.h"
 #include "debugproc.h"
-#include "game.h"
 #include "player.h"
 #include "UI_combo.h"
 
@@ -108,9 +107,6 @@ void CDestroyScore::Uninit(void)
 		m_aNumber3D->Uninit();
 		m_aNumber3D = nullptr;
 	}
-
-	// コンボ計算処理
-	AddComboScore();
 
 	CGameObject::Uninit();
 }
@@ -239,6 +235,14 @@ void CDestroyScore::SetScore(void)
 }
 
 //=====================================================
+// スコアの取得
+//=====================================================
+int CDestroyScore::GetScore(void)
+{
+	return m_nScore;
+}
+
+//=====================================================
 // 敵を倒した時のスコア増加
 //=====================================================
 void CDestroyScore::AddDestroyScore(CEnemy::TYPE type)
@@ -247,22 +251,4 @@ void CDestroyScore::AddDestroyScore(CEnemy::TYPE type)
 	if (type >= CEnemy::TYPE_MAX) { assert(false); return; }
 
 	m_nScore += ADD_SCORE[type];
-}
-
-//=====================================================
-// コンボスコアを計算して加算
-//=====================================================
-void CDestroyScore::AddComboScore(void)
-{
-	CUI_Combo *pUICombo = CUI_Combo::GetInstance();
-	if (pUICombo == nullptr)
-		return;
-
-	int nCombo = pUICombo->GetCombo();
-
-	//コンボ倍率とのスコア計算
-	m_nScore = m_nScore * nCombo;
-
-	//スコアを加算
-	game::AddScore(m_nScore);
 }

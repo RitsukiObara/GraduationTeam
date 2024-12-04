@@ -44,6 +44,7 @@ public:
 	void Draw();
 	void SetCombo(int nDigit = 6);
 	void AddCombo(CEnemy::TYPE type);
+	void AddComboScore(void);	// コンボスコアを計算して加算
 
 	// 静的メンバ関数
 	void SetColor(D3DXCOLOR col);	// 色

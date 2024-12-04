@@ -37,12 +37,12 @@ public:
 	void Update();
 	void Draw();
 	void AddDestroyScore(CEnemy::TYPE type);
-	void AddComboScore(void);	// コンボスコアを計算して加算
 
 	// 静的メンバ関数
 	static CDestroyScore* Create();	// 生成
 
 	void SetScore(void);
+	int GetScore(void);
 	void SetAlpha(float fAlpha);	// 透明度
 	void SetState(CUI_Combo::E_State state);	// 状態
 	void SetShiftPos(D3DXVECTOR3 shiftpos);	// ずらす幅
