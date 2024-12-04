@@ -17,7 +17,7 @@
 //*****************************************************
 namespace fishshadow
 {
-const float TIME_VANISH = 6.0f;								// 消滅までの時間
+const float TIME_VANISH = 3.0f;								// 消滅までの時間
 const float DELAY_AFTER_VANISH = 0.6f;						// 影が消えた後のディレイ
 const float TIME_APPER = DELAY_AFTER_VANISH + TIME_VANISH;	// 魚影が出る時間
 }

@@ -838,8 +838,6 @@ void CEnemy::EndFlows(void)
 	}
 
 	pIceMgr->GetNearestIce(pos, &m_nGridV, &m_nGridH);
-
-	CIce *pIce = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
 }
 
 //=====================================================

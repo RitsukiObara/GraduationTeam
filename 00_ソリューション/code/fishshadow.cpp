@@ -22,7 +22,7 @@ namespace
 {
 const char* PATH_TEX = "data\\TEXTURE\\enemy\\FishShadow.png";	// テクスチャパス
 const float TIME_FADEIN = 1.0f;									// フェードインにかかる時間
-const float TIME_FADEOUT = 2.0f;								// フェードアウトにかかる時間
+const float TIME_FADEOUT = 1.0f;								// フェードアウトにかかる時間
 const D3DXCOLOR COL_INIT = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f);	// 初期色
 const float WIDTH = 70.0f;										// 幅
 const float HEIGHT = 140.0f;									// 高さ

@@ -8,13 +8,13 @@
 #====================================================================
 
 SETENEMY
-	DELAY = 5.0f
+	DELAY = 7.0f
 	TYPE = 0
 	SPAWN = 0
 END_SETENEMY
 
 SETENEMY
-	DELAY = 10.0f
+	DELAY = 14.0f
 	TYPE = 1
 	SPAWN = 3
 END_SETENEMY
