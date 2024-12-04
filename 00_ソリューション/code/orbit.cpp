@@ -49,6 +49,8 @@ COrbit::~COrbit()
 //==========================================
 HRESULT COrbit::Init(void)
 {
+	Add3D();
+
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
 
@@ -105,6 +107,8 @@ HRESULT COrbit::Init(void)
 //==========================================
 void COrbit::Uninit()
 {
+	Remove3D();
+
 	if (m_pVtxBuff != nullptr)
 	{//頂点情報破棄
 		m_pVtxBuff->Release();
