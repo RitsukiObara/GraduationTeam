@@ -46,8 +46,10 @@ public:
 		MOTION_CANNOTPECK,
 		MOTION_MULTIAPPEAR,
 		MOTION_WINGPTPT,	// 羽根パタパタ
-		MOTION_STOMACH,	// 腹ベタ
+		MOTION_STOMACH,		// 腹ベタ
 		MOTION_FALL,
+		MOTION_BLOW,		// 吹き飛び
+		MOTION_STANDUP,		// 立ち上がり
 		MOTION_MAX
 	};
 	// プレイヤー状態
