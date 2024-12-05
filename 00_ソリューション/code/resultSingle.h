@@ -33,6 +33,16 @@ public:
 		STATE_END,				// 終了状態
 		STATE_MAX
 	};
+
+	// リザルトの種類
+	enum E_Result
+	{
+		RESULT_WIN = 0,			// 勝ち
+		RESULT_DEAD,			// 死亡
+		RESULT_TIMEOVER,		// タイムオーバー
+		RESULT_MAX
+	};
+
 	CResultSingle();	// コンストラクタ
 	~CResultSingle();	// デストラクタ
 
@@ -47,11 +57,11 @@ public:
 	CResultSingle::E_State GetState(void) { return m_state; }
 
 	// 静的メンバ関数
-	static CResultSingle *Create(bool bWin = false);
+	static CResultSingle* Create(E_Result result);
 
 private:
 	// メンバ関数
-	void Create2D(bool bWin);	// 2DUIの生成
+	void Create2D(void);		// 2DUIの生成
 	void CreateCaption(void);	// 見出しの生成
 	void CreateBg(void);		// 背景の生成
 	
@@ -60,7 +70,7 @@ private:
 	void Input(void);				// 入力
 
 	// メンバ変数
-	bool m_bWin;	// 勝利フラグ
+	E_Result m_result;	// 勝利フラグ
 	CUI *m_pBg;			// 背景のポインタ
 	CUI *m_pCaption;	// 見出しのポインタ
 

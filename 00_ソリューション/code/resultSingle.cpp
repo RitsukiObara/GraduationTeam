@@ -43,11 +43,11 @@ const float TIME_FADE = 2.0f;	// フェードにかかる時間
 
 namespace caption
 {
-const int NUM_TEX = 2;													// テクスチャの種類
-const char* PATH[NUM_TEX] =
+const char* PATH[CResultSingle::RESULT_MAX] =
 {																		// パス
-	"data\\TEXTURE\\UI\\gameover.png",
-	"data\\TEXTURE\\UI\\stage_clear.png",
+	"data\\TEXTURE\\UI\\stage_clear.png",	// 勝ち
+	"data\\TEXTURE\\UI\\gameover.png",		// 死亡
+	"data\\TEXTURE\\UI\\timeover.png",		// タイムオーバー
 };
 const float	MOVE_TIME = 1.5f;											// 移動時間
 const D3DXCOLOR DEST_COL = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);			// 目標色
@@ -76,7 +76,7 @@ CResultSingle::FuncUpdateState CResultSingle::s_aFuncUpdateState[] =	// 状態更新
 //====================================================
 // コンストラクタ
 //====================================================
-CResultSingle::CResultSingle() : m_fTimer(0.0f),m_pCaption(nullptr),m_bWin(false)
+CResultSingle::CResultSingle() : m_fTimer(0.0f),m_pCaption(nullptr), m_result(RESULT_WIN)
 {
 
 }
@@ -92,18 +92,18 @@ CResultSingle::~CResultSingle()
 //====================================================
 // 生成処理
 //====================================================
-CResultSingle *CResultSingle::Create(bool bWin)
+CResultSingle *CResultSingle::Create(E_Result result)
 {
 	CResultSingle *pResult = nullptr;
 
-	if(bWin)
+	if(result == RESULT_WIN)
 		pResult = new CResultSingleWin;	// 勝利のリザルト
 	else 
 		pResult = new CResultSingleLose;	// 敗北のリザルト
 
 	if (pResult != nullptr)
 	{
-		pResult->m_bWin = bWin;
+		pResult->m_result = result;
 		pResult->Init();
 	}
 
@@ -125,7 +125,7 @@ HRESULT CResultSingle::Init(void)
 	pSound->Play(CSound::LABEL_BGM_RESULT);
 
 	// 2Dオブジェクトの生成
-	Create2D(m_bWin);
+	Create2D();
 
 	// プレイヤーを操作不能にする
 	CPlayer::EnableInputAll(false);
@@ -136,7 +136,7 @@ HRESULT CResultSingle::Init(void)
 //====================================================
 // 2Dオブジェクトの生成
 //====================================================
-void CResultSingle::Create2D(bool bWin)
+void CResultSingle::Create2D(void)
 {
 	// 背景の生成
 	CreateBg();
@@ -160,7 +160,7 @@ void CResultSingle::CreateCaption(void)
 	m_pCaption->SetCol(caption::INIT_COL);
 	m_pCaption->SetVtx();
 
-	int nIdxTexture = Texture::GetIdx(caption::PATH[m_bWin]);
+	int nIdxTexture = Texture::GetIdx(caption::PATH[m_result]);
 	m_pCaption->SetIdxTexture(nIdxTexture);
 }
 

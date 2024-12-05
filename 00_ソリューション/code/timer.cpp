@@ -12,6 +12,7 @@
 #include "UI.h"
 #include "texture.h"
 #include "game.h"
+#include "resultSingle.h"
 
 //*****************************************************
 // 定数定義
@@ -201,6 +202,9 @@ void CTimer::UpdateNumber()
 	if (m_nSecond < 0)
 	{
 		m_nSecond = 0;
+
+		// 時間切れリザルト
+		CResultSingle::Create(CResultSingle::RESULT_TIMEOVER);
 	}
 
 	// 値の用意
