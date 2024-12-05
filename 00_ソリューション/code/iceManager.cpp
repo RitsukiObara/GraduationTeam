@@ -1573,6 +1573,38 @@ bool CIceManager::IsInGrid(D3DXVECTOR3 pos, float fRate)
 }
 
 //=====================================================
+// ランダムな氷の取得
+//=====================================================
+CIce* CIceManager::GetRandomIce(int *pNumV, int *pNumH)
+{
+	vector<CIce*> apIce = CIce::GetInstance();
+
+	if (apIce.empty())
+		return nullptr;
+
+	// 止まってない氷を除外
+	universal::RemoveIfFromVector(apIce, [](CIce* ice) { return ice != nullptr && !ice->IsStop(); });
+
+	// サイズからランダムで氷を指定
+	int nRand = universal::RandRange((int)apIce.size() - 1, 0);
+
+	CIce *pIce = apIce[nRand];
+
+	// 番号の保存
+	if (pNumV != nullptr && pNumH != nullptr)
+	{
+		CIceManager *pIceMgr = CIceManager::GetInstance();
+
+		if (pIceMgr != nullptr)
+		{
+			pIceMgr->GetIceIndex(pIce, pNumV, pNumH);
+		}
+	}
+
+	return pIce;
+}
+
+//=====================================================
 // 描画処理
 //=====================================================
 void CIceManager::Draw(void)
