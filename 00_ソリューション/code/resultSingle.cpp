@@ -47,7 +47,7 @@ const char* PATH[CResultSingle::RESULT_MAX] =
 {																		// パス
 	"data\\TEXTURE\\UI\\stage_clear.png",	// 勝ち
 	"data\\TEXTURE\\UI\\gameover.png",		// 死亡
-	"data\\TEXTURE\\UI\\stage_clear.png",	// タイムオーバー
+	"data\\TEXTURE\\UI\\timeover.png",		// タイムオーバー
 };
 const float	MOVE_TIME = 1.5f;											// 移動時間
 const D3DXCOLOR DEST_COL = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);			// 目標色
