@@ -53,6 +53,8 @@ private:
 	E_State m_state;					// 状態
 	float m_fTimerJump;					// 飛ばすカウンター
 	vector<CPlayer*> m_apPlayerJump;	// 飛ばすプレイヤーの配列
+	float m_fTimerMove;					// 移動タイマー
+	D3DXVECTOR3 m_posInit;				// 初期位置
 };
 
 #endif
