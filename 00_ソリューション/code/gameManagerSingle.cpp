@@ -151,7 +151,7 @@ void CGameManagerSingle::DeathPlayer(void)
 	m_pPlayer = nullptr;
 
 	// プレイヤー死亡で敗北
-	CResultSingle::Create(false);
+	CResultSingle::Create(CResultSingle::RESULT_DEAD);
 }
 
 //=====================================================
@@ -175,7 +175,7 @@ void CGameManagerSingle::ManageEnemy(void)
 			pCombo->Uninit();
 
 		// リザルトの生成
-		CResultSingle::Create(true);
+		CResultSingle::Create(CResultSingle::RESULT_WIN);
 	}
 }
 

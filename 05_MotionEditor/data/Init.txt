@@ -1,1 +1,1 @@
-data\\motionAlbatross.txt
+data\\motionPenguin.txt
