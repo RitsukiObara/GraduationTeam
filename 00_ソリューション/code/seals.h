@@ -24,6 +24,19 @@ class CPolygon3D;
 class CSeals : public CEnemy
 {
 public:
+	enum E_Motion
+	{// モーション
+		MOTION_NEUTRAL = 0,	// 待機
+		MOTION_WALK,		// 歩き
+		MOTION_STARTJUMP,	// ジャンプ開始
+		MOTION_STAYJUMP,	// ジャンプ中
+		MOTION_LANDING,		// 着地
+		MOTION_SWIM,		// 泳ぎ
+		MOTION_TURN,		// 方向転換
+		MOTION_BLOW,		// 吹き飛ばしジャンプ
+		MOTION_MAX
+	};
+
 	CSeals(int nPriority = 4);	// コンストラクタ
 	~CSeals();	// デストラクタ
 
@@ -51,18 +64,6 @@ public:
 	static CSeals* Create(void);
 
 private:
-	enum E_Motion
-	{// モーション
-		MOTION_NEUTRAL = 0,	// 待機
-		MOTION_WALK,		// 歩き
-		MOTION_STARTJUMP,	// ジャンプ開始
-		MOTION_STAYJUMP,	// ジャンプ中
-		MOTION_LANDING,		// 着地
-		MOTION_SWIM,		// 泳ぎ
-		MOTION_TURN,		// 方向転換
-		MOTION_MAX
-	};
-
 	// メンバ関数
 	void SetApperTransform(void) override;
 	void CollidePlayer(void);	// プレイヤーとの判定

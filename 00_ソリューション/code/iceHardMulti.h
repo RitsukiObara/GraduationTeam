@@ -15,6 +15,8 @@
 //*****************************************************
 // 前方宣言
 //*****************************************************
+class CPlayer;
+class CMotion;
 
 //*****************************************************
 // クラスの定義
@@ -32,12 +34,30 @@ public:
 	void Draw(void);
 
 private:
+	// 列挙型定義
+	enum E_State
+	{// 状態
+		STATE_NONE = 0,	// 何でもない状態
+		STATE_NORMAL,	// 通常状態
+		STATE_JUMP,		// ジャンプ状態
+		STATE_MAX
+	};
+
 	// メンバ関数
-	void IsOnPlayer(void);	// プレイヤーの検出
-	void UpdateState(void);	// 状態ごとの更新
+	void IsOnPlayer(void);		// プレイヤーの検出
+	void UpdateState(void);		// 状態ごとの更新
+	void StartJump(void);		// 飛ばす処理
+	void UpdateNormal(void);	// 通常の更新
+	void UpdateJump(void);		// ジャンプの更新
+	void FollowSeal(void);		// アザラシの追従
 
 	// メンバ変数
-	float m_fTimerSink;	// 沈むカウンター
+	E_State m_state;					// 状態
+	float m_fTimerJump;					// 飛ばすカウンター
+	vector<CPlayer*> m_apPlayerJump;	// 飛ばすプレイヤーの配列
+	float m_fTimerMove;					// 移動タイマー
+	D3DXVECTOR3 m_posInit;				// 初期位置
+	CMotion *m_pSeal;					// 潜んでいるアザラシのポインタ
 };
 
 #endif

@@ -24,6 +24,7 @@ const float MAX_HEIGHT = -300.0f;	// 氷が沈む高さ
 const int MAX_FLOWTIMING = 12;		// 氷が沈む最大タイミング
 const int MIN_FLOWTIMING = 1;		// 氷が沈む最小タイミング
 const float RATE_SPEED_MOVE = 1.2f;	// 移動速度の割合
+const int SCREEN_OUT_SINK = 180;	// 画面外に行ったときに消えるカウント
 }
 
 //====================================================
@@ -72,6 +73,9 @@ HRESULT CBgIce::Init(void)
 
 	// 継承クラスの初期化
 	CObjectX::Init();
+
+	// スクリーン外にいる時間を数える変数初期化
+	m_nOutScreen = 0;
 
 	return S_OK;
 }
@@ -190,11 +194,14 @@ void CBgIce::Move(void)
 	{// 一度画面に入ったフラグを立てる
 		m_bInscreen = true;
 	}
-	
-	if (!universal::IsInScreen(pos) && m_bInscreen)
-	{// 画面の外に出た瞬間に沈ませる
+	else if (m_bInscreen || m_nOutScreen >= SCREEN_OUT_SINK)
+	{
 		StartSink();
+
+		m_nOutScreen = 0;
 	}
+	
+	m_nOutScreen++;
 
 	// 流れる速度に正規化して位置を加算
 	float fSpeedFlow = pIceManager->GetOceanLevel();

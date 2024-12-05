@@ -19,7 +19,7 @@
 class CFan3D : public CFan
 {
 public:
-	CFan3D(int nPriority = 6);
+	CFan3D(int nPriority = 5);
 	~CFan3D();	//	デストラクタ
 
 	// メンバ関数

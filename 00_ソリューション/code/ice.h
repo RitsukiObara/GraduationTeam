@@ -86,6 +86,8 @@ public:
 	CMeshCylinder *GetMeshCyliner(void) { return m_pSide; }	// 側面のメッシュシリンダー取得
 	void SetRippleFrag(COcean::E_Stream stream, bool bValue) { m_abRipleFrag[stream] = bValue; }	// 流れごとのフラグ取得
 	bool GetRippleFrag(COcean::E_Stream stream) { return m_abRipleFrag[stream]; }
+	void SetHeightOcean(float fValue) { m_fHeightOcean = fValue; }									// 波からの高さ
+	float GetHeightOcean(void) { return m_fHeightOcean; }
 
 	// 静的メンバ関数
 	static CIce *Create(E_Type type = E_Type::TYPE_NORMAL, E_State state = E_State::STATE_FLOWS);	// 生成処理
@@ -104,12 +106,13 @@ private:
 	void Flash(void);		// きらりと光る処理
 
 	// メンバ変数
-	E_State m_state;	// 状態
-	bool m_bCanFind;	// 探索できるフラグ
-	bool m_bBreak;		// 壊れるフラグ
-	bool m_bPeck;		// 突っつかれたフラグ
-	bool m_bSink;		// 沈むフラグ
-	bool m_bStop;		// 停止しているかどうか
+	E_State m_state;		// 状態
+	bool m_bCanFind;		// 探索できるフラグ
+	bool m_bBreak;			// 壊れるフラグ
+	bool m_bPeck;			// 突っつかれたフラグ
+	bool m_bSink;			// 沈むフラグ
+	bool m_bStop;			// 停止しているかどうか
+	float m_fHeightOcean;	// 海からの高さ
 
 	D3DXVECTOR3 m_rotDest;	// 目標の向き
 

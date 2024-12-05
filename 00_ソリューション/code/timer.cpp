@@ -12,6 +12,7 @@
 #include "UI.h"
 #include "texture.h"
 #include "game.h"
+#include "gameManager.h"
 #include "resultSingle.h"
 
 //*****************************************************
@@ -203,8 +204,9 @@ void CTimer::UpdateNumber()
 	{
 		m_nSecond = 0;
 
-		// 時間切れリザルト
-		CResultSingle::Create(CResultSingle::RESULT_TIMEOVER);
+		// シングルの時は時間切れリザルト
+		if (!gameManager::IsMulti())
+			CResultSingle::Create(CResultSingle::RESULT_TIMEOVER);
 	}
 
 	// 値の用意
