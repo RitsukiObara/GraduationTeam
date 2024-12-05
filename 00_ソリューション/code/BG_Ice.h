@@ -53,6 +53,7 @@ private:
 	float m_fSpeed;			// 移動速度
 	int m_nRippleCount;		// 波紋出現カウンタ
 	bool m_bInscreen;		// 画面内に入ったかチェックする変数
+	int m_nOutScreen;		//スクリーン外にいる時間
 };
 
 //*****************************************************
