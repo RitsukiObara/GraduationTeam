@@ -929,8 +929,6 @@ void CIceStateFlow::UpdateSearchIce(CIce *pIce)
 	vecStream *= fSpeedFlow;
 	pIce->Translate(D3DXVECTOR3(vecStream.x, 0.0f, vecStream.z));
 
-	CDebugProc::GetInstance()->Print("\n‚‚³[%f]", pIce->GetPosition().y);
-
 	// •X‚Æ‚Ì”»’è
 	CollideIce(pIce);
 }
