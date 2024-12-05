@@ -63,6 +63,8 @@ const int TIME_VIB_BREAK = 50;		// 壊した時の振動時間
 const float POW_VIB_FLOW = 0.7f;	// 流されてる時の振動強さ
 const int TIME_VIB_FLOW = 10;		// 流されてる時の振動時間
 
+const float GRAVITY = 0.98f;	// 重力
+
 //-------------------------------
 // ジャンプの定数
 //-------------------------------
@@ -268,8 +270,16 @@ void CPlayer::Update(void)
 	if (m_pPeckLine != nullptr)
 		m_pPeckLine->SetPosition(GetPosition());
 
+	// 重力をかける
+	D3DXVECTOR3 move = GetMove();
+	move.y -= GRAVITY;
+	SetMove(move);
+
 	// 氷の追従
 	FollowIce();
+
+	// 吹き飛ばし中の処理
+	StayBlow();
 
 	// モーションの管理
 	ManageMotion();
@@ -318,8 +328,16 @@ void CPlayer::FollowIce(void)
 	if (pIceStand != nullptr)
 	{
 		D3DXVECTOR3 pos = GetPosition();
-		pos.y = pIceStand->GetPosition().y;
-		SetPosition(pos);
+
+		if (pIceStand->GetPosition().y >= pos.y)
+		{
+			pos.y = pIceStand->GetPosition().y;
+			SetPosition(pos);
+
+			// 重力のリセット
+			D3DXVECTOR3 move = GetMove();
+			SetMove(D3DXVECTOR3(move.x, 0.0f, move.z));
+		}
 	}
 }
 
@@ -571,12 +589,15 @@ void CPlayer::CollideIce(void)
 		return;
 
 	D3DXVECTOR3 pos = GetPosition();
+	D3DXVECTOR3 posTemp = pos;
 
 	int nIdxV, nIdxH;
 	pIceMgr->GetNearestIce(pos, &nIdxV, &nIdxH);
 
 	// グリッドの位置に合わせる
 	pIceMgr->Collide(&pos, nIdxV, nIdxH,RATE_CHANGE_GRID);
+
+	pos.y = posTemp.y;
 
 	SetPosition(pos);
 }
@@ -998,6 +1019,24 @@ void CPlayer::VibJoypad(float fPow, int nFrame)
 }
 
 //=====================================================
+// 吹き飛ばしの開始
+//=====================================================
+void CPlayer::StartBlow(CIce *pIce)
+{
+	// 操作不能にする
+	EnableInput(false);
+
+	// 吹き飛ばし状態にする
+	m_state = E_State::STATE_BLOW;
+
+	// 初期位置を設定
+	m_posInitJump = GetPosition();
+
+	// 目標の氷を取得
+	m_pIceDestJump = pIce;
+}
+
+//=====================================================
 // 方向UIの回転
 //=====================================================
 void CPlayer::RotationDirUI(int nDir)
@@ -1133,11 +1172,28 @@ void CPlayer::StayJump(void)
 	if (m_pIceDestJump == nullptr)
 		return;
 
+	JumpToDest(m_pIceDestJump, jump::HEIGHT);
+
+	// 終了の判定
+	D3DXVECTOR3 posPlayer = GetPosition();
+	D3DXVECTOR3 posIce = m_pIceDestJump->GetPosition();
+
+	if (universal::DistCmpFlat(posPlayer, posIce, jump::LINE_END, nullptr))
+	{// 氷に着地したらジャンプを終了
+		EndJump();
+	}
+}
+
+//=====================================================
+// 目標の氷に向かって飛ぶ処理
+//=====================================================
+void CPlayer::JumpToDest(CIce *pIceDest, float fHeightJump)
+{
 	//--------------------------------
 	// 目標の氷に向かって移動
 	//--------------------------------
 	D3DXVECTOR3 posPlayer = GetPosition();
-	D3DXVECTOR3 posIce = m_pIceDestJump->GetPosition();
+	D3DXVECTOR3 posIce = pIceDest->GetPosition();
 	universal::MoveToDest(&posPlayer, posIce, jump::FACT_MOVE);
 
 	SetPosition(posPlayer);
@@ -1158,21 +1214,13 @@ void CPlayer::StayJump(void)
 	float fHeight = universal::ParabolaY(fRate - 0.5f, 10.0f);
 
 	// 放物線の補正
-	fHeight *= -jump::HEIGHT;
-	fHeight += jump::HEIGHT * 2;
+	fHeight *= -fHeightJump;
+	fHeight += fHeightJump * 2;
 
 	// 高さを反映
 	D3DXVECTOR3 pos = posPlayer;
 	pos.y = m_posInitJump.y + fHeight;
 	SetPosition(pos);
-
-	//--------------------------------
-	// 終了の判定
-	//--------------------------------
-	if (universal::DistCmpFlat(posPlayer, posIce, jump::LINE_END, nullptr))
-	{// 氷に着地したらジャンプを終了
-		EndJump();
-	}
 }
 
 //=====================================================
@@ -1192,6 +1240,48 @@ void CPlayer::EndJump(void)
 		return;
 
 	pIceMgr->GetIceIndex(m_pIceDestJump, &m_nGridV, &m_nGridH);
+}
+
+//=====================================================
+// 吹き飛ばし中の処理
+//=====================================================
+void CPlayer::StayBlow(void)
+{
+	if (m_pIceDestJump == nullptr)
+		return;
+
+	JumpToDest(m_pIceDestJump, jump::HEIGHT);
+
+	// 終了の判定
+	D3DXVECTOR3 posPlayer = GetPosition();
+	D3DXVECTOR3 posIce = m_pIceDestJump->GetPosition();
+
+	if (universal::DistCmpFlat(posPlayer, posIce, jump::LINE_END, nullptr))
+	{// 氷に着地したらジャンプを終了
+		EndBlow();
+	}
+}
+
+//=====================================================
+// 吹き飛ばしの終了
+//=====================================================
+void CPlayer::EndBlow(void)
+{
+	// 入力を有効化
+	EnableInput(true);
+
+	// 目標氷をリセット
+	m_pIceDestJump = nullptr;
+
+	// 目標のグリッド番号を取得
+	CIceManager* pIceMgr = CIceManager::GetInstance();
+	if (pIceMgr == nullptr)
+		return;
+
+	pIceMgr->GetIceIndex(m_pIceDestJump, &m_nGridV, &m_nGridH);
+
+	// 状態を通常にする
+	m_state = E_State::STATE_NORMAL;
 }
 
 //=====================================================

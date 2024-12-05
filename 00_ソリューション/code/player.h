@@ -55,6 +55,7 @@ public:
 	{
 		STATE_NONE = 0,	// 何でもない状態
 		STATE_NORMAL,	// 通常
+		STATE_BLOW,		// 吹き飛ばされている状態
 		STATE_FLOW,		// 流されている
 		STATE_DEATH,		// 死
 		STATE_INVINCIBLE,	// デバッグ向け無敵
@@ -72,6 +73,7 @@ public:
 	virtual void Hit(float fDamage) override;	// ヒット処理
 	virtual bool Peck(void);					// 突っつく処理
 	void VibJoypad(float fPow, int nFrame);		// ジョイパッドを振動させる
+	void StartBlow(CIce *pIce);					// 吹き飛びの開始
 
 	// 取得・設定
 	void SetMove(D3DXVECTOR3 move) { m_move = move; }				// 移動量
@@ -141,11 +143,15 @@ private:
 	void FlowDeath(void);	// 漂流中の死
 	void EndFlows(void);	// 漂流終了
 
-	void InputJump(void);			// ジャンプの入力
-	void SarchJumpIce(void);		// ジャンプ先の氷を探す
-	void StayJump(void);			// ジャンプ中の処理
-	void LimitInSideFlowIce(void);	// 流氷の内側に制限
-	void EndJump(void);				// ジャンプの終了
+	void InputJump(void);								// ジャンプの入力
+	void SarchJumpIce(void);							// ジャンプ先の氷を探す
+	void StayJump(void);								// ジャンプ中の処理
+	void JumpToDest(CIce *pIceDest,float fHeightJump);	// 目標の氷に向かって飛ぶ処理
+	void LimitInSideFlowIce(void);						// 流氷の内側に制限
+	void EndJump(void);									// ジャンプの終了
+
+	void StayBlow(void);	// 吹き飛ばし中の処理
+	void EndBlow(void);		// 吹き飛ばしの終了
 	
 	void FollowDirUI(void);	// 方向UIの追従
 
