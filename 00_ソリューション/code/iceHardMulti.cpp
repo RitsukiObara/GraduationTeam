@@ -34,7 +34,9 @@ const int TIME_VIB_JUMP = 10;		// 飛びそうな時の振動時間
 //--------------------------------
 namespace jump
 {
-const float POW = 30.0f;	// ジャンプ力
+const float POW = 30.0f;		// ジャンプ力
+const float HEIGHT = 200.0f;	// 高さ
+const float TIME = 1.0f;		// 時間
 }
 }
 
@@ -192,7 +194,23 @@ void CIceHardMulti::UpdateNormal(void)
 //=====================================================
 void CIceHardMulti::UpdateJump(void)
 {
+	if (m_fTimerMove > jump::TIME)
+	{// 時間を越えたら通常に戻る
+		m_fTimerMove = 0.0f;
+		m_state = E_State::STATE_NORMAL;
+	}
 
+	m_fTimerMove += CManager::GetDeltaTime();
+
+	// 時間を正規化
+	float t = m_fTimerMove / jump::TIME;
+
+	universal::LimitValuefloat(&t, 1.0f, 0.0f);
+
+	// 高さを計算
+	float fHeight = jump::HEIGHT * (1.0f - 4.0f * (t - 0.5f) * (t - 0.5f));
+
+	SetHeightOcean(fHeight);
 }
 
 //=====================================================
@@ -218,6 +236,12 @@ void CIceHardMulti::StartJump(void)
 		// プレイヤー吹き飛ばしの開始
 		pPlayer->StartBlow(pIce);
 	}
+
+	// 初期値を現在位置に設定
+	m_posInit = GetPosition();
+
+	// 状態を設定
+	m_state = E_State::STATE_JUMP;
 }
 
 //=====================================================

@@ -92,7 +92,7 @@ std::vector<CIce*> CIce::s_Vector = {};	// 自身のポインタ
 // コンストラクタ
 //=====================================================
 CIce::CIce(int nPriority) : CObject3D(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false), m_bPeck(false),
-m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false), m_bStop(nullptr), m_abRipleFrag(), m_nCntAnimFlash(0), m_rotDest()
+m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false), m_bStop(nullptr), m_abRipleFrag(), m_nCntAnimFlash(0), m_rotDest(), m_fHeightOcean(0.0f)
 {
 	s_nNumAll++;
 	s_Vector.push_back(this);
@@ -286,7 +286,7 @@ void CIce::FollowWave(void)
 	// 海と一緒に氷を動かす処理
 	D3DXVECTOR3 pos = GetPosition();
 
-	pos.y = pOcean->GetHeight(pos, nullptr) + HEIGHT_ICE;
+	pos.y = pOcean->GetHeight(pos, nullptr) + HEIGHT_ICE + m_fHeightOcean;
 
 	SetPosition(pos);
 }
