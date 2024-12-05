@@ -80,6 +80,7 @@ public:
 	CIce* GetRightDownIdx(int *pNumV, int *pNumH);	// 右上の氷取得
 	CIce* GetRightUpIdx(int *pNumV, int *pNumH);	// 右上の氷取得
 	bool IsInGrid(D3DXVECTOR3 pos, float fRate);	// グリッド内かの取得
+	CIce* GetRandomIce(int *pNumV = nullptr, int *pNumH = nullptr);	// ランダムな氷の取得
 
 	S_Grid GetLeftDownGrid(void) { return m_aGrid[0][0]; }												// 左下のグリッド取得
 	S_Grid GetLeftUpGrid(void) { return m_aGrid[m_nNumGridVirtical - 1][0]; }								// 左上のグリッド取得
