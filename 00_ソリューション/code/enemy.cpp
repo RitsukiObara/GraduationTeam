@@ -829,7 +829,7 @@ void CEnemy::EndFlows(void)
 	D3DXVECTOR3 pos = GetPosition();
 
 	// グリッド内で無かったら即死
-	bool bResult = pIceMgr->IsInGrid(pos, 1.5f);
+	bool bResult = pIceMgr->IsInGrid(pos, 0.6f);
 
 	if (!bResult)
 	{
@@ -845,11 +845,6 @@ void CEnemy::EndFlows(void)
 //=====================================================
 void CEnemy::Death(void)
 {
-	if (CPlayer::GetInstance().empty())
-	{
-		return;
-	}
-
 	// コンボ、撃破時のスコア加算
 	CUI_Combo* pUICombo = CUI_Combo::GetInstance();
 
