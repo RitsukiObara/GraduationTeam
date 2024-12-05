@@ -4,14 +4,13 @@
 // Author:早川友貴
 //
 //*****************************************************
-#ifndef _BG_ICE_H_
-#define _BG_ICE_H_
+#ifndef _BGICE_H_
+#define _BGICE_H_
 
 //*****************************************************
 // インクルード
 //*****************************************************
 #include "objectX.h"
-#include "iceManager.h"
 
 //*****************************************************
 // クラス定義
@@ -22,33 +21,38 @@ public:
 	CBgIce();	// コンストラクタ
 	~CBgIce();	// デストラクタ
 
-	static CBgIce* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot,int type);
+	// メンバ関数
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+
+	// 静的メンバ関数
+	static CBgIce* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int type);
 	static void Load(char* pPath);
 
-	void Move(void);
-	void Flow(void);
-
 private:
-	// メンバ関数
-	void RippleCheck(void);
-
-	//背景氷の状態
-	typedef enum
-	{
+	// 列挙型定義
+	enum E_State
+	{//背景氷の状態
 		STATE_FLOW = 0,
 		STATE_SINK,
 		STATE_MAX
-	}STATE;
+	};
 
-	STATE m_state;			// 状態分け変数
-	float fgravity_speed;	// 沈んでいく速度;
-	float m_fspeed;			// 沈み始める速度
+	// メンバ関数
+	void Move(void);		// 移動処理
+	void Flow(void);		// 海面に沿わせる処理
+	void RippleCheck(void);	// 波紋を出すかのチェック
+	void CollideIce(void);	// 足場氷との判定
+	void StartSink(void);	// 沈み始める処理
+
+	// メンバ変数
+	E_State m_state;		// 状態分け変数
+	float fSpeedGravity;	// 沈んでいく速度
+	float m_fSpeed;			// 移動速度
 	int m_nRippleCount;		// 波紋出現カウンタ
-	bool m_binscrean;		// 画面内に入ったかチェックする変数
+	bool m_bInscreen;		// 画面内に入ったかチェックする変数
 };
 
 //*****************************************************

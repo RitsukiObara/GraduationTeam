@@ -29,8 +29,8 @@
 //*****************************************************
 namespace
 {
-const float OCEAN_ROT_CHANGE_TIME_DEFAULT = 10.0f;	// デフォルトの海流向き変更時間
-const int OCEAN_ROT_CHANGE_TIME_DEGREE = 10;		// 海流向き変更時間ぶれ幅
+const float OCEAN_ROT_CHANGE_TIME_DEFAULT = 20.0f;	// デフォルトの海流向き変更時間
+const int OCEAN_ROT_CHANGE_TIME_DEGREE = 5;			// 海流向き変更時間ぶれ幅
 const float FLOW_LEVEL_MULTIPLY = 0.008f;			// 海流の速度の倍率
 const float ALBATROSS_SPAWN_TIME = 3.0f;			// アホウドリ出現時間
 const int MAX_ALBATROSS = 1;						// アホウドリ最大数
@@ -42,7 +42,7 @@ const float Z_UP = 1500.0f;							// Z方向上方向
 const float Z_DOWN = -1500.0f;						// Z方向下方向
 const float X_LEFT = -2500.0f;						// X方向上方向
 const float X_RIGHT = 2500.0f;						// X方向下方向
-const int BGICE_CREATE_CNT = 80;					// 背景氷が生成されるフレーム数
+const int BGICE_CREATE_CNT = 40;					// 背景氷が生成されるフレーム数
 const float OCEANLEVEL_DEFAULT = 3.0f;				// デフォルトの海流の強さ
 }
 
