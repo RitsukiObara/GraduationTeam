@@ -11,41 +11,27 @@
 #include "BG_Ice.h"
 #include "ice.h"
 #include "ocean.h"
+#include "iceManager.h"
 #include "MyEffekseer.h"
-
-//*****************************************************
-// マクロ定義
-//*****************************************************
-#define RESULT_WIDTH	(0.18f)	// 項目の幅
-#define RESULT_HEIGHT	(0.05f)	// 項目の高さ
-#define MOVE_FACT	(0.15f)	// 移動速度
-#define LINE_ARRIVAL	(0.05f)	// 到着したとされるしきい値
-#define LINE_UNINIT	(3.0f)	// 終了するまでのしきい値
 
 //*****************************************************
 // 定数定義
 //*****************************************************
 namespace
 {
-	const char* MODEL[bgice::BGICE_MODEL] = { "data\\MODEL\\block\\ice_small001.x","data\\MODEL\\block\\ice_small002.x","data\\MODEL\\block\\ice_small003.x" };
-	const float MAX_HEIGHT = -300.0f;	// 氷が沈む高さ
-	const int MAX_FLOWTIMING = 12;	// 氷が沈む最大タイミング
-	const int MIN_FLOWTIMING = 1;	// 氷が沈む最小タイミング
+const char* MODEL[bgice::BGICE_MODEL] = { "data\\MODEL\\block\\ice_small001.x","data\\MODEL\\block\\ice_small002.x","data\\MODEL\\block\\ice_small003.x" };
+const float MAX_HEIGHT = -300.0f;	// 氷が沈む高さ
+const int MAX_FLOWTIMING = 12;		// 氷が沈む最大タイミング
+const int MIN_FLOWTIMING = 1;		// 氷が沈む最小タイミング
+const float RATE_SPEED_MOVE = 1.2f;	// 移動速度の割合
 }
-
-//*****************************************************
-// 静的メンバ変数宣言
-//*****************************************************
 
 //====================================================
 // コンストラクタ
 //====================================================
-CBgIce::CBgIce()
+CBgIce::CBgIce() : CObjectX(), m_state(STATE_FLOW), m_fSpeed(0.0f), m_bInscreen(false), m_nRippleCount(0)
 {
-	m_state = STATE_FLOW;
-	m_fspeed = 0.0f;
-	m_binscrean = false;
-	m_nRippleCount = 0;
+
 }
 
 //====================================================
@@ -66,13 +52,9 @@ CBgIce* CBgIce::Create(D3DXVECTOR3 pos,D3DXVECTOR3 rot,int type)
 	pBgIce->SetPosition(pos);
 	pBgIce->SetRotation(rot);
 
-	pBgIce->m_binscrean = false;
-
 	pBgIce->Init();
 	
 	pBgIce->BindModel(CModel::Load(MODEL[type]));
-
-	pBgIce->m_fspeed = (float)universal::RandRange(MAX_FLOWTIMING, MIN_FLOWTIMING) * 0.01f;
 
 	return pBgIce;
 }
@@ -82,21 +64,13 @@ CBgIce* CBgIce::Create(D3DXVECTOR3 pos,D3DXVECTOR3 rot,int type)
 //====================================================
 HRESULT CBgIce::Init(void)
 {
-	//// 指定された数分だけグリッド配列をリサイズ
-	//// 縦のグリッド用意
-	//m_aSave.resize(1);
-
-	//for (int i = 0; i < m_nNumGridVirtical; i++)
-	//	m_aSave[i].resize(m_nNumGridHorizontal);
-
-	CIceManager* pIceManager = CIceManager::GetInstance();
-
-	if (pIceManager == nullptr)
-		return S_OK;
-
 	// 最初の波紋出現時間設定
 	m_nRippleCount = bgice::RIPPLE_DEFAULT + universal::RandRange(bgice::RIPPLE_DEGREE, -bgice::RIPPLE_DEGREE);
 
+	// 速度の設定
+	m_fSpeed = (float)universal::RandRange(MAX_FLOWTIMING, MIN_FLOWTIMING) * 0.01f;
+
+	// 継承クラスの初期化
 	CObjectX::Init();
 
 	return S_OK;
@@ -152,50 +126,48 @@ void CBgIce::Load(char* pPath)
 		{
 			//文字読み込み
 			(void)fscanf(pFile, "%s", &cTemp[0]);
+
 			if (strcmp(cTemp, "SET") == 0)
-					{//キースタート
-						while (strcmp(cTemp, "END_SET") != 0)
-						{//終わりまでキー設定
+			{//キースタート
+				while (strcmp(cTemp, "END_SET") != 0)
+				{//終わりまでキー設定
 
-									(void)fscanf(pFile, "%s", &cTemp[0]);
+					(void)fscanf(pFile, "%s", &cTemp[0]);
 
-									if (strcmp(cTemp, "POS") == 0)
-									{//位置取得
+					if (strcmp(cTemp, "POS") == 0)
+					{//位置取得
+						(void)fscanf(pFile, "%s", &cTemp[0]);
 
-										(void)fscanf(pFile, "%s", &cTemp[0]);
-
-										for (int nCntPos = 0; nCntPos < 3; nCntPos++)
-										{
-											(void)fscanf(pFile, "%f", &pos[nCntPos]);
-										}
-									}
-
-									if (strcmp(cTemp, "ROT") == 0)
-									{//向き取得
-
-										(void)fscanf(pFile, "%s", &cTemp[0]);
-
-										for (int nCntRot = 0; nCntRot < 3; nCntRot++)
-										{
-											(void)fscanf(pFile, "%f", &rot[nCntRot]);
-										}
-									}
-								}
-						Create(pos, rot, 0);
+						for (int nCntPos = 0; nCntPos < 3; nCntPos++)
+						{
+							(void)fscanf(pFile, "%f", &pos[nCntPos]);
+						}
 					}
 
-					if (strcmp(cTemp, "END_SCRIPT") == 0)
-					{
-						break;
+					if (strcmp(cTemp, "ROT") == 0)
+					{//向き取得
+						(void)fscanf(pFile, "%s", &cTemp[0]);
+
+						for (int nCntRot = 0; nCntRot < 3; nCntRot++)
+						{
+							(void)fscanf(pFile, "%f", &rot[nCntRot]);
+						}
 					}
+				}
+
+				Create(pos, rot, 0);
+			}
+
+			if (strcmp(cTemp, "END_SCRIPT") == 0)
+				break;
 		}//while
 	}//file
 	else
 	{
-		assert(("モーションデータ読み込みに失敗", false));
+		assert(("BgIce読み込みに失敗", false));
 	}
 
-		fclose(pFile);
+	fclose(pFile);
 }
 
 //====================================================
@@ -215,13 +187,13 @@ void CBgIce::Move(void)
 	D3DXVECTOR3 pos = GetPosition();
 
 	if (universal::IsInScreen(pos))
-	{
-		m_binscrean = true;
+	{// 一度画面に入ったフラグを立てる
+		m_bInscreen = true;
 	}
 	
-	if (!universal::IsInScreen(pos) && m_binscrean)
-	{
-		m_state = STATE_SINK;
+	if (!universal::IsInScreen(pos) && m_bInscreen)
+	{// 画面の外に出た瞬間に沈ませる
+		StartSink();
 	}
 
 	// 流れる速度に正規化して位置を加算
@@ -230,27 +202,29 @@ void CBgIce::Move(void)
 	switch (m_state)
 	{
 	case STATE_FLOW:
+		// 海流による移動
 		D3DXVec3Normalize(&vecStream, &vecStream);
-		vecStream *= fSpeedFlow;
+		vecStream *= fSpeedFlow * RATE_SPEED_MOVE;
 		Translate(vecStream);
 
 		//海面に沿わせる
 		Flow();
 
+		// 足場の氷との判定
+		CollideIce();
+
 		break;
 
 	case STATE_SINK:
 
-		m_binscrean = false;
+		m_bInscreen = false;
 
-		fgravity_speed += m_fspeed;
+		fSpeedGravity += m_fSpeed;
 
-		pos.y -= fgravity_speed;
+		pos.y -= fSpeedGravity;
 
 		if (pos.y <= MAX_HEIGHT)
-		{
 			Uninit();
-		}
 
 		SetPosition(pos);
 
@@ -295,4 +269,36 @@ void CBgIce::RippleCheck(void)
 			D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(80.0f, 80.0f, 80.0f));	// 波紋出現
 		m_nRippleCount = bgice::RIPPLE_DEFAULT + universal::RandRange(bgice::RIPPLE_DEGREE, -bgice::RIPPLE_DEGREE);	// 波紋出現時間設定
 	}
+}
+
+//====================================================
+// 足場氷との判定
+//====================================================
+void CBgIce::CollideIce(void)
+{
+	vector<CIce*> apIce = CIce::GetInstance();
+
+	for (CIce *pIce : apIce)
+	{
+		if (pIce == nullptr)
+			continue;
+
+		D3DXVECTOR3 pos = GetPosition();
+		D3DXVECTOR3 posIce = pIce->GetPosition();
+
+		if (universal::DistCmpFlat(pos, posIce, Grid::SIZE, nullptr))
+		{// 氷と当たってたら沈み始める
+			StartSink();
+			return;
+		}
+	}
+}
+
+//====================================================
+// 沈み始める処理
+//====================================================
+void CBgIce::StartSink(void)
+{
+	m_state = STATE_SINK;
+	MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_RIPPLE, GetPosition());
 }
