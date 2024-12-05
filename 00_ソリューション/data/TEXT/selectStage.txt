@@ -52,4 +52,13 @@ SETSTAGE	#4 第5ステージ　あざらし二体、しろくま二体　ハン�
 	DIR_STREAM = 0
 END_SETSTAGE
 
+SETSTAGE	#5 第6ステージ　HEX ICE SUVIVAL
+	MODEL = data\\MODEL\\object\\Stage_Obj004.x
+	POS = 0.0 0.0 1500.0
+	PATHMAP = data\\TEXT\\ice_stage_05.txt
+	PATHENEMY = data\\TEXT\\enemy05.txt
+	PATHNAME = data\\TEXTURE\\UI\\stagename04.png
+	DIR_STREAM = 0
+END_SETSTAGE
+
 END_SCRIPT
