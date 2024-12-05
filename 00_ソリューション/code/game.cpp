@@ -300,11 +300,11 @@ void CGame::Debug(void)
 
 	if (pKeyboard->GetTrigger(DIK_0))
 	{// 勝利
-		CResultSingle::Create(true);
+		CResultSingle::Create(CResultSingle::RESULT_WIN);
 	}
 	else if (pKeyboard->GetTrigger(DIK_9))
 	{// 敗北
-		CResultSingle::Create(false);
+		CResultSingle::Create(CResultSingle::RESULT_DEAD);
 	}
 
 	pDebugProc->Print("\nゲームデバッグキー======================");
