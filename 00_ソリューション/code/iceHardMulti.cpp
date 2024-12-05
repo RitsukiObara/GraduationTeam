@@ -35,7 +35,7 @@ const float POW_VIB_BLOW = 1.0f;	// 吹き飛ばしの振動強さ
 const int TIME_VIB_BLOW = 60;		// 吹き飛ばしの振動時間
 
 const string PATH_SEAL = "data\\MOTION\\motionSeals.txt";	// アザラシのパス
-const float HEIGHT_SEAL = -80.0f;							// アザラシの高さ
+const float HEIGHT_SEAL = -110.0f;							// アザラシの高さ
 
 //--------------------------------
 // ジャンプの定数
@@ -43,7 +43,7 @@ const float HEIGHT_SEAL = -80.0f;							// アザラシの高さ
 namespace jump
 {
 const float POW = 30.0f;		// ジャンプ力
-const float HEIGHT = 200.0f;	// 高さ
+const float HEIGHT = 300.0f;	// 高さ
 const float TIME = 1.0f;		// 時間
 }
 }
@@ -80,6 +80,11 @@ HRESULT CIceHardMulti::Init(void)
 
 	// アザラシの生成
 	m_pSeal = CMotion::Create((char*)(&PATH_SEAL[0]));
+
+	if (m_pSeal != nullptr)
+	{
+		m_pSeal->SetMotion(CSeals::E_Motion::MOTION_BLOW);
+	}
 
 	return S_OK;
 }
@@ -273,8 +278,7 @@ void CIceHardMulti::FollowSeal(void)
 		return;
 
 	D3DXVECTOR3 pos = GetPosition();
-
-	pos.y += HEIGHT_SEAL;
+	pos.y = HEIGHT_SEAL;
 	m_pSeal->SetPosition(pos);
 }
 
