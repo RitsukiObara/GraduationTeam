@@ -203,7 +203,7 @@ void CPeckLine::UpdateMove(void)
 //====================================================
 void CPeckLine::UpdateAllLine(void)
 {
-	for (auto it = m_aInfoLine.begin(); it != m_aInfoLine.end(); /* no increment here */)
+	for (auto it = m_aInfoLine.begin(); it != m_aInfoLine.end();)
 	{
 		S_InfoLine* pInfo = *it;
 

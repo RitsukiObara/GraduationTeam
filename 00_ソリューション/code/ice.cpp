@@ -51,6 +51,8 @@ const float HEIGHT_NORMALSINK_FROM_OCEAN = 10.0f;	// 海からの通常沈む高さ
 
 const float LINE_STOP_ICE = 1.0f;	// 氷が止まるしきい値
 
+const float TIME_MAXSPEED = 10.0f;	// 最大速度になるまでの時間
+
 //------------------------------
 // 傾きの定数
 //------------------------------
@@ -268,6 +270,28 @@ void CIce::Update(void)
 
 	// 継承クラスの更新
 	CObject3D::Update();
+}
+
+//=====================================================
+// 上のオブジェクトを動かす
+//=====================================================
+void CIce::MoveObjectOnIce(D3DXVECTOR3 vecMove)
+{
+	vector<CGameObject*> apObject;
+	GetOnTopObject(apObject);
+
+	// 上にどれかが乗ってたら動かす
+	for (CGameObject* object : apObject)
+	{
+		if (object == nullptr)
+			continue;
+
+		D3DXVECTOR3 posObject = object->GetPosition();
+		D3DXVECTOR3 pos = GetPosition();
+
+		if (universal::DistCmpFlat(pos, posObject, SIZE_INIT, nullptr))
+			object->Translate(vecMove); // 何かが乗ってるので動かす
+	}
 }
 
 //=====================================================
@@ -712,40 +736,7 @@ void CIceStaeteNormal::MoveToGrid(CIce *pIce)
 	pIce->Translate(vecDiff);
 
 	// 上のオブジェクトを動かす
-	MoveObjectOnIce(vecDiff,pIce);
-}
-
-//=====================================================
-// 上のオブジェクトを動かす
-//=====================================================
-void CIceStaeteNormal::MoveObjectOnIce(D3DXVECTOR3 vecMove,CIce *pIce)
-{
-	vector<CGameObject*> apObject;
-
-	// 敵の追加
-	vector<CEnemy*> aEnemy = CEnemy::GetInstance();
-
-	for (CEnemy* enemy : aEnemy)
-		apObject.push_back((CGameObject*)enemy);
-
-	// プレイヤーの追加
-	vector<CPlayer*> aPlayer = CPlayer::GetInstance();
-
-	for (CPlayer* player : aPlayer)
-		apObject.push_back((CGameObject*)player);
-
-	// 上にどれかが乗ってたら動かす
-	for (CGameObject* object : apObject)
-	{
-		if (object == nullptr)
-			continue;
-
-		D3DXVECTOR3 posObject = object->GetPosition();
-		D3DXVECTOR3 pos = pIce->GetPosition();
-
-		if (universal::DistCmpFlat(pos, posObject, SIZE_INIT, nullptr))
-			object->Translate(vecMove); // 何かが乗ってるので動かす
-	}
+	pIce->MoveObjectOnIce(vecDiff);
 }
 
 //*******************************************************************************
@@ -923,11 +914,20 @@ void CIceStateFlow::UpdateSearchIce(CIce *pIce)
 	COcean::E_Stream dir = pIceManager->GetDirStream();
 	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[dir];
 
+	// 立ち上がりの速度の割合を計算
+	m_fTimerStartMove += CManager::GetDeltaTime();
+
+	float t = m_fTimerStartMove / TIME_MAXSPEED;
+	float fRate = easing::EaseOutExpo(t);
+	universal::LimitValuefloat(&fRate, 1.0f, 0.0f);
+
 	// 流れる速度に正規化して位置を加算
 	float fSpeedFlow = pIceManager->GetOceanLevel();
 	D3DXVec3Normalize(&vecStream, &vecStream);
-	vecStream *= fSpeedFlow;
+	vecStream *= fSpeedFlow * fRate;
 	pIce->Translate(D3DXVECTOR3(vecStream.x, 0.0f, vecStream.z));
+
+	pIce->MoveObjectOnIce(vecStream);
 
 	// 氷との判定
 	CollideIce(pIce);

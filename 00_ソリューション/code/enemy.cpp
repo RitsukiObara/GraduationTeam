@@ -781,16 +781,6 @@ void CEnemy::StayFlow(void)
 	{// 流氷システムが検出できない場合の処理
 		JudgeEndFlow();
 	}
-
-	// 海流のベクトル取得
-	COcean::E_Stream dir = pIceMgr->GetDirStream();
-	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[dir];
-
-	// 流れる速度に正規化して位置を加算
-	float fSpeedFlow = pIceMgr->GetOceanLevel();
-	D3DXVec3Normalize(&vecStream, &vecStream);
-	vecStream *= fSpeedFlow;
-	Translate(vecStream);
 }
 
 //=====================================================
@@ -893,6 +883,7 @@ void CEnemy::Debug(void)
 	if (pInputKeyboard->GetTrigger(DIK_7))
 		Death();
 
+#if 0
 	pDebugProc->Print("\n敵情報==========================");
 	pDebugProc->Print("\n位置[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
 	pDebugProc->Print("\n移動量[%f,%f,%f]", GetMove().x, GetMove().y, GetMove().z);
@@ -906,6 +897,7 @@ void CEnemy::Debug(void)
 	pDebugProc->Print("\n流氷システムある[%d]", m_pLandSystemFlow != nullptr);
 
 	pDebugProc->Print("\n現在の状態[%d]", m_state);
+#endif
 
 	CIceManager *pIceMgr = CIceManager::GetInstance();
 

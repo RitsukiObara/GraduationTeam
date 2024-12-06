@@ -68,6 +68,7 @@ public:
 	bool IsOnTopAnyObject(void);	// 何かしらが乗ってる判定
 	void SetColor(D3DXCOLOR col);	// 色の設定
 	void StartFlash(void);			// 光る処理の開始
+	void MoveObjectOnIce(D3DXVECTOR3 vecMove);	// 乗ってるオブジェクトを動かす
 
 	// 変数取得・設定関数
 	void SetState(E_State state) { m_state = state; }	// 状態
@@ -88,6 +89,7 @@ public:
 	bool GetRippleFrag(COcean::E_Stream stream) { return m_abRipleFrag[stream]; }
 	void SetHeightOcean(float fValue) { m_fHeightOcean = fValue; }									// 波からの高さ
 	float GetHeightOcean(void) { return m_fHeightOcean; }
+	void GetOnTopObject(vector<CGameObject*> &rVector, float fRate = 1.0f);	// 上に乗ってるものの検出
 
 	// 静的メンバ関数
 	static CIce *Create(E_Type type = E_Type::TYPE_NORMAL, E_State state = E_State::STATE_FLOWS);	// 生成処理
@@ -98,7 +100,6 @@ private:
 	// メンバ関数
 	void FollowWave(void);								// 波に追従する処理
 	void SearchOnThis(void);							// 自身に乗ってるものの検出
-	void GetOnTopObject(vector<CGameObject*> &rVector,float fRate = 1.0f);	// 上に乗ってるものの検出
 	void Tilt(void);									// 揺れの処理
 	void Ripples(void);									// さざ波の処理
 	
@@ -163,7 +164,6 @@ private:
 	// メンバ関数
 	bool CheckFailGetIndex(CIce *pIce);	// 番号取得に失敗しているかの確認
 	void MoveToGrid(CIce *pIce);	// グリッドの位置に向かって移動する処理
-	void MoveObjectOnIce(D3DXVECTOR3 vecMove, CIce *pIce);	// 乗ってるオブジェクトを動かす
 
 	// メンバ変数
 	int m_nIdxDriftV;	// 漂着してるグリッドの縦番号
@@ -196,7 +196,7 @@ private:
 class CIceStateFlow : public CIceState
 {// 氷の流れステイト
 public:
-	CIceStateFlow() : m_bDrift(false), m_nIdxDriftV(0), m_nIdxDriftH(0) {};	// コンストラクタ
+	CIceStateFlow() : m_bDrift(false), m_nIdxDriftV(0), m_nIdxDriftH(0), m_fTimerStartMove(0.0f){};	// コンストラクタ
 	~CIceStateFlow() {};	// デストラクタ
 
 	void Init(CIce *pIce) override;	// 初期化
@@ -217,9 +217,10 @@ private:
 	bool CheckLeft(CIce *pIce, int nIdxV, int nIdxH, vector<CIce*> &rpHitIce);	// 左側の確認
 
 	// メンバー変数
-	int m_bDrift;	// 漂着しているフラグ
-	int m_nIdxDriftV;	// 漂着するグリッドの縦番号
-	int m_nIdxDriftH;	// 漂着するグリッドの横番号
+	int m_bDrift;				// 漂着しているフラグ
+	int m_nIdxDriftV;			// 漂着するグリッドの縦番号
+	int m_nIdxDriftH;			// 漂着するグリッドの横番号
+	float m_fTimerStartMove;	// 移動開始タイマー
 };
 
 class CIceStaeteSink : public CIceState
