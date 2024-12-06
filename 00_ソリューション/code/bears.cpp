@@ -781,6 +781,9 @@ void CBears::CollidePlayer(void)
 		if (it->GetState() == CPlayer::E_State::STATE_DEATH)
 			continue;
 
+		if (it->GetState() == CPlayer::E_State::STATE_BLOW)
+			continue;
+
 		D3DXVECTOR3 posPlayer = it->GetPosition();
 		D3DXVECTOR3 pos = GetPosition();
 
