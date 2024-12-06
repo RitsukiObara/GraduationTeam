@@ -252,7 +252,9 @@ void CIceHardMulti::StartJump(void)
 		pPlayer->SetMove(D3DXVECTOR3(0.0f, jump::POW, 0.0f));
 
 		// ランダムな氷の取得
-		CIce *pIce = pIceMgr->GetRandomIce();
+		CIce *pIce = nullptr;
+		while (pIce == this || pIce == nullptr)
+			pIce = pIceMgr->GetRandomIce();
 
 		// プレイヤー吹き飛ばしの開始
 		pPlayer->StartBlow(pIce);
