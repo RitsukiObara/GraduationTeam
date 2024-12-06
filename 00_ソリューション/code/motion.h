@@ -105,6 +105,7 @@ public:
 	D3DXCOLOR GetColor(void) { return m_col; }
 	void ResetAllCol(void);
 	void InitPose(int nMotion);
+	void InitEndPose(int nMotion);
 	void EnableShadow(bool bShadow) { m_bShadow = bShadow; }
 	void EnableIndependent(bool bInde) { m_bInde = bInde; }
 	bool IsIndependent(void) { return m_bInde; }

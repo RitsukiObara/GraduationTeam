@@ -391,6 +391,43 @@ void CMotion::InitPose(int nMotion)
 }
 
 //=====================================================
+// 終了時のポーズに初期化
+//=====================================================
+void CMotion::InitEndPose(int nMotion)
+{
+	// モーション番号の受け取り
+	m_motionType = nMotion;
+
+	int nKey = m_aMotionInfo[nMotion].nNumKey - 1;
+
+	for (int nCntPart = 0; nCntPart < m_nNumParts; nCntPart++)
+	{
+		m_aKeyOld[nCntPart] = m_aMotionInfo[nMotion].aKeyInfo[nKey].aKey[nCntPart];
+
+		D3DXVECTOR3 rot =
+		{
+			m_aMotionInfo[nMotion].aKeyInfo[nKey].aKey[nCntPart].fRotX,
+			m_aMotionInfo[nMotion].aKeyInfo[nKey].aKey[nCntPart].fRotY,
+			m_aMotionInfo[nMotion].aKeyInfo[nKey].aKey[nCntPart].fRotZ
+		};
+
+		D3DXVECTOR3 pos =
+		{
+			m_aMotionInfo[nMotion].aKeyInfo[nKey].aKey[nCntPart].fPosX,
+			m_aMotionInfo[nMotion].aKeyInfo[nKey].aKey[nCntPart].fPosY,
+			m_aMotionInfo[nMotion].aKeyInfo[nKey].aKey[nCntPart].fPosZ
+		};
+
+		m_apParts[nCntPart]->pParts->SetRotation(rot);
+		m_apParts[nCntPart]->pParts->SetPosition(pos);
+
+		// モーション情報を終了状態にする
+		m_nKey = nKey;
+		m_bFinish = true;
+	}
+}
+
+//=====================================================
 // 自分のマトリックスの設定
 //=====================================================
 void CMotion::CalcMatrix(void)
