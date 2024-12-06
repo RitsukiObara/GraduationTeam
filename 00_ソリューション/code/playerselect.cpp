@@ -40,17 +40,17 @@ namespace
 const float SIZE_UI_PLAYERNUMBER = 0.05f;	// プレイヤーナンバーUIのサイズ
 const float HEIGHT_UI_PLAYERNUMBER = 0.8f;	// プレイヤーナンバーUIの位置の高さ
 
-const string PATH_UI_STANDBY = "data\\TEXTURE\\UI\\standby.png";	// スタンドバイテクスチャのパス
-const string PATH_UI_READY = "data\\TEXTURE\\UI\\ready.png";	// 準備完了テクスチャのパス
-const string PATH_BANNER = "data\\MODEL\\other\\entry_banner.x";	// 看板のモデルパス
+const string PATH_UI_STANDBY = "data\\TEXTURE\\UI\\standby.png";		// スタンドバイテクスチャのパス
+const string PATH_UI_READY = "data\\TEXTURE\\UI\\ready.png";			// 準備完了テクスチャのパス
+const string PATH_BANNER = "data\\MODEL\\other\\entry_banner.x";		// 看板のモデルパス
 const string PATH_PLAYERNUM = "data\\TEXTURE\\UI\\player_Count.png";	// プレイヤー番号テクスチャパス
-const D3DXVECTOR3 BANNER_POS = D3DXVECTOR3(0.0f, 0.0f, 500.0f);	// 看板の初期の位置
-const D3DXVECTOR3 BANNER_ROT = D3DXVECTOR3(0.1f, 0.0f, 0.07f);		// 看板の初期の向き
-const float BANNER_SCALE = 6.5f;	// 看板のサイズ
-const float BANNER_COLLISION_SIZE = 20.0f;
+const D3DXVECTOR3 BANNER_POS = D3DXVECTOR3(0.0f, 0.0f, 500.0f);			// 看板の初期の位置
+const D3DXVECTOR3 BANNER_ROT = D3DXVECTOR3(0.1f, 0.0f, 0.07f);			// 看板の初期の向き
+const float BANNER_SCALE = 6.5f;										// 看板のサイズ
+const float BANNER_COLLISION_SIZE = 20.0f;								// 看板の判定のサイズ
 
 const D3DXVECTOR3 INIT_MOVE_PLAYER = D3DXVECTOR3(0.0f, 37.0f, 0.0f);	// プレイヤーの初期の移動量
-const D3DXVECTOR3 POS_PLAYER_INIT = D3DXVECTOR3(0.0f, -200.0f, 0.0f);		// プレイヤーの初期の位置
+const D3DXVECTOR3 POS_PLAYER_INIT = D3DXVECTOR3(0.0f, -200.0f, 0.0f);	// プレイヤーの初期の位置
 
 const float PLAYERNUM_SIZE = 80.0f;
 const float PLAYERNUM_POS_Y = 250.0f;

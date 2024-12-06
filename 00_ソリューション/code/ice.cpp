@@ -121,7 +121,7 @@ CIce *CIce::Create(E_Type type,E_State state)
 			pIce = new CIce;
 			break;
 		case CIce::TYPE_HARD:
-			pIce = new CIceHard;
+			pIce = new CIceHardMulti;
 			break;
 		case CIce::TYPE_HARDMULTI:
 			pIce = new CIceHardMulti;
