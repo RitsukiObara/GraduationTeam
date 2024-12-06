@@ -49,7 +49,7 @@ const D3DXVECTOR3 BANNER_ROT = D3DXVECTOR3(0.1f, 0.0f, 0.07f);		// ŠÅ”Â‚Ì‰Šú‚ÌŒ
 const float BANNER_SCALE = 6.5f;	// ŠÅ”Â‚ÌƒTƒCƒY
 const float BANNER_COLLISION_SIZE = 20.0f;
 
-const D3DXVECTOR3 INIT_MOVE_PLAYER = D3DXVECTOR3(0.0f, 30.0f, 0.0f);	// ƒvƒŒƒCƒ„[‚Ì‰Šú‚ÌˆÚ“®—Ê
+const D3DXVECTOR3 INIT_MOVE_PLAYER = D3DXVECTOR3(0.0f, 37.0f, 0.0f);	// ƒvƒŒƒCƒ„[‚Ì‰Šú‚ÌˆÚ“®—Ê
 const D3DXVECTOR3 POS_PLAYER_INIT = D3DXVECTOR3(0.0f, -200.0f, 0.0f);		// ƒvƒŒƒCƒ„[‚Ì‰Šú‚ÌˆÊ’u
 
 const float PLAYERNUM_SIZE = 80.0f;
@@ -349,8 +349,6 @@ void CPlayerSelect::GravityPlayer(void)
 
 		// ˆÚ“®—Ê‚Ì‰ÁŽZ
 		D3DXVECTOR3 move = pPlayer->GetMove();
-		move.y -= GRAVITY;
-		pPlayer->SetMove(move);
 
 		// °‚Æ‚Ì”»’è
 		D3DXVECTOR3 pos = pPlayer->GetPosition();
