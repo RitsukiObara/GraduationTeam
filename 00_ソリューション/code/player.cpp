@@ -707,17 +707,6 @@ bool CPlayer::CheckGridChange(void)
 	int nIdxV = -1;
 	int nIdxH = -1;
 
-	if (pIceMgr->GetIdxGridFromPosition(GetPosition(), &nIdxV, &nIdxH))
-	{
-		if (pIceMgr->GetGridIce(&nIdxV, &nIdxH) == nullptr)
-		{// 氷が無ければ漂流開始
-			// 漂流を開始
-			StartFlows();
-
-			return false;
-		}
-	}
-
 	// グリッド番号の取得
 	D3DXVECTOR3 posNext = GetPosition() + GetMove();
 	if (!pIceMgr->GetIdxGridFromPosition(posNext, &nIdxV, &nIdxH, RATE_CHANGE_GRID))
@@ -822,16 +811,6 @@ void CPlayer::StayFlow(void)
 
 		return;
 	}
-
-	// 海流のベクトル取得
-	COcean::E_Stream dir = pIceMgr->GetDirStream();
-	D3DXVECTOR3 vecStream = stream::VECTOR_STREAM[dir];
-
-	// 流れる速度に正規化して位置を加算
-	float fSpeedFlow = pIceMgr->GetOceanLevel();
-	D3DXVec3Normalize(&vecStream, &vecStream);
-	vecStream *= fSpeedFlow;
-	Translate(vecStream);
 
 	// 流氷内に位置を制限
 	LimitInSideFlowIce();
@@ -948,7 +927,7 @@ void CPlayer::InputPeck(void)
 
 		if (m_pPeckLine != nullptr)
 		{
-			if (pIcePeck != nullptr)
+			if (pIcePeck != nullptr && m_state == E_State::STATE_NORMAL)
 			{
 				D3DXVECTOR3 posIce = pIcePeck->GetPosition();
 
@@ -1000,6 +979,9 @@ bool CPlayer::Peck(void)
 
 	if(bResultBreak)	// 破壊時のコントローラー振動
 		VibJoypad(POW_VIB_BREAK, TIME_VIB_BREAK);
+
+	// プレイヤーが漂流するかの確認
+	CheckStartDriftAll();
 
 	return bResultBreak;
 }
@@ -1528,5 +1510,30 @@ void CPlayer::BindInputAllPlayer(void)
 			continue;
 
 		s_apPlayer[i]->BindInputMgr(pInputMgr);
+	}
+}
+
+//=====================================================
+// 全プレイヤーの漂流開始チェック
+//=====================================================
+void CPlayer::CheckStartDriftAll(void)
+{
+	CIceManager* pIceMgr = CIceManager::GetInstance();
+	if (pIceMgr == nullptr)
+		return;
+
+	for (CPlayer *pPlayer : s_apPlayer)
+	{
+		int nIdxV = -1;
+		int nIdxH = -1;
+
+		if (!pIceMgr->GetIdxGridFromPosition(pPlayer->GetPosition(), &nIdxV, &nIdxH))
+			continue;
+
+		if (pIceMgr->GetGridIce(&nIdxV, &nIdxH) != nullptr)
+			continue;
+
+		// 氷が無ければ漂流開始
+		pPlayer->StartFlows();
 	}
 }
