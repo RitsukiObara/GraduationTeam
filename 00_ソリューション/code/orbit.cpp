@@ -13,11 +13,17 @@
 #include "manager.h"
 #include "renderer.h"
 #include "texture.h"
+#include "debugproc.h"
 
 //******************************************
 // マクロ定義
 //******************************************
 #define DELETE_LENGTH	(4.0f)	// 削除する長さ
+
+//******************************************
+// 静的メンバ変数宣言
+//******************************************
+int COrbit::s_nNumAll = 0;
 
 //==========================================
 // コンストラクタ
@@ -34,6 +40,8 @@ COrbit::COrbit(int nPriority) : CObject(nPriority)
 	m_nID = -1;
 	m_pVtxBuff = nullptr;
 	m_bEnd = false;
+
+	s_nNumAll++;
 }
 
 //==========================================
@@ -41,7 +49,7 @@ COrbit::COrbit(int nPriority) : CObject(nPriority)
 //==========================================
 COrbit::~COrbit()
 {
-
+	s_nNumAll--;
 }
 
 //==========================================
@@ -174,7 +182,7 @@ void COrbit::UpdatePolygon(void)
 	{// 切り離しからの自動削除
 		D3DXVECTOR3 vecDiff;
 
-		vecDiff = pVtx[0].pos - pVtx[m_nNumEdge * NUM_OFFSET - 1].pos;
+		vecDiff = pVtx[0].pos - pVtx[m_nNumEdge * NUM_OFFSET - 2].pos;
 
 		float fLength = D3DXVec3Length(&vecDiff);
 
@@ -263,6 +271,8 @@ void COrbit::Draw()
 
 	// ライティング有効化
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+
+	CDebugProc::GetInstance()->Print("\nいるよ");
 }
 
 //==========================================

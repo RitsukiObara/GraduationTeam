@@ -18,6 +18,8 @@
 #include "UI_combo.h"
 #include "game.h"
 #include "fade.h"
+#include "camera.h"
+#include "cameraState.h"
 
 //*****************************************************
 // 定数定義
@@ -59,6 +61,9 @@ HRESULT CGameManagerSingle::Init(void)
 
 	if (pGame != nullptr)
 		pGame->CreateScore();
+
+	// カメラのステイト設定
+	Camera::ChangeState(new CFollowPlayer);
 
 	// 基底クラスの初期化
 	CGameManager::Init();

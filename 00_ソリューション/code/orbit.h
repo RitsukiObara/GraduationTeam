@@ -63,6 +63,9 @@ private:
 	int m_nNumEdge;	//•Ó‚Ì”
 	int m_nID;	// ”Ô†
 	bool m_bEnd;	// I—¹‚µ‚Ä‚é‚©‚Ç‚¤‚©
+
+	// Ã“Iƒƒ“ƒo•Ï”
+	static int s_nNumAll;	// ‘”
 };
 
 #endif

@@ -13,6 +13,8 @@
 #include "player.h"
 #include "UIplayer.h"
 #include "fade.h"
+#include "camera.h"
+#include "cameraState.h"
 
 //*****************************************************
 // 定数定義
@@ -34,6 +36,9 @@ CGameManagerMulti::CGameManagerMulti() : m_nNumDeathPlayer(0)
 //=====================================================
 HRESULT CGameManagerMulti::Init(void)
 {
+	// カメラのステイト設定
+	Camera::ChangeState(new CMultiGame);
+
 	// 基底クラスの初期化
 	CGameManager::Init();
 

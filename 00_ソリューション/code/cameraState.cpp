@@ -30,8 +30,10 @@ const float FACT_CORRECT_CONTOROLLL = 0.9f;	// 操作時の位置補正係数
 
 const float LENGTH_FOLLOW = 412.0f;	// 追従時のカメラ距離
 const float ANGLE_FOLLOW = 0.73f;	// 追従時のカメラ角度
-const D3DXVECTOR3 POSR_GAME = { 0.0f,0.0f,-200.0f };	// ゲーム中の注視点位置
-const D3DXVECTOR3 POSV_GAME = { 0.0f,1544.0f,-681.0f };	// ゲーム中の視点位置
+const D3DXVECTOR3 POSR_GAME = { 0.0f,0.0f,-200.0f };		// ゲーム中の注視点位置
+const D3DXVECTOR3 POSV_GAME = { 0.0f,1544.0f,-681.0f };		// ゲーム中の視点位置
+const D3DXVECTOR3 POSR_MULTI = { -80.0f,0.0f,-330.0f };		// マルチ中の注視点位置
+const D3DXVECTOR3 POSV_MULTI = { -80.0f,1670.0f,-1170.0f };	// マルチ中の視点位置
 
 const D3DXVECTOR3 POSR_DEFAULT_SELECTSTAGE = { 0.0f,0.0f,-400.0f };	// ステージセレクト中のデフォルト注視点位置
 const D3DXVECTOR3 POSV_DEFAULT_SELECTSTAGE = { 0.0f,2244.0f,-2001.0f };	// ステージセレクト中のデフォルト視点位置
@@ -72,6 +74,31 @@ void CFollowPlayer::Update(CCamera *pCamera)
 
 	pInfoCamera->posR = POSR_GAME;
 	pInfoCamera->posV = POSV_GAME;
+}
+
+//***********************************************************************************
+// プレイヤーの追従
+//***********************************************************************************
+//=====================================================
+// コンストラクタ
+//=====================================================
+CMultiGame::CMultiGame()
+{
+
+}
+
+//=====================================================
+// 更新
+//=====================================================
+void CMultiGame::Update(CCamera* pCamera)
+{
+	if (pCamera == nullptr)
+		return;
+
+	CCamera::Camera* pInfoCamera = pCamera->GetCamera();
+
+	pInfoCamera->posR = POSR_MULTI;
+	pInfoCamera->posV = POSV_MULTI;
 }
 
 //=====================================================

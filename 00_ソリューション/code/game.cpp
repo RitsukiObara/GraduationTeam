@@ -219,7 +219,10 @@ void CGame::UpdateCamera(void)
 void CGame::ManageState(void)
 {
 	CFade *pFade = CFade::GetInstance();
-	m_nTimerCnt++;
+
+	// ポーズ中の時タイマーを加算する
+	if (m_pPause == nullptr)
+		m_nTimerCnt++;
 
 	switch (m_state)
 	{

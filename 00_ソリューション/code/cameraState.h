@@ -42,6 +42,18 @@ private:
 	bool m_bDebug;
 };
 
+// マルチモード
+class CMultiGame : public CCameraState
+{
+public:
+	CMultiGame();
+	void Init(CCamera* pCamera) {};
+	void Update(CCamera* pCamera) override;
+
+private:
+
+};
+
 // 操作
 class CMoveControl : public CCameraState
 {

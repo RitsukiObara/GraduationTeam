@@ -17,6 +17,7 @@
 #include "MyEffekseer.h"
 #include "motion.h"
 #include "seals.h"
+#include "particle.h"
 
 //*****************************************************
 // 定数定義
@@ -35,7 +36,7 @@ const float POW_VIB_BLOW = 1.0f;	// 吹き飛ばしの振動強さ
 const int TIME_VIB_BLOW = 60;		// 吹き飛ばしの振動時間
 
 const string PATH_SEAL = "data\\MOTION\\motionSeals.txt";	// アザラシのパス
-const float HEIGHT_SEAL = -110.0f;							// アザラシの高さ
+const float HEIGHT_SEAL = -50.0f;							// アザラシの高さ
 
 //--------------------------------
 // ジャンプの定数
@@ -43,7 +44,7 @@ const float HEIGHT_SEAL = -110.0f;							// アザラシの高さ
 namespace jump
 {
 const float POW = 30.0f;		// ジャンプ力
-const float HEIGHT = 300.0f;	// 高さ
+const float HEIGHT = 500.0f;	// 高さ
 const float TIME = 1.0f;		// 時間
 }
 }
@@ -83,7 +84,8 @@ HRESULT CIceHardMulti::Init(void)
 
 	if (m_pSeal != nullptr)
 	{
-		m_pSeal->SetMotion(CSeals::E_Motion::MOTION_BLOW);
+		// ポーズ初期化
+		m_pSeal->InitEndPose(CSeals::E_Motion::MOTION_BLOW);
 	}
 
 	return S_OK;
@@ -250,7 +252,9 @@ void CIceHardMulti::StartJump(void)
 		pPlayer->SetMove(D3DXVECTOR3(0.0f, jump::POW, 0.0f));
 
 		// ランダムな氷の取得
-		CIce *pIce = pIceMgr->GetRandomIce();
+		CIce *pIce = nullptr;
+		while (pIce == this || pIce == nullptr)
+			pIce = pIceMgr->GetRandomIce();
 
 		// プレイヤー吹き飛ばしの開始
 		pPlayer->StartBlow(pIce);
@@ -267,6 +271,9 @@ void CIceHardMulti::StartJump(void)
 	// アザラシのモーション設定
 	if (m_pSeal != nullptr)
 		m_pSeal->SetMotion(CSeals::E_Motion::MOTION_BLOW);
+
+	// パーティクルの発生
+	MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_DROP, GetPosition());
 }
 
 //=====================================================
