@@ -13,8 +13,6 @@
 #include "timer.h"
 #include "ocean.h"
 #include "BG_Ice.h"
-#include "camera.h"
-#include "cameraState.h"
 #include "iceManager.h"
 #include "UI_ready.h"
 #include "ocean_flow_UI.h"
@@ -86,9 +84,6 @@ HRESULT CGameManager::Init(void)
 	//ゲームスタート告知UI
 	CUIready::Create();
 #endif
-
-	// カメラのステイト設定
-	Camera::ChangeState(new CFollowPlayer);
 
 	// 矢印モデルの生成
 	COceanFlowUI::Create();
