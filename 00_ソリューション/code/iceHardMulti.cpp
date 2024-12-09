@@ -253,7 +253,8 @@ void CIceHardMulti::StartJump(void)
 
 		// ランダムな氷の取得
 		CIce *pIce = nullptr;
-		while (pIce == this || pIce == nullptr)
+
+		while (pIce == nullptr)
 			pIce = pIceMgr->GetRandomIce();
 
 		// プレイヤー吹き飛ばしの開始

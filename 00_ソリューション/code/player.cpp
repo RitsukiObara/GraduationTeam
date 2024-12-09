@@ -1177,6 +1177,9 @@ void CPlayer::JumpToDest(CIce *pIceDest, float fHeightJump)
 	// •ú•¨ü‚ÌŒvZ
 	float fHeight = universal::ParabolaY(fRate - 0.5f, 10.0f);
 
+	if (std::isnan(fHeight))
+		fHeight = 0;	// ‚Ü‚Á‚½‚­“¯‚¶êŠ‚É”ò‚Î‚³‚ê‚½‚Æ‚«‚Ì–h~
+
 	// •ú•¨ü‚Ì•â³
 	fHeight *= -fHeightJump;
 	fHeight += fHeightJump * 2;
