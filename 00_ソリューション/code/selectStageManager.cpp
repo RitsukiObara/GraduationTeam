@@ -97,9 +97,6 @@ HRESULT CSelectStageManager::Init(void)
 	// スカイボックスの生成
 	CSkybox::Create();
 
-	// カメラのステイト設定
-	Camera::ChangeState(new CCameraStateSelectStage);
-
 	// ステージ選択看板設置
 	CObjectX* pBanner = CObjectX::Create(BANNER_POS);
 	if (pBanner != nullptr)
@@ -123,6 +120,9 @@ HRESULT CSelectStageManager::Init(void)
 
 	// ペンギンの生成
 	m_pPenguin = CSelectStagePenguin::Create();
+
+	// カメラのステイト設定
+	Camera::ChangeState(new CCameraStateSelectStage(m_pPenguin));
 
 	// 海の生成
 	COcean::Create();
@@ -402,6 +402,17 @@ void CSelectStageManager::Scaling(S_InfoStage *pInfoStage)
 	fScale += (fScaleDest - fScale) * SPEED_SCALING_STAGE;
 
 	pModel->SetScale(fScale);
+
+	// 名前の位置設定
+	if (pInfoStage->pName == nullptr)
+		return;
+
+	D3DXVECTOR3 posScreen;
+	universal::IsInScreen(pInfoStage->pos, &posScreen);
+	universal::ConvertScreenRate(posScreen);
+
+	pInfoStage->pName->SetPosition(D3DXVECTOR3(posScreen.x, posScreen.y - HEIGHT_NUMBER, 0.0f));
+	pInfoStage->pName->SetVtx();
 }
 
 //=====================================================

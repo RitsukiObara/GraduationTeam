@@ -18,6 +18,7 @@
 #include "title.h"
 #include "resultSingle.h"
 #include "player.h"
+#include "selectStagePenguin.h"
 
 //*****************************************************
 // 定数定義
@@ -48,6 +49,12 @@ namespace resultSingle
 {
 const D3DXVECTOR3 POS_OFFSET = { 0.0f,100.0f,-500.0f };	// 目標地点のオフセット
 const float SPEED_POSR = 0.1f;	// 注視点の速度
+}
+
+namespace selectStage
+{
+const D3DXVECTOR3 OFFSET = { 0.0f,2250.0f,-2000.0f };	// オフセット
+const float FACT_MOVE = 0.6f;							// 移動係数
 }
 }
 
@@ -228,7 +235,18 @@ void CCameraStateSelectStage::Init(CCamera* pCamera)
 //=====================================================
 void CCameraStateSelectStage::Update(CCamera* pCamera)
 {
+	// カメラの追従
+	D3DXVECTOR3 posPenguin = m_pPenguin->GetPosition();
 
+	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+
+	pInfoCamera->posRDest = posPenguin;
+	pInfoCamera->posRDest.y = 0.0f;
+	pInfoCamera->posVDest = posPenguin + selectStage::OFFSET;
+
+	pCamera->MoveDist(selectStage::FACT_MOVE);
+
+	pInfoCamera->posV.y = selectStage::OFFSET.y;
 }
 
 //**************************************************************************
