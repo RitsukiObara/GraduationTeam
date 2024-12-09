@@ -214,6 +214,9 @@ void CEnemy::Uninit(void)
 //=====================================================
 void CEnemy::Update(void)
 {
+	// ˆÀ‘S‚È•X‚ð’T‚·ˆ—
+	SarchSafeIce();
+
 	CMotion::Update();
 
 	if(m_bFollowIce)
@@ -249,6 +252,28 @@ void CEnemy::Update(void)
 #ifdef _DEBUG
 	Debug();
 #endif
+}
+
+//=====================================================
+// ˆÀ‘S‚È•X‚ð’T‚·
+//=====================================================
+void CEnemy::SarchSafeIce(void)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+	if (pIceMgr == nullptr)
+		return;
+
+	CIce *pIce = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
+
+	D3DXVECTOR3 pos = GetPosition();
+	if (pIce == nullptr)
+	{
+		pIceMgr->GetNearestIce(pos, &m_nGridV, &m_nGridH);
+		return;
+	}
+
+	if(pIce->IsPeck())
+		pIceMgr->GetNearestIce(pos, &m_nGridV, &m_nGridH);
 }
 
 //=====================================================
