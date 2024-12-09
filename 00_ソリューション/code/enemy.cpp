@@ -883,20 +883,13 @@ void CEnemy::Debug(void)
 	if (pInputKeyboard->GetTrigger(DIK_7))
 		Death();
 
-#if 0
+#if 1
 	pDebugProc->Print("\n敵情報==========================");
 	pDebugProc->Print("\n位置[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
-	pDebugProc->Print("\n移動量[%f,%f,%f]", GetMove().x, GetMove().y, GetMove().z);
 	pDebugProc->Print("\n現在グリッド[%d,%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\n次のグリッド[%d,%d]", m_nGridVNext, m_nGridHNext);
-	pDebugProc->Print("\n目標グリッド[%d,%d]", m_nGridVDest, m_nGridHDest);
 
-	pDebugProc->Print("\n今の向き目標の向き[%f,%f]", GetRotation().y, m_fRotTurn);
-	pDebugProc->Print("\n振り向き[%d]", m_bTurn);
-
-	pDebugProc->Print("\n流氷システムある[%d]", m_pLandSystemFlow != nullptr);
-
-	pDebugProc->Print("\n現在の状態[%d]", m_state);
+	//pDebugProc->Print("\n現在の状態[%d]", m_state);
 #endif
 
 	CIceManager *pIceMgr = CIceManager::GetInstance();

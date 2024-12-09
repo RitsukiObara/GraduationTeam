@@ -1451,12 +1451,21 @@ void CPlayer::Debug(void)
 	if (pDebugProc == nullptr || pInputKeyboard == nullptr || pJoypad == nullptr || pInputMgr == nullptr || m_pShadow == nullptr)
 		return;
 
-#if 1
+#if 0
 	pDebugProc->Print("\nƒvƒŒƒCƒ„[î•ñ==========================");
 	pDebugProc->Print("\nc[%d]‰¡[%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\nˆÊ’u[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
 	pDebugProc->Print("\nˆÚ“®—Ê[%f,%f,%f]", GetMove().x, GetMove().y, GetMove().z);
 	pDebugProc->Print("\nó‘Ô[%d]", GetState());
+
+	if (m_state == STATE_INVINCIBLE)
+	{
+		pDebugProc->Print("\n<<–³“G’†(*eƒÖe *)iF8‚Å’Êíj>>");
+	}
+	else
+	{
+		pDebugProc->Print("\n<<’Êí(-_-)zzziF8‚Å–³“Gj>>");
+	}
 #endif
 
 	if (pInputMgr->GetTrigger(CInputManager::BUTTON_SETICE))
@@ -1493,14 +1502,6 @@ void CPlayer::Debug(void)
 	if (pInputKeyboard->GetTrigger(DIK_F8))
 	{// –³“GØ‚è‘Ö‚¦
 		m_state = (m_state == STATE_INVINCIBLE) ? STATE_NORMAL : STATE_INVINCIBLE;
-	}
-	if (m_state == STATE_INVINCIBLE)
-	{
-		pDebugProc->Print("\n<<–³“G’†(*eƒÖe *)iF8‚Å’Êíj>>");
-	}
-	else
-	{
-		pDebugProc->Print("\n<<’Êí(-_-)zzziF8‚Å–³“Gj>>");
 	}
 
 	CIceManager *pIceMgr = CIceManager::GetInstance();
