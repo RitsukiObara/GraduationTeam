@@ -58,14 +58,12 @@ CFlowIce::~CFlowIce()
 //=====================================================
 CFlowIce *CFlowIce::Create(void)
 {
-	CFlowIce* pFlowice = nullptr;
+	CFlowIce *pFlowice = nullptr;
 
 	pFlowice = new CFlowIce;
 
-	if (pFlowice == nullptr)
-		return nullptr;
-
-	pFlowice->Init();
+	if (pFlowice != nullptr)
+		pFlowice->Init();
 
 	return pFlowice;
 }
@@ -111,6 +109,9 @@ void CFlowIce::Update(void)
 {
 	// ‚Ç‚ê‚©‚Ì•X‚ªŽ~‚Ü‚Á‚Ä‚¢‚È‚¢‚©‚Ìƒ`ƒFƒbƒN
 	CheckSomeIceStop();
+
+	// ‘¼‚Ì—¬•X‚Æ‚Ì”»’è
+	CollideOtherFlowIce();
 
 	if (!m_bInScrnAllIce)
 		CheckInAllIce();	// ‘S‚Ä‚Ì•X‚ª‰f‚Á‚½‚©‚Ì”»’è
@@ -160,6 +161,14 @@ void CFlowIce::CheckSomeIceStop(void)
 			break;
 		}
 	}
+}
+
+//=====================================================
+// ‘¼‚Ì—¬•X‚Æ‚Ì”»’è
+//=====================================================
+void CFlowIce::CollideOtherFlowIce(void)
+{
+	
 }
 
 //=====================================================

@@ -44,11 +44,12 @@ private:
 	// メンバ関数
 	void CheckInAllIce(void);		// 全ての氷が画面に入ったかのチェック
 	void CheckSomeIceStop(void);	// どれかの氷が止まっていないかのチェック
-	void StopAllIce(void);	// 全ての氷を止める
-	void StopOnTopObject(void);	// 上にあるオブジェクトを止める
-	void DeleteAllIce(void);	// 全氷の削除
-	void CheckDelete(void);	// 削除確認
-	void Debug(void);	// デバッグ処理
+	void CollideOtherFlowIce(void);	// 他の流氷との判定
+	void StopAllIce(void);			// 全ての氷を止める
+	void StopOnTopObject(void);		// 上にあるオブジェクトを止める
+	void DeleteAllIce(void);		// 全氷の削除
+	void CheckDelete(void);			// 削除確認
+	void Debug(void);				// デバッグ処理
 
 	// メンバ変数
 	vector<CIce*> m_apIce;	// 氷の配列

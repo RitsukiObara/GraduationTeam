@@ -25,6 +25,7 @@
 #include "enemy.h"
 #include "player.h"
 #include "MyEffekseer.h"
+#include "collision.h"
 #include "debugproc.h"
 
 //*****************************************************
@@ -53,6 +54,7 @@ const float LINE_STOP_ICE = 1.0f;	// 氷が止まるしきい値
 
 const float TIME_MAXSPEED = 10.0f;	// 最大速度になるまでの時間
 
+const float RATE_COLLISION = 0.5f;	// 判定の割合
 //------------------------------
 // 傾きの定数
 //------------------------------
@@ -94,7 +96,8 @@ std::vector<CIce*> CIce::s_Vector = {};	// 自身のポインタ
 // コンストラクタ
 //=====================================================
 CIce::CIce(int nPriority) : CObject3D(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false), m_bPeck(false),
-m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false), m_bStop(nullptr), m_abRipleFrag(), m_nCntAnimFlash(0), m_rotDest(), m_fHeightOcean(0.0f)
+m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false), m_bStop(nullptr), m_abRipleFrag(), m_nCntAnimFlash(0), m_rotDest(), m_fHeightOcean(0.0f),
+m_pCollision(nullptr)
 {
 	s_nNumAll++;
 	s_Vector.push_back(this);
@@ -208,12 +211,41 @@ void CIce::DeleteMesh(void)
 }
 
 //=====================================================
+// 判定の生成
+//=====================================================
+void CIce::CreateCollision(void)
+{
+	if (m_pCollision != nullptr)
+		return;
+
+	m_pCollision = CCollisionSphere::Create(CCollision::TAG_BLOCK, CCollision::TYPE::TYPE_SPHERE, this);
+
+	if (m_pCollision == nullptr)
+		return;
+
+	// 判定初期設定
+	m_pCollision->SetRadius(RATE_COLLISION * SIZE_INIT);
+	m_pCollision->SetPosition(GetPosition());
+}
+
+//=====================================================
+// 判定の破棄
+//=====================================================
+void CIce::DeleteCollision(void)
+{
+	Object::DeleteObject((CObject**)&m_pCollision);
+}
+
+//=====================================================
 // 終了処理
 //=====================================================
 void CIce::Uninit(void)
 {
 	// メッシュの削除
 	DeleteMesh();
+
+	// 判定削除
+	DeleteCollision();
 
 	for (auto itr = s_Vector.begin(); itr < s_Vector.end(); itr++)
 	{
@@ -496,6 +528,14 @@ void CIce::FollowMesh(void)
 }
 
 //=====================================================
+// 判定の追従
+//=====================================================
+void CIce::FollowCollision(void)
+{
+
+}
+
+//=====================================================
 // 光る処理の開始
 //=====================================================
 void CIce::StartFlash(void)
@@ -642,6 +682,28 @@ void CIce::ChangeState(CIceState *pState)
 
 	if (m_pState != nullptr)
 		m_pState->Init(this);
+}
+
+//=====================================================
+// 流れ始めのタイマーセット
+//=====================================================
+void CIce::SetTimerStartMove(float fTime)
+{
+	if (m_pState != nullptr)
+		m_pState->SetTimerStartMove(fTime);
+}
+
+//=====================================================
+// 流れ始めのタイマー取得
+//=====================================================
+float CIce::GetTimerStartMove(void)
+{
+	float fTime = 0.0f;
+
+	if (m_pState != nullptr)
+		fTime = m_pState->GetTimerStartMove();
+
+	return fTime;
 }
 
 //*******************************************************************************
@@ -898,6 +960,9 @@ void CIceStateFlow::Update(CIce *pIce)
 		UpdateSearchIce(pIce);	// 氷を探している時の更新
 	else
 		UpdateDriftIce(pIce);	// 漂着してるときの更新
+
+	// 他の流氷との判定
+	CollideOtherFlow(pIce);
 }
 
 //=====================================================
@@ -968,9 +1033,7 @@ void CIceStateFlow::UpdateDriftIce(CIce *pIce)
 #endif
 
 	if (bStop)
-	{
 		return;
-	}
 }
 
 //=====================================================
@@ -1163,6 +1226,38 @@ bool CIceStateFlow::CheckLeft(CIce *pIce, int nIdxV, int nIdxH, vector<CIce*> &r
 	}
 
 	return bDrift;
+}
+
+//=====================================================
+// 他の流氷との判定
+//=====================================================
+void CIceStateFlow::CollideOtherFlow(CIce *pIceOwn)
+{
+	vector<CIce*> apIce = CIce::GetInstance();
+
+	// 止まってる氷を除外
+	//universal::RemoveIfFromVector(apIce, [](CIce* ice) { return ice != nullptr && ice->IsStop(); });
+
+	D3DXVECTOR3 pos = pIceOwn->GetPosition();
+
+	for (CIce *pIce : apIce)
+	{
+		D3DXVECTOR3 posTarget = pIce->GetPosition();
+
+		if (universal::DistCmpFlat(pos, posTarget, SIZE_INIT * RATE_COLLISION, nullptr))
+		{// 一定距離まで近づいていたらその速度の中間の値にする
+			float fTimeTarget = pIce->GetTimerStartMove();
+			float fTime = pIceOwn->GetTimerStartMove();
+
+			if (fTimeTarget > fTime)
+				int n = 0;
+
+			fTime += (fTimeTarget - fTime) * 0.5f;
+
+			pIce->SetTimerStartMove(fTime);
+			pIceOwn->SetTimerStartMove(fTime);
+		}
+	}
 }
 
 //*******************************************************************************

@@ -20,6 +20,7 @@ class CMeshCylinder;
 class CFan3D;
 class CIceState;
 class CObjectX;
+class CCollisionSphere;
 
 //*****************************************************
 // クラスの定義
@@ -69,6 +70,8 @@ public:
 	void SetColor(D3DXCOLOR col);	// 色の設定
 	void StartFlash(void);			// 光る処理の開始
 	void MoveObjectOnIce(D3DXVECTOR3 vecMove);	// 乗ってるオブジェクトを動かす
+	void CreateCollision(void);	// 判定の生成
+	void DeleteCollision(void);	// 判定の破棄
 
 	// 変数取得・設定関数
 	void SetState(E_State state) { m_state = state; }	// 状態
@@ -90,6 +93,8 @@ public:
 	void SetHeightOcean(float fValue) { m_fHeightOcean = fValue; }									// 波からの高さ
 	float GetHeightOcean(void) { return m_fHeightOcean; }
 	void GetOnTopObject(vector<CGameObject*> &rVector, float fRate = 1.0f);	// 上に乗ってるものの検出
+	void SetTimerStartMove(float fTime);									// 流れ始めタイマー設定
+	float GetTimerStartMove(void);
 
 	// 静的メンバ関数
 	static CIce *Create(E_Type type = E_Type::TYPE_NORMAL, E_State state = E_State::STATE_FLOWS);	// 生成処理
@@ -102,9 +107,10 @@ private:
 	void SearchOnThis(void);							// 自身に乗ってるものの検出
 	void Tilt(void);									// 揺れの処理
 	void Ripples(void);									// さざ波の処理
-	
-	void FollowMesh(void);	// メッシュの追従
-	void Flash(void);		// きらりと光る処理
+
+	void FollowMesh(void);		// メッシュの追従
+	void FollowCollision(void);	// 判定の追従
+	void Flash(void);			// きらりと光る処理
 
 	// メンバ変数
 	E_State m_state;		// 状態
@@ -117,8 +123,9 @@ private:
 
 	D3DXVECTOR3 m_rotDest;	// 目標の向き
 
-	CFan3D *m_pUp;			// 上側に貼る扇ポリゴン
-	CMeshCylinder *m_pSide;	// サイドのシリンダー
+	CFan3D *m_pUp;					// 上側に貼る扇ポリゴン
+	CMeshCylinder *m_pSide;			// サイドのシリンダー
+	CCollisionSphere *m_pCollision;	// 当たり判定
 
 	CIceState *m_pState;	// ステイトのポインタ
 
@@ -142,9 +149,12 @@ public:
 	CIceState() {};	// コンストラクタ
 	~CIceState() {};	// デストラクタ
 
-	virtual void Init(CIce *pIce) = 0;	// 初期化
+	virtual void Init(CIce *pIce) = 0;		// 初期化
 	virtual void Uninit(CIce *pIce) = 0;	// 終了
 	virtual void Update(CIce *pIce) = 0;	// 更新
+
+	virtual void SetTimerStartMove(float fTime) {};	// 動き始めのタイマー
+	virtual float GetTimerStartMove(void) { return 0.0f; }
 
 private:
 };
@@ -202,6 +212,8 @@ public:
 	void Init(CIce *pIce) override;	// 初期化
 	void Uninit(CIce *pIce) override;	// 終了
 	void Update(CIce *pIce) override;	// 更新
+	void SetTimerStartMove(float fTime) override { m_fTimerStartMove = fTime; }	// 流れ始めタイマー設定
+	float GetTimerStartMove(void) override { return m_fTimerStartMove; }
 
 private:
 	// 関数ポインタ型の定義
@@ -215,6 +227,7 @@ private:
 	bool CheckRight(CIce *pIce, int nIdxV, int nIdxH, vector<CIce*> &rpHitIce);	// 右側の確認
 	bool CheckDown(CIce *pIce, int nIdxV, int nIdxH, vector<CIce*> &rpHitIce);	// 下方向の確認
 	bool CheckLeft(CIce *pIce, int nIdxV, int nIdxH, vector<CIce*> &rpHitIce);	// 左側の確認
+	void CollideOtherFlow(CIce *pIce);	// 他の流氷との判定
 
 	// メンバー変数
 	int m_bDrift;				// 漂着しているフラグ

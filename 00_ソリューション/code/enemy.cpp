@@ -214,13 +214,7 @@ void CEnemy::Uninit(void)
 //=====================================================
 void CEnemy::Update(void)
 {
-	// ˆÀ‘S‚È•X‚ğ’T‚·ˆ—
-	SarchSafeIce();
-
 	CMotion::Update();
-
-	if(m_bFollowIce)
-		FollowIce();	// •X‚É’Ç]
 
 	// ó‘Ô‚É‰‚¶‚½XV
 	UpdateState updateFuncs[CEnemy::E_State::STATE_MAX] =
@@ -235,6 +229,12 @@ void CEnemy::Update(void)
 
 	if (updateFuncs[m_state] != nullptr)
 		(this->*updateFuncs[m_state])();
+
+	// ˆÀ‘S‚È•X‚ğ’T‚·ˆ—
+	SarchSafeIce();
+
+	if (m_bFollowIce)
+		FollowIce();	// •X‚É’Ç]
 
 	// ˆÚ“®—Ê‚ğˆÊ’u‚É‰ÁZ
 	Translate(m_move);
@@ -259,6 +259,9 @@ void CEnemy::Update(void)
 //=====================================================
 void CEnemy::SarchSafeIce(void)
 {
+	if (m_state == E_State::STATE_APPER)
+		return;
+
 	CIceManager *pIceMgr = CIceManager::GetInstance();
 	if (pIceMgr == nullptr)
 		return;
