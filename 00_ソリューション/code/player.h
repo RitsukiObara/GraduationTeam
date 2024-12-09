@@ -21,6 +21,7 @@ class CInputManager;
 class CFlowIce;
 class CPeckLine;
 class CShadow;
+class CUI;
 
 //*****************************************************
 // クラスの定義
@@ -76,6 +77,7 @@ public:
 	virtual bool Peck(void);					// 突っつく処理
 	void VibJoypad(float fPow, int nFrame);		// ジョイパッドを振動させる
 	void StartBlow(CIce *pIce);					// 吹き飛びの開始
+	void ShowNumber(void);						// 番号の表示
 
 	// 取得・設定
 	void SetMove(D3DXVECTOR3 move) { m_move = move; }				// 移動量
@@ -121,6 +123,7 @@ private:
 
 	void JudgeNoIce(void);	// 氷がない判定
 	void FollowIce(void);	// 氷に追従
+	void FollowUI(void);	// UIの追従
 	void Input(void);		// 入力
 	
 	void MoveAnalog(void);		// アナログ移動
@@ -192,6 +195,7 @@ private:
 
 	int m_nID;					// 番号
 	CInputManager *m_pInputMgr;	// 入力マネージャー
+	CUI *m_pUI;					// UIのポインタ
 
 	// 静的メンバ変数
 	static vector<CPlayer*> s_apPlayer;	// 格納用の配列

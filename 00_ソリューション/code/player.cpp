@@ -65,6 +65,10 @@ const int TIME_VIB_FLOW = 10;		// 流されてる時の振動時間
 
 const float GRAVITY = 0.98f;	// 重力
 
+const float HEIGHT_UI = 0.1f;	// UIの高さ
+const D3DXVECTOR2 SIZE_UI = { 0.03f,0.06f };								// UIのサイズ
+const string PATH_PLAYERNUM = "data\\TEXTURE\\UI\\player_Count.png";	// プレイヤー番号テクスチャパス
+
 //-------------------------------
 // ジャンプの定数
 //-------------------------------
@@ -106,7 +110,7 @@ vector<CPlayer*> CPlayer::s_apPlayer;	// 格納用の配列
 //=====================================================
 CPlayer::CPlayer(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(STATE_NONE), m_pIceMoveDest(nullptr), m_bEnableInput(false), m_fTimerStartMove(0.0f),
 m_fragMotion(), m_bTurn(false), m_fRotTurn(0.0f), m_pLandSystemFlow(nullptr), m_pLandFlow(nullptr), m_nTimePeck(0), m_nID(0), m_pPeckLine(nullptr),
-m_bEnableJump(false), m_pIceDestJump(nullptr), m_posInitJump(), m_pShadow(nullptr)
+m_bEnableJump(false), m_pIceDestJump(nullptr), m_posInitJump(), m_pShadow(nullptr), m_pUI(nullptr)
 {
 	// デフォルトは入った順の番号
 	m_nID = (int)s_apPlayer.size();
@@ -277,6 +281,9 @@ void CPlayer::Update(void)
 
 	// 氷の追従
 	FollowIce();
+
+	// UIの追従
+	FollowUI();
 
 	// モーションの管理
 	ManageMotion();
@@ -1287,6 +1294,28 @@ void CPlayer::FollowDirUI(void)
 }
 
 //=====================================================
+// 数字の表示
+//=====================================================
+void CPlayer::ShowNumber(void)
+{
+	// UIの生成
+	m_pUI = CUI::Create();
+
+	if (m_pUI == nullptr)
+		return;
+
+	m_pUI->SetSize(SIZE_UI.x, SIZE_UI.y);
+
+	// テクスチャ設定
+	int nID = GetID();
+	int nIdx = Texture::GetIdx(&PATH_PLAYERNUM[0]);
+	float fRateOnePlayer = 1.0f / NUM_PLAYER;
+	m_pUI->SetTex(D3DXVECTOR2(0.0f + fRateOnePlayer * nID, 0.0f), D3DXVECTOR2(fRateOnePlayer + fRateOnePlayer * nID, 1.0f));
+	m_pUI->SetIdxTexture(nIdx);
+	m_pUI->SetVtx();
+}
+
+//=====================================================
 // モーションの管理
 //=====================================================
 void CPlayer::ManageMotion(void)
@@ -1348,6 +1377,24 @@ void CPlayer::ManageMotion(void)
 		if(nMotion != MOTION::MOTION_NEUTRAL)
 			SetMotion(MOTION::MOTION_NEUTRAL);
 	}
+}
+
+//=====================================================
+// UIの追従
+//=====================================================
+void CPlayer::FollowUI(void)
+{
+	if (m_pUI == nullptr)
+		return;
+
+	D3DXVECTOR3 pos = GetPosition();
+
+	D3DXVECTOR3 posScreen;
+	universal::IsInScreen(pos, &posScreen);
+	universal::ConvertScreenRate(posScreen);
+
+	m_pUI->SetPosition(D3DXVECTOR3(posScreen.x, posScreen.y - HEIGHT_UI, 0.0f));
+	m_pUI->SetVtx();
 }
 
 //=====================================================

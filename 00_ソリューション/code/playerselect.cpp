@@ -43,7 +43,6 @@ const float HEIGHT_UI_PLAYERNUMBER = 0.8f;	// プレイヤーナンバーUIの位置の高さ
 const string PATH_UI_STANDBY = "data\\TEXTURE\\UI\\standby.png";		// スタンドバイテクスチャのパス
 const string PATH_UI_READY = "data\\TEXTURE\\UI\\ready.png";			// 準備完了テクスチャのパス
 const string PATH_BANNER = "data\\MODEL\\other\\entry_banner.x";		// 看板のモデルパス
-const string PATH_PLAYERNUM = "data\\TEXTURE\\UI\\player_Count.png";	// プレイヤー番号テクスチャパス
 const D3DXVECTOR3 BANNER_POS = D3DXVECTOR3(0.0f, 0.0f, 500.0f);			// 看板の初期の位置
 const D3DXVECTOR3 BANNER_ROT = D3DXVECTOR3(0.1f, 0.0f, 0.07f);			// 看板の初期の向き
 const float BANNER_SCALE = 6.5f;										// 看板のサイズ
@@ -88,7 +87,6 @@ CPlayerSelect::CPlayerSelect()
 	ZeroMemory(&m_StandbyState[0], sizeof(m_StandbyState));
 	ZeroMemory(&m_apPlayerUI[0], sizeof(m_apPlayerUI));
 	ZeroMemory(&m_apInputMgr[0], sizeof(m_apInputMgr));
-	ZeroMemory(&m_apBillboard[0], sizeof(m_apBillboard));
 	m_pCylinder = nullptr;
 	m_pFan = nullptr;
 	m_pShadow = nullptr;
@@ -232,11 +230,6 @@ void CPlayerSelect::Uninit(void)
 			m_apPlayerUI[nCount]->Uninit();
 			m_apPlayerUI[nCount] = nullptr;
 		}
-		if (m_apBillboard[nCount] != nullptr)
-		{
-			m_apBillboard[nCount]->Uninit();
-			m_apBillboard[nCount] = nullptr;
-		}
 	}
 
 	// オブジェクト全棄
@@ -267,9 +260,6 @@ void CPlayerSelect::Update(void)
 	// 開始するかの確認
 	CheckStart();
 
-	// プレイヤー番号ビルボード位置更新
-	UpdateBillboard();
-	
 #ifdef _DEBUG
 	Debug();
 #endif
@@ -412,25 +402,14 @@ void CPlayerSelect::CreatePlayer(int nIdx, int nIdxInput)
 		// プレイヤーIDの割り当て
 		pPlayer->SetID(nIdx);
 
-		// 頭にビルボード配置
-		m_apBillboard[nIdx] = CPolygon3D::Create(D3DXVECTOR3(POS_PLAYER_INIT.x,POS_PLAYER_INIT.y + PLAYERNUM_POS_Y, POS_PLAYER_INIT.z));
-		if (m_apBillboard[nIdx] != nullptr)
-		{
-			m_apBillboard[nIdx]->SetMode(CPolygon3D::MODE_BILLBOARD);
-			m_apBillboard[nIdx]->SetSize(PLAYERNUM_SIZE, PLAYERNUM_SIZE);
-			m_apBillboard[nIdx]->SetTex(D3DXVECTOR2((float)(nIdx + 1) / MAX_PLAYER, 1.0f), D3DXVECTOR2((float)(nIdx) / MAX_PLAYER, 0.0f));
-
-			nIdxTexture = Texture::GetIdx(&PATH_PLAYERNUM[0]);
-			m_apBillboard[nIdx]->SetIdxTexture(nIdxTexture);
-			
-			m_apBillboard[nIdx]->SetVtx();
-		}
-
 		// モーション設定
 		pPlayer->SetMotion(CPlayer::MOTION::MOTION_MULTIAPPEAR);
 
 		// joypad振動させる
 		pPlayer->VibJoypad(POW_VIB_APPER, TIME_VIB_APPER);
+
+		// プレイヤーナンバー表示
+		pPlayer->ShowNumber();
 
 		// パーティクルの発生
 		CParticle::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), CParticle::TYPE::TYPE_ENTERPLAYER);
@@ -503,25 +482,6 @@ void CPlayerSelect::StartFade(void)
 
 	// ゲームに遷移
 	pFade->SetFade(CScene::MODE_SELECTSTAGE);
-}
-
-//=====================================================
-// プレイヤー番号ビルボード位置更新
-//=====================================================
-void CPlayerSelect::UpdateBillboard(void)
-{
-	for (int cnt = 0; cnt < MAX_PLAYER; cnt++)
-	{
-		if (m_apBillboard[cnt] != nullptr)
-		{
-			if (m_mapPlayer[m_apInputMgr[cnt]] == nullptr)
-				continue;
-
-			D3DXVECTOR3 pos = m_mapPlayer[m_apInputMgr[cnt]]->GetPosition();
-			m_apBillboard[cnt]->SetPosition(D3DXVECTOR3(pos.x, pos.y + PLAYERNUM_POS_Y, pos.z));
-			m_apBillboard[cnt]->SetVtx();
-		}
-	}
 }
 
 //=====================================================
