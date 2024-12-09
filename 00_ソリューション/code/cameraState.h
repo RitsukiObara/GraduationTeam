@@ -12,6 +12,7 @@
 // 前方宣言
 //****************************************************
 class CCamera;
+class CSelectStagePenguin;
 
 //****************************************************
 // クラスの定義
@@ -82,12 +83,12 @@ private:
 class CCameraStateSelectStage : public CCameraState
 {
 public:
-	CCameraStateSelectStage() {};
+	CCameraStateSelectStage(CSelectStagePenguin *pPenguin) { m_pPenguin = pPenguin; }
 	void Init(CCamera *pCamera);
 	void Update(CCamera* pCamera) override;
 
 private:
-
+	CSelectStagePenguin *m_pPenguin;
 };
 
 // シングルリザルト時
