@@ -497,6 +497,27 @@ void CMeshField::SetNormal(void)
 }
 
 //=====================================================
+// 法線のリセット処理
+//=====================================================
+void CMeshField::ResetNormal(void)
+{
+	// 頂点情報のポインタ
+	VERTEX_3D* pVtx;
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	for (int nCnt = 0; nCnt < m_MeshField.nNumVtx; nCnt++)
+	{
+		// 頂点法線の設定
+		pVtx[nCnt].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	}
+
+	// 頂点バッファをアンロック
+	m_pVtxBuff->Unlock();
+}
+
+//=====================================================
 // 高さの取得
 //=====================================================
 float CMeshField::GetHeight(D3DXVECTOR3 pos, D3DXVECTOR3 *pMove, D3DXVECTOR3 *pNor)

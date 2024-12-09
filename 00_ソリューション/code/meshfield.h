@@ -48,6 +48,7 @@ public:
 	void Load(std::string path);
 	void Save(std::string path);
 	void SetNormal(void);
+	void ResetNormal(void);
 	void Dent(D3DXVECTOR3 pos, float fRadius, float fDepth);
 	bool RayCheck(D3DXVECTOR3 pos, D3DXVECTOR3 vecDir, D3DXVECTOR3 posOwn);
 	void SetCol(D3DXCOLOR col);
