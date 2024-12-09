@@ -62,7 +62,6 @@ private:
 	void Ready(int nIdx);			// 準備
 	void CheckStart(void);			// 開始するかの確認
 	void StartFade(void);			// フェードの開始
-	void UpdateBillboard(void);		// プレイヤー番号ビルボード位置更新
 	void Debug(void);				// デバッグ処理
 
 	// メンバ変数
@@ -76,7 +75,6 @@ private:
 	CMeshCylinder *m_pCylinder;					// 側面のシリンダー
 	CFan3D *m_pFan;								// 上側の円ポリゴン
 	CShadow* m_pShadow;							// 影のポインタ
-	CPolygon3D* m_apBillboard[MAX_PLAYER];		// プレイヤー番号ビルボード
 
 	// 静的メンバ変数
 };

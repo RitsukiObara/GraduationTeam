@@ -227,6 +227,9 @@ HRESULT CTutorial::Init(void)
 
 			// プレイヤーのモデル再読み込み
 			pPlayer->ReLoadModel(&player::PATH_BODY[i][0]);
+
+			// プレイヤーナンバー表示
+			pPlayer->ShowNumber();
 		}
 
 		// プレイヤーUIの生成

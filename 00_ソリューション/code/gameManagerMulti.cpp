@@ -60,6 +60,8 @@ HRESULT CGameManagerMulti::Init(void)
 		m_apPlayer.push_back(pPlayer);
 
 		pPlayer->ReLoadModel(&player::PATH_BODY[i][0]);
+
+		pPlayer->ShowNumber();
 	}
 
 	// 全プレイヤーの入力割り当て

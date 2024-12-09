@@ -24,6 +24,8 @@
 #include "cameraState.h"
 #include "debugproc.h"
 #include "player.h"
+#include "gameManager.h"
+#include "resultMultiTimeUp.h"
 
 //*****************************************************
 // 定数定義
@@ -94,10 +96,15 @@ CResultSingle::~CResultSingle()
 //====================================================
 CResultSingle *CResultSingle::Create(E_Result result)
 {
-	CResultSingle *pResult = nullptr;
+	if (CGame::GetState() != CGame::E_State::STATE_NORMAL)
+		return nullptr;
 
-	if(result == RESULT_WIN)
-		pResult = new CResultSingleWin;	// 勝利のリザルト
+	CResultSingle *pResult = nullptr;
+	
+	if (result == RESULT_TIMEOVER && gameManager::IsMulti())
+		pResult = new CResultMultiTimeUp;	// マルチのタイムアップ
+	else if(result == RESULT_WIN)
+		pResult = new CResultSingleWin;		// 勝利のリザルト
 	else 
 		pResult = new CResultSingleLose;	// 敗北のリザルト
 

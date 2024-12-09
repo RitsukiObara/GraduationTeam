@@ -112,6 +112,9 @@ HRESULT COcean::Init(void)
 
 	SetNextOceanRot();	// 最初に次の向き設定
 
+	// 法線のリセット処理
+	CMeshField::ResetNormal();
+
 	return S_OK;
 }
 

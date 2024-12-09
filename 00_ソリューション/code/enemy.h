@@ -123,6 +123,7 @@ public:
 private:
 	// メンバ関数
 	virtual void SetApperTransform(void) = 0;	// 出現時のトランスフォーム設定
+	void SarchSafeIce(void);					// 安全な氷を探す
 
 	void SarchNearIceToDest(void);								// 目標に近い氷を探す
 	bool PathFind(int nIdxV, int nIdxH, vector<CIce*>& apIce);	// 探索の再帰関数
