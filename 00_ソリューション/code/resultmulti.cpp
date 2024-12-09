@@ -28,42 +28,54 @@
 //*****************************************************
 namespace
 {
-	namespace Penguin
-	{
-		const D3DXVECTOR3 WINNER_POS = D3DXVECTOR3(800.0f, 0.0f, -1800.0f);	// 勝者の位置
-		const vector<D3DXVECTOR3> LOSER_POS =	// 敗者の位置
-		{
-			D3DXVECTOR3(800.0f, 0.0f, -500.0f),
-			D3DXVECTOR3(800.0f, 0.0f, -700.0f),
-			D3DXVECTOR3(800.0f, 0.0f, -900.0f)
-		};
-		const vector<D3DXVECTOR3> LOSER_ROT =	// 敗者の向き
-		{
-			D3DXVECTOR3(0.0f, 0.5f * D3DX_PI, 0.0f),
-			D3DXVECTOR3(0.0f, 0.5471f * D3DX_PI, 0.0f),
-			D3DXVECTOR3(0.0f, 0.5f * D3DX_PI, 0.0f)
-		};
-		const int MAX_PLAYER = 4;	// 最大人数
-	}
+namespace Penguin
+{
+const D3DXVECTOR3 WINNER_POS = D3DXVECTOR3(800.0f, 0.0f, -1800.0f);	// 勝者の位置
+const vector<D3DXVECTOR3> LOSER_POS =	// 敗者の位置
+{
+	D3DXVECTOR3(800.0f, 0.0f, -500.0f),
+	D3DXVECTOR3(800.0f, 0.0f, -700.0f),
+	D3DXVECTOR3(800.0f, 0.0f, -900.0f)
+};
+const vector<D3DXVECTOR3> LOSER_ROT =	// 敗者の向き
+{
+	D3DXVECTOR3(0.0f, 0.5f * D3DX_PI, 0.0f),
+	D3DXVECTOR3(0.0f, 0.5471f * D3DX_PI, 0.0f),
+	D3DXVECTOR3(0.0f, 0.5f * D3DX_PI, 0.0f)
+};
+const int MAX_PLAYER = 4;	// 最大人数
+}
 
-	namespace Map
-	{
-		const string FIELD_TEX_PATH = "data\\TEXTURE\\MATERIAL\\field.jpg";	// 地面テクスチャパス
-		const string SNOWDOME_PATH = "data\\MODEL\\object\\Snowdome.x";		// かまくらモデルパス
-	}
+namespace Map
+{
+const string FIELD_TEX_PATH = "data\\TEXTURE\\MATERIAL\\field.jpg";	// 地面テクスチャパス
+const string SNOWDOME_PATH = "data\\MODEL\\object\\Snowdome.x";		// かまくらモデルパス
+}
 
-	namespace UI
-	{
-		const string NUMBER_PATH = "data\\TEXTURE\\UI\\player_Count.png";	// 何Pとかのテクスチャ
-		const string TEXT_PATH = "data\\TEXTURE\\UI\\win.png";				// 「の勝利」のテクスチャ
-		const float NUMBER_WIDTH = 0.1f;	// 幅（何P）
-		const float NUMBER_HEIGHT = 0.15f;	// 高さ（何P）
-		const float TEXT_WIDTH = 0.15f;		// 幅（「の勝利」）
-		const float TEXT_HEIGHT = 0.15f;	// 高さ（「の勝利」）
-		const D3DXVECTOR3 NUMBER_POS = D3DXVECTOR3(0.3125f, 0.85f, 0.0f);	// 何Pとかの位置
-		const D3DXVECTOR3 TEXT_POS = D3DXVECTOR3(0.55f, 0.85f, 0.0f);		// 「の勝利」の位置
-		const int MAX_PLAYER = 4;
-	}
+namespace UI
+{
+const string NUMBER_PATH = "data\\TEXTURE\\UI\\player_Count.png";	// 何Pとかのテクスチャ
+const string TEXT_PATH = "data\\TEXTURE\\UI\\win.png";				// 「の勝利」のテクスチャ
+const float NUMBER_WIDTH = 0.1f;	// 幅（何P）
+const float NUMBER_HEIGHT = 0.15f;	// 高さ（何P）
+const float TEXT_WIDTH = 0.15f;		// 幅（「の勝利」）
+const float TEXT_HEIGHT = 0.15f;	// 高さ（「の勝利」）
+const D3DXVECTOR3 NUMBER_POS = D3DXVECTOR3(0.3125f, 0.85f, 0.0f);	// 何Pとかの位置
+const D3DXVECTOR3 TEXT_POS = D3DXVECTOR3(0.55f, 0.85f, 0.0f);		// 「の勝利」の位置
+const int MAX_PLAYER = 4;
+}
+
+//--------------------------------
+// 引き分けの定数
+//--------------------------------
+namespace draw
+{
+const string PATH = "data\\TEXTURE\\UI\\draw.png";			// 引き分け
+const float WIDTH = 0.15f;									// 幅
+const float HEIGHT = 0.10f;									// 高さ
+const D3DXVECTOR3 POS = D3DXVECTOR3(0.5f, 0.85f, 0.0f);		// 位置
+
+}
 }
 
 //=====================================================
@@ -95,10 +107,6 @@ HRESULT CResultMulti::Init(void)
 	// カメラ
 	Camera::ChangeState(new CCameraStateResultMulti);
 
-	// 勝者番号UI生成
-	SetUI(&m_pWinnerNum, UI::NUMBER_PATH, UI::NUMBER_POS, UI::NUMBER_WIDTH, UI::NUMBER_HEIGHT);
-	SetUI(&m_pWinnerText, UI::TEXT_PATH, UI::TEXT_POS, UI::TEXT_WIDTH, UI::TEXT_HEIGHT);
-
 	// メッシュフィールド
 	CMeshField* pMeshField = CMeshField::Create();
 	if (pMeshField != nullptr)
@@ -126,6 +134,38 @@ HRESULT CResultMulti::Init(void)
 	int winner = 0;
 	vector<bool> enablePlayer;
 	gameManager::LoadWinner(&playerNum, &winner);
+
+	// 引き分けフラグの設定
+	m_bDraw = winner == -1;
+
+	if (!m_bDraw)	// 通常の初期化
+		InitNormal(winner);
+	else			// 引き分けの初期化
+		InitDraw();
+
+	// 入力マネージャー生成
+	CInputManager::Create();
+
+	return S_OK;
+}
+
+//=====================================================
+// 通常の初期化
+//=====================================================
+void CResultMulti::InitNormal(int nIdxWinner)
+{
+	//-----------------------------------
+	// 勝者番号UI生成
+	//-----------------------------------
+	SetUI(&m_pWinnerNum, UI::NUMBER_PATH, UI::NUMBER_POS, UI::NUMBER_WIDTH, UI::NUMBER_HEIGHT);
+	SetUI(&m_pWinnerText, UI::TEXT_PATH, UI::TEXT_POS, UI::TEXT_WIDTH, UI::TEXT_HEIGHT);
+
+	//-----------------------------------
+	// 情報設定
+	//-----------------------------------
+	int playerNum = Penguin::MAX_PLAYER;
+	vector<bool> enablePlayer;
+
 	for (int cnt = 0; cnt < Penguin::MAX_PLAYER; cnt++)
 	{
 		if (cnt < playerNum)
@@ -141,16 +181,19 @@ HRESULT CResultMulti::Init(void)
 	// 勝者番号設定
 	if (m_pWinnerNum != nullptr)
 	{
-		m_pWinnerNum->SetTex(D3DXVECTOR2((float)(winner) / UI::MAX_PLAYER, 0.0f), D3DXVECTOR2((float)(winner + 1) / UI::MAX_PLAYER, 1.0f));
+		m_pWinnerNum->SetTex(D3DXVECTOR2((float)(nIdxWinner) / UI::MAX_PLAYER, 0.0f), D3DXVECTOR2((float)(nIdxWinner + 1) / UI::MAX_PLAYER, 1.0f));
 		m_pWinnerNum->SetVtx();
 	}
 
+	//-----------------------------------
+	// キャラクター生成
+	//-----------------------------------
 	// 各ペンギン召喚
 	CNPCPenguin* pPenguin = nullptr;
 	// 勝者ペンギン
-	pPenguin = CNPCPenguin::Create(new CNPCPenguinState_BANZAI,(CNPCPenguin::SKIN)winner);
+	pPenguin = CNPCPenguin::Create(new CNPCPenguinState_BANZAI, (CNPCPenguin::SKIN)nIdxWinner);
 	pPenguin->SetPosition(Penguin::WINNER_POS);
-	enablePlayer[winner] = false;	// 勝者を表示済みとしてfalseにしておく
+	enablePlayer[nIdxWinner] = false;	// 勝者を表示済みとしてfalseにしておく
 	// 敗者ペンギン
 	int loser = 0;
 	for (int cnt = 0; cnt < Penguin::MAX_PLAYER; cnt++)
@@ -168,11 +211,14 @@ HRESULT CResultMulti::Init(void)
 	CResultSeal* pSeal = CResultSeal::Create(D3DXVECTOR3(800.0f, -10.0f, 600.0f));
 	pSeal->SetPosition(D3DXVECTOR3(1200.0f, 0.0f, -900.0f));
 	pSeal->SetRotation(D3DXVECTOR3(0.0f, 0.4f * D3DX_PI, 0.0f));
+}
 
-	// 入力マネージャー生成
-	CInputManager::Create();
-
-	return S_OK;
+//=====================================================
+// 引き分けの初期化
+//=====================================================
+void CResultMulti::InitDraw(void)
+{
+	SetUI(&m_pWinnerText, draw::PATH, draw::POS, draw::WIDTH, draw::HEIGHT);
 }
 
 //=====================================================
