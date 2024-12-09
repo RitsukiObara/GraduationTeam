@@ -14,6 +14,9 @@
 #include "game.h"
 #include "gameManager.h"
 #include "resultSingle.h"
+#include "resultmulti.h"
+#include "player.h"
+#include "fade.h"
 
 //*****************************************************
 // 定数定義
@@ -204,9 +207,8 @@ void CTimer::UpdateNumber()
 	{
 		m_nSecond = 0;
 
-		// シングルの時は時間切れリザルト
-		if (!gameManager::IsMulti())
-			CResultSingle::Create(CResultSingle::RESULT_TIMEOVER);
+		// 時間切れリザルト
+		CResultSingle::Create(CResultSingle::RESULT_TIMEOVER);
 	}
 
 	// 値の用意

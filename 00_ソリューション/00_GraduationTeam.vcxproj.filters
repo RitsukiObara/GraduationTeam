@@ -139,6 +139,9 @@
     <Filter Include="ソース ファイル\gameobject\ice">
       <UniqueIdentifier>{e4dfbff2-bf00-40a3-ac27-ce8f9ea4d6ae}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\scene\game\resultMulti">
+      <UniqueIdentifier>{3b5f3a1a-4e6a-4ce0-99b7-539938651dc6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="code\scene.cpp">
@@ -515,6 +518,9 @@
     </ClCompile>
     <ClCompile Include="code\object2D.cpp">
       <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="code\resultMultiTimeUp.cpp">
+      <Filter>ソース ファイル\scene\game\resultMulti</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -904,6 +910,9 @@
     </ClInclude>
     <ClInclude Include="code\object2D.h">
       <Filter>ソース ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="code\resultMultiTimeUp.h">
+      <Filter>ソース ファイル\scene\game\resultMulti</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

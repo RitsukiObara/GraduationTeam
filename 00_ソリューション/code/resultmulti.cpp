@@ -74,7 +74,6 @@ const string PATH = "data\\TEXTURE\\UI\\draw.png";			// ˆø‚«•ª‚¯
 const float WIDTH = 0.15f;									// •
 const float HEIGHT = 0.10f;									// ‚‚³
 const D3DXVECTOR3 POS = D3DXVECTOR3(0.5f, 0.85f, 0.0f);		// ˆÊ’u
-
 }
 }
 
