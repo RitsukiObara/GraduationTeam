@@ -23,6 +23,7 @@
 #include "camera.h"
 #include "manager.h"
 #include "gameManager.h"
+#include "player.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -510,6 +511,17 @@ bool CIceManager::CanPeck(CIce* pIce, int nNumV, int nNumH)
 	// ‚È‚É‚©‚µ‚çæ‚Á‚Ä‚½‚ç“Ë‚¯‚È‚¢
 	if (pIce->IsOnTopAnyObject())
 		return false;
+
+	vector<CPlayer*> apPlayer = CPlayer::GetInstance();
+
+	for (CPlayer *pPlayer : apPlayer)
+	{
+		int nIdxV = pPlayer->GetGridV();
+		int nIdxH = pPlayer->GetGridH();
+
+		if (nIdxV == nNumV && nIdxH == nNumH)
+			return false;
+	}
 
 	return true;
 }

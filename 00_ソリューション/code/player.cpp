@@ -1117,7 +1117,10 @@ void CPlayer::SarchJumpIce(void)
 		return;	// 何も見つからなかったら処理を通らない
 
 	if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_JUMP))
+	{
+		pIceMgr->GetIceIndex(pIceTarget, &m_nGridV, &m_nGridH);
 		StartJump();	// 流れてる氷があればジャンプを開始
+	}
 }
 
 //=====================================================
