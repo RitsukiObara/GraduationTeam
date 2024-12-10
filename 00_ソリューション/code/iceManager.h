@@ -83,9 +83,10 @@ public:
 	CIce* GetRandomIce(int *pNumV = nullptr, int *pNumH = nullptr);	// ランダムな氷の取得
 
 	S_Grid GetLeftDownGrid(void) { return m_aGrid[0][0]; }												// 左下のグリッド取得
-	S_Grid GetLeftUpGrid(void) { return m_aGrid[m_nNumGridVirtical - 1][0]; }								// 左上のグリッド取得
+	S_Grid GetLeftUpGrid(void) { return m_aGrid[m_nNumGridVirtical - 1][0]; }							// 左上のグリッド取得
 	S_Grid GetRightDownGrid(void) { return m_aGrid[0][m_nNumGridHorizontal - 1]; };						// 右下のグリッド取得
-	S_Grid GetRightUpGrid(void) { return m_aGrid[m_nNumGridVirtical - 1][m_nNumGridHorizontal - 1]; }		// 右上のグリッド取得
+	S_Grid GetRightUpGrid(void) { return m_aGrid[m_nNumGridVirtical - 1][m_nNumGridHorizontal - 1]; }	// 右上のグリッド取得
+	S_Grid *GetGrid(int nIdxV, int nIdxH) { return &m_aGrid[nIdxV][nIdxH]; }							// 指定番号グリッドの取得
 
 	void DisableFind(void);	// 探索フラグの無効化
 	void Load(const char* pPath);	// 初期配置読み込み

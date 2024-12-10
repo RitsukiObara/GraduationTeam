@@ -474,6 +474,10 @@ bool CBears::IsAliveTarget(int nIdxV, int nIdxH, float fRot, int nIdxTargetV, in
 #ifdef _DEBUG
 			CEffect3D::Create(posIce, 100.0f, 4, D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f));
 #endif
+			// グリッド情報の保存
+			CIceManager::S_Grid *pGrid = pIceMgr->GetGrid(nIdxIceV, nIdxIceH);
+			 m_aGridCharge.push_back(pGrid);
+
 			if (nIdxIceV == nIdxTargetV && nIdxIceH == nIdxTargetH)
 				return true;	// 到達したら真を返す
 
@@ -482,6 +486,8 @@ bool CBears::IsAliveTarget(int nIdxV, int nIdxH, float fRot, int nIdxTargetV, in
 		}
 	}
 
+	// ここまで通ったら到着できない判定
+	m_aGridCharge.clear();
 	return false;
 }
 
@@ -529,7 +535,7 @@ void CBears::UpdateMove(void)
 		Charge();
 		CDebugProc::GetInstance()->Print("\n突進中！==============");
 	}
-	this;
+
 	// プレイヤーとの判定
 	CollidePlayer();
 
@@ -573,10 +579,6 @@ bool CBears::JudgeEndCharge(void)
 	if (pIceNext == nullptr)
 		return true;
 
-	// 目の前が突っついた氷になったら
-	if (pIceNext->IsPeck())
-		return true;
-
 	// 目標の氷が到達できないものになったら
 	int nIdxVDest = GetGridVDest();
 	int nIdxHDest = GetGridHDest();
@@ -587,6 +589,33 @@ bool CBears::JudgeEndCharge(void)
 
 	if (pIceDest->IsPeck())
 		return true;	// つっついてたら終了
+
+	//--------------------------
+	// 突進判定
+	//--------------------------
+	// プレイヤーインスタンスの取得
+	vector<CPlayer*> apPlayer = CPlayer::GetInstance();
+
+	if (apPlayer.empty())
+		return false;	// 配列が空なら終了
+
+	CPlayer *pPlayer = nullptr;	// 発見したプレイヤー
+
+	for (auto it : apPlayer)
+	{
+		D3DXVECTOR3 posPlayer = it->GetPosition();
+
+		if (it->GetState() == CPlayer::E_State::STATE_DEATH)
+			continue;
+
+		int nIdxPlayerV = it->GetGridV();
+		int nIdxPlayerH = it->GetGridH();
+
+		if (!CanCharge(posPlayer, nIdxPlayerV, nIdxPlayerH))
+		{// 突撃できなかったら突進終了
+			return true;
+		}
+	}
 
 	// ここまで通るなら突撃を終了しない
 	return false;
@@ -608,6 +637,9 @@ void CBears::EndCharge(void)
 
 	// 回転係数設定
 	SetFactRot(FACT_ROT_NORMAL);
+
+	// 配列のリセット
+	m_aGridCharge.clear();
 }
 
 //=====================================================

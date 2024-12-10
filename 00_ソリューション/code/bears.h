@@ -12,6 +12,7 @@
 //*****************************************************
 #include "motion.h"
 #include "enemy.h"
+#include "iceManager.h"
 
 //*****************************************************
 // クラスの定義
@@ -81,15 +82,16 @@ private:
 	void DecideNextStrollGrid(void);				// 次の散歩先を決める
 	void Death(void) override;						// 死亡時の処理
 	void Event(EVENT_INFO* pEventInfo) override;	// モーションイベント
-	void CheckPlayAssaultSE(void);						// 突撃SE流す
+	void CheckPlayAssaultSE(void);					// 突撃SE流す
 
 	// メンバ変数
-	CPlayer *m_pPlayerTarget;	// ターゲットプレイヤー
-	D3DXVECTOR3 m_vecCharge;	// 突撃するベクトル
-	float m_fTimerAcceleCharge;	// 突撃加速カウンター
-	bool m_bCharge;				// 突撃フラグ
-	float m_fAssaultSETimer;	// 突撃SEを定期的に流すためのタイマー
-	D3DXVECTOR3 m_posApper;		// 出現する位置
+	CPlayer *m_pPlayerTarget;					// ターゲットプレイヤー
+	D3DXVECTOR3 m_vecCharge;					// 突撃するベクトル
+	float m_fTimerAcceleCharge;					// 突撃加速カウンター
+	bool m_bCharge;								// 突撃フラグ
+	float m_fAssaultSETimer;					// 突撃SEを定期的に流すためのタイマー
+	D3DXVECTOR3 m_posApper;						// 出現する位置
+	vector<CIceManager::S_Grid*> m_aGridCharge;	// 突進中に通るグリッドの配列
 };
 
 #endif
