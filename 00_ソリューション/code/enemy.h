@@ -131,7 +131,7 @@ private:
 	bool PathFind(int nIdxV, int nIdxH, vector<CIce*>& apIce);	// 探索の再帰関数
 
 	void JudgeTurn(void);		// 反転するかの判定
-	void JudgeCanMove(void);	// 移動できるかの判断
+	bool JudgeCanMove(void);	// 移動できるかの判断
 
 	void MoveByGrid(void);					// グリッド基準の移動
 	void CheckChangeGrid(void);				// グリッドが変わったかの確認

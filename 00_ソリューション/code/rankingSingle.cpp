@@ -147,8 +147,10 @@ int CRankingSingle::AddRank(int nScore, int nTimePeck)
 		}
 	}
 
+#ifndef _DEBUG
 	// •Û‘¶‚·‚é
 	Save();
+#endif
 
 	return nUpdate;
 }

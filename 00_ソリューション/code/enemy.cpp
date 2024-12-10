@@ -594,7 +594,8 @@ void CEnemy::MoveToNextGrid(void)
 	}
 
 	// ˆÚ“®‰Â”\”»’è
-	JudgeCanMove();
+	if (!JudgeCanMove())
+		return;
 
 	// ‚Â‚Á‚Â‚¢‚½•X‚¾‚Á‚½‚çU‚è•Ô‚éˆ—‚É“ü‚é
 	CIce *pIce = pIceMgr->GetGridIce(&m_nGridVNext, &m_nGridHNext);
@@ -624,18 +625,18 @@ void CEnemy::MoveToNextGrid(void)
 //=====================================================
 // ˆÚ“®‚Å‚«‚é‚©‚Ì”»’è
 //=====================================================
-void CEnemy::JudgeCanMove(void)
+bool CEnemy::JudgeCanMove(void)
 {
 	// ŽŸ‚ÉŒü‚©‚¤•X‚ÌˆÊ’u‚ÌŽæ“¾
 	CIceManager *pIceMgr = CIceManager::GetInstance();
 
 	if (pIceMgr == nullptr)
-		return;
+		return false;
 
 	CIce *pIceNext = pIceMgr->GetGridIce(&m_nGridVNext, &m_nGridHNext);
 
 	if (pIceNext == nullptr)
-		return;
+		return false;
 
 	// ˆÊ’uŽæ“¾
 	D3DXVECTOR3 posNext = pIceNext->GetPosition();
@@ -653,12 +654,14 @@ void CEnemy::JudgeCanMove(void)
 	if (LINE_ENABLE_MOVE * LINE_ENABLE_MOVE > fRotDiff * fRotDiff)
 	{
 		m_bEnableMove = true;	// –Ú“I‚ÌŒü‚«‚ðŒü‚¢‚½‚Ì‚ÅˆÚ“®‰Â”\
-		return;
+		return true;
 	}
 
 	// ‚±‚±‚Ü‚Å’Ê‚Á‚½‚çˆÚ“®‚µ‚È‚¢
 	SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	m_bEnableMove = false;
+
+	return false;
 }
 
 //=====================================================
@@ -941,6 +944,7 @@ void CEnemy::Debug(void)
 		return;
 
 	debug::Effect3DShort(pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+	debug::Effect3DShort(pIceMgr->GetGridPosition(&m_nGridVNext, &m_nGridHNext), D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f));
 	debug::Effect3DShort(pIceMgr->GetGridPosition(&m_nGridVDest, &m_nGridHDest), D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
 }
 

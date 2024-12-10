@@ -80,7 +80,7 @@ HRESULT CGameManager::Init(void)
 	//海の生成
 	COcean::Create();
 
-#if 1
+#ifndef _DEBUG
 	//ゲームスタート告知UI
 	CUIready::Create();
 #endif
