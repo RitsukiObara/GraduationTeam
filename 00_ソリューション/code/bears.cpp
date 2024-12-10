@@ -168,6 +168,9 @@ void CBears::Update(void)
 	// 継承クラスの更新
 	CEnemy::Update();
 
+	CDebugProc::GetInstance()->Print("\n突進フラグ[%d]", m_bCharge);
+	CDebugProc::GetInstance()->Print("\n振返フラグ[%d]", IsTurn());
+
 	// 移動量の減衰
 	Decreasemove();
 
@@ -321,8 +324,11 @@ void CBears::UpdateStop(void)
 	// プレイヤーとの判定
 	CollidePlayer();
 
-	// 散歩先の初期設定
-	DecideNextStrollGrid();
+	// ターゲット探索
+	SarchTarget();
+
+	if(m_pPlayerTarget == nullptr)
+		DecideNextStrollGrid();	// 見つからなかったら散歩する
 
 	CEnemy::UpdateStop();
 
@@ -501,21 +507,6 @@ void CBears::StartCharge(void)
 }
 
 //=====================================================
-// 突撃の終了
-//=====================================================
-void CBears::EndCharge(void)
-{
-	// タイマーリセット
-	m_fTimerAcceleCharge = 0.0f;
-	m_fAssaultSETimer = 0.0f;
-
-	// ブレーキモーションの設定
-	int nMotion = GetMotion();
-	if(nMotion != E_Motion::MOTION_BRAKE)
-		SetMotion(E_Motion::MOTION_BRAKE);
-}
-
-//=====================================================
 // 移動状態の更新
 //=====================================================
 void CBears::UpdateMove(void)
@@ -532,7 +523,7 @@ void CBears::UpdateMove(void)
 		Charge();
 		CDebugProc::GetInstance()->Print("\n突進中！==============");
 	}
-
+	this;
 	// プレイヤーとの判定
 	CollidePlayer();
 
@@ -561,6 +552,9 @@ void CBears::Charge(void)
 //=====================================================
 bool CBears::JudgeEndCharge(void)
 {
+	if (!m_bCharge)
+		return false;
+
 	CIceManager *pIceMgr = CIceManager::GetInstance();
 	if (pIceMgr == nullptr)
 		return false;
@@ -593,6 +587,21 @@ bool CBears::JudgeEndCharge(void)
 }
 
 //=====================================================
+// 突撃の終了
+//=====================================================
+void CBears::EndCharge(void)
+{
+	// タイマーリセット
+	m_fTimerAcceleCharge = 0.0f;
+	m_fAssaultSETimer = 0.0f;
+
+	// ブレーキモーションの設定
+	int nMotion = GetMotion();
+	if (nMotion != E_Motion::MOTION_BRAKE)
+		SetMotion(E_Motion::MOTION_BRAKE);
+}
+
+//=====================================================
 // プレイヤーグリッドの発見
 //=====================================================
 void CBears::FindPlayerGrid(void)
@@ -618,7 +627,8 @@ void CBears::AliveDestGrid(void)
 	}
 	else
 	{// 突進していた時はオーバーヒート状態にする
-		EndCharge();
+		if(m_bCharge)
+			EndCharge();
 	}
 }
 
@@ -729,6 +739,8 @@ void CBears::ManageMotion(void)
 
 			// ターゲットのプレイヤーをnullにする
 			m_pPlayerTarget = nullptr;
+
+			SetState(CEnemy::E_State::STATE_STOP);
 		}
 	}
 	else if (m_pPlayerTarget != nullptr)
