@@ -1474,6 +1474,9 @@ CIce* CIceManager::GetLeftDownIdx(int *pNumV, int *pNumH)
 		{
 			if (m_aGrid[i][j].pIce != nullptr)
 			{// 氷があったら番号を保存
+				if (m_aGrid[i][j].pIce->IsOnTopAnyObject())
+					continue;	// なにか乗ってたらキャンセル
+
 				*pNumV = i;
 				*pNumH = j;
 				return m_aGrid[i][j].pIce;
@@ -1498,6 +1501,9 @@ CIce* CIceManager::GetLeftUpIdx(int *pNumV, int *pNumH)
 		{
 			if (m_aGrid[i][j].pIce != nullptr)
 			{// 氷があったら番号を保存
+				if (m_aGrid[i][j].pIce->IsOnTopAnyObject())
+					continue;	// なにか乗ってたらキャンセル
+
 				*pNumV = i;
 				*pNumH = j;
 				return m_aGrid[i][j].pIce;
@@ -1522,6 +1528,9 @@ CIce* CIceManager::GetRightDownIdx(int *pNumV, int *pNumH)
 		{
 			if (m_aGrid[i][j].pIce != nullptr)
 			{// 氷があったら番号を保存
+				if (m_aGrid[i][j].pIce->IsOnTopAnyObject())
+					continue;	// なにか乗ってたらキャンセル
+
 				*pNumV = i;
 				*pNumH = j;
 				return m_aGrid[i][j].pIce;
@@ -1546,6 +1555,9 @@ CIce* CIceManager::GetRightUpIdx(int *pNumV, int *pNumH)
 		{
 			if (m_aGrid[i][j].pIce != nullptr)
 			{// 氷があったら番号を保存
+				if (m_aGrid[i][j].pIce->IsOnTopAnyObject())
+					continue;	// なにか乗ってたらキャンセル
+
 				*pNumV = i;
 				*pNumH = j;
 				return m_aGrid[i][j].pIce;
