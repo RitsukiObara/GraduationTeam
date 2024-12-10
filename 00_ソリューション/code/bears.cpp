@@ -49,7 +49,7 @@ namespace charge
 {
 const float RATE_START = 0.7f;		// 突進を開始するのに氷に近づいてる割合
 const float RATE_RANGE = D3DX_PI / CIceManager::E_Direction::DIRECTION_MAX;	// 突撃の角度範囲
-const float SPEED_ONESTEP = 1.0f;	// 一歩の速度
+const float SPEED_ONESTEP = 1.7f;	// 一歩の速度
 }
 }
 
@@ -505,21 +505,14 @@ void CBears::StartCharge(void)
 //=====================================================
 void CBears::EndCharge(void)
 {
-	// 仮で探索状態にする
-	SetState(CEnemy::E_State::STATE_STOP);
-
-	// ターゲットのプレイヤーをnullにする
-	m_pPlayerTarget = nullptr;
-
 	// タイマーリセット
 	m_fTimerAcceleCharge = 0.0f;
 	m_fAssaultSETimer = 0.0f;
 
-	// 次の散歩先を探す
-	DecideNextStrollGrid();
-
-	// 突撃フラグを折る
-	m_bCharge = false;
+	// ブレーキモーションの設定
+	int nMotion = GetMotion();
+	if(nMotion != E_Motion::MOTION_BRAKE)
+		SetMotion(E_Motion::MOTION_BRAKE);
 }
 
 //=====================================================
@@ -531,11 +524,13 @@ void CBears::UpdateMove(void)
 	{// プレイヤー未発見時の処理
 		// ターゲットの探索
 		SarchTarget();
+		CDebugProc::GetInstance()->Print("\n探索中！==============");
 	}
 	else
 	{// プレイヤー発見時はプレイヤーを追いかける
 		// 突進処理
 		Charge();
+		CDebugProc::GetInstance()->Print("\n突進中！==============");
 	}
 
 	// プレイヤーとの判定
@@ -543,9 +538,6 @@ void CBears::UpdateMove(void)
 
 	// 継承クラスの更新
 	CEnemy::UpdateMove();
-
-	if(!IsTurn() || m_pPlayerTarget != nullptr)
-		MoveToNextGrid(); // 次のグリッドに進む
 }
 
 //=====================================================
@@ -700,6 +692,10 @@ void CBears::UpdateAttack(void)
 void CBears::UpdateDrift(void)
 {
 	CEnemy::UpdateDrift();
+
+	int nMotion = GetMotion();
+	if (nMotion != E_Motion::MOTION_WALK)
+		SetMotion(E_Motion::MOTION_WALK);
 }
 
 //=====================================================
@@ -722,7 +718,20 @@ void CBears::ManageMotion(void)
 	//---------------------------------
 	// 移動状態のモーション
 	//---------------------------------
-	if (m_pPlayerTarget != nullptr)
+	if (nMotion == E_Motion::MOTION_BRAKE)
+	{// ブレーキモーション
+		if (bFinish)
+		{// モーション終了で歩行モーションに戻る
+			if (nMotion != E_Motion::MOTION_WALK)
+				SetMotion(E_Motion::MOTION_WALK);
+
+			m_bCharge = false;
+
+			// ターゲットのプレイヤーをnullにする
+			m_pPlayerTarget = nullptr;
+		}
+	}
+	else if (m_pPlayerTarget != nullptr)
 	{
 		if (m_bCharge)
 		{// 突進中

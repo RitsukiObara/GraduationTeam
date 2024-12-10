@@ -55,6 +55,8 @@ private:
 		MOTION_LANDING,		// 着地
 		MOTION_TURN,		// 振り向き
 		MOTION_TURNCHARGE,	// 突進振り向き
+		MOTION_BRAKE,		// ブレーキ
+		MOTION_FIND,		// 発見
 		MOTION_MAX
 	};
 
