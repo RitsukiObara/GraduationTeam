@@ -37,10 +37,13 @@ const float FACT_MOVE_APPER = 0.04f;	// 出現時の移動係数
 const float RANGE_FIND_PLAYER = 1000.0f;	// プレイヤー発見範囲
 
 const float SPEED_ONESTEP = 1.1f;	// 一歩のスピード
-const float FACT_DECMOVE = 0.96f;	// 移動減衰係数
+const float FACT_DECMOVE = 0.98f;	// 移動減衰係数
 
 const float RADIUS_HIT = 100.0f;	// ヒット判定の半径
 const float ASSAULT_SE_TIME = 1.0f;	// 突撃SE流す間隔
+
+const float FACT_ROT_NORMAL = 0.05f;	// 通常回転係数
+const float FACT_ROT_CHARGE = 0.2f;		// 突進時回転係数
 
 //-----------------------------
 // 突進の定数
@@ -49,7 +52,7 @@ namespace charge
 {
 const float RATE_START = 0.7f;		// 突進を開始するのに氷に近づいてる割合
 const float RATE_RANGE = D3DX_PI / CIceManager::E_Direction::DIRECTION_MAX;	// 突撃の角度範囲
-const float SPEED_ONESTEP = 1.7f;	// 一歩の速度
+const float SPEED_ONESTEP = 1.4f;	// 一歩の速度
 }
 }
 
@@ -504,6 +507,9 @@ void CBears::StartCharge(void)
 
 	// プレイヤーグリッドの発見
 	FindPlayerGrid();
+
+	// 回転係数設定
+	SetFactRot(FACT_ROT_CHARGE);
 }
 
 //=====================================================
@@ -599,6 +605,9 @@ void CBears::EndCharge(void)
 	int nMotion = GetMotion();
 	if (nMotion != E_Motion::MOTION_BRAKE)
 		SetMotion(E_Motion::MOTION_BRAKE);
+
+	// 回転係数設定
+	SetFactRot(FACT_ROT_NORMAL);
 }
 
 //=====================================================

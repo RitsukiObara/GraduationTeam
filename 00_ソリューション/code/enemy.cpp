@@ -49,6 +49,8 @@ const float RANGE_STOP_MOVE = D3DX_PI * 1 / CIceManager::E_Direction::DIRECTION_
 const float RATE_COLLIDEICE = 1.0f;	// 氷との判定の割合
 
 const int MAX_DEPTH_FIND = 50;	// これ以上探索しない深さ
+
+const float LINE_FACT_ROT = 10.0f;	// これ以上の長さがないと向きを補正しない
 }
 
 //*****************************************************
@@ -60,7 +62,7 @@ std::vector<CEnemy*> CEnemy::s_vector = {};	// 自身のポインタ
 // 優先順位を決めるコンストラクタ
 //=====================================================
 CEnemy::CEnemy(int nPriority) : m_nGridV(0), m_nGridH(0), m_state(E_State::STATE_NONE), m_pIceLand(nullptr), m_bFollowIce(false),
-m_move(), m_nGridVDest(0), m_nGridHDest(0), m_fSpeedMove(0.0f), m_fTimerDeath(0.0f), m_bTurn(false), m_bEnableMove(false), m_pLandSystemFlow(nullptr),
+m_move(), m_nGridVDest(0), m_nGridHDest(0), m_fSpeedMove(0.0f), m_fFactRot(0.0f), m_fTimerDeath(0.0f), m_bTurn(false), m_bEnableMove(false), m_pLandSystemFlow(nullptr),
 m_bMoveByGrid(false), m_pShadow(nullptr), m_spawn(E_Spawn::SPAWN_RU), m_type(TYPE_SEALS)
 {
 	s_vector.push_back(this);
@@ -136,8 +138,9 @@ HRESULT CEnemy::Init(void)
 	m_bEnableMove = true;
 	m_bMoveByGrid = true;
 
-	// 移動速度の初期設定
+	// パラメーターの初期設定
 	m_fSpeedMove = SPPED_MOVE_INIT;
+	m_fFactRot = SPEED_ROTATION;
 
 	// 影の生成
 	m_pShadow = CShadow::Create();
@@ -580,11 +583,15 @@ void CEnemy::MoveToNextGrid(void)
 	D3DXVECTOR3 vecDiff = posNext - pos;
 
 	// 向きを補正する
-	D3DXVECTOR3 rot = GetRotation();
-	float fRotDest = atan2f(-vecDiff.x, -vecDiff.z);
-	universal::FactingRot(&rot.y, fRotDest, SPEED_ROTATION);
+	float fLengthDiff = D3DXVec3Length(&vecDiff);
+	if (fLengthDiff > LINE_FACT_ROT)
+	{// 差分ベクトルが一定以上の長さがあるときのみ
+		D3DXVECTOR3 rot = GetRotation();
+		float fRotDest = atan2f(-vecDiff.x, -vecDiff.z);
+		universal::FactingRot(&rot.y, fRotDest, m_fFactRot);
 
-	SetRotation(rot);
+		SetRotation(rot);
+	}
 
 	// 移動可能判定
 	JudgeCanMove();
@@ -917,6 +924,7 @@ void CEnemy::Debug(void)
 	pDebugProc->Print("\n現在グリッド[%d,%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\n次のグリッド[%d,%d]", m_nGridVNext, m_nGridHNext);
 	pDebugProc->Print("\n目標グリッド[%d,%d]", m_nGridVDest, m_nGridHDest);
+	pDebugProc->Print("\nモーション[%d]", GetMotion());
 
 	//pDebugProc->Print("\n現在の状態[%d]", m_state);
 #endif
