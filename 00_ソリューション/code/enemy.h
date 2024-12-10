@@ -94,6 +94,8 @@ public:
 
 	void SetSpeedMove(float fValue) { m_fSpeedMove = fValue; }	// 移動速度
 	float GetSpeedMove(void) { return m_fSpeedMove; }
+	void SetFactRot(float fValue) { m_fFactRot = fValue; }		// 回転係数
+	float GetFactRot(void) { return m_fFactRot; }
 
 	void EnableFollowIce(bool bValue) { m_bFollowIce = bValue; }	// 氷追従フラグ
 	bool IsFollowIce(void) { return m_bFollowIce; }
@@ -158,6 +160,7 @@ private:
 	float m_fRotTurn;		// 振り向き角度
 	float m_fTimerDeath;	// 死亡までのタイマー
 	float m_fSpeedMove;		// 移動速度
+	float m_fFactRot;		// 回転係数
 	bool m_bFollowIce;		// 氷追従フラグ
 	bool m_bMoveByGrid;		// グリッド基準の移動フラグ
 	E_State m_state;		// 状態
