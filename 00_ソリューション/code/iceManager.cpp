@@ -24,6 +24,7 @@
 #include "manager.h"
 #include "gameManager.h"
 #include "player.h"
+#include "inputmouse.h"
 
 //*****************************************************
 // 定数定義
@@ -490,6 +491,73 @@ bool CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos, bool
 
 	if (pResultBreak != nullptr)
 		*pResultBreak = bResultBreak;
+
+	return true;
+}
+
+//=====================================================
+// 番号でつっつく処理
+//=====================================================
+bool CIceManager::PeckIce(int nIdxV, int nIdxH)
+{
+	if (nIdxV < 0 || nIdxV >= m_nNumGridVirtical ||
+		nIdxH < 0 || nIdxH >= m_nNumGridHorizontal)
+		return false;
+
+	vector<CIce*> apIce = GetAroundIce(nIdxV, nIdxH);
+
+	int nNumBreakV = nIdxV;
+	int nNumBreakH = nIdxH;
+
+	CIce* pIcePeck = m_aGrid[nIdxV][nIdxH].pIce;
+
+	if (pIcePeck == nullptr)
+		return false;
+
+	// 番号を取得
+	GetIceIndex(pIcePeck, &nNumBreakV, &nNumBreakH);
+
+	// 突っつける氷かのチェック
+	if (!CanPeck(pIcePeck, nNumBreakV, nNumBreakH))
+		return false;
+
+	// 氷を突っついた判定にする
+	if (pIcePeck)
+	{
+		pIcePeck->EnablePeck(true);
+		pIcePeck->ChangeState(new CIceStaeteBreak);
+		CSound::GetInstance()->Play(CSound::LABEL_SE_BREAK_ICE);
+	}
+
+	// 氷探索の再帰関数
+	FindIce(nNumBreakV, nNumBreakH, 0, pIcePeck, apIce, false);
+
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			if (m_aGrid[i][j].pIce == nullptr)
+				continue;
+
+			if (m_aGrid[i][j].pIce->IsCanPeck())
+				continue;
+
+			// 探索フラグの無効化
+			DisableFind();
+
+			// 壊れないブロックが行う信号解除
+			DisableFromHardIce(i, j);
+		}
+	}
+
+	// 探索フラグの無効化
+	DisableFind();
+
+	// 壊れるブロックをまとまりにする
+	SummarizeIce(nNumBreakV, nNumBreakH);
+
+	// 氷が壊れるフラグが立っていたら氷を壊す
+	BreakIce();
 
 	return true;
 }
@@ -1254,6 +1322,45 @@ void CIceManager::Debug(void)
 	}
 
 	pDebugProc->Print("\n現在の海流の向き[%d]", m_dirStreamNext);
+
+	//-------------------------------------
+	// デバッグで氷をつつく処理
+	//-------------------------------------
+	CInputMouse *pMouse = CInputMouse::GetInstance();
+
+	if (pMouse == nullptr)
+		return;
+
+	D3DXVECTOR3 posNear;
+	D3DXVECTOR3 posFar;
+	D3DXVECTOR3 vecDiff;
+
+	universal::ConvertScreenPosTo3D(&posNear, &posFar, &vecDiff);
+
+	std::map<CObject3D*, int> mapIcon;
+
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			if (m_aGrid[i][j].pIce == nullptr)
+				continue;
+
+			D3DXVECTOR3 posIce = m_aGrid[i][j].pIce->GetPosition();
+
+			bool bHit = universal::CalcRaySphere(posNear, vecDiff, posIce, Grid::SIZE * 0.5f);
+
+			if (!bHit)
+				continue;
+
+			debug::Effect3DShort(posIce, D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
+
+			if (pMouse->GetTrigger(CInputMouse::BUTTON_LMB))
+			{// クリックしたらパーツ番号の決定
+				PeckIce(i, j);
+			}
+		}
+	}
 }
 
 //=====================================================
