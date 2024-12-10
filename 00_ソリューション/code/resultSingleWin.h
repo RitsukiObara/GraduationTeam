@@ -79,6 +79,7 @@ private:
 
 	E_State m_state;		// 状態
 	float m_fTimer;			// タイマー
+	int m_nIdxUpdate;		// 更新番号
 
 	// 状態更新の関数ポインタ型エイリアス定義
 	typedef void (CResultSingleWin::*FuncUpdateState)(void);

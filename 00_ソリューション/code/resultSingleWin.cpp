@@ -135,7 +135,7 @@ CResultSingleWin::FuncUpdateState CResultSingleWin::s_aFuncUpdateState[] =	// 状
 //====================================================
 // コンストラクタ
 //====================================================
-CResultSingleWin::CResultSingleWin() : m_fTimer(0.0f), m_apCaptionScore(),m_apNumberOwn(), m_pRanking(nullptr), m_apRankingNumber(), m_pFrame(nullptr)
+CResultSingleWin::CResultSingleWin() : m_fTimer(0.0f), m_apCaptionScore(),m_apNumberOwn(), m_pRanking(nullptr), m_apRankingNumber(), m_pFrame(nullptr), m_nIdxUpdate(0)
 {
 
 }
@@ -189,6 +189,9 @@ void CResultSingleWin::Create2D(void)
 //====================================================
 void CResultSingleWin::CreateOwnScore(void)
 {
+	if (m_pRanking == nullptr)
+		return;
+
 	//----------------------------
 	// スコアの取得
 	//----------------------------
@@ -212,6 +215,9 @@ void CResultSingleWin::CreateOwnScore(void)
 	assert(pPlayer != nullptr);
 
 	int nTimePeck = pPlayer->GetTimePeck();
+
+	// ランクを保存する処理
+	m_nIdxUpdate = m_pRanking->AddRank(nScore, nTimePeck);
 
 	//----------------------------
 	// ポリゴンの生成

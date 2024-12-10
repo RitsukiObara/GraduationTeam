@@ -41,6 +41,8 @@ public:
 	void Save(void);
 	void Reset(void);
 	void ReleaseArray(void);
+	void Sort(void);							// ソート
+	int AddRank(int nScore, int nTimePeck);	// スコアを追加する
 
 	// 変数取得・設定関数
 	vector<S_InfoRank*> GetRank(void) { return m_apRank; }	// ランク情報配列

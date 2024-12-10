@@ -57,7 +57,7 @@ CRankingSingle *CRankingSingle::Create(string pathSave)
 //====================================================
 HRESULT CRankingSingle::Init(void)
 {
-#if 1
+#if 0
 	Reset();	// リセット処理
 
 	Save();
@@ -73,8 +73,8 @@ HRESULT CRankingSingle::Init(void)
 //====================================================
 void CRankingSingle::Reset(void)
 {
-	int aScore[NUM_DATA_DEFAULT] = { 10000,6700,5000 };
-	int nTimePeck[NUM_DATA_DEFAULT] = { 10, 15, 20 };
+	int aScore[NUM_DATA_DEFAULT] = { 500,200,100 };
+	int nTimePeck[NUM_DATA_DEFAULT] = { 50, 80, 90 };
 
 	for (int i = 0; i < NUM_DATA_DEFAULT; i++)
 	{
@@ -105,6 +105,52 @@ void CRankingSingle::ReleaseArray(void)
 	}
 
 	m_apRank.clear();
+}
+
+//====================================================
+// ソート
+//====================================================
+void CRankingSingle::Sort(void)
+{
+	// 降順にソート (valueを基準に)
+	std::sort(m_apRank.begin(), m_apRank.end(), [](S_InfoRank* a, S_InfoRank* b) { return a->nScore > b->nScore; });
+}
+
+//====================================================
+// ランクの追加
+//====================================================
+int CRankingSingle::AddRank(int nScore, int nTimePeck)
+{
+	int nUpdate = -1;
+
+	// ソートして、一番小さい値と比較
+	Sort();
+	
+	S_InfoRank *pInfoMin = m_apRank[m_apRank.size() - 1];
+
+	if (pInfoMin->nScore < nScore)
+	{
+		pInfoMin->nScore = nScore;
+		pInfoMin->nTimePeck = nTimePeck;
+
+		// 再ソートしておく
+		Sort();
+
+		// 更新した番号の保存
+		for (int i = 0; i < (int)m_apRank.size(); ++i)
+		{
+			if (m_apRank[i] != pInfoMin)
+				continue;
+
+			nUpdate = i;
+			break;
+		}
+	}
+
+	// 保存する
+	Save();
+
+	return nUpdate;
 }
 
 //====================================================
