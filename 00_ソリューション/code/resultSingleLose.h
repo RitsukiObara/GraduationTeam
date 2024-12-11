@@ -54,6 +54,7 @@ private:
 	// メンバ関数
 	void Create2D(void);			// 2DUIの生成
 	void CreateMenu(void);			// メニューの生成
+	void CreateButtonUI(void);		// ボタンUIの生成
 	void UpdateApperMenu(void);		// メニューの出現
 	void UpdateSelect(void);		// 選択状態
 	void Fade(E_Select select);			// フェードする処理
@@ -63,6 +64,7 @@ private:
 	float m_fTimer;							// タイマー
 	CUI *m_apMenu[E_Select::SELECT_MAX];	// メニュー項目のポリゴン
 	E_Select m_select;						// 選択項目
+	CUI *m_pButtonUI;						// ボタンUI
 
 	// 状態更新の関数ポインタ型エイリアス定義
 	typedef void (CResultSingleLose::*FuncUpdateState)(void);

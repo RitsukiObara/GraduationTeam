@@ -53,6 +53,18 @@ const float DIFF_HEIGHT = HEIGHT_DEST - HEIGHT_INIT;	// 高さの差分
 }
 
 //----------------------------
+// ボタンUI定数
+//----------------------------
+namespace buttonUI
+{
+	const string PATH = "data\\TEXTURE\\UI\\A_Move.png";
+	const float WIDTH = 0.09f;
+	const float HEIGHT = 0.049f;
+	const D3DXVECTOR3 POS = D3DXVECTOR3(0.9f, 0.92f, 0.0f);
+	const float FADEIN_SPEED = 0.05f;
+}
+
+//----------------------------
 // スコア数字定数
 //----------------------------
 namespace scoreNumber
@@ -135,7 +147,7 @@ CResultSingleWin::FuncUpdateState CResultSingleWin::s_aFuncUpdateState[] =	// 状
 //====================================================
 // コンストラクタ
 //====================================================
-CResultSingleWin::CResultSingleWin() : m_fTimer(0.0f), m_apCaptionScore(),m_apNumberOwn(), m_pRanking(nullptr), m_apRankingNumber(), m_pFrame(nullptr), m_nIdxUpdate(0)
+CResultSingleWin::CResultSingleWin() : m_fTimer(0.0f), m_apCaptionScore(),m_apNumberOwn(), m_pRanking(nullptr), m_apRankingNumber(), m_pFrame(nullptr), m_nIdxUpdate(0), m_pButtonUI(nullptr)
 {
 
 }
@@ -182,6 +194,9 @@ void CResultSingleWin::Create2D(void)
 
 	// ランキング数字の生成
 	CreateRankingNumber();
+
+	// ボタンUIの生成
+	CreateButtonUI();
 }
 
 //====================================================
@@ -312,11 +327,29 @@ void CResultSingleWin::CreateRankingNumber(void)
 }
 
 //====================================================
+// ボタンUIの生成
+//====================================================
+void CResultSingleWin::CreateButtonUI(void)
+{
+	m_pButtonUI = CUI::Create();
+	if (m_pButtonUI != nullptr)
+	{
+		// 設定
+		m_pButtonUI->SetIdxTexture(CTexture::GetInstance()->Regist(&buttonUI::PATH[0]));	// テクスチャ割当
+		m_pButtonUI->SetPosition(buttonUI::POS);					// 位置
+		m_pButtonUI->SetSize(buttonUI::WIDTH, buttonUI::HEIGHT);	// 大きさ
+		m_pButtonUI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));		// カラー（不透明度）
+		m_pButtonUI->SetVtx();	// 頂点反映
+	}
+}
+
+//====================================================
 // 終了処理
 //====================================================
 void CResultSingleWin::Uninit(void)
 {
 	Object::DeleteObject((CObject**)&m_pRanking);
+	Object::DeleteObject((CObject**)&m_pButtonUI);
 
 	CResultSingle::Uninit();
 }
@@ -435,6 +468,17 @@ void CResultSingleWin::UpdateApperRanking(void)
 //=====================================================
 void CResultSingleWin::UpdateWait(void)
 {
+	// ボタンUIフェードイン
+	if (m_pButtonUI != nullptr)
+	{
+		D3DXCOLOR col = m_pButtonUI->GetCol();
+		col.a += buttonUI::FADEIN_SPEED;
+		universal::LimitValuefloat(&col.a, 1.0f, 0.0f);
+
+		m_pButtonUI->SetCol(col);	// カラー（不透明度）
+		m_pButtonUI->SetVtx();		// 頂点反映
+	}
+
 	vector<CInputManager*> aInputMgr = CInputManager::GetArray();
 
 	for (CInputManager *pInputMgr : aInputMgr)
