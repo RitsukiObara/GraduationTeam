@@ -61,14 +61,24 @@ const float ADULTWALL_LENGTH = 3000.0f;			// 大人の壁
 const D3DXVECTOR2 SIZE_NAME = { 0.25f, 0.06f };	// 名前のサイズ
 
 //----------------------------------
-// ボタンUIの定数
+// 戻るボタンUIの定数
 //----------------------------------
-namespace buttonUI
+namespace backButtonUI
 {
-const string PATH = "data\\TEXTURE\\UI\\SelectAndBack.png";
-const float WIDTH = 0.1957f;
+const string PATH = "data\\TEXTURE\\UI\\B_Back.png";
+const float WIDTH = 0.09f;
 const float HEIGHT = 0.049f;
-const D3DXVECTOR3 POS = D3DXVECTOR3(0.78f, 0.92f, 0.0f);
+const D3DXVECTOR3 POS = D3DXVECTOR3(0.88f, 0.92f, 0.0f);
+}
+//----------------------------------
+// スタートボタンUIの定数
+//----------------------------------
+namespace startButtonUI
+{
+	const string PATH = "data\\TEXTURE\\UI\\A_Start.png";
+	const float WIDTH = 0.11f;
+	const float HEIGHT = 0.039f;
+	const D3DXVECTOR3 POS = D3DXVECTOR3(0.78f, 0.92f, 0.0f);
 }
 }
 
@@ -81,7 +91,7 @@ vector<CSelectStageManager::S_InfoStage*> CSelectStageManager::s_aInfoStageMulti
 //=====================================================
 // コンストラクタ
 //=====================================================
-CSelectStageManager::CSelectStageManager() : m_pPenguin(nullptr), m_bEnter(false), m_fTimerFade(0.0f), m_nIdxSelect(0), m_pButtonUI(nullptr)
+CSelectStageManager::CSelectStageManager() : m_pPenguin(nullptr), m_bEnter(false), m_fTimerFade(0.0f), m_nIdxSelect(0), m_pButtonUIBack(nullptr)
 {
 
 }
@@ -148,14 +158,14 @@ HRESULT CSelectStageManager::Init(void)
 	CIceManager::Create(0, 0);
 
 	// ボタンUI配置
-	m_pButtonUI = CUI::Create();
-	if (m_pButtonUI != nullptr)
+	m_pButtonUIBack = CUI::Create();
+	if (m_pButtonUIBack != nullptr)
 	{
 		// 設定
-		m_pButtonUI->SetIdxTexture(CTexture::GetInstance()->Regist(&buttonUI::PATH[0]));	// テクスチャ割当
-		m_pButtonUI->SetPosition(buttonUI::POS);					// 位置
-		m_pButtonUI->SetSize(buttonUI::WIDTH, buttonUI::HEIGHT);	// 大きさ
-		m_pButtonUI->SetVtx();	// 頂点反映
+		m_pButtonUIBack->SetIdxTexture(CTexture::GetInstance()->Regist(&backButtonUI::PATH[0]));	// テクスチャ割当
+		m_pButtonUIBack->SetPosition(backButtonUI::POS);					// 位置
+		m_pButtonUIBack->SetSize(backButtonUI::WIDTH, backButtonUI::HEIGHT);	// 大きさ
+		m_pButtonUIBack->SetVtx();	// 頂点反映
 	}
 
 	return S_OK;
@@ -367,6 +377,18 @@ void CSelectStageManager::SetStage(void)
 		// テクスチャ反映
 		int nIdxTexture = Texture::GetIdx(&pInfoStage->pathName[0]);
 		pInfoStage->pName->SetIdxTexture(nIdxTexture);
+
+		// スタートボタンUI生成
+		pInfoStage->pStartButtonUI = CUI::Create();
+
+		if (pInfoStage->pStartButtonUI == nullptr)
+			return;
+
+		// 設定
+		pInfoStage->pStartButtonUI->SetIdxTexture(CTexture::GetInstance()->Regist(&startButtonUI::PATH[0]));	// テクスチャ割当
+		pInfoStage->pStartButtonUI->SetPosition(posScreen);					// 位置
+		pInfoStage->pStartButtonUI->SetSize(0.0f, 0.0f);	// 大きさ
+		pInfoStage->pStartButtonUI->SetVtx();	// 頂点反映
 	}
 }
 
@@ -375,7 +397,7 @@ void CSelectStageManager::SetStage(void)
 //=====================================================
 void CSelectStageManager::Uninit(void)
 {
-	Object::DeleteObject((CObject**)&m_pButtonUI);
+	Object::DeleteObject((CObject**)&m_pButtonUIBack);
 	Release();
 }
 
@@ -492,6 +514,18 @@ void CSelectStageManager::Scaling(S_InfoStage *pInfoStage)
 
 	pInfoStage->pName->SetPosition(D3DXVECTOR3(posScreen.x, posScreen.y - HEIGHT_NUMBER, 0.0f));
 	pInfoStage->pName->SetVtx();
+
+	// スタートボタンUIの設定
+	if (pInfoStage->pStartButtonUI == nullptr)
+		return;
+
+	float fScaleUIDest = (pInfoStage->state == E_StateStage::STATE_SELECT) ? 1.0f : 0.0f;
+	float fScaleUI = (pInfoStage->pStartButtonUI->GetSize().x / startButtonUI::WIDTH);
+	fScaleUI += (fScaleUIDest - fScaleUI) * SPEED_SCALING_STAGE;
+
+	pInfoStage->pStartButtonUI->SetPosition(posScreen);					// 位置
+	pInfoStage->pStartButtonUI->SetSize(startButtonUI::WIDTH * fScaleUI, startButtonUI::HEIGHT * fScaleUI);	// 大きさ
+	pInfoStage->pStartButtonUI->SetVtx();	// 頂点反映
 }
 
 //=====================================================

@@ -52,6 +52,7 @@ public:
 		E_StateStage state;				// 状態
 		float fScaleDest;				// 目標のスケール
 		CUI *pName;						// 名前のポインタ
+		CUI *pStartButtonUI;			// 1スタートボタンUI
 
 		// コンストラクタ
 		S_InfoStage() : pModel(nullptr), pos(), pCollision(nullptr), state(E_StateStage::STATE_NONE), fScaleDest(0.0f), pName(nullptr) {}
@@ -101,7 +102,7 @@ private:
 	float m_fTimerFade;	// フェードまでのタイマー
 	int m_nIdxSelect;	// 選んだステージ番号
 	vector<CGameObject*> m_aParticlePos;	// パーティクルの位置用オブジェクト
-	CUI *m_pButtonUI;	// ボタンUI
+	CUI *m_pButtonUIBack;	// 戻るボタンUI
 };
 
 #endif

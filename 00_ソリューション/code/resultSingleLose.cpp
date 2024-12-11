@@ -161,6 +161,8 @@ void CResultSingleLose::CreateButtonUI(void)
 //====================================================
 void CResultSingleLose::Uninit(void)
 {
+	Object::DeleteObject((CObject**)&m_pButtonUI);
+
 	CResultSingle::Uninit();
 }
 
