@@ -1348,7 +1348,11 @@ void CPlayer::ManageMotion(void)
 	int nMotion = GetMotion();
 	bool bFinish = IsFinish();
 	
-	if (m_state == E_State::STATE_BLOW)
+	if (nMotion == MOTION::MOTION_GUTS)
+	{
+
+	}
+	else if (m_state == E_State::STATE_BLOW)
 	{
 		if (nMotion == MOTION::MOTION_STANDUP)
 		{
