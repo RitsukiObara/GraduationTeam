@@ -37,6 +37,7 @@ public:
 		TYPE_ICEBREAK,		// •X‚ª‰ó‚ê‚é‚Æ‚«
 		TYPE_JUMP,			// ƒWƒƒƒ“ƒv
 		TYPE_DROP,			// …‚µ‚Ô‚«
+		TYPE_LANDING,		// ’…’n
 		TYPE_MAX
 	};
 

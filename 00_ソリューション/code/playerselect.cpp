@@ -59,6 +59,9 @@ const float GRAVITY = 0.6f;	// 重力
 const float POW_VIB_APPER = 0.6f;	// 出現時の振動強さ
 const int TIME_VIB_APPER = 15;		// 出現時の振動長さ
 
+const float TIME_FADE = 3.0f;		// フェードにかかる時間
+const float FACT_ROT_FADE = 0.4f;	// フェード時の回転係数
+
 //----------------------------------
 // ステージの定数
 //----------------------------------
@@ -101,6 +104,8 @@ CPlayerSelect::CPlayerSelect()
 	m_pFan = nullptr;
 	m_pShadow = nullptr;
 	m_pButtonUI = nullptr;
+	m_bFade = false;
+	m_fTimerFade = 0.0f;
 }
 
 //=====================================================
@@ -282,6 +287,9 @@ void CPlayerSelect::Update(void)
 
 	// 開始するかの確認
 	CheckStart();
+
+	// フェードの処理
+	Fade();
 
 #ifdef _DEBUG
 	Debug();
@@ -483,19 +491,24 @@ void CPlayerSelect::CheckStart(void)
 //=====================================================
 void CPlayerSelect::StartFade(void)
 {
-	CFade* pFade = CFade::GetInstance();
-
-	if (pFade == nullptr)
-		return;
-
-	if (pFade->GetState() != CFade::FADE::FADE_NONE)
-		return;
 
 	// プレイヤーエンターフラグの設定
 	vector<bool> abEnter(MAX_PLAYER);
 
 	for (int i = 0; i < MAX_PLAYER; i++)
-		abEnter[i] = m_mapPlayer[m_apInputMgr[i]] != nullptr;
+	{
+		CPlayer *pPlayer = m_mapPlayer[m_apInputMgr[i]];
+
+		if (pPlayer != nullptr)
+		{
+			abEnter[i] = true;
+			int nMotion = pPlayer->GetMotion();
+			if(nMotion != CPlayer::MOTION::MOTION_GUTS)
+				pPlayer->SetMotion(CPlayer::MOTION::MOTION_GUTS);
+
+			pPlayer->EnableInput(false);
+		}
+	}
 
 	// モードの保存
 	gameManager::SaveMode(CGame::E_GameMode::MODE_MULTI, abEnter);
@@ -503,8 +516,59 @@ void CPlayerSelect::StartFade(void)
 	// 入力番号の保存
 	gameManager::SaveIdxInput(m_aIdxInput);
 
-	// ゲームに遷移
-	pFade->SetFade(CScene::MODE_TUTORIAL);
+	// フェードフラグを立てる
+	m_bFade = true;
+}
+
+//=====================================================
+// フェードの処理
+//=====================================================
+void CPlayerSelect::Fade(void)
+{
+	if (!m_bFade)
+		return;
+
+	// 一定時間になったらフェード
+	m_fTimerFade += CManager::GetDeltaTime();
+
+	if (m_fTimerFade > TIME_FADE)
+	{
+		CFade* pFade = CFade::GetInstance();
+
+		if (pFade == nullptr)
+			return;
+
+		pFade->SetFade(CScene::MODE_GAME);
+	}
+
+	// プレイヤーをカメラの向きに向ける
+	vector<CPlayer*> apPlayer = CPlayer::GetInstance();
+	CCamera *pCamera = CManager::GetCamera();
+	CCamera::Camera *pInfoCamera = nullptr;
+
+	if (pCamera != nullptr)
+		pInfoCamera = pCamera->GetCamera();
+
+	if (pInfoCamera == nullptr)
+		return;
+
+	D3DXVECTOR3 posCamera = pInfoCamera->posV;
+
+	for (CPlayer *pPlayer : apPlayer)
+	{
+		// カメラとの差分距離をとる
+		D3DXVECTOR3 posPlayer = pPlayer->GetPosition();
+		D3DXVECTOR3 vecDiff = posCamera - posPlayer;
+
+		// 目標角度を設定して、向きを補正
+		float fAngleDest = 0.0f;
+
+		fAngleDest = atan2f(vecDiff.x, vecDiff.z);
+
+		D3DXVECTOR3 rotPlayer = pPlayer->GetRotation();
+		universal::FactingRot(&rotPlayer.y, fAngleDest + D3DX_PI, FACT_ROT_FADE);
+		pPlayer->SetRotation(rotPlayer);
+	}
 }
 
 //=====================================================

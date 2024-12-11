@@ -40,79 +40,79 @@
 //*****************************************************
 namespace
 {
-	namespace selectUI
-	{
-		const string PATH[CSelectMode::MODE_MAX] =
-		{
-			"data\\TEXTURE\\UI\\single_mode.png",
-			"data\\TEXTURE\\UI\\party_mode.png",
-			//"data\\TEXTURE\\UI\\tutorial00.jpg"
-		};
-		const float WIDTH[CSelectMode::MODE_MAX] =
-		{
-			0.14f,
-			0.14f,
-			//0.5f
-		};
-		const float HEIGHT[CSelectMode::MODE_MAX] =
-		{
-			0.25f,
-			0.25f,
-			//0.5f
-		};
-		const D3DXVECTOR3 POS[CSelectMode::MODE_MAX] =
-		{
-			D3DXVECTOR3(0.195f, 0.48f, 0.0f),
-			D3DXVECTOR3(0.405f, 0.72f, 0.0f),
-			//D3DXVECTOR3(0.5f, 0.5f, 0.0f)
-		};
-		const D3DXCOLOR NOSELECT_COLOR = D3DXCOLOR(0.7f, 0.7f, 0.7f, 0.8f);
-		const float NOSELECT_ALPHA = 0.5f;	// 選択されていないときの不透明度
-		const float SELECTUI_COLORCHANGE_COEF = 0.4f;	// モードUIの変化の慣性
-	}
+namespace selectUI
+{
+const string PATH[CSelectMode::MODE_MAX] =
+{
+	"data\\TEXTURE\\UI\\single_mode.png",
+	"data\\TEXTURE\\UI\\party_mode.png",
+	//"data\\TEXTURE\\UI\\tutorial00.jpg"
+};
+const float WIDTH[CSelectMode::MODE_MAX] =
+{
+	0.14f,
+	0.14f,
+	//0.5f
+};
+const float HEIGHT[CSelectMode::MODE_MAX] =
+{
+	0.25f,
+	0.25f,
+	//0.5f
+};
+const D3DXVECTOR3 POS[CSelectMode::MODE_MAX] =
+{
+	D3DXVECTOR3(0.195f, 0.48f, 0.0f),
+	D3DXVECTOR3(0.405f, 0.72f, 0.0f),
+	//D3DXVECTOR3(0.5f, 0.5f, 0.0f)
+};
+const D3DXCOLOR NOSELECT_COLOR = D3DXCOLOR(0.7f, 0.7f, 0.7f, 0.8f);
+const float NOSELECT_ALPHA = 0.5f;	// 選択されていないときの不透明度
+const float SELECTUI_COLORCHANGE_COEF = 0.4f;	// モードUIの変化の慣性
+}
 
-	namespace buttonUI
-	{
-		const string PATH = "data\\TEXTURE\\UI\\SelectAndBack.png";
-		const float WIDTH = 0.1957f;
-		const float HEIGHT = 0.049f;
-		const D3DXVECTOR3 POS = D3DXVECTOR3(0.78f, 0.92f, 0.0f);
-	}
+namespace buttonUI
+{
+const string PATH = "data\\TEXTURE\\UI\\SelectAndBack.png";
+const float WIDTH = 0.1957f;
+const float HEIGHT = 0.049f;
+const D3DXVECTOR3 POS = D3DXVECTOR3(0.78f, 0.92f, 0.0f);
+}
 
-	namespace MeshField
-	{
-		const string TEX_PATH = "data\\TEXTURE\\MATERIAL\\field.jpg";
-		const D3DXVECTOR3 POS = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		const int DIV_TEX = 128;
-	}
+namespace MeshField
+{
+const string TEX_PATH = "data\\TEXTURE\\MATERIAL\\field.jpg";
+const D3DXVECTOR3 POS = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+const int DIV_TEX = 128;
+}
 
-	namespace Igloo
-	{
-		const string MODEL_PATH = "data\\MODEL\\object\\Snowdome_SelectMode.x";
-		const D3DXVECTOR3 POS = D3DXVECTOR3(800.0f, -10.0f, 600.0f);
-		const D3DXVECTOR3 ROT = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	}
+namespace Igloo
+{
+const string MODEL_PATH = "data\\MODEL\\object\\Snowdome_SelectMode.x";
+const D3DXVECTOR3 POS = D3DXVECTOR3(800.0f, -10.0f, 600.0f);
+const D3DXVECTOR3 ROT = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+}
 
-	namespace Penguin
-	{
-		const vector<D3DXVECTOR3> POS =
-		{
-			D3DXVECTOR3(400.0f, 10.0f, -1000.0f),
-			D3DXVECTOR3(-500.0f, 10.0f, 800.0f),
-			D3DXVECTOR3(2200.0f, 10.0f, 800.0f),
-			D3DXVECTOR3(950.0f, 10.0f, 700.0f)
-		};
-	}
+namespace Penguin
+{
+const vector<D3DXVECTOR3> POS =
+{
+	D3DXVECTOR3(400.0f, 10.0f, -1000.0f),
+	D3DXVECTOR3(-500.0f, 10.0f, 800.0f),
+	D3DXVECTOR3(2200.0f, 10.0f, 800.0f),
+	D3DXVECTOR3(950.0f, 10.0f, 700.0f)
+};
+}
 
-	const int CNT_SNOW = 10;						// 雪が降るタイミング
-	const float MAX_HEIGHT = 1800.0f;				// 雪が降ってくる高さ
-	const int MAX_SNOW_RADIUS = 100;				// 最大雪の半径
-	const int MIN_SNOW_RADIUS = 20;					// 最低雪の半径
-	const int SNOW_LIFE = 200;						// 雪のライフ
-	const float SNOW_MOVE_SPED = -10.0f;			// 雪の移動速度
-	const int MAX_SNOW_POS = 2200;					// 雪の最大生成場所
-	const int MIN_SNOW_POS = -2200;					// 雪の最低生成場所
-	const int BLIZZARD_CNT = 800;					// 吹雪が来るまでのカウント
+const int CNT_SNOW = 10;						// 雪が降るタイミング
+const float MAX_HEIGHT = 1800.0f;				// 雪が降ってくる高さ
+const int MAX_SNOW_RADIUS = 100;				// 最大雪の半径
+const int MIN_SNOW_RADIUS = 20;					// 最低雪の半径
+const int SNOW_LIFE = 200;						// 雪のライフ
+const float SNOW_MOVE_SPED = -10.0f;			// 雪の移動速度
+const int MAX_SNOW_POS = 2200;					// 雪の最大生成場所
+const int MIN_SNOW_POS = -2200;					// 雪の最低生成場所
+const int BLIZZARD_CNT = 800;					// 吹雪が来るまでのカウント
 }
 
 //=====================================================

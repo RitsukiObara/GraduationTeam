@@ -1207,6 +1207,13 @@ void CPlayer::JumpToDest(CIce *pIceDest, float fHeightJump)
 //=====================================================
 void CPlayer::EndJump(void)
 {
+	if (m_pIceDestJump != nullptr)
+		return;
+
+	// エフェクト発生
+	D3DXVECTOR3 posPlayer = GetPosition();
+	MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_LANDING, posPlayer);
+
 	// ジャンプモーションフラグを折る
 	m_fragMotion.bJump = false;
 
@@ -1269,7 +1276,10 @@ void CPlayer::StayBlow(void)
 	{// 氷に着地したら立ち上がりモーション
 		int nMotion = GetMotion();
 		if (nMotion != MOTION::MOTION_STANDUP)
+		{
 			SetMotion(MOTION::MOTION_STANDUP);
+			MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_LANDING, posPlayer);
+		}
 	}
 }
 
@@ -1278,6 +1288,9 @@ void CPlayer::StayBlow(void)
 //=====================================================
 void CPlayer::EndBlow(void)
 {
+	if (m_pIceDestJump == nullptr)
+		return;
+
 	if(CGame::GetState() == CGame::E_State::STATE_NORMAL)
 		EnableInput(true);	// 入力を有効化
 
@@ -1335,7 +1348,11 @@ void CPlayer::ManageMotion(void)
 	int nMotion = GetMotion();
 	bool bFinish = IsFinish();
 	
-	if (m_state == E_State::STATE_BLOW)
+	if (nMotion == MOTION::MOTION_GUTS)
+	{
+
+	}
+	else if (m_state == E_State::STATE_BLOW)
 	{
 		if (nMotion == MOTION::MOTION_STANDUP)
 		{

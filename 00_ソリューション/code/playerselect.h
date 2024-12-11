@@ -62,6 +62,7 @@ private:
 	void Ready(int nIdx);			// 準備
 	void CheckStart(void);			// 開始するかの確認
 	void StartFade(void);			// フェードの開始
+	void Fade(void);				// フェードする処理
 	void Debug(void);				// デバッグ処理
 
 	// メンバ変数
@@ -76,6 +77,8 @@ private:
 	CFan3D *m_pFan;								// 上側の円ポリゴン
 	CShadow* m_pShadow;							// 影のポインタ
 	CUI *m_pButtonUI;							// ボタンUI
+	bool m_bFade;								// フェードフラグ
+	float m_fTimerFade;							// フェードタイマー
 
 	// 静的メンバ変数
 };
