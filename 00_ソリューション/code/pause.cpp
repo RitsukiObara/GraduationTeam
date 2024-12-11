@@ -32,6 +32,17 @@
 #define SPEED_FADE	(0.03f)	// 背景のフェード速度
 #define ALPHA_BG	(0.5f)	// 背景の不透明度
 
+namespace
+{
+	namespace buttonUI
+	{
+		const string PATH = "data\\TEXTURE\\UI\\SelectAndBack.png";
+		const float WIDTH = 0.1957f;
+		const float HEIGHT = 0.049f;
+		const D3DXVECTOR3 POS = D3DXVECTOR3(0.78f, 0.92f, 0.0f);
+	}
+}
+
 //====================================================
 // コンストラクタ
 //====================================================
@@ -41,6 +52,8 @@ CPause::CPause()
 	m_state = STATE_NONE;
 	ZeroMemory(&m_apMenu[MENU_RESUME], sizeof(m_apMenu));
 	ZeroMemory(&m_aPosDest[MENU_RESUME], sizeof(D3DXVECTOR3) * MENU_MAX);
+	m_pButton = nullptr;
+	m_posDestButton = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_bSound = false;
 	nCountMove = 0;
 }
@@ -102,6 +115,21 @@ HRESULT CPause::Init(void)
 		m_pBg->SetCol(D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f));
 
 		m_pBg->SetVtx();
+	}
+
+	// ボタンUI
+	m_pButton = CUI::Create();
+	if (m_pButton != nullptr)
+	{
+		// 設定
+		m_pButton->SetIdxTexture(CTexture::GetInstance()->Regist(&buttonUI::PATH[0]));	// テクスチャ割当
+		m_pButton->SetPosition(D3DXVECTOR3(2.5f, buttonUI::POS.y,0.0f));				// 位置
+		m_pButton->SetSize(buttonUI::WIDTH, buttonUI::HEIGHT);	// 大きさ
+		m_pButton->SetVtx();	// 頂点反映
+
+		// 目標位置設定
+		m_posDestButton = m_pButton->GetPosition();
+		m_posDestButton.x = buttonUI::POS.x;
 	}
 
 	char *pPath[MENU_MAX] = 
@@ -197,6 +225,12 @@ void CPause::Uninit(void)
 		}
 	}
 
+	if (m_pButton != nullptr)
+	{
+		m_pButton->Uninit();
+		m_pButton = nullptr;
+	}
+
 	// ゲームを再開する
 	CGame *pGame = CGame::GetInstance();
 
@@ -259,6 +293,19 @@ void CPause::ManageState(void)
 				nEnd++;
 			}
 		}
+	}
+	if (m_pButton != nullptr)
+	{
+		D3DXVECTOR3 pos = m_pButton->GetPosition();
+		D3DXVECTOR3 posOld = pos;
+		D3DXVECTOR3 vecDiff = m_posDestButton - pos;
+		float fDiffOld = vecDiff.x;
+
+		vecDiff *= MOVE_FACT;
+		vecDiff += pos;
+
+		m_pButton->SetPosition(vecDiff);
+		m_pButton->SetVtx();
 	}
 
 	if (nEnd == MENU_MAX &&
@@ -469,6 +516,7 @@ void CPause::OffPosition(void)
 			}
 		}
 	}
+	m_posDestButton.x = 1.25f;
 }
 
 //====================================================
