@@ -223,7 +223,6 @@ void CSelectMode::Uninit(void)
 	}
 
 	Object::DeleteObject((CObject**)&m_pButtonUI);
-	Object::DeleteObject((CObject**)&m_pButtonUI);
 	
 	// オブジェクト全破棄
 	CObject::ReleaseAll();

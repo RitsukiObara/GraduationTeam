@@ -60,6 +60,9 @@ const float HEIGHT_NUMBER = 0.14f;				// 名前の高さ
 const float ADULTWALL_LENGTH = 3000.0f;			// 大人の壁
 const D3DXVECTOR2 SIZE_NAME = { 0.25f, 0.06f };	// 名前のサイズ
 
+//----------------------------------
+// ボタンUIの定数
+//----------------------------------
 namespace buttonUI
 {
 	const string PATH = "data\\TEXTURE\\UI\\B_Back.png";
@@ -372,6 +375,7 @@ void CSelectStageManager::SetStage(void)
 //=====================================================
 void CSelectStageManager::Uninit(void)
 {
+	Object::DeleteObject((CObject**)&m_pButtonUI);
 	Release();
 }
 
