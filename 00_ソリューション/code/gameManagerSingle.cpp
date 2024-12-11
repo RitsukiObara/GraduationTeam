@@ -20,14 +20,16 @@
 #include "fade.h"
 #include "camera.h"
 #include "cameraState.h"
+#include "iceManager.h"
 
 //*****************************************************
 // 定数定義
 //*****************************************************
 namespace
 {
-const int NUM_ENEMY_DEFAULT = 5;								// 敵の数のデフォルト値
-const string PATH_ENEMY_DEFAULT = "data\\TEXT\\enemy00.txt";	// 敵配置情報のテキスト
+const string PATH_ENEMY_DEFAULT = "data\\TEXT\\enemy00.txt";		// 敵配置情報のテキスト
+const char* PATH_SAMPLE_ICESTAGE = "data\\TEXT\\ice_stage_00.txt";	// サンプルの初期配置
+const int SIZE_GRID = 10;											// ステージのサイズ
 }
 
 //=====================================================
@@ -43,6 +45,34 @@ CGameManagerSingle::CGameManagerSingle() : m_pPlayer(nullptr), m_pEnemyFct(nullp
 //=====================================================
 HRESULT CGameManagerSingle::Init(void)
 {
+	//------------------------------------
+	// ステージの生成
+	//------------------------------------
+	// モードの取得
+	vector<bool> abFrag;
+	CGame::E_GameMode mode;
+	gameManager::LoadMode(&mode, abFrag);
+
+	// 氷マネージャーの読込処理
+	int nIdxMap = gameManager::LoadIdxMap();
+
+	vector<CSelectStageManager::S_InfoStage*> apInfoStage = CSelectStageManager::GetInfoStage();
+
+	CIceManager* pIceManager = CIceManager::Create(SIZE_GRID, SIZE_GRID);
+	if (pIceManager == nullptr)
+		return E_FAIL;
+
+	pIceManager->SetDirStream((COcean::E_Stream)apInfoStage[nIdxMap]->nDirStream);
+	pIceManager->SetDirStreamNext((COcean::E_Stream)apInfoStage[nIdxMap]->nDirStream);
+
+	if (apInfoStage.empty())	// ステージ情報が空だったらデフォルトマップ
+		pIceManager->Load(PATH_SAMPLE_ICESTAGE);
+	else						// 対応したステージを読込む
+		pIceManager->Load(&apInfoStage[nIdxMap]->pathMap[0]);
+
+	//------------------------------------
+	// 各種オブジェクト生成
+	//------------------------------------
 	// 敵数表示UI生成
 	CUIEnemy::Create();
 
@@ -67,16 +97,11 @@ HRESULT CGameManagerSingle::Init(void)
 
 	// 基底クラスの初期化
 	CGameManager::Init();
-
-	// 敵配置の設定
-	int nIdxMap = gameManager::LoadIdxMap();
-
+	
 	m_pEnemyFct = CEnemyFct::Create();
 
 	if (m_pEnemyFct == nullptr)
 		return E_FAIL;
-
-	vector<CSelectStageManager::S_InfoStage*> apInfoStage = CSelectStageManager::GetInfoStage();
 
 	if (apInfoStage.empty())
 		m_pEnemyFct->Load(PATH_ENEMY_DEFAULT);

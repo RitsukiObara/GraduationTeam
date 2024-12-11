@@ -15,12 +15,16 @@
 #include "fade.h"
 #include "camera.h"
 #include "cameraState.h"
+#include "selectStageManager.h"
+#include "iceManager.h"
 
 //*****************************************************
 // 定数定義
 //*****************************************************
 namespace
 {
+const char* PATH_SAMPLE_ICESTAGE = "data\\TEXT\\ice_stage_00.txt";	// サンプルの初期配置
+const int SIZE_GRID = 15;											// ステージのサイズ
 }
 
 //=====================================================
@@ -36,16 +40,39 @@ CGameManagerMulti::CGameManagerMulti() : m_nNumDeathPlayer(0)
 //=====================================================
 HRESULT CGameManagerMulti::Init(void)
 {
+	//------------------------------------
+	// ステージの生成
+	//------------------------------------
+	// モードの取得
+	vector<bool> abFrag;
+	CGame::E_GameMode mode;
+	gameManager::LoadMode(&mode, abFrag);
+
+	// 氷マネージャーの読込処理
+	int nIdxMap = gameManager::LoadIdxMap();
+
+	vector<CSelectStageManager::S_InfoStage*> apInfoStage = CSelectStageManager::GetInfoStageMulti();
+
+	CIceManager* pIceManager = CIceManager::Create(SIZE_GRID, SIZE_GRID);
+	if (pIceManager == nullptr)
+		return E_FAIL;
+
+	pIceManager->SetDirStream((COcean::E_Stream)apInfoStage[nIdxMap]->nDirStream);
+	pIceManager->SetDirStreamNext((COcean::E_Stream)apInfoStage[nIdxMap]->nDirStream);
+
+	if (apInfoStage.empty())	// ステージ情報が空だったらデフォルトマップ
+		pIceManager->Load(PATH_SAMPLE_ICESTAGE);
+	else						// 対応したステージを読込む
+		pIceManager->Load(&apInfoStage[nIdxMap]->pathMap[0]);
+
+	//------------------------------------
+	// 各種設定
+	//------------------------------------
 	// カメラのステイト設定
 	Camera::ChangeState(new CMultiGame);
 
 	// 基底クラスの初期化
 	CGameManager::Init();
-
-	// モードの取得
-	vector<bool> abFrag;
-	CGame::E_GameMode mode;
-	gameManager::LoadMode(&mode, abFrag);
 
 	for (int i = 0; i < (int)abFrag.size(); i++)
 	{
@@ -72,8 +99,6 @@ HRESULT CGameManagerMulti::Init(void)
 
 	if (pUIPlayer != nullptr)
 		pUIPlayer->StartScatter();
-
-	CPlayer::EnableInputAll(false);
 
 	return S_OK;
 }

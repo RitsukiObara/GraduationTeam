@@ -481,7 +481,7 @@ void CPlayerSelect::StartFade(void)
 	gameManager::SaveIdxInput(m_aIdxInput);
 
 	// ƒQ[ƒ€‚É‘JˆÚ
-	pFade->SetFade(CScene::MODE_SELECTSTAGE);
+	pFade->SetFade(CScene::MODE_GAME);
 }
 
 //=====================================================

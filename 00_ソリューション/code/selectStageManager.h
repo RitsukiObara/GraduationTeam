@@ -67,9 +67,11 @@ public:
 	void Draw(void) override;
 
 	// 静的メンバ関数
-	static void Load(void);	// 読み込み処理
+	static void Load(void);						// 読み込み処理
+	static void LoadMulti(void);				// マルチの読み込み処理
 	static CSelectStageManager *Create(void);	// 生成処理
-	static vector<S_InfoStage*> GetInfoStage(void) { return s_aInfoStage; }	// ステージ情報取得
+	static vector<S_InfoStage*> GetInfoStage(void) { return s_aInfoStage; }				// ステージ情報取得
+	static vector<S_InfoStage*> GetInfoStageMulti(void) { return s_aInfoStageMulti; }	// マルチステージ情報取得
 
 private:
 	// メンバ関数
@@ -89,10 +91,11 @@ private:
 	void Debug(void);	// デバッグ処理
 
 	// 静的メンバ関数
-	static void LoadStage(std::ifstream& file, string str, S_InfoStage *pInfoStage);	// ステージ情報の読込
+	static void LoadStage(std::ifstream& file, string str, S_InfoStage *pInfoStage);		// ステージ情報の読込
 
 	// メンバ変数
-	static vector<S_InfoStage*> s_aInfoStage;	// ステージ情報の配列
+	static vector<S_InfoStage*> s_aInfoStage;		// ステージ情報の配列
+	static vector<S_InfoStage*> s_aInfoStageMulti;	// マルチステージ情報の配列
 	CSelectStagePenguin *m_pPenguin;	// ペンギン
 	bool m_bEnter;	// エンターしたフラグ
 	float m_fTimerFade;	// フェードまでのタイマー

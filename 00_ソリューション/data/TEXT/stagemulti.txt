@@ -1,0 +1,55 @@
+#====================================================================
+#
+# マルチモードのステージ[stagemulti.txt]
+# Author：Momoya Takayama
+#
+#====================================================================
+# 海流の向き：[上：0][右：1][下：2][左：3]
+#====================================================================
+
+SETSTAGE	#0 第1ステージ
+	MODEL = data\\MODEL\\object\\Stage_Obj000.x
+	POS = 0.0 0.0 0.0
+	PATHMAP = data\\TEXT\\icestagemulti00.txt
+	PATHENEMY = data\\TEXT\\enemy00.txt
+	PATHNAME = data\\TEXTURE\\UI\\stagename00.png
+	DIR_STREAM = 2
+END_SETSTAGE
+
+SETSTAGE	#1 第2ステージ
+	MODEL = data\\MODEL\\object\\Stage_Obj000.x
+	POS = 0.0 0.0 0.0
+	PATHMAP = data\\TEXT\\icestagemulti01.txt
+	PATHENEMY = data\\TEXT\\enemy00.txt
+	PATHNAME = data\\TEXTURE\\UI\\stagename00.png
+	DIR_STREAM = 0
+END_SETSTAGE
+
+SETSTAGE	#2 第3ステージ
+	MODEL = data\\MODEL\\object\\Stage_Obj000.x
+	POS = 0.0 0.0 0.0
+	PATHMAP = data\\TEXT\\icestagemulti02.txt
+	PATHENEMY = data\\TEXT\\enemy00.txt
+	PATHNAME = data\\TEXTURE\\UI\\stagename00.png
+	DIR_STREAM = 0
+END_SETSTAGE
+
+SETSTAGE	#3 第4ステージ
+	MODEL = data\\MODEL\\object\\Stage_Obj000.x
+	POS = 0.0 0.0 0.0
+	PATHMAP = data\\TEXT\\icestagemulti03.txt
+	PATHENEMY = data\\TEXT\\enemy00.txt
+	PATHNAME = data\\TEXTURE\\UI\\stagename00.png
+	DIR_STREAM = 0
+END_SETSTAGE
+
+SETSTAGE	#4 第5ステージ
+	MODEL = data\\MODEL\\object\\Stage_Obj000.x
+	POS = 0.0 0.0 0.0
+	PATHMAP = data\\TEXT\\icestagemulti04.txt
+	PATHENEMY = data\\TEXT\\enemy00.txt
+	PATHNAME = data\\TEXTURE\\UI\\stagename00.png
+	DIR_STREAM = 0
+END_SETSTAGE
+
+END_SCRIPT

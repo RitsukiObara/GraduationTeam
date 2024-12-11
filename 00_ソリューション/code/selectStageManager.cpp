@@ -33,8 +33,8 @@
 //*****************************************************
 namespace
 {
-const string PATH_TEXT = "data\\TEXT\\selectStage.txt";	// テキストパス
-const string PATH_BANNER = "data\\MODEL\\other\\stageselect_banner.x";
+const string PATH_TEXT = "data\\TEXT\\selectStage.txt";			// テキストパス
+const string PATH_TEXT_MULTI = "data\\TEXT\\stagemulti.txt";	// マルチのテキストパス
 
 const float RADIUS_COLLISION_PUSHOUT_STAGE = 500.0f;	// 押し出し判定の半径（ステージ）
 const float RADIUS_COLLISION_PUSHOUT_BANNER = 250.0f;	// 押し出し判定の半径（看板）
@@ -50,6 +50,7 @@ const float SPEED_MOVE_ENTER = 0.01f;		// エンター時の移動速度
 
 const float SPEED_PARTICLE = 22.0f;								// パーティクルの速度
 
+const string PATH_BANNER = "data\\MODEL\\other\\stageselect_banner.x";	// 看板モデルのパス
 const D3DXVECTOR3 BANNER_POS = D3DXVECTOR3(0.0f, 0.0, -2900.0);	// 看板の位置
 const float SCALE_BANNER = 15.0f;								// 看板のスケール
 
@@ -63,7 +64,8 @@ const D3DXVECTOR2 SIZE_NAME = { 0.25f, 0.06f };	// 名前のサイズ
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-vector<CSelectStageManager::S_InfoStage*> CSelectStageManager::s_aInfoStage;	// ステージ情報の配列
+vector<CSelectStageManager::S_InfoStage*> CSelectStageManager::s_aInfoStage;		// ステージ情報の配列
+vector<CSelectStageManager::S_InfoStage*> CSelectStageManager::s_aInfoStageMulti;	// マルチステージ情報の配列
 
 //=====================================================
 // コンストラクタ
@@ -168,6 +170,56 @@ void CSelectStageManager::Load(void)
 				LoadStage(file, temp, pInfoStage);
 
 				s_aInfoStage.push_back(pInfoStage);
+			}
+
+			if (file.eof())
+			{// 読み込み終了
+				break;
+			}
+		}
+
+		file.close();
+	}
+	else
+	{
+		assert(("ファイルが開けませんでした", false));
+	}
+
+	// マルチの読込
+	LoadMulti();
+}
+
+//=====================================================
+// マルチの読み込み処理
+//=====================================================
+void CSelectStageManager::LoadMulti(void)
+{
+	if (!s_aInfoStageMulti.empty())
+		return;
+
+	std::ifstream file(PATH_TEXT_MULTI);
+
+	if (file.is_open())
+	{
+		std::string temp;
+
+		while (std::getline(file, temp))
+		{// 読み込むものがなくなるまで読込
+			std::istringstream iss(temp);
+			std::string key;
+			iss >> key;
+
+			if (key == "SETSTAGE")
+			{// ステージ情報読込開始
+				// ステージ情報の生成
+				S_InfoStage *pInfoStage = new S_InfoStage;
+
+				if (pInfoStage == nullptr)
+					continue;
+
+				LoadStage(file, temp, pInfoStage);
+
+				s_aInfoStageMulti.push_back(pInfoStage);
 			}
 
 			if (file.eof())

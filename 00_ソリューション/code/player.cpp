@@ -751,6 +751,10 @@ bool CPlayer::StartFlows(void)
 	if (FindFlowIce())
 	{// •Y—¬‚·‚é•X‚ªŒ©‚Â‚©‚ê‚ÎA•Y—¬ó‘Ô‚ÖˆÚs
 		m_state = E_State::STATE_FLOW;
+		
+		if (m_pPeckLine != nullptr)
+			m_pPeckLine->EndMove();
+
 		return true;
 	}
 
@@ -924,17 +928,16 @@ void CPlayer::InputPeck(void)
 
 	CIce *pIcePeck = nullptr;
 
-	if (pIceManager->CheckPeck(m_nGridV, m_nGridH, rot.y, pos, &dir,&pIcePeck))
+	if (pIceManager->CheckPeck(m_nGridV, m_nGridH, rot.y, pos, &dir,&pIcePeck) &&
+		m_state == E_State::STATE_NORMAL)
 	{// “Ë‚Á‚Â‚¯‚é‚Æ‚«
-		// •ûŒüUI‚Ì‰ñ“]
-		RotationDirUI(dir);
-
+		// ‚Â‚Á‚Â‚«ƒ{ƒ^ƒ“ƒgƒŠƒK[‚Å•X‚ðŠ„‚é
 		if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_PECK))
 			SetMotion(MOTION::MOTION_PECK);
 
 		if (m_pPeckLine != nullptr)
 		{
-			if (pIcePeck != nullptr && m_state == E_State::STATE_NORMAL)
+			if (pIcePeck != nullptr)
 			{
 				D3DXVECTOR3 posIce = pIcePeck->GetPosition();
 
@@ -944,14 +947,13 @@ void CPlayer::InputPeck(void)
 	}
 	else
 	{// “Ë‚Á‚Â‚¯‚È‚¢‚Æ‚«
+		// ƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚Ä‚à’e‚©‚ê‚é
 		if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_PECK))
 			SetMotion(MOTION::MOTION_CANNOTPECK);
 
 		if (m_pPeckLine != nullptr)
 			m_pPeckLine->EndMove();
 	}
-
-	CDebugProc::GetInstance()->Print("\n‚Â‚Á‚Â‚­•ûŒü[%d]", dir);
 }
 
 //=====================================================
@@ -1244,6 +1246,9 @@ void CPlayer::StartBlow(CIce *pIce)
 		return;
 
 	pIceMgr->GetIceIndex(m_pIceDestJump, &m_nGridV, &m_nGridH);
+
+	if (m_pPeckLine != nullptr)
+		m_pPeckLine->EndMove();
 }
 
 //=====================================================
@@ -1454,7 +1459,7 @@ void CPlayer::Debug(void)
 	if (pDebugProc == nullptr || pInputKeyboard == nullptr || pJoypad == nullptr || pInputMgr == nullptr || m_pShadow == nullptr)
 		return;
 
-#if 0
+#if 1
 	pDebugProc->Print("\nƒvƒŒƒCƒ„[î•ñ==========================");
 	pDebugProc->Print("\nc[%d]‰¡[%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\nˆÊ’u[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
@@ -1463,11 +1468,11 @@ void CPlayer::Debug(void)
 
 	if (m_state == STATE_INVINCIBLE)
 	{
-		pDebugProc->Print("\n<<–³“G’†(*eƒÖe *)iF8‚Å’Êíj>>");
+		pDebugProc->Print("\n<<–³“GiF8‚Å’Êíj>>");
 	}
 	else
 	{
-		pDebugProc->Print("\n<<’Êí(-_-)zzziF8‚Å–³“Gj>>");
+		pDebugProc->Print("\n<<’ÊíiF8‚Å–³“Gj>>");
 	}
 #endif
 
