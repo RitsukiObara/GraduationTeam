@@ -1207,9 +1207,6 @@ void CPlayer::JumpToDest(CIce *pIceDest, float fHeightJump)
 //=====================================================
 void CPlayer::EndJump(void)
 {
-	if (m_pIceDestJump != nullptr)
-		return;
-
 	// エフェクト発生
 	D3DXVECTOR3 posPlayer = GetPosition();
 	MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_LANDING, posPlayer);
