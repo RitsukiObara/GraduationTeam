@@ -60,8 +60,10 @@ private:
 
 	MENU m_menu;						// 選択項目
 	CUI *m_apMenu[MENU_MAX];			// メニュー項目の２Dオブジェクト
+	CUI *m_pButton;						// ボタンUI
 	CUI *m_pBg;							// 背景２Dオブジェクト
 	D3DXVECTOR3 m_aPosDest[MENU_MAX];	// 目標の位置
+	D3DXVECTOR3 m_posDestButton;		// ボタン
 	STATE m_state;						// 状態
 	bool m_bSound;
 	int nCountMove;

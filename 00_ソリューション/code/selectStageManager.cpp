@@ -59,6 +59,17 @@ const D3DXVECTOR3 INIT_POS_PLAYER = D3DXVECTOR3(0.0f, 0.0, -1300.0);	// プレイヤ
 const float HEIGHT_NUMBER = 0.14f;				// 名前の高さ
 const float ADULTWALL_LENGTH = 3000.0f;			// 大人の壁
 const D3DXVECTOR2 SIZE_NAME = { 0.25f, 0.06f };	// 名前のサイズ
+
+//----------------------------------
+// ボタンUIの定数
+//----------------------------------
+namespace buttonUI
+{
+	const string PATH = "data\\TEXTURE\\UI\\B_Back.png";
+	const float WIDTH = 0.09f;
+	const float HEIGHT = 0.049f;
+	const D3DXVECTOR3 POS = D3DXVECTOR3(0.12f, 0.92f, 0.0f);
+}
 }
 
 //*****************************************************
@@ -70,7 +81,7 @@ vector<CSelectStageManager::S_InfoStage*> CSelectStageManager::s_aInfoStageMulti
 //=====================================================
 // コンストラクタ
 //=====================================================
-CSelectStageManager::CSelectStageManager() : m_pPenguin(nullptr), m_bEnter(false), m_fTimerFade(0.0f), m_nIdxSelect(0)
+CSelectStageManager::CSelectStageManager() : m_pPenguin(nullptr), m_bEnter(false), m_fTimerFade(0.0f), m_nIdxSelect(0), m_pButtonUI(nullptr)
 {
 
 }
@@ -135,6 +146,17 @@ HRESULT CSelectStageManager::Init(void)
 
 	// 氷マネージャー生成、Ocean動かすのに必要
 	CIceManager::Create(0, 0);
+
+	// ボタンUI配置
+	m_pButtonUI = CUI::Create();
+	if (m_pButtonUI != nullptr)
+	{
+		// 設定
+		m_pButtonUI->SetIdxTexture(CTexture::GetInstance()->Regist(&buttonUI::PATH[0]));	// テクスチャ割当
+		m_pButtonUI->SetPosition(buttonUI::POS);					// 位置
+		m_pButtonUI->SetSize(buttonUI::WIDTH, buttonUI::HEIGHT);	// 大きさ
+		m_pButtonUI->SetVtx();	// 頂点反映
+	}
 
 	return S_OK;
 }
@@ -353,6 +375,7 @@ void CSelectStageManager::SetStage(void)
 //=====================================================
 void CSelectStageManager::Uninit(void)
 {
+	Object::DeleteObject((CObject**)&m_pButtonUI);
 	Release();
 }
 

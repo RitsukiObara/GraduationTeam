@@ -72,6 +72,16 @@ const float HEIGHT = 100.0f;				// 高さ
 const string PATH_TEX_FAN = "data\\TEXTURE\\MATERIAL\\field.jpg";			// 円のテクスチャパス
 const string PATH_TEX_CYLINDER = "data\\TEXTURE\\MATERIAL\\small_ice.png";	// 円筒のテクスチャパス
 }
+//----------------------------------
+// ボタンUIの定数
+//----------------------------------
+namespace buttonUI
+{
+	const string PATH = "data\\TEXTURE\\UI\\B_Back.png";
+	const float WIDTH = 0.09f;
+	const float HEIGHT = 0.049f;
+	const D3DXVECTOR3 POS = D3DXVECTOR3(0.12f, 0.08f, 0.0f);
+}
 }
 
 //*****************************************************
@@ -90,6 +100,7 @@ CPlayerSelect::CPlayerSelect()
 	m_pCylinder = nullptr;
 	m_pFan = nullptr;
 	m_pShadow = nullptr;
+	m_pButtonUI = nullptr;
 }
 
 //=====================================================
@@ -140,6 +151,17 @@ HRESULT CPlayerSelect::Init(void)
 		// 入力マネージャーの生成
 		CInputManager *pInputMgr = CInputManager::Create();
 		m_apInputMgr[nCount] = pInputMgr;
+	}
+
+	// ボタンUI配置
+	m_pButtonUI = CUI::Create();
+	if (m_pButtonUI != nullptr)
+	{
+		// 設定
+		m_pButtonUI->SetIdxTexture(CTexture::GetInstance()->Regist(&buttonUI::PATH[0]));	// テクスチャ割当
+		m_pButtonUI->SetPosition(buttonUI::POS);					// 位置
+		m_pButtonUI->SetSize(buttonUI::WIDTH, buttonUI::HEIGHT);	// 大きさ
+		m_pButtonUI->SetVtx();	// 頂点反映
 	}
 
 	// メッシュの生成
@@ -205,6 +227,7 @@ void CPlayerSelect::Uninit(void)
 	Object::DeleteObject((CObject**)&m_pCylinder);
 	Object::DeleteObject((CObject**)&m_pFan);
 	Object::DeleteObject((CObject**)&m_pShadow);
+	Object::DeleteObject((CObject**)&m_pButtonUI);
 
 	// プレイヤーの破棄
 	for (const auto& pair : m_mapPlayer)

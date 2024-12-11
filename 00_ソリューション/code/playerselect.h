@@ -75,6 +75,7 @@ private:
 	CMeshCylinder *m_pCylinder;					// 側面のシリンダー
 	CFan3D *m_pFan;								// 上側の円ポリゴン
 	CShadow* m_pShadow;							// 影のポインタ
+	CUI *m_pButtonUI;							// ボタンUI
 
 	// 静的メンバ変数
 };

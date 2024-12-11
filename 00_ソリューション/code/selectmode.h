@@ -47,7 +47,7 @@ private:
 
 	// メンバ変数
 	CUI *m_apModeUI[MODE_MAX];	// モードUI
-	CUI *m_pManual;				// 説明情報
+	CUI* m_pButtonUI;			// ボタンUI
 	float m_fCurTime;			// 現在の待機時間
 	MODE m_selectMode;			// 選択しているモード
 	int m_nSnowStormCnt;		// 吹雪が来るまでのカウント

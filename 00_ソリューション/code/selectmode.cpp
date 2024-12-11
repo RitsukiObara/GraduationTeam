@@ -42,7 +42,7 @@ namespace
 {
 	namespace selectUI
 	{
-		const char* PATH[CSelectMode::MODE_MAX] =
+		const string PATH[CSelectMode::MODE_MAX] =
 		{
 			"data\\TEXTURE\\UI\\single_mode.png",
 			"data\\TEXTURE\\UI\\party_mode.png",
@@ -69,6 +69,14 @@ namespace
 		const D3DXCOLOR NOSELECT_COLOR = D3DXCOLOR(0.7f, 0.7f, 0.7f, 0.8f);
 		const float NOSELECT_ALPHA = 0.5f;	// 選択されていないときの不透明度
 		const float SELECTUI_COLORCHANGE_COEF = 0.4f;	// モードUIの変化の慣性
+	}
+
+	namespace buttonUI
+	{
+		const string PATH = "data\\TEXTURE\\UI\\SelectAndBack.png";
+		const float WIDTH = 0.1957f;
+		const float HEIGHT = 0.049f;
+		const D3DXVECTOR3 POS = D3DXVECTOR3(0.78f, 0.92f, 0.0f);
 	}
 
 	namespace MeshField
@@ -112,10 +120,10 @@ namespace
 //=====================================================
 CSelectMode::CSelectMode()
 {
-	m_pManual = nullptr;
 	m_fCurTime = 0.0f;
 	m_selectMode = MODE_SINGLE;
 	for (int cnt = 0; cnt < MODE_MAX; cnt++) { m_apModeUI[cnt] = nullptr; }
+	m_pButtonUI = nullptr;
 	m_nSnowStormCnt = 0;
 	m_bStorm = false;
 }
@@ -143,20 +151,31 @@ HRESULT CSelectMode::Init(void)
 	m_nSnowStormCnt = 0;
 	m_bStorm = false;
 
-	// モードボタンUI
+	// モードUI
 	for (int cnt = 0; cnt < MODE_MAX; cnt++)
 	{
 		m_apModeUI[cnt] = CUI::Create();
 		if (m_apModeUI[cnt] != nullptr)
 		{
 			// 設定
-			m_apModeUI[cnt]->SetIdxTexture(CTexture::GetInstance()->Regist(selectUI::PATH[cnt]));	// テクスチャ割当
+			m_apModeUI[cnt]->SetIdxTexture(CTexture::GetInstance()->Regist(&selectUI::PATH[cnt][0]));	// テクスチャ割当
 			m_apModeUI[cnt]->SetPosition(selectUI::POS[cnt]);				// 位置
 			m_apModeUI[cnt]->SetSize(selectUI::WIDTH[cnt], selectUI::HEIGHT[cnt]);	// 大きさ
 			m_apModeUI[cnt]->SetVtx();	// 頂点反映
 		}
 	}
 	ChangeSelectMode(0);	// 何も選択しない（透明度設定のみする）
+
+	// ボタンUI
+	m_pButtonUI = CUI::Create();
+	if (m_pButtonUI != nullptr)
+	{
+		// 設定
+		m_pButtonUI->SetIdxTexture(CTexture::GetInstance()->Regist(&buttonUI::PATH[0]));	// テクスチャ割当
+		m_pButtonUI->SetPosition(buttonUI::POS);					// 位置
+		m_pButtonUI->SetSize(buttonUI::WIDTH, buttonUI::HEIGHT);	// 大きさ
+		m_pButtonUI->SetVtx();	// 頂点反映
+	}
 
 	// メッシュフィールド
 	CMeshField* pMeshField = CMeshField::Create();
@@ -203,8 +222,8 @@ void CSelectMode::Uninit(void)
 		}
 	}
 
-	Object::DeleteObject((CObject**)&m_pManual);
-
+	Object::DeleteObject((CObject**)&m_pButtonUI);
+	
 	// オブジェクト全破棄
 	CObject::ReleaseAll();
 
