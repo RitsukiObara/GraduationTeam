@@ -28,7 +28,25 @@ namespace universal
 // 制限系
 //======================================
 void LimitValuefloat(float *pValue, float fMax, float fMin);
-bool LimitValueInt(int *pValue, int nMax, int nMin);
+template<typename T>
+inline bool LimitValue(T *pValue, T max, T min)
+{
+	if (max < *pValue)
+	{
+		*pValue = max;
+
+		return true;
+	}
+
+	if (min > *pValue)
+	{
+		*pValue = min;
+
+		return true;
+	}
+
+	return false;
+}
 void LimitRot(float *fRot);	//回転制御処理
 void LimitSpeed(D3DXVECTOR3 *pVec, float fSpeedMax);
 void LimitPosInSq(float fWidth, float fHeight, D3DXVECTOR3 *pPos);
@@ -91,7 +109,7 @@ template <typename T>
 bool FindFromVector(const std::vector<T>& vec, T pValue){ return std::find(vec.begin(), vec.end(), pValue) != vec.end(); }
 template <typename T, typename F>
 void RemoveIfFromVector(std::vector<T>& vec, F function) { vec.erase(std::remove_if(vec.begin(), vec.end(), function), vec.end()); }
-template <typename T>
+template <typename T>	// ランダムな要素の取得
 inline T RandomFromVector(std::vector<T> vec) 
 {
 	// サイズからランダムで指定

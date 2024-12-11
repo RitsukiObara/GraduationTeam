@@ -33,14 +33,16 @@ class CFollowPlayer : public CCameraState
 {
 public:
 	CFollowPlayer();
-	void Init(CCamera *pCamera) {};
+	void Init(CCamera *pCamera);
 	void Update(CCamera *pCamera) override;
 
 private:
-	float m_fTimerPosR;
-	float m_fLengthPosR;
-	D3DXVECTOR3 m_rotROld;
-	bool m_bDebug;
+	// メンバ関数
+	void ManageDist(void);			// 距離の管理
+	bool IsNearEnemy(float *pRate);	// 敵が近い判定
+
+	// メンバ変数
+	float m_fTimerMove;	// 移動タイマー
 };
 
 // マルチモード

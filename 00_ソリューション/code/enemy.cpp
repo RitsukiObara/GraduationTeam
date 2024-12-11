@@ -456,8 +456,8 @@ bool CEnemy::PathFind(int nIdxV, int nIdxH, vector<CIce*>& rIceSave)
 		int nV = aV[i];
 		int nH = aH[i];
 
-		if (!universal::LimitValueInt(&nV, nNumV - 1, 0) &&
-			!universal::LimitValueInt(&nH, nNumH - 1, 0))
+		if (!universal::LimitValue(&nV, nNumV - 1, 0) &&
+			!universal::LimitValue(&nH, nNumH - 1, 0))
 		{// 指定した番号がグリッドを越えていない場合のみ保存
 			apIce[i] = pIceMgr->GetGridIce(&aV[i], &aH[i]);
 		}

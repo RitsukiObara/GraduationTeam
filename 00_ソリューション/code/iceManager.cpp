@@ -663,8 +663,8 @@ vector<CIce*> CIceManager::GetAroundIce(int nNumV, int nNumH)
 		int nV = aV[i];
 		int nH = aH[i];
 
-		if (!universal::LimitValueInt(&nV, m_nNumGridVirtical - 1, 0) &&
-			!universal::LimitValueInt(&nH, m_nNumGridHorizontal - 1, 0))
+		if (!universal::LimitValue(&nV, m_nNumGridVirtical - 1, 0) &&
+			!universal::LimitValue(&nH, m_nNumGridHorizontal - 1, 0))
 			apIce[i] = m_aGrid[aV[i]][aH[i]].pIce;
 	}
 
@@ -825,8 +825,8 @@ bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand, vecto
 		int nV = aV[i];
 		int nH = aH[i];
 
-		if (!universal::LimitValueInt(&nV, m_nNumGridVirtical - 1, 0) &&
-			!universal::LimitValueInt(&nH, m_nNumGridHorizontal - 1, 0))
+		if (!universal::LimitValue(&nV, m_nNumGridVirtical - 1, 0) &&
+			!universal::LimitValue(&nH, m_nNumGridHorizontal - 1, 0))
 		{// 指定した番号がグリッドを越えていない場合のみ保存
 			apIce[i] = m_aGrid[aV[i]][aH[i]].pIce;
 		}
@@ -908,8 +908,8 @@ void CIceManager::DisableFromHardIce(int nNumV, int nNumH, bool bPeck)
 		int nV = aV[i];
 		int nH = aH[i];
 
-		if (!universal::LimitValueInt(&nV, m_nNumGridVirtical - 1, 0) &&
-			!universal::LimitValueInt(&nH, m_nNumGridHorizontal - 1, 0))
+		if (!universal::LimitValue(&nV, m_nNumGridVirtical - 1, 0) &&
+			!universal::LimitValue(&nH, m_nNumGridHorizontal - 1, 0))
 		{// 指定した番号がグリッドを越えていない場合のみ保存
 			apIce[i] = m_aGrid[aV[i]][aH[i]].pIce;
 		}
@@ -974,8 +974,8 @@ void CIceManager::DisableFromPlayer(int nNumV, int nNumH, CIce *pIcePeck, vector
 		int nV = aV[i];
 		int nH = aH[i];
 
-		if (!universal::LimitValueInt(&nV, m_nNumGridVirtical - 1, 0) &&
-			!universal::LimitValueInt(&nH, m_nNumGridHorizontal - 1, 0))
+		if (!universal::LimitValue(&nV, m_nNumGridVirtical - 1, 0) &&
+			!universal::LimitValue(&nH, m_nNumGridHorizontal - 1, 0))
 		{// 指定した番号がグリッドを越えていない場合のみ保存
 			apIce[i] = m_aGrid[aV[i]][aH[i]].pIce;
 		}
@@ -1038,8 +1038,8 @@ void CIceManager::DisableBreak(int nNumV, int nNumH)
 		int nV = aV[i];
 		int nH = aH[i];
 
-		if (!universal::LimitValueInt(&nV, m_nNumGridVirtical - 1, 0) &&
-			!universal::LimitValueInt(&nH, m_nNumGridHorizontal - 1, 0))
+		if (!universal::LimitValue(&nV, m_nNumGridVirtical - 1, 0) &&
+			!universal::LimitValue(&nH, m_nNumGridHorizontal - 1, 0))
 		{// 指定した番号がグリッドを越えていない場合のみ保存
 			apIce[i] = m_aGrid[aV[i]][aH[i]].pIce;
 		}
@@ -1084,8 +1084,8 @@ void CIceManager::SummarizeIce(int nNumV, int nNumH)
 		int nV = aV[i];
 		int nH = aH[i];
 
-		if (!universal::LimitValueInt(&nV, m_nNumGridVirtical - 1, 0) &&
-			!universal::LimitValueInt(&nH, m_nNumGridHorizontal - 1, 0))
+		if (!universal::LimitValue(&nV, m_nNumGridVirtical - 1, 0) &&
+			!universal::LimitValue(&nH, m_nNumGridHorizontal - 1, 0))
 		{// 指定した番号がグリッドを越えていない場合のみ保存
 			apIce[i] = m_aGrid[aV[i]][aH[i]].pIce;
 		}
@@ -1148,8 +1148,8 @@ void CIceManager::SaveFlowIce(int nNumV, int nNumH, CFlowIce *pFlowIce)
 		int nV = aV[i];
 		int nH = aH[i];
 
-		if (!universal::LimitValueInt(&nV, m_nNumGridVirtical - 1, 0) &&
-			!universal::LimitValueInt(&nH, m_nNumGridHorizontal - 1, 0))
+		if (!universal::LimitValue(&nV, m_nNumGridVirtical - 1, 0) &&
+			!universal::LimitValue(&nH, m_nNumGridHorizontal - 1, 0))
 		{// 指定した番号がグリッドを越えていない場合のみ保存
 			apIce[i] = m_aGrid[aV[i]][aH[i]].pIce;
 		}

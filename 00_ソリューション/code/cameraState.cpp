@@ -18,6 +18,7 @@
 #include "title.h"
 #include "resultSingle.h"
 #include "player.h"
+#include "enemy.h"
 #include "selectStagePenguin.h"
 
 //*****************************************************
@@ -25,32 +26,51 @@
 //*****************************************************
 namespace
 {
-const float MOVE_SPEED = 21.0f;	//移動スピード
-const float ROLL_SPEED = 0.04f;	//回転スピード
+const float MOVE_SPEED = 21.0f;				// 移動スピード
+const float ROLL_SPEED = 0.04f;				// 回転スピード
 const float FACT_CORRECT_CONTOROLLL = 0.9f;	// 操作時の位置補正係数
 
-const float LENGTH_FOLLOW = 412.0f;	// 追従時のカメラ距離
-const float ANGLE_FOLLOW = 0.73f;	// 追従時のカメラ角度
-const D3DXVECTOR3 POSR_GAME = { 0.0f,0.0f,-200.0f };		// ゲーム中の注視点位置
+const float LENGTH_FOLLOW = 1500.0f;	// 追従時のカメラ距離
+const float ANGLE_FOLLOW = 0.33f;		// 追従時のカメラ角度
+const float SPPED_MOVE_FOLLOW = 0.09f;	// 追従時のカメラ速度
+const D3DXVECTOR3 POSR_GAME = { 0.0f,0.0f,-300.0f };		// ゲーム中の注視点位置
 const D3DXVECTOR3 POSV_GAME = { 0.0f,1544.0f,-681.0f };		// ゲーム中の視点位置
 const D3DXVECTOR3 POSR_MULTI = { -80.0f,0.0f,-330.0f };		// マルチ中の注視点位置
 const D3DXVECTOR3 POSV_MULTI = { -80.0f,1670.0f,-1170.0f };	// マルチ中の視点位置
 
-const D3DXVECTOR3 POSR_DEFAULT_SELECTSTAGE = { 0.0f,0.0f,-400.0f };	// ステージセレクト中のデフォルト注視点位置
+const D3DXVECTOR3 POSR_DEFAULT_SELECTSTAGE = { 0.0f,0.0f,-400.0f };		// ステージセレクト中のデフォルト注視点位置
 const D3DXVECTOR3 POSV_DEFAULT_SELECTSTAGE = { 0.0f,2244.0f,-2001.0f };	// ステージセレクト中のデフォルト視点位置
 
-const D3DXVECTOR3 POSR_DEFAULT_SELECTMODE = { 0.0f,50.0f,0.0f };	// モードセレクト中のデフォルト注視点位置
+const D3DXVECTOR3 POSR_DEFAULT_SELECTMODE = { 0.0f,50.0f,0.0f };		// モードセレクト中のデフォルト注視点位置
 const D3DXVECTOR3 POSV_DEFAULT_SELECTMODE = { 0.0f,200.0f,-2000.0f };	// モードセレクト中のデフォルト視点位置
 
-const D3DXVECTOR3 POSR_DEFAULT_RESULTMULTI = { 800.0f,50.0f,-400.0f };	// マルチモードのリザルト中のデフォルト注視点位置
+const D3DXVECTOR3 POSR_DEFAULT_RESULTMULTI = { 800.0f,50.0f,-400.0f };		// マルチモードのリザルト中のデフォルト注視点位置
 const D3DXVECTOR3 POSV_DEFAULT_RESULTMULTI = { 800.0f,400.0f,-2400.0f };	// マルチモードのリザルト中のデフォルト視点位置
 
+//-----------------------------------
+// プレイヤー追従の定数
+//-----------------------------------
+namespace followPlayer
+{
+const float DIST_WIDTH = 200.0f;			// カメラの変更する幅
+const float DEFAULT_DIST_CAMERA = 1500.0f;	// デフォルトの距離
+const float NEAR_LINE = 500.0f;				// 近いと判断する距離
+const float TIME_MOVE = 1.5f;				// 移動にかかる時間
+const float SPEED_CLOSE = 0.05f;			// 近づく速度
+}
+
+//-----------------------------------
+// シングルリザルトの定数
+//-----------------------------------
 namespace resultSingle
 {
 const D3DXVECTOR3 POS_OFFSET = { 0.0f,100.0f,-500.0f };	// 目標地点のオフセット
 const float SPEED_POSR = 0.1f;	// 注視点の速度
 }
 
+//-----------------------------------
+// ステージ選択の定数
+//-----------------------------------
 namespace selectStage
 {
 const D3DXVECTOR3 OFFSET = { 0.0f,2250.0f,-2000.0f };	// オフセット
@@ -64,9 +84,25 @@ const float FACT_MOVE = 0.6f;							// 移動係数
 //=====================================================
 // コンストラクタ
 //=====================================================
-CFollowPlayer::CFollowPlayer() : m_fTimerPosR(0.0f), m_fLengthPosR(0.0f),m_bDebug(false)
+CFollowPlayer::CFollowPlayer() : m_fTimerMove(0.0f)
 {
 
+}
+
+//=====================================================
+// 初期化
+//=====================================================
+void CFollowPlayer::Init(CCamera *pCamera)
+{
+	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+
+	pInfoCamera->fLength = LENGTH_FOLLOW;
+	pInfoCamera->posR = POSR_GAME;
+
+	pInfoCamera->rot.x = ANGLE_FOLLOW;
+	pInfoCamera->rot.y = D3DX_PI;
+
+	pCamera->SetPosV();
 }
 
 //=====================================================
@@ -79,12 +115,88 @@ void CFollowPlayer::Update(CCamera *pCamera)
 
 	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
 
+	// 距離の管理
+	ManageDist();
+
+	// 角度の設定
+	pInfoCamera->rot.x = ANGLE_FOLLOW;
+	pInfoCamera->rot.y = D3DX_PI;
+
+	// 注視点位置の設定
 	pInfoCamera->posR = POSR_GAME;
-	pInfoCamera->posV = POSV_GAME;
+
+	// 視点の設定
+	pCamera->SetPosV();
+}
+
+//=====================================================
+// 距離の管理
+//=====================================================
+void CFollowPlayer::ManageDist(void)
+{
+	CCamera *pCamera = CManager::GetCamera();
+	if (pCamera == nullptr)
+		return;
+
+	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
+	if (pInfoCamera == nullptr)
+		return;
+
+	// 敵が近かったら距離の割合に応じてカメラを動かす
+	float fRate;
+	if (IsNearEnemy(&fRate))
+		m_fTimerMove += CManager::GetDeltaTime() * followPlayer::SPEED_CLOSE;
+	else
+		m_fTimerMove -= CManager::GetDeltaTime();
+
+	// 値の制限
+	universal::LimitValue(&m_fTimerMove, followPlayer::TIME_MOVE, 0.0f);
+	
+	// タイマーをイージング
+	float fTime = m_fTimerMove / followPlayer::TIME_MOVE;
+	fRate = easing::EaseOutExpo(fTime);
+	universal::LimitValuefloat(&fRate, 1.0f, 0.0f);
+
+	pInfoCamera->fLength = followPlayer::DEFAULT_DIST_CAMERA - followPlayer::DIST_WIDTH * fRate;
+}
+
+//=====================================================
+// 敵が近い判定
+//=====================================================
+bool CFollowPlayer::IsNearEnemy(float *pRate)
+{
+	CPlayer *pPlayer = *CPlayer::GetInstance().begin();
+	vector<CEnemy*> apEnemy = CEnemy::GetInstance();
+
+	if (pPlayer == nullptr || apEnemy.empty())
+		return false;
+
+	D3DXVECTOR3 posPlayer = pPlayer->GetPosition();
+
+	// 全敵との距離チェック
+	float fDistMin = followPlayer::NEAR_LINE;
+	CEnemy *pEnemyNearest = nullptr;
+
+	for (CEnemy *pEnemy : apEnemy)
+	{
+		float fDiff = 0.0f;
+
+		if (universal::DistCmpFlat(posPlayer, pEnemy->GetPosition(), fDistMin, &fDiff))
+		{
+			fDistMin = fDiff;
+
+			pEnemyNearest = pEnemy;
+
+			if (pRate != nullptr)
+				*pRate = 1.0f - fDiff / followPlayer::NEAR_LINE;
+		}
+	}
+
+	return pEnemyNearest != nullptr;
 }
 
 //***********************************************************************************
-// プレイヤーの追従
+// マルチのカメラ
 //***********************************************************************************
 //=====================================================
 // コンストラクタ
