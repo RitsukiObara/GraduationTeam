@@ -46,6 +46,17 @@ const D3DXVECTOR3 POS_INIT[CResultSingleLose::E_Select::SELECT_MAX] =
 const float HEIGHT_DEST = 0.7f;							// 目標の高さ
 const float DIFF_HEIGHT = HEIGHT_DEST - HEIGHT_INIT;	// 高さの差分
 }
+//----------------------------
+// ボタンUI定数
+//----------------------------
+namespace buttonUI
+{
+	const string PATH = "data\\TEXTURE\\UI\\A_Select.png";
+	const float WIDTH = 0.09f;
+	const float HEIGHT = 0.049f;
+	const D3DXVECTOR3 POS = D3DXVECTOR3(0.9f, 0.92f, 0.0f);
+	const float FADEIN_SPEED = 0.05f;
+}
 }
 
 //*****************************************************
@@ -62,7 +73,7 @@ CResultSingleLose::FuncUpdateState CResultSingleLose::s_aFuncUpdateState[] =	// 
 //====================================================
 // コンストラクタ
 //====================================================
-CResultSingleLose::CResultSingleLose() : m_fTimer(0.0f), m_apMenu(), m_state(E_State::STATE_NONE)
+CResultSingleLose::CResultSingleLose() : m_fTimer(0.0f), m_apMenu(), m_state(E_State::STATE_NONE), m_pButtonUI(nullptr)
 {
 
 }
@@ -102,6 +113,9 @@ void CResultSingleLose::Create2D(void)
 {
 	// メニューの生成
 	CreateMenu();
+
+	// ボタンUIの生成
+	CreateButtonUI();
 }
 
 //====================================================
@@ -122,6 +136,23 @@ void CResultSingleLose::CreateMenu(void)
 		m_apMenu[i]->SetIdxTexture(nIdxTexture);
 		m_apMenu[i]->SetAlpha(0.0f);
 		m_apMenu[i]->SetVtx();
+	}
+}
+
+//====================================================
+// ボタンUIの生成
+//====================================================
+void CResultSingleLose::CreateButtonUI(void)
+{
+	m_pButtonUI = CUI::Create();
+	if (m_pButtonUI != nullptr)
+	{
+		// 設定
+		m_pButtonUI->SetIdxTexture(CTexture::GetInstance()->Regist(&buttonUI::PATH[0]));	// テクスチャ割当
+		m_pButtonUI->SetPosition(buttonUI::POS);					// 位置
+		m_pButtonUI->SetSize(buttonUI::WIDTH, buttonUI::HEIGHT);	// 大きさ
+		m_pButtonUI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));		// カラー（不透明度）
+		m_pButtonUI->SetVtx();	// 頂点反映
 	}
 }
 
@@ -209,6 +240,17 @@ void CResultSingleLose::UpdateSelect(void)
 	if (pInputManager == nullptr)
 	{
 		return;
+	}
+
+	// ボタンUIフェードイン
+	if (m_pButtonUI != nullptr)
+	{
+		D3DXCOLOR col = m_pButtonUI->GetCol();
+		col.a += buttonUI::FADEIN_SPEED;
+		universal::LimitValuefloat(&col.a, 1.0f, 0.0f);
+
+		m_pButtonUI->SetCol(col);	// カラー（不透明度）
+		m_pButtonUI->SetVtx();		// 頂点反映
 	}
 
 	if (m_apMenu[m_select] != nullptr)

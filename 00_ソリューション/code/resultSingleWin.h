@@ -61,6 +61,7 @@ private:
 	void Create2D(void);			// 2DUIの生成
 	void CreateOwnScore(void);		// 自身のスコアの生成
 	void CreateRankingNumber(void);	// ランキング数字の生成
+	void CreateButtonUI(void);		// ボタンUIの生成
 
 	void UpdateMoveCamera(void);	// カメラ移動状態の更新
 	void UpdateApperScore(void);	// スコア出現状態の更新
@@ -76,6 +77,7 @@ private:
 	CNumber *m_apRankingNumber[NUM_RANKING][CAPTION_MAX];	// ランキングの数字の配列
 	CRankingSingle *m_pRanking;								// ランキング処理
 	CUI *m_pFrame;											// フレームのポリゴン
+	CUI *m_pButtonUI;										// ボタンUI
 
 	E_State m_state;		// 状態
 	float m_fTimer;			// タイマー

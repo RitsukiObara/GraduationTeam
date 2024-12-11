@@ -127,6 +127,16 @@ const bool FRAG_TRY[CTutorial::E_State::STATE_MAX] =				// やってみようフラグ
 	false,	// 終了状態
 };
 }
+//----------------------------
+// ボタンUI定数
+//----------------------------
+namespace buttonUI
+{
+	const string PATH = "data\\TEXTURE\\UI\\BACK_Skip.png";
+	const float WIDTH = 0.11f;
+	const float HEIGHT = 0.033f;
+	const D3DXVECTOR3 POS = D3DXVECTOR3(0.85f, 0.81f, 0.0f);
+}
 
 const string PATH_TEMP_FRAG = "data\\TEMP\\tutorialfrag.bin";	// チュートリアルフラグの保存パス
 }
@@ -153,7 +163,7 @@ CTutorial *CTutorial::s_pTutorial = nullptr;	// 自身のポインタ
 // コンストラクタ
 //=====================================================
 CTutorial::CTutorial() : m_state(E_State::STATE_NONE), m_pManager(nullptr), m_fTimeEnd(0.0f) , m_nCntProgress(0), m_pUIPlayer(nullptr), m_abComplete(),
-m_pCaption(nullptr), m_pFadeCaption(nullptr), m_pGaugeSkip(nullptr), m_fTimerSkip(0.0f), m_pHint(nullptr),m_pFadeHint(nullptr)
+m_pCaption(nullptr), m_pFadeCaption(nullptr), m_pGaugeSkip(nullptr), m_fTimerSkip(0.0f), m_pHint(nullptr),m_pFadeHint(nullptr), m_pButtonUI(nullptr)
 {
 	s_pTutorial = this;
 }
@@ -289,6 +299,17 @@ HRESULT CTutorial::Init(void)
 		return E_FAIL;
 
 	m_pGaugeSkip->SetPosition(gauge::POS);
+
+	// ボタンUIの生成
+	m_pButtonUI = CUI::Create();
+	if (m_pButtonUI != nullptr)
+	{
+		// 設定
+		m_pButtonUI->SetIdxTexture(CTexture::GetInstance()->Regist(&buttonUI::PATH[0]));	// テクスチャ割当
+		m_pButtonUI->SetPosition(buttonUI::POS);					// 位置
+		m_pButtonUI->SetSize(buttonUI::WIDTH, buttonUI::HEIGHT);	// 大きさ
+		m_pButtonUI->SetVtx();	// 頂点反映
+	}
 
 	// チュートリアルフラグをリセット
 	tutorial::SaveFrag(false);

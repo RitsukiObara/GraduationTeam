@@ -75,6 +75,16 @@ const float WIDTH = 0.15f;									// 幅
 const float HEIGHT = 0.10f;									// 高さ
 const D3DXVECTOR3 POS = D3DXVECTOR3(0.5f, 0.85f, 0.0f);		// 位置
 }
+//----------------------------
+// ボタンUI定数
+//----------------------------
+namespace buttonUI
+{
+	const string PATH = "data\\TEXTURE\\UI\\A_Move.png";
+	const float WIDTH = 0.09f;
+	const float HEIGHT = 0.049f;
+	const D3DXVECTOR3 POS = D3DXVECTOR3(0.88f, 0.92f, 0.0f);
+}
 }
 
 //=====================================================
@@ -84,6 +94,7 @@ CResultMulti::CResultMulti()
 {
 	m_pWinnerNum = nullptr;
 	m_pWinnerText = nullptr;
+	m_pButtonUI = nullptr;
 }
 
 //=====================================================
@@ -121,6 +132,17 @@ HRESULT CResultMulti::Init(void)
 	{
 		pIgloo->BindModel(CModel::Load(&Map::SNOWDOME_PATH[0]));
 		pIgloo->SetPosition(D3DXVECTOR3(800.0f, -10.0f, 600.0f));
+	}
+
+	// ボタンUI
+	m_pButtonUI = CUI::Create();
+	if (m_pButtonUI != nullptr)
+	{
+		// 設定
+		m_pButtonUI->SetIdxTexture(CTexture::GetInstance()->Regist(&buttonUI::PATH[0]));	// テクスチャ割当
+		m_pButtonUI->SetPosition(buttonUI::POS);					// 位置
+		m_pButtonUI->SetSize(buttonUI::WIDTH, buttonUI::HEIGHT);	// 大きさ
+		m_pButtonUI->SetVtx();	// 頂点反映
 	}
 
 	// BGMの再生
@@ -227,7 +249,8 @@ void CResultMulti::Uninit(void)
 {
 	Object::DeleteObject((CObject**)&m_pWinnerNum);
 	Object::DeleteObject((CObject**)&m_pWinnerText);
-
+	Object::DeleteObject((CObject**)&m_pButtonUI);
+	
 	// オブジェクト全破棄
 	CObject::ReleaseAll();
 

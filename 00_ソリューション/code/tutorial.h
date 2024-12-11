@@ -81,7 +81,8 @@ private:
 	CGauge *m_pGaugeSkip;			// スキップゲージ
 	float m_fTimerSkip;				// スキップタイマー
 	CUI *m_pHint;					// ヒントのポリゴン
-	CFade2D *m_pFadeHint;		// ヒントのフェード
+	CFade2D *m_pFadeHint;			// ヒントのフェード
+	CUI *m_pButtonUI;				// ボタンUI
 
 	// 関数ポインタ型を定義
 	typedef void (CTutorial::*FuncUpdateState)(void);

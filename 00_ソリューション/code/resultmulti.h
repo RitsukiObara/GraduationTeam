@@ -41,6 +41,7 @@ private:
 	// メンバ変数
 	CUI *m_pWinnerNum;		// 勝者番号UI
 	CUI *m_pWinnerText;		// 勝者テキストUI
+	CUI *m_pButtonUI;		// ボタンUI
 	bool m_bDraw;			// 引き分けフラグ
 };
 
