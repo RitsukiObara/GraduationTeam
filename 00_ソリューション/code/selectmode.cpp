@@ -123,7 +123,7 @@ CSelectMode::CSelectMode()
 	m_fCurTime = 0.0f;
 	m_selectMode = MODE_SINGLE;
 	for (int cnt = 0; cnt < MODE_MAX; cnt++) { m_apModeUI[cnt] = nullptr; }
-	m_apButtonUI = nullptr;
+	m_pButtonUI = nullptr;
 	m_nSnowStormCnt = 0;
 	m_bStorm = false;
 }
@@ -167,14 +167,14 @@ HRESULT CSelectMode::Init(void)
 	ChangeSelectMode(0);	// 何も選択しない（透明度設定のみする）
 
 	// ボタンUI
-	m_apButtonUI = CUI::Create();
-	if (m_apButtonUI != nullptr)
+	m_pButtonUI = CUI::Create();
+	if (m_pButtonUI != nullptr)
 	{
 		// 設定
-		m_apButtonUI->SetIdxTexture(CTexture::GetInstance()->Regist(&buttonUI::PATH[0]));	// テクスチャ割当
-		m_apButtonUI->SetPosition(buttonUI::POS);					// 位置
-		m_apButtonUI->SetSize(buttonUI::WIDTH, buttonUI::HEIGHT);	// 大きさ
-		m_apButtonUI->SetVtx();	// 頂点反映
+		m_pButtonUI->SetIdxTexture(CTexture::GetInstance()->Regist(&buttonUI::PATH[0]));	// テクスチャ割当
+		m_pButtonUI->SetPosition(buttonUI::POS);					// 位置
+		m_pButtonUI->SetSize(buttonUI::WIDTH, buttonUI::HEIGHT);	// 大きさ
+		m_pButtonUI->SetVtx();	// 頂点反映
 	}
 
 	// メッシュフィールド
@@ -222,8 +222,8 @@ void CSelectMode::Uninit(void)
 		}
 	}
 
-	Object::DeleteObject((CObject**)&m_apButtonUI);
-	Object::DeleteObject((CObject**)&m_apButtonUI);
+	Object::DeleteObject((CObject**)&m_pButtonUI);
+	Object::DeleteObject((CObject**)&m_pButtonUI);
 	
 	// オブジェクト全破棄
 	CObject::ReleaseAll();

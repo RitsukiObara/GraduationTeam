@@ -101,6 +101,7 @@ private:
 	float m_fTimerFade;	// フェードまでのタイマー
 	int m_nIdxSelect;	// 選んだステージ番号
 	vector<CGameObject*> m_aParticlePos;	// パーティクルの位置用オブジェクト
+	CUI *m_pButtonUI;	// ボタンUI
 };
 
 #endif
