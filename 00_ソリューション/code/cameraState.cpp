@@ -165,6 +165,9 @@ void CFollowPlayer::ManageDist(void)
 //=====================================================
 bool CFollowPlayer::IsNearEnemy(float *pRate)
 {
+	if (CPlayer::GetInstance().empty())
+		return false;
+
 	CPlayer *pPlayer = *CPlayer::GetInstance().begin();
 	vector<CEnemy*> apEnemy = CEnemy::GetInstance();
 

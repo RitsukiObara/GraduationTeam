@@ -244,11 +244,12 @@ bool CBears::CollideLand(void)
 	if (pos.y < posIce.y)
 	{// 氷よりも位置が低くなったら着地判定
 
-		// 出現する場所に水しぶきを発生
-		CParticle::Create(pos, CParticle::TYPE::TYPE_LAND, D3DXVECTOR3(0.0f, 0.0f, 0.0f), (D3DXVECTOR3*)nullptr, 3);
-
 		pos.y = posIce.y;
 		SetPosition(pos);
+
+		// エフェクト発生
+		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_LANDING, posIce);
+		
 		return true;
 	}
 
