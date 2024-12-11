@@ -91,6 +91,16 @@ template <typename T>
 bool FindFromVector(const std::vector<T>& vec, T pValue){ return std::find(vec.begin(), vec.end(), pValue) != vec.end(); }
 template <typename T, typename F>
 void RemoveIfFromVector(std::vector<T>& vec, F function) { vec.erase(std::remove_if(vec.begin(), vec.end(), function), vec.end()); }
+template <typename T>
+inline T RandomFromVector(std::vector<T> vec) 
+{
+	// サイズからランダムで指定
+	int nRand = universal::RandRange((int)vec.size() - 1, 0);
+
+	T data = vec[nRand];
+
+	return data;
+}
 
 //======================================
 // 補完系

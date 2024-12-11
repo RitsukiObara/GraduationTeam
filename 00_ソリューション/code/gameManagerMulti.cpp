@@ -62,8 +62,12 @@ HRESULT CGameManagerMulti::Init(void)
 
 	if (apInfoStage.empty())	// ステージ情報が空だったらデフォルトマップ
 		pIceManager->Load(PATH_SAMPLE_ICESTAGE);
-	else						// 対応したステージを読込む
-		pIceManager->Load(&apInfoStage[nIdxMap]->pathMap[0]);
+	else
+	{// ランダムでステージを読み込む
+		CSelectStageManager::S_InfoStage *pInfoCurrent = universal::RandomFromVector(apInfoStage);
+
+		pIceManager->Load(&pInfoCurrent->pathMap[0]);
+	}
 
 	//------------------------------------
 	// 各種設定
