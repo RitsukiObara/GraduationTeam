@@ -1278,14 +1278,18 @@ void CPlayer::StayBlow(void)
 //=====================================================
 void CPlayer::EndBlow(void)
 {
-	// 入力を有効化
-	EnableInput(true);
+	if(CGame::GetState() == CGame::E_State::STATE_NORMAL)
+		EnableInput(true);	// 入力を有効化
 
 	// 目標氷をリセット
 	m_pIceDestJump = nullptr;
 
 	// 状態を通常にする
 	m_state = E_State::STATE_NORMAL;
+
+	// ジャンプフラグを折る
+	m_bEnableJump = false;
+	m_fragMotion.bJump = false;
 }
 
 //=====================================================

@@ -65,10 +65,10 @@ const D3DXVECTOR2 SIZE_NAME = { 0.25f, 0.06f };	// 名前のサイズ
 //----------------------------------
 namespace buttonUI
 {
-	const string PATH = "data\\TEXTURE\\UI\\B_Back.png";
-	const float WIDTH = 0.09f;
-	const float HEIGHT = 0.049f;
-	const D3DXVECTOR3 POS = D3DXVECTOR3(0.12f, 0.92f, 0.0f);
+const string PATH = "data\\TEXTURE\\UI\\SelectAndBack.png";
+const float WIDTH = 0.1957f;
+const float HEIGHT = 0.049f;
+const D3DXVECTOR3 POS = D3DXVECTOR3(0.78f, 0.92f, 0.0f);
 }
 }
 
