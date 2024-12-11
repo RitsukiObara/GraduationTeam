@@ -1278,14 +1278,18 @@ void CPlayer::StayBlow(void)
 //=====================================================
 void CPlayer::EndBlow(void)
 {
-	// 入力を有効化
-	EnableInput(true);
+	if(CGame::GetState() == CGame::E_State::STATE_NORMAL)
+		EnableInput(true);	// 入力を有効化
 
 	// 目標氷をリセット
 	m_pIceDestJump = nullptr;
 
 	// 状態を通常にする
 	m_state = E_State::STATE_NORMAL;
+
+	// ジャンプフラグを折る
+	m_bEnableJump = false;
+	m_fragMotion.bJump = false;
 }
 
 //=====================================================
@@ -1459,7 +1463,7 @@ void CPlayer::Debug(void)
 	if (pDebugProc == nullptr || pInputKeyboard == nullptr || pJoypad == nullptr || pInputMgr == nullptr || m_pShadow == nullptr)
 		return;
 
-#if 1
+#if 0
 	pDebugProc->Print("\nプレイヤー情報==========================");
 	pDebugProc->Print("\n縦[%d]横[%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\n位置[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);

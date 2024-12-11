@@ -21,6 +21,9 @@
 #include "camera.h"
 #include "cameraState.h"
 #include "iceManager.h"
+#include "manager.h"
+#include "blurEvent.h"
+#include "blur.h"
 
 //*****************************************************
 // 定数定義
@@ -30,6 +33,7 @@ namespace
 const string PATH_ENEMY_DEFAULT = "data\\TEXT\\enemy00.txt";		// 敵配置情報のテキスト
 const char* PATH_SAMPLE_ICESTAGE = "data\\TEXT\\ice_stage_00.txt";	// サンプルの初期配置
 const int SIZE_GRID = 10;											// ステージのサイズ
+
 }
 
 //=====================================================
@@ -148,11 +152,22 @@ void CGameManagerSingle::UpdateNormal(void)
 	// 基底クラスの更新
 	CGameManager::UpdateNormal();
 
+	// カメラの管理
+	ManageCamera();
+
 	// プレイヤー管理
 	ManagePlayer();
 
 	// 敵管理
 	ManageEnemy();
+}
+
+//=====================================================
+// カメラの管理
+//=====================================================
+void CGameManagerSingle::ManageCamera(void)
+{
+	
 }
 
 //=====================================================

@@ -12,6 +12,7 @@
 #include "renderer.h"
 #include "manager.h"
 #include "camera.h"
+#include "debugproc.h"
 
 //*****************************************************
 // 定数定義
@@ -376,6 +377,10 @@ void CBlur::OverlapLastTexture(void)
 
     // 描画
     pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+    
+    CDebugProc::GetInstance()->Print("\nブラー==============================");
+    CDebugProc::GetInstance()->Print("\nサイズ[%f]", m_fAddSizePolygon);
+    CDebugProc::GetInstance()->Print("\n濃さ[%f]", m_colPolygon.a);
 }
 
 //=====================================================
@@ -432,12 +437,6 @@ void CBlur::DrawBuckBuffer(void)
 
     // テクスチャ設定
     pDevice->SetTexture(0, pTexture);
-
-    // 描画
-    pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-
-    // テクスチャ設定
-    pDevice->SetTexture(0, m_apTextureMT[2]);
 
     // 描画
     pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
