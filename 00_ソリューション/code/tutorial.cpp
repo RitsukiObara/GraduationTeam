@@ -329,6 +329,7 @@ void CTutorial::Uninit(void)
 	Object::DeleteObject((CObject**)&m_pUIPlayer);
 	Object::DeleteObject((CObject**)&m_pCaption);
 	Object::DeleteObject((CObject**)&m_pFadeCaption);
+	Object::DeleteObject((CObject**)&m_pButtonUI);
 
 	// ÉVÅ[ÉìÇÃèIóπ
 	CScene::Uninit();
