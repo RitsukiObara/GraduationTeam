@@ -19,6 +19,7 @@
 #include "game.h"
 #include "sound.h"
 #include "UI.h"
+#include "gameManager.h"
 
 //*****************************************************
 // ƒ}ƒNƒ’è‹`
@@ -427,7 +428,10 @@ void CPause::Fade(MENU menu)
 		break;
 	case CPause::MENU_QUIT:
 	{
-		pFade->SetFade(CScene::MODE_SELECTSTAGE);
+		if(gameManager::IsMulti())
+			pFade->SetFade(CScene::MODE_SELECTPLAYER);
+		else
+			pFade->SetFade(CScene::MODE_SELECTSTAGE);
 	}
 		break;
 	default:
