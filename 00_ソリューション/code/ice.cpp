@@ -54,7 +54,7 @@ const float LINE_STOP_ICE = 1.0f;	// 氷が止まるしきい値
 
 const float TIME_MAXSPEED = 10.0f;	// 最大速度になるまでの時間
 
-const float RATE_COLLISION = 0.5f;	// 判定の割合
+const float RATE_COLLISION = 1.0f;	// 判定の割合
 //------------------------------
 // 傾きの定数
 //------------------------------
@@ -1088,27 +1088,44 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 
 	if (m_bDrift)
 	{
+		// くっつきフラグ
+		bool bStick = false;
+
 		debug::Effect3DShort(pIce->GetPosition(), D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f), 120);
 		// グリッドに氷情報を保存
 		if (pIceManager->SetIceInGrid(nIdxV, nIdxH, pIce))
 		{
-			for (CIce* pIce : apIceHit)
+			for (CIce* pIceHit : apIceHit)
 			{
-				if (pIce == nullptr)
+				if (pIceHit == nullptr)
 					continue;
 
 				// パーティクルを発生
 				D3DXVECTOR3 pos = pIce->GetPosition();
-				D3DXVECTOR3 posHitIce = pIce->GetPosition();
+				D3DXVECTOR3 posHitIce = pIceHit->GetPosition();
 				D3DXVECTOR3 vecDIff = posHitIce - pos;
 
 				pos += vecDIff * 0.5f;
 
 				CParticle::Create(pos, CParticle::TYPE::TYPE_STICK_ICE);
+
+				if (pIceHit->IsPeck())
+				{
+					pIceManager->DeleteIce(pIceHit);
+					pIceHit->EnableSink(true);
+
+					// 沈みパーティクルの発生
+					CParticle::Create(posHitIce, CParticle::TYPE::TYPE_BUBBLE_SINK);
+				}
+				else
+				{// 一つでも通常氷があったらくっつきフラグを立てる
+					bStick = true;
+				}
 			}
 		}
 
-		pIce->ChangeState(new CIceStaeteNormal);
+		if(bStick)
+			pIce->ChangeState(new CIceStaeteNormal);
 	}
 }
 
@@ -1236,7 +1253,7 @@ void CIceStateFlow::CollideOtherFlow(CIce *pIceOwn)
 	vector<CIce*> apIce = CIce::GetInstance();
 
 	// 止まってる氷を除外
-	//universal::RemoveIfFromVector(apIce, [](CIce* ice) { return ice != nullptr && ice->IsStop(); });
+	universal::RemoveIfFromVector(apIce, [](CIce* ice) { return ice != nullptr && ice->IsStop(); });
 
 	D3DXVECTOR3 pos = pIceOwn->GetPosition();
 
@@ -1244,7 +1261,7 @@ void CIceStateFlow::CollideOtherFlow(CIce *pIceOwn)
 	{
 		D3DXVECTOR3 posTarget = pIce->GetPosition();
 
-		if (universal::DistCmpFlat(pos, posTarget, SIZE_INIT * RATE_COLLISION, nullptr))
+		if (universal::DistCmpFlat(pos, posTarget, Grid::SIZE, nullptr))
 		{// 一定距離まで近づいていたらその速度の中間の値にする
 			float fTimeTarget = pIce->GetTimerStartMove();
 			float fTime = pIceOwn->GetTimerStartMove();

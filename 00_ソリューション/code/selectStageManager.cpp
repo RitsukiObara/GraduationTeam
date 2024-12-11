@@ -50,8 +50,10 @@ const float SPEED_MOVE_ENTER = 0.01f;		// エンター時の移動速度
 
 const float SPEED_PARTICLE = 22.0f;								// パーティクルの速度
 
-const D3DXVECTOR3 BANNER_POS = D3DXVECTOR3(0.0f, 0.0, 1300.0);	// 看板の位置
+const D3DXVECTOR3 BANNER_POS = D3DXVECTOR3(0.0f, 0.0, -2900.0);	// 看板の位置
 const float SCALE_BANNER = 15.0f;								// 看板のスケール
+
+const D3DXVECTOR3 INIT_POS_PLAYER = D3DXVECTOR3(0.0f, 0.0, -1300.0);	// プレイヤーの初期位置
 
 const float HEIGHT_NUMBER = 0.14f;				// 名前の高さ
 const float ADULTWALL_LENGTH = 3000.0f;			// 大人の壁
@@ -120,6 +122,8 @@ HRESULT CSelectStageManager::Init(void)
 
 	// ペンギンの生成
 	m_pPenguin = CSelectStagePenguin::Create();
+	if (m_pPenguin != nullptr)
+		m_pPenguin->SetPosition(INIT_POS_PLAYER);
 
 	// カメラのステイト設定
 	Camera::ChangeState(new CCameraStateSelectStage(m_pPenguin));
