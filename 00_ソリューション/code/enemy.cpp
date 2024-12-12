@@ -295,7 +295,7 @@ void CEnemy::FollowIce(void)
 	D3DXVECTOR3 pos = GetPosition();
 
 	// •X‚Ì‚‚³‚É‡‚í‚¹‚é
-	CIce *pIceStand = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
+	CIce *pIceStand = CIce::GetNearestIce(pos);
 	
 	if (pIceStand != nullptr)
 		pos.y = pIceStand->GetPosition().y;	// ‚‚³‚ð‡‚í‚¹‚é
@@ -568,6 +568,8 @@ void CEnemy::MoveToNextGrid(void)
 	if (m_bTurn)	// U‚èŒü‚«Žž‚ÍˆÚ“®‚µ‚È‚¢
 		return;
 
+	CDebugProc::GetInstance()->Print("\n‚±‚±‚Ü‚Å’Ê‚Á‚Ä‚éƒˆ");
+
 	CIceManager *pIceMgr = CIceManager::GetInstance();
 
 	if (pIceMgr == nullptr)
@@ -595,14 +597,16 @@ void CEnemy::MoveToNextGrid(void)
 	if (!JudgeCanMove())
 		return;
 
-	// ‚Â‚Á‚Â‚¢‚½•X‚¾‚Á‚½‚çU‚è•Ô‚éˆ—‚É“ü‚é
+	// ‚Â‚Á‚Â‚¢‚½•X‚¾‚Á‚½‚ç’âŽ~‚·‚é
 	CIce *pIce = pIceMgr->GetGridIce(&m_nGridVNext, &m_nGridHNext);
 
 	if (pIce != nullptr)
 	{
 		if (pIce->IsPeck())
 		{
-			m_bTurn = true;
+			SetState(CEnemy::E_State::STATE_STOP);
+			SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+			AliveDestGrid();
 			return;
 		}
 	}
