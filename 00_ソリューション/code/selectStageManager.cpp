@@ -57,7 +57,7 @@ const float SCALE_BANNER = 15.0f;								// 看板のスケール
 const D3DXVECTOR3 INIT_POS_PLAYER = D3DXVECTOR3(0.0f, 0.0, -1300.0);	// プレイヤーの初期位置
 
 const float HEIGHT_NUMBER = 0.14f;				// 名前の高さ
-const float ADULTWALL_LENGTH = 3000.0f;			// 大人の壁
+const float ADULTWALL_LENGTH = 3850.0f;			// 大人の壁
 const D3DXVECTOR2 SIZE_NAME = { 0.25f, 0.06f };	// 名前のサイズ
 
 //----------------------------------
