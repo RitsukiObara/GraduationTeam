@@ -1214,8 +1214,8 @@ void CPlayer::EndJump(void)
 	// ジャンプモーションフラグを折る
 	m_fragMotion.bJump = false;
 
-	// 入力を有効化
-	EnableInput(true);
+	if (CGame::GetState() == CGame::E_State::STATE_NORMAL)
+		EnableInput(true);
 
 	CIceManager* pIceMgr = CIceManager::GetInstance();
 
