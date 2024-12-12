@@ -410,6 +410,10 @@ void CEnemy::SarchNearIceToDest(void)
 	{// Ÿ‚Ì•X‚ª”­Œ©‚Å‚«‚½‚ç‚»‚Ì”Ô†‚ğŸ‚Ì”Ô†‚É‚·‚é
 		pIceMgr->GetIceIndex(pIceNext, &m_nGridVNext, &m_nGridHNext);
 	}
+	else
+	{// Ÿ‚Ì•X‚ª”­Œ©‚Å‚«‚È‚©‚Á‚½‚ç
+
+	}
 }
 
 //=====================================================
@@ -472,9 +476,6 @@ bool CEnemy::PathFind(int nIdxV, int nIdxH, vector<CIce*>& rIceSave)
 
 		if (universal::FindFromVector(rIceSave, apIce[i]))
 			continue;	// ’TõÏ‚İ‚È‚ç–³‹
-
-		if (enemy::IsEnemyOnIce(aV[i], aH[i]))
-			continue;	// ‘¼‚Ì“G‚ªæ‚Á‚Ä‚½‚ç–³‹
 
 		if (apIce[i]->IsPeck())
 			continue;	// ‚Â‚Á‚Â‚¢‚½‚â‚Â‚È‚ç–³‹
@@ -567,8 +568,6 @@ void CEnemy::MoveToNextGrid(void)
 {
 	if (m_bTurn)	// U‚èŒü‚«‚ÍˆÚ“®‚µ‚È‚¢
 		return;
-
-	CDebugProc::GetInstance()->Print("\n‚±‚±‚Ü‚Å’Ê‚Á‚Ä‚éƒˆ");
 
 	CIceManager *pIceMgr = CIceManager::GetInstance();
 

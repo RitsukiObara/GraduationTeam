@@ -181,7 +181,6 @@ void COrbit::UpdatePolygon(void)
 	if (m_bEnd)
 	{// 切り離しからの自動削除
 		D3DXVECTOR3 vecDiff;
-
 		vecDiff = pVtx[0].pos - pVtx[m_nNumEdge * NUM_OFFSET - 2].pos;
 
 		float fLength = D3DXVec3Length(&vecDiff);
@@ -271,8 +270,6 @@ void COrbit::Draw()
 
 	// ライティング有効化
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
-
-	CDebugProc::GetInstance()->Print("\nいるよ");
 }
 
 //==========================================
