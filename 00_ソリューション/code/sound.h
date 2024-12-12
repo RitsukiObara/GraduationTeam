@@ -25,6 +25,7 @@ public:
 
 		LABEL_SE_COUNTDOWN,				// カウントダウン
 		LABEL_SE_COUNTSTART,			// 開始時スタート
+		LABEL_SE_TIMELIMIT,				// タイムリミット
 		LABEL_SE_PENGUIN_JUMP,			// ペンギンジャンプ
 		LABEL_SE_SEA,					// 静かな海（未）
 		LABEL_SE_BREAK_ICE,				// 氷破壊
@@ -111,6 +112,7 @@ private:
 
 		{ "data/SOUND/SE/SE_Count.wav",0 },				// カウントダウン
 		{ "data/SOUND/SE/SE_Start.wav",0 },				// 開始時スタート
+		{ "data/SOUND/SE/SE_TimeLimit.wav",-1 },		// タイムリミット
 		{ "data/SOUND/SE/SE_Penguin_Jump.wav",0 },		// ペンギンジャンプ
 		{ "data/SOUND/SE/SE_Sea.wav",0 },				// 静かな海
 		{ "data/SOUND/SE/SE_Break_Ice.wav",0 },			// 氷破壊

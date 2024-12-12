@@ -55,6 +55,7 @@ const int SPEED_TIME = 60;	// タイマーが減っていく速度
 const char* PATH_GAME_ROAD = "data\\MAP\\road00.bin";	// ゲームメッシュロードのパス
 const char* PATH_SAMPLE_ICESTAGE = "data\\TEXT\\ice_stage_00.txt";	// サンプルの初期配置
 const float SPEED_CHANGE_LIGHTCOL = 0.1f;	// ライトの色が変わる速度
+const int TIME_LIMIT_SE_PLAY_TIME = 10;		// タイムリミットSE流し始める時間
 }
 
 //*****************************************************
@@ -75,6 +76,7 @@ CGame::CGame()
 	m_GameMode = E_GameMode::MODE_NONE;
 	m_nNumEnemyMax = 0;
 	m_pGameManager = nullptr;
+	m_bPlayTimeLimitSE = false;
 }
 
 //=====================================================
@@ -144,6 +146,8 @@ void CGame::Update(void)
 		m_pPause == nullptr)
 	{
 		m_pPause = CPause::Create();
+		pSound->Stop(CSound::LABEL_SE_TIMELIMIT);
+		m_bPlayTimeLimitSE = false;
 	}
 
 	// カメラ更新
@@ -200,6 +204,7 @@ void CGame::UpdateCamera(void)
 void CGame::ManageState(void)
 {
 	CFade *pFade = CFade::GetInstance();
+	CSound* pSound = CSound::GetInstance();
 
 	// ポーズ中の時タイマーを加算する
 	if (m_pPause == nullptr)
@@ -218,8 +223,16 @@ void CGame::ManageState(void)
 				m_pTimer->AddSecond(-1);	// タイマーの更新
 		}
 
+		// タイムリミット確認
+		CheckLimit();
+
 		break;
 	case CGame::STATE_RESULT:
+		
+		if (pSound != nullptr)
+		{
+			pSound->Stop(CSound::LABEL_SE_TIMELIMIT);
+		}
 
 		break;
 	case CGame::STATE_END:
@@ -264,6 +277,22 @@ void CGame::UpdatePause(void)
 	}
 
 	m_pPause->Update();
+}
+
+//=====================================================
+// タイムリミット確認
+//=====================================================
+void CGame::CheckLimit(void)
+{
+	if (m_bPlayTimeLimitSE == false && m_pTimer != nullptr && m_pTimer->GetSecond() <= TIME_LIMIT_SE_PLAY_TIME)
+	{
+		CSound* pSound = CSound::GetInstance();
+		if (pSound != nullptr)
+		{
+			pSound->Play(CSound::LABEL_SE_TIMELIMIT);
+			m_bPlayTimeLimitSE = true;
+		}
+	}
 }
 
 //=====================================================
@@ -323,6 +352,15 @@ void CGame::Draw(void)
 		"NORMAL",
 		"END",
 	};
+}
+
+//=====================================================
+// ポーズの解放
+//=====================================================
+void CGame::ReleasePause(void)
+{
+	m_pPause = nullptr;
+	CheckLimit();	// タイムリミット確認
 }
 
 //=====================================================
