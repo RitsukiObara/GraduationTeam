@@ -372,6 +372,19 @@ void CResultSingleWin::Update(void)
 
 	// 入力処理
 	Input();
+
+	// プレイヤーを勝利モーションにする
+	vector<CPlayer*> apPlayer = CPlayer::GetInstance();
+
+	if (!apPlayer.empty())
+	{
+		CPlayer *pPlayer = *apPlayer.begin();
+		int nMotion = pPlayer->GetMotion();
+		bool bFinish = pPlayer->IsFinish();
+
+		if(nMotion != CPlayer::MOTION::MOTION_VICTORY)
+			pPlayer->SetMotion(CPlayer::MOTION::MOTION_VICTORY);
+	}
 }
 
 //=====================================================
