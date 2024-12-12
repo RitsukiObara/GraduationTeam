@@ -66,13 +66,17 @@ HRESULT CGameManagerSingle::Init(void)
 	if (pIceManager == nullptr)
 		return E_FAIL;
 
-	pIceManager->SetDirStream((COcean::E_Stream)apInfoStage[nIdxMap]->nDirStream);
-	pIceManager->SetDirStreamNext((COcean::E_Stream)apInfoStage[nIdxMap]->nDirStream);
-
-	if (apInfoStage.empty())	// ステージ情報が空だったらデフォルトマップ
+	if (apInfoStage.empty() || nIdxMap == -1)
+	{// ステージ情報が空だったらデフォルトマップ
 		pIceManager->Load(PATH_SAMPLE_ICESTAGE);
-	else						// 対応したステージを読込む
+	}
+	else						
+	{// 対応したステージを読込む
+		pIceManager->SetDirStream((COcean::E_Stream)apInfoStage[nIdxMap]->nDirStream);
+		pIceManager->SetDirStreamNext((COcean::E_Stream)apInfoStage[nIdxMap]->nDirStream);
+
 		pIceManager->Load(&apInfoStage[nIdxMap]->pathMap[0]);
+	}
 
 	//------------------------------------
 	// 各種オブジェクト生成
@@ -107,7 +111,7 @@ HRESULT CGameManagerSingle::Init(void)
 	if (m_pEnemyFct == nullptr)
 		return E_FAIL;
 
-	if (apInfoStage.empty())
+	if (apInfoStage.empty() || nIdxMap == -1)
 		m_pEnemyFct->Load(PATH_ENEMY_DEFAULT);
 	else
 		m_pEnemyFct->Load(apInfoStage[nIdxMap]->pathEnemy);

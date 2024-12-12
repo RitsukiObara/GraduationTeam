@@ -60,6 +60,8 @@ const float HEIGHT_NUMBER = 0.14f;				// 名前の高さ
 const float ADULTWALL_LENGTH = 3000.0f;			// 大人の壁
 const D3DXVECTOR2 SIZE_NAME = { 0.25f, 0.06f };	// 名前のサイズ
 
+const float DEPTH_PENGUIN = -500.0f;				// ペンギンの奥行き
+
 //----------------------------------
 // 戻るボタンUIの定数
 //----------------------------------
@@ -146,7 +148,24 @@ HRESULT CSelectStageManager::Init(void)
 	// ペンギンの生成
 	m_pPenguin = CSelectStagePenguin::Create();
 	if (m_pPenguin != nullptr)
-		m_pPenguin->SetPosition(INIT_POS_PLAYER);
+	{
+		int nIdxMapLast = gameManager::LoadIdxMap();
+
+		if (nIdxMapLast == -1)
+		{// 前回のマップ番号が無ければ規定位置
+			m_pPenguin->SetPosition(INIT_POS_PLAYER);
+		}
+		else
+		{// 前回のマップの前に配置
+			if (nIdxMapLast >= (int)s_aInfoStage.size() ||
+				nIdxMapLast < 0)
+				return E_FAIL;
+
+			D3DXVECTOR3 posPenguin = s_aInfoStage[nIdxMapLast]->pos;
+			posPenguin.z += DEPTH_PENGUIN;
+			m_pPenguin->SetPosition(posPenguin);
+		}
+	}
 
 	// カメラのステイト設定
 	Camera::ChangeState(new CCameraStateSelectStage(m_pPenguin));

@@ -23,8 +23,8 @@
 //*****************************************************
 namespace
 {
-const char* PATH_SAMPLE_ICESTAGE = "data\\TEXT\\ice_stage_00.txt";	// サンプルの初期配置
-const int SIZE_GRID = 15;											// ステージのサイズ
+const char* PATH_SAMPLE_ICESTAGE = "data\\TEXT\\icestagemulti00.txt";	// サンプルの初期配置
+const int SIZE_GRID = 15;												// ステージのサイズ
 }
 
 //=====================================================
@@ -48,7 +48,7 @@ HRESULT CGameManagerMulti::Init(void)
 	CGame::E_GameMode mode;
 	gameManager::LoadMode(&mode, abFrag);
 
-	// 氷マネージャーの読込処理
+	// マップ番号の読込
 	int nIdxMap = gameManager::LoadIdxMap();
 
 	vector<CSelectStageManager::S_InfoStage*> apInfoStage = CSelectStageManager::GetInfoStageMulti();
@@ -57,8 +57,11 @@ HRESULT CGameManagerMulti::Init(void)
 	if (pIceManager == nullptr)
 		return E_FAIL;
 
-	pIceManager->SetDirStream((COcean::E_Stream)apInfoStage[nIdxMap]->nDirStream);
-	pIceManager->SetDirStreamNext((COcean::E_Stream)apInfoStage[nIdxMap]->nDirStream);
+	if (nIdxMap != -1)
+	{// 海流の初期化
+		pIceManager->SetDirStream((COcean::E_Stream)apInfoStage[nIdxMap]->nDirStream);
+		pIceManager->SetDirStreamNext((COcean::E_Stream)apInfoStage[nIdxMap]->nDirStream);
+	}
 
 	if (apInfoStage.empty())	// ステージ情報が空だったらデフォルトマップ
 		pIceManager->Load(PATH_SAMPLE_ICESTAGE);

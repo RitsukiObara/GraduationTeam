@@ -170,6 +170,9 @@ HRESULT CResultSingleWin::Init(void)
 
 	// ランキング処理の生成
 	int nIdxMap = gameManager::LoadIdxMap();
+	if (nIdxMap == -1)
+		nIdxMap = 0;
+
 	m_pRanking = CRankingSingle::Create(ranking::PATH_SAVE[nIdxMap]);
 
 	// 2Dオブジェクトの生成

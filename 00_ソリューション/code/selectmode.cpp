@@ -206,6 +206,9 @@ HRESULT CSelectMode::Init(void)
 	// チュートリアルフラグをリセット
 	tutorial::SaveFrag(true);
 
+	// ステージ番号をリセット
+	gameManager::SaveIdxMap(-1);
+
 	return S_OK;
 }
 

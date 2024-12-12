@@ -197,7 +197,7 @@ bool CSelectStagePenguin::IsEnter(void)
 //=====================================================
 void CSelectStagePenguin::Debug(void)
 {
-	CDebugProc::GetInstance()->Print("\nˆÊ’u[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
+
 }
 
 //=====================================================
