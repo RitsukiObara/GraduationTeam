@@ -45,9 +45,9 @@ public:
 
 private:
 	LPDIRECT3DTEXTURE9 m_apTexture[MAX_TEX];	// テクスチャの配列
-	static int m_nNumAll;	// 総数
-	char *m_apFilename[MAX_TEX];	// ファイル名の配列
-	static CTexture *m_pTexture;	// 自身のポインタ
+	static int m_nNumAll;						// 総数
+	char m_apFilename[MAX_TEX][MAX_STRING];		// ファイル名の配列
+	static CTexture *m_pTexture;				// 自身のポインタ
 };
 
 #endif
