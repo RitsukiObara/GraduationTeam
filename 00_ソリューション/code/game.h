@@ -65,7 +65,7 @@ public:
 	static E_State GetState(void) { return m_state; }
 	void EnableStop(bool bStop) { m_bStop = bStop; }
 	bool GetStop(void) { return m_bStop; }
-	void ReleasePause(void) { m_pPause = nullptr; };	// ポーズの解放
+	void ReleasePause(void);	// ポーズの解放
 	void CreateScore(void);	// スコアの生成
 	void StartGame(void);	// ゲームの開始
 
@@ -83,6 +83,7 @@ private:
 	void ToggleStop(void);
 	void Debug(void);
 	void UpdatePause(void);	// ポーズの更新
+	void CheckLimit(void);	//タイムリミット確認
 
 	// メンバ変数
 	int m_nCntState;					// 状態遷移カウンター
@@ -95,6 +96,7 @@ private:
 	E_GameMode m_GameMode;				// ゲームモード
 	CGameManager *m_pGameManager;		// ゲームマネージャー
 	int m_nNumEnemyMax;					// 敵の最大数
+	bool m_bPlayTimeLimitSE;			// タイムリミットSEフラグ
 
 	// 静的メンバ変数
 	static E_State m_state;	// 状態
