@@ -63,6 +63,12 @@ public:
 		FADESTATE_OUT,	//フェードアウト状態
 		FADESTATE_MAX
 	}FADESTATE;
+	typedef enum
+	{
+		TYPE_BGM = 0,
+		TYPE_SE,
+		TYPE_MAX
+	}SOUNDTYPE;
 
 	CSound();	// コンストラクタ
 	~CSound();	// デストラクタ
@@ -77,6 +83,7 @@ public:
 	void Stop(void);
 
 	void SetVolume(LABEL label, float fVolume);
+	void SetVolume(SOUNDTYPE type, float fVolume) { m_afVolumeControll[type] = fVolume; }
 	void SetFade(LABEL LabelNow, LABEL LabelNext, float fSpeed);
 
 	static CSound *GetInstance(void) { return m_pSound; }
@@ -84,6 +91,7 @@ public:
 private:
 	typedef struct
 	{
+		SOUNDTYPE type;		// サウンドの種類
 		char *pFilename;	// ファイル名
 		int nCntLoop;		// ループカウント
 	} SOUNDINFO;
@@ -101,46 +109,47 @@ private:
 	LABEL m_SoundLabelNext;	// 次のサウンドラベル
 	float m_fSpeedFadeSound;	// サウンドがフェードするスピード
 	float m_fVolumeSound;	// サウンドのボリューム
+	float m_afVolumeControll[CSound::SOUNDTYPE::TYPE_MAX];	// 種類別ボリューム
 
 	// サウンドの情報
 	SOUNDINFO m_aSoundInfo[LABEL_MAX] =
 	{
-		{ "data/SOUND/BGM/BGM_Title.wav",-1 },			// タイトル画面BGM
-		{ "data/SOUND/BGM/BGM_Result.wav",-1 },			// チュートリアル画面BGM（未）
-		{ "data/SOUND/BGM/BGM_Game00.wav",-1 },			// ゲーム画面BGM
-		{ "data/SOUND/BGM/BGM_Result.wav",-1 },			// リザルト画面BGM
-		{ "data/SOUND/BGM/BGM_Option.wav",-1 },			// オプション画面BGM
+		{ TYPE_BGM, "data/SOUND/BGM/BGM_Title.wav",-1 },			// タイトル画面BGM
+		{ TYPE_BGM, "data/SOUND/BGM/BGM_Result.wav",-1 },			// チュートリアル画面BGM（未）
+		{ TYPE_BGM, "data/SOUND/BGM/BGM_Game00.wav",-1 },			// ゲーム画面BGM
+		{ TYPE_BGM, "data/SOUND/BGM/BGM_Result.wav",-1 },			// リザルト画面BGM
+		{ TYPE_BGM, "data/SOUND/BGM/BGM_Option.wav",-1 },			// オプション画面BGM
 
-		{ "data/SOUND/SE/SE_Count.wav",0 },				// カウントダウン
-		{ "data/SOUND/SE/SE_Start.wav",0 },				// 開始時スタート
-		{ "data/SOUND/SE/SE_TimeLimit.wav",-1 },		// タイムリミット
-		{ "data/SOUND/SE/SE_Penguin_Jump.wav",0 },		// ペンギンジャンプ
-		{ "data/SOUND/SE/SE_Sea.wav",0 },				// 静かな海
-		{ "data/SOUND/SE/SE_Break_Ice.wav",0 },			// 氷破壊
-		{ "data/SOUND/SE/NotPeck.wav",0 },				// つっつけないとき
-		{ "data/SOUND/SE/SE_Seal_Cry.wav",0 },			// アザラシ鳴き声
-		{ "data/SOUND/SE/SE_SeaSplash_01.wav",0 },		// 敵が海から上がってきた（重ねその1）
-		{ "data/SOUND/SE/SE_SeaSplash_02.wav",0 },		// 敵が海から上がってきた（重ねその2）
-		{ "data/SOUND/SE/SE_Ice_Union.wav",0 },			// 氷同士ぶつかった
-		{ "data/SOUND/SE/SE_Decision.wav",0 },			// 決定音
-		{ "data/SOUND/SE/SE_Select.wav",0 },			// 選択音
-		{ "data/SOUND/SE/SE_Penguin_Voice00.wav",0 },	// ペンギン鳴き声1
-		{ "data/SOUND/SE/SE_Penguin_Voice01.wav",0 },	// ペンギン鳴き声2
-		{ "data/SOUND/SE/SE_flapping_wing.wav",0 },		// ペンギンの羽ばたき音
-		{ "data/SOUND/SE/SE_Walking_Sound.wav",0 },		// ペンギンの歩く音
-		{ "data/SOUND/SE/SE_Polarbear_Voice.wav",0 },	// シロクマ鳴き声
-		{ "data/SOUND/SE/SE_Polarbear_Assault.wav",0 },	// シロクマ突撃
-		{ "data/SOUND/SE/SE_Albatross.wav",0 },			// アホウドリ鳴き声
+		{ TYPE_SE, "data/SOUND/SE/SE_Count.wav",0 },				// カウントダウン
+		{ TYPE_SE, "data/SOUND/SE/SE_Start.wav",0 },				// 開始時スタート
+		{ TYPE_SE, "data/SOUND/SE/SE_TimeLimit.wav",-1 },		// タイムリミット
+		{ TYPE_SE, "data/SOUND/SE/SE_Penguin_Jump.wav",0 },		// ペンギンジャンプ
+		{ TYPE_SE, "data/SOUND/SE/SE_Sea.wav",0 },				// 静かな海
+		{ TYPE_SE, "data/SOUND/SE/SE_Break_Ice.wav",0 },			// 氷破壊
+		{ TYPE_SE, "data/SOUND/SE/NotPeck.wav",0 },				// つっつけないとき
+		{ TYPE_SE, "data/SOUND/SE/SE_Seal_Cry.wav",0 },			// アザラシ鳴き声
+		{ TYPE_SE, "data/SOUND/SE/SE_SeaSplash_01.wav",0 },		// 敵が海から上がってきた（重ねその1）
+		{ TYPE_SE, "data/SOUND/SE/SE_SeaSplash_02.wav",0 },		// 敵が海から上がってきた（重ねその2）
+		{ TYPE_SE, "data/SOUND/SE/SE_Ice_Union.wav",0 },			// 氷同士ぶつかった
+		{ TYPE_SE, "data/SOUND/SE/SE_Decision.wav",0 },			// 決定音
+		{ TYPE_SE, "data/SOUND/SE/SE_Select.wav",0 },			// 選択音
+		{ TYPE_SE, "data/SOUND/SE/SE_Penguin_Voice00.wav",0 },	// ペンギン鳴き声1
+		{ TYPE_SE, "data/SOUND/SE/SE_Penguin_Voice01.wav",0 },	// ペンギン鳴き声2
+		{ TYPE_SE, "data/SOUND/SE/SE_flapping_wing.wav",0 },		// ペンギンの羽ばたき音
+		{ TYPE_SE, "data/SOUND/SE/SE_Walking_Sound.wav",0 },		// ペンギンの歩く音
+		{ TYPE_SE, "data/SOUND/SE/SE_Polarbear_Voice.wav",0 },	// シロクマ鳴き声
+		{ TYPE_SE, "data/SOUND/SE/SE_Polarbear_Assault.wav",0 },	// シロクマ突撃
+		{ TYPE_SE, "data/SOUND/SE/SE_Albatross.wav",0 },			// アホウドリ鳴き声
 
-		{ "data/SOUND/SE/pause.wav",0 },				// ポーズ
-		{ "data/SOUND/SE/SE_ENTER00.wav",0 },			// 選択
-		{ "data/SOUND/SE/SE_Enter01.wav",0 },			// 決定
-		{ "data/SOUND/SE/SE_Enter02.wav",0 },			// 決定
+		{ TYPE_SE, "data/SOUND/SE/pause.wav",0 },				// ポーズ
+		{ TYPE_SE, "data/SOUND/SE/SE_ENTER00.wav",0 },			// 選択
+		{ TYPE_SE, "data/SOUND/SE/SE_Enter01.wav",0 },			// 決定
+		{ TYPE_SE, "data/SOUND/SE/SE_Enter02.wav",0 },			// 決定
 
-		{ "data/SOUND/SE/SE_GameStart.wav",0 },			// ゲームスタート
+		{ TYPE_SE, "data/SOUND/SE/SE_GameStart.wav",0 },			// ゲームスタート
 
-		{ "data/SOUND/SE/SE_Fade.wav",0 },				// タイトルフェード音
-		{ "data/SOUND/SE/SE_StageEntry.wav",-1 },				// タイトルフェード音
+		{ TYPE_SE, "data/SOUND/SE/SE_Fade.wav",0 },				// タイトルフェード音
+		{ TYPE_SE, "data/SOUND/SE/SE_StageEntry.wav",-1 },				// タイトルフェード音
 	};
 
 	static CSound *m_pSound;	// 自身のポインタ
