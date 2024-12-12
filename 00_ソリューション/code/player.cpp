@@ -1398,6 +1398,10 @@ void CPlayer::ManageMotion(void)
 		if (nMotion != MOTION::MOTION_WALK)
 			SetMotion(MOTION::MOTION_WALK);
 	}
+	else if (nMotion == MOTION::MOTION_VICTORY)
+	{
+
+	}
 	else
 	{// ‰½‚àƒtƒ‰ƒO‚ª—§‚Á‚Ä‚¢‚È‚¢ó‘Ô
 		if(nMotion != MOTION::MOTION_NEUTRAL)
