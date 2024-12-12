@@ -66,14 +66,14 @@ public:
 private:
 	// メンバ関数
 	void SetApperTransform(void) override;
-	void CollidePlayer(void);	// プレイヤーとの判定
-	void MoveToIce(void);	// 氷に向かって移動
-	void Decreasemove(void);	// 移動量の減衰
-	void SarchTarget(void);	// ターゲットの探索
-	void FindPlayerGrid(void);	// プレイヤーグリッドの発見
-	void AliveDestGrid(void) override;	// グリッドに到着したときの処理
-	void DecideNextStrollGrid(void);	// 次の散歩先を決める
-	void Death(void) override;	// 死亡時の処理
+	void CollidePlayer(void);						// プレイヤーとの判定
+	void MoveToIce(void);							// 氷に向かって移動
+	void Decreasemove(void);						// 移動量の減衰
+	void SarchTarget(void);							// ターゲットの探索
+	void FindPlayerGrid(void);						// プレイヤーグリッドの発見
+	void AliveDestGrid(void) override;				// グリッドに到着したときの処理
+	void DecideNextStrollGrid(void);				// 次の散歩先を決める
+	void Death(void) override;						// 死亡時の処理
 	void Event(EVENT_INFO* pEventInfo) override;	// モーションイベント
 
 	// メンバ変数

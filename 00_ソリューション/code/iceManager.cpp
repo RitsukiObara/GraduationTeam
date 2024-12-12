@@ -553,9 +553,6 @@ bool CIceManager::PeckIce(int nIdxV, int nIdxH)
 	// 探索フラグの無効化
 	DisableFind();
 
-	// 壊れるブロックをまとまりにする
-	SummarizeIce(nNumBreakV, nNumBreakH);
-
 	// 氷が壊れるフラグが立っていたら氷を壊す
 	BreakIce();
 
@@ -1584,6 +1581,9 @@ CIce* CIceManager::GetLeftDownIdx(int *pNumV, int *pNumH)
 				if (m_aGrid[i][j].pIce->IsOnTopAnyObject())
 					continue;	// なにか乗ってたらキャンセル
 
+				if (m_aGrid[i][j].pIce->IsPeck())
+					continue;	// つっついてたらキャンセル
+
 				*pNumV = i;
 				*pNumH = j;
 				return m_aGrid[i][j].pIce;
@@ -1610,6 +1610,9 @@ CIce* CIceManager::GetLeftUpIdx(int *pNumV, int *pNumH)
 			{// 氷があったら番号を保存
 				if (m_aGrid[i][j].pIce->IsOnTopAnyObject())
 					continue;	// なにか乗ってたらキャンセル
+
+				if (m_aGrid[i][j].pIce->IsPeck())
+					continue;	// つっついてたらキャンセル
 
 				*pNumV = i;
 				*pNumH = j;
@@ -1638,6 +1641,9 @@ CIce* CIceManager::GetRightDownIdx(int *pNumV, int *pNumH)
 				if (m_aGrid[i][j].pIce->IsOnTopAnyObject())
 					continue;	// なにか乗ってたらキャンセル
 
+				if (m_aGrid[i][j].pIce->IsPeck())
+					continue;	// つっついてたらキャンセル
+
 				*pNumV = i;
 				*pNumH = j;
 				return m_aGrid[i][j].pIce;
@@ -1664,6 +1670,9 @@ CIce* CIceManager::GetRightUpIdx(int *pNumV, int *pNumH)
 			{// 氷があったら番号を保存
 				if (m_aGrid[i][j].pIce->IsOnTopAnyObject())
 					continue;	// なにか乗ってたらキャンセル
+
+				if (m_aGrid[i][j].pIce->IsPeck())
+					continue;	// つっついてたらキャンセル
 
 				*pNumV = i;
 				*pNumH = j;
@@ -1715,6 +1724,7 @@ CIce* CIceManager::GetRandomIce(int *pNumV, int *pNumH)
 
 	// 止まってない氷を除外
 	universal::RemoveIfFromVector(apIce, [](CIce* ice) { return ice != nullptr && !ice->IsStop(); });
+	universal::RemoveIfFromVector(apIce, [](CIce* ice) { return ice != nullptr && ice->IsPeck(); });
 
 	// サイズからランダムで氷を指定
 	int nRand = universal::RandRange((int)apIce.size() - 1, 0);
