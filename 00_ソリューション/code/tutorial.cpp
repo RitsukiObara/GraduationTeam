@@ -100,7 +100,7 @@ const D3DXVECTOR2 SIZE[CTutorial::E_State::STATE_MAX] =	// サイズ
 //------------------------------
 namespace gauge
 {
-const float TIME_SKIP = 3.0f;				// スキップにかかる時間
+const float TIME_SKIP = 1.0f;				// スキップにかかる時間
 const D3DXVECTOR3 POS = { 0.85f,0.9f,0.0f };	// 位置
 }
 
