@@ -137,7 +137,7 @@ private:
 		{ TYPE_SE, "data/SOUND/SE/SE_Penguin_Voice01.wav",0 },	// ペンギン鳴き声2
 		{ TYPE_SE, "data/SOUND/SE/SE_flapping_wing.wav",0 },		// ペンギンの羽ばたき音
 		{ TYPE_SE, "data/SOUND/SE/SE_Walking_Sound.wav",0 },		// ペンギンの歩く音
-		{ TYPE_SE, "data/SOUND/SE/SE_Polarbear_Voice.wav",0 },	// シロクマ鳴き声
+		{ TYPE_SE, "data/SOUND/SE/SE_Polarbear_Voice.wav",0 },		// シロクマ鳴き声
 		{ TYPE_SE, "data/SOUND/SE/SE_Polarbear_Assault.wav",0 },	// シロクマ突撃
 		{ TYPE_SE, "data/SOUND/SE/SE_Albatross.wav",0 },			// アホウドリ鳴き声
 
