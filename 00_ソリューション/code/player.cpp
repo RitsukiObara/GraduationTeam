@@ -1439,6 +1439,12 @@ void CPlayer::Event(EVENT_INFO* pEventInfo)
 		// “Ë‚Á‚Â‚­ˆ—
 		Peck();
 	}
+
+	if (nMotion == MOTION::MOTION_CANNOTPECK)
+	{
+		// ‰¹‚ğ–Â‚ç‚·
+		Sound::Play(CSound::LABEL::LABEL_SE_NOTPECK);
+	}
 }
 
 //=====================================================

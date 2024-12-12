@@ -29,6 +29,7 @@ public:
 		LABEL_SE_PENGUIN_JUMP,			// ペンギンジャンプ
 		LABEL_SE_SEA,					// 静かな海（未）
 		LABEL_SE_BREAK_ICE,				// 氷破壊
+		LABEL_SE_NOTPECK,				// つっつけない時
 		LABEL_SE_SEAL_CRY,				// アザラシ鳴き声
 		LABEL_SE_SEA_SPLASH_01,			// 敵が海から上がってきた（重ねその1）
 		LABEL_SE_SEA_SPLASH_02,			// 敵が海から上がってきた（重ねその2）
@@ -116,6 +117,7 @@ private:
 		{ "data/SOUND/SE/SE_Penguin_Jump.wav",0 },		// ペンギンジャンプ
 		{ "data/SOUND/SE/SE_Sea.wav",0 },				// 静かな海
 		{ "data/SOUND/SE/SE_Break_Ice.wav",0 },			// 氷破壊
+		{ "data/SOUND/SE/NotPeck.wav",0 },				// つっつけないとき
 		{ "data/SOUND/SE/SE_Seal_Cry.wav",0 },			// アザラシ鳴き声
 		{ "data/SOUND/SE/SE_SeaSplash_01.wav",0 },		// 敵が海から上がってきた（重ねその1）
 		{ "data/SOUND/SE/SE_SeaSplash_02.wav",0 },		// 敵が海から上がってきた（重ねその2）
