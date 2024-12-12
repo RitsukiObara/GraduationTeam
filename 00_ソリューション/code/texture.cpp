@@ -78,7 +78,7 @@ HRESULT CTexture::Load(void)
 			(pDevice, apFileName[nCntTex],&m_apTexture[nCntTex]);
 
 			// ファイル名保存
-			m_apFilename[nCntTex] = apFileName[nCntTex];
+			strcpy(m_apFilename[nCntTex], apFileName[nCntTex]);
 
 			// 総数カウントアップ
 			m_nNumAll++;
@@ -134,10 +134,9 @@ int CTexture::Regist(const char *pFileName)
 	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
 
 	// テクスチャの読込
-	D3DXCreateTextureFromFile
-	(pDevice, pFileName, &m_apTexture[m_nNumAll]);
-
-	m_apFilename[m_nNumAll] = new char[MAX_STRING];
+	if (D3DXCreateTextureFromFile
+	(pDevice, pFileName, &m_apTexture[m_nNumAll]) == E_FAIL)
+		return -1;
 
 	// ファイル名の保存
 	strcpy(m_apFilename[m_nNumAll], pFileName);
