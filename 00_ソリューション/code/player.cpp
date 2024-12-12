@@ -74,7 +74,7 @@ const string PATH_PLAYERNUM = "data\\TEXTURE\\UI\\player_Count.png";	// プレイヤ
 //-------------------------------
 namespace jump
 {
-const float RANGE_JUMP = 0.3f;	// ジャンプ先の目標にする角度の範囲
+const float RANGE_JUMP = D3DX_PI;	// ジャンプ先の目標にする角度の範囲
 const float FACT_MOVE = 0.07f;	// 移動係数
 const float LINE_END = 10.0f;	// 終了と示すしきい値
 const float HEIGHT = 100.0f;	// 高さ
@@ -1083,6 +1083,7 @@ void CPlayer::SarchJumpIce(void)
 	// 向いている氷の周辺をチェック
 	//-------------------------------
 	CIce *pIceStand = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
+	float fDiffMin = D3DX_PI * 2;
 	for (int i = 0; i < (int)apIce.size(); i++)
 	{
 		if (pIceStand == nullptr)
@@ -1100,13 +1101,22 @@ void CPlayer::SarchJumpIce(void)
 		D3DXVECTOR3 posPlayer = GetPosition();
 		D3DXVECTOR3 posIce = apIce[i]->GetPosition();
 
-		universal::LimitRot(&rotPlayer.y);
+		// 差分ベクトルの角度を取得
+		D3DXVECTOR3 vecDiff = posIce - pIceStand->GetPosition();
+		float fRotToTarget = atan2f(vecDiff.x, vecDiff.z);
+
+		// 差分角度が範囲内かどうか取得
+		float fRotDiff = fRotToTarget - rotPlayer.y;
+		universal::LimitRot(&fRotDiff);
 
 		// 扇内にあったらターゲットにする
 		if (universal::IsInFanTargetYFlat(pIceStand->GetPosition(), posIce, rotPlayer.y, jump::RANGE_JUMP))
 		{
-			pIceTarget = apIce[i];
-			break;
+			if (fRotDiff * fRotDiff < fDiffMin * fDiffMin)
+			{
+ 				fDiffMin = fRotDiff;
+				pIceTarget = apIce[i];
+			}
 		}
 	}
 

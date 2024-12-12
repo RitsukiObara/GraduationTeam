@@ -295,7 +295,7 @@ void CEnemy::FollowIce(void)
 	D3DXVECTOR3 pos = GetPosition();
 
 	// •X‚Ì‚‚³‚É‡‚í‚¹‚é
-	CIce *pIceStand = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
+	CIce *pIceStand = CIce::GetNearestIce(pos);
 	
 	if (pIceStand != nullptr)
 		pos.y = pIceStand->GetPosition().y;	// ‚‚³‚ð‡‚í‚¹‚é
@@ -410,6 +410,10 @@ void CEnemy::SarchNearIceToDest(void)
 	{// ŽŸ‚Ì•X‚ª”­Œ©‚Å‚«‚½‚ç‚»‚Ì”Ô†‚ðŽŸ‚Ì”Ô†‚É‚·‚é
 		pIceMgr->GetIceIndex(pIceNext, &m_nGridVNext, &m_nGridHNext);
 	}
+	else
+	{// ŽŸ‚Ì•X‚ª”­Œ©‚Å‚«‚È‚©‚Á‚½‚ç
+
+	}
 }
 
 //=====================================================
@@ -472,9 +476,6 @@ bool CEnemy::PathFind(int nIdxV, int nIdxH, vector<CIce*>& rIceSave)
 
 		if (universal::FindFromVector(rIceSave, apIce[i]))
 			continue;	// ’TõÏ‚Ý‚È‚ç–³Ž‹
-
-		if (enemy::IsEnemyOnIce(aV[i], aH[i]))
-			continue;	// ‘¼‚Ì“G‚ªæ‚Á‚Ä‚½‚ç–³Ž‹
 
 		if (apIce[i]->IsPeck())
 			continue;	// ‚Â‚Á‚Â‚¢‚½‚â‚Â‚È‚ç–³Ž‹
@@ -595,16 +596,25 @@ void CEnemy::MoveToNextGrid(void)
 	if (!JudgeCanMove())
 		return;
 
-	// ‚Â‚Á‚Â‚¢‚½•X‚¾‚Á‚½‚çU‚è•Ô‚éˆ—‚É“ü‚é
+	// ‚Â‚Á‚Â‚¢‚½•X‚¾‚Á‚½‚ç’âŽ~‚·‚é
 	CIce *pIce = pIceMgr->GetGridIce(&m_nGridVNext, &m_nGridHNext);
 
 	if (pIce != nullptr)
 	{
 		if (pIce->IsPeck())
 		{
-			m_bTurn = true;
+			SetState(CEnemy::E_State::STATE_STOP);
+			SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+			AliveDestGrid();
 			return;
 		}
+	}
+	else
+	{
+		SetState(CEnemy::E_State::STATE_STOP);
+		SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		AliveDestGrid();
+		return;
 	}
 
 	if (!m_bEnableMove)

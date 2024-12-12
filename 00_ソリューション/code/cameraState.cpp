@@ -56,7 +56,7 @@ const float DIST_WIDTH = 200.0f;			// カメラの変更する幅
 const float DEFAULT_DIST_CAMERA = 1500.0f;	// デフォルトの距離
 const float NEAR_LINE = 500.0f;				// 近いと判断する距離
 const float TIME_MOVE = 1.5f;				// 移動にかかる時間
-const float SPEED_CLOSE = 0.05f;			// 近づく速度
+const float SPEED_CLOSE = 0.1f;				// 近づく速度
 }
 
 //-----------------------------------
@@ -65,7 +65,7 @@ const float SPEED_CLOSE = 0.05f;			// 近づく速度
 namespace resultSingle
 {
 const D3DXVECTOR3 POS_OFFSET = { 0.0f,100.0f,-500.0f };	// 目標地点のオフセット
-const float SPEED_POSR = 0.1f;	// 注視点の速度
+const float SPEED_POSR = 0.1f;							// 注視点の速度
 }
 
 //-----------------------------------
@@ -145,16 +145,16 @@ void CFollowPlayer::ManageDist(void)
 	// 敵が近かったら距離の割合に応じてカメラを動かす
 	float fRate;
 	if (IsNearEnemy(&fRate))
-		m_fTimerMove += CManager::GetDeltaTime() * followPlayer::SPEED_CLOSE;
+		m_fTimerMove += CManager::GetDeltaTime();
 	else
-		m_fTimerMove -= CManager::GetDeltaTime();
+		m_fTimerMove -= CManager::GetDeltaTime() * followPlayer::SPEED_CLOSE;
 
 	// 値の制限
 	universal::LimitValue(&m_fTimerMove, followPlayer::TIME_MOVE, 0.0f);
 	
 	// タイマーをイージング
 	float fTime = m_fTimerMove / followPlayer::TIME_MOVE;
-	fRate = easing::EaseOutExpo(fTime);
+	fRate = easing::EaseInOutSine(fTime);
 	universal::LimitValuefloat(&fRate, 1.0f, 0.0f);
 
 	pInfoCamera->fLength = followPlayer::DEFAULT_DIST_CAMERA - followPlayer::DIST_WIDTH * fRate;

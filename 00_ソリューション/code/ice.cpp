@@ -721,7 +721,8 @@ CIce *CIce::GetNearestIce(D3DXVECTOR3 pos)
 		float fDiff = 0.0f;
 		if (universal::DistCmpFlat(pos, posIce, fLenghtMin, &fDiff))
 		{
-
+			pIceNear = pIce;
+			fLenghtMin = fDiff;
 		}
 	}
 

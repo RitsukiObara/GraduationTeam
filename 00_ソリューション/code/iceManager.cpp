@@ -580,17 +580,6 @@ bool CIceManager::CanPeck(CIce* pIce, int nNumV, int nNumH)
 	if (pIce->IsOnTopAnyObject())
 		return false;
 
-	vector<CPlayer*> apPlayer = CPlayer::GetInstance();
-
-	for (CPlayer *pPlayer : apPlayer)
-	{
-		int nIdxV = pPlayer->GetGridV();
-		int nIdxH = pPlayer->GetGridH();
-
-		if (nIdxV == nNumV && nIdxH == nNumH)
-			return false;
-	}
-
 	return true;
 }
 

@@ -301,8 +301,10 @@ void CSeals::UpdateStop(void)
 	// ƒvƒŒƒCƒ„[‚Æ‚Ì”»’è
 	CollidePlayer();
 
-	// U•àæ‚Ì‰Šúİ’è
-	DecideNextStrollGrid();
+	SarchTarget();
+
+	if(m_pPlayerTarget == nullptr)
+		DecideNextStrollGrid();
 
 	CEnemy::UpdateStop();
 
