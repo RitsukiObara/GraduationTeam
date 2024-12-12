@@ -59,7 +59,7 @@ const float GRAVITY = 0.6f;	// 重力
 const float POW_VIB_APPER = 0.6f;	// 出現時の振動強さ
 const int TIME_VIB_APPER = 15;		// 出現時の振動長さ
 
-const float TIME_FADE = 3.0f;		// フェードにかかる時間
+const float TIME_FADE = 1.2f;		// フェードにかかる時間
 const float FACT_ROT_FADE = 0.4f;	// フェード時の回転係数
 
 //----------------------------------
