@@ -609,6 +609,13 @@ void CEnemy::MoveToNextGrid(void)
 			return;
 		}
 	}
+	else
+	{
+		SetState(CEnemy::E_State::STATE_STOP);
+		SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		AliveDestGrid();
+		return;
+	}
 
 	if (!m_bEnableMove)
 		return;
