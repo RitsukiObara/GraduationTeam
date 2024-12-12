@@ -295,7 +295,7 @@ void CEnemy::FollowIce(void)
 	D3DXVECTOR3 pos = GetPosition();
 
 	// •X‚Ì‚‚³‚É‡‚í‚¹‚é
-	CIce *pIceStand = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
+	CIce *pIceStand = CIce::GetNearestIce(pos);
 	
 	if (pIceStand != nullptr)
 		pos.y = pIceStand->GetPosition().y;	// ‚‚³‚ğ‡‚í‚¹‚é
