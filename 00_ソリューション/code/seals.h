@@ -37,7 +37,7 @@ public:
 		MOTION_MAX
 	};
 
-	CSeals(int nPriority = 4);	// コンストラクタ
+	CSeals(int nPriority = 5);	// コンストラクタ
 	~CSeals();	// デストラクタ
 
 	// メンバ関数

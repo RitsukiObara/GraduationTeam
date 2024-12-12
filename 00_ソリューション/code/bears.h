@@ -20,7 +20,7 @@
 class CBears : public CEnemy
 {
 public:
-	CBears(int nPriority = 4);	// コンストラクタ
+	CBears(int nPriority = 5);	// コンストラクタ
 	~CBears();	// デストラクタ
 
 	// メンバ関数

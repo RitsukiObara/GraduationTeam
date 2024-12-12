@@ -302,8 +302,6 @@ void CEnemy::FollowIce(void)
 	else
 		return;
 
-	pos.y += HEIGHT_ICE;
-
 	SetPosition(pos);
 }
 
@@ -750,6 +748,7 @@ void CEnemy::StartFlows(void)
 	{// •Y—¬‚·‚é•X‚ªŒ©‚Â‚©‚ê‚ÎA•Y—¬ó‘Ô‚ÖˆÚs
 		m_state = E_State::STATE_DRIFT;
 		SetMove(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+		m_bTurn = false;
 	}
 }
 

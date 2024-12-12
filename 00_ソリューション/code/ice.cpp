@@ -706,6 +706,28 @@ float CIce::GetTimerStartMove(void)
 	return fTime;
 }
 
+//=====================================================
+// 最も近い氷の取得
+//=====================================================
+CIce *CIce::GetNearestIce(D3DXVECTOR3 pos)
+{
+	CIce *pIceNear = nullptr;
+
+	float fLenghtMin = FLT_MAX;
+	for (CIce *pIce : s_Vector)
+	{
+		D3DXVECTOR3 posIce = pIce->GetPosition();
+
+		float fDiff = 0.0f;
+		if (universal::DistCmpFlat(pos, posIce, fLenghtMin, &fDiff))
+		{
+
+		}
+	}
+
+	return pIceNear;
+}
+
 //*******************************************************************************
 // 通常ステイト
 //*******************************************************************************

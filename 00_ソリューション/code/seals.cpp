@@ -38,6 +38,8 @@ const float SPEED_ONESTEP = 1.7f;	// ˆê•à‚ÌƒXƒs[ƒh
 const float FACT_DECMOVE = 0.9f;	// ˆÚ“®Œ¸ŠŒW”
 
 const float RADIUS_HIT = 100.0f;	// ƒqƒbƒg”»’è‚Ì”¼Œa
+
+const float HEIGHT_ICE = 100.0f;	// •X‚Ì‚‚³
 }
 
 //=====================================================
@@ -222,7 +224,7 @@ bool CSeals::CollideLand(void)
 	D3DXVECTOR3 pos = GetPosition();
 	D3DXVECTOR3 posIce = pIce->GetPosition();
 
-	if (pos.y < posIce.y)
+	if (pos.y < posIce.y + HEIGHT_ICE)
 	{// •X‚æ‚è‚àˆÊ’u‚ª’á‚­‚È‚Á‚½‚ç’…’n”»’è
 
 		pos.y = posIce.y;
@@ -469,6 +471,10 @@ void CSeals::UpdateAttack(void)
 void CSeals::UpdateDrift(void)
 {
 	CEnemy::UpdateDrift();
+
+	int nMotion = GetMotion();
+	if (nMotion != E_Motion::MOTION_NEUTRAL)
+		SetMotion(E_Motion::MOTION_NEUTRAL);
 }
 
 //=====================================================

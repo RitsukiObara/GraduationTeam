@@ -158,10 +158,6 @@ void CIceManager::Uninit(void)
 //=====================================================
 void CIceManager::Update(void)
 {
-#ifdef _DEBUG
-	Debug();
-#endif
-
 	// 無効な停止氷の検出
 	SearchInvailStopIce();
 
@@ -170,6 +166,10 @@ void CIceManager::Update(void)
 	
 	// さざ波の属性割り当て
 	BindRippleElements();
+
+#ifdef _DEBUG
+	Debug();
+#endif
 }
 
 //=====================================================
@@ -552,6 +552,9 @@ bool CIceManager::PeckIce(int nIdxV, int nIdxH)
 
 	// 探索フラグの無効化
 	DisableFind();
+
+	// 壊れるブロックをまとまりにする
+	SummarizeIce(nNumBreakV, nNumBreakH);
 
 	// 氷が壊れるフラグが立っていたら氷を壊す
 	BreakIce();

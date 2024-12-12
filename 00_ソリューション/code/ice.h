@@ -100,6 +100,7 @@ public:
 	static CIce *Create(E_Type type = E_Type::TYPE_NORMAL, E_State state = E_State::STATE_FLOWS);	// ¶¬ˆ—
 	static int GetNumAll(void) { return s_nNumAll; }	// ‘”æ“¾
 	static std::vector<CIce*> GetInstance(void) { return s_Vector; }
+	static CIce *GetNearestIce(D3DXVECTOR3 pos);	// Å‚à‹ß‚¢•X‚Ìæ“¾
 
 private:
 	// ƒƒ“ƒoŠÖ”

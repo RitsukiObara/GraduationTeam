@@ -815,8 +815,8 @@ void CBears::ManageMotion(void)
 	}
 	else if (!IsEnableMove())
 	{// 移動不可の時は待機モーション
-		if (nMotion != E_Motion::MOTION_TURN)
-			SetMotion(E_Motion::MOTION_TURN);
+		if (nMotion != E_Motion::MOTION_WALK)
+			SetMotion(E_Motion::MOTION_WALK);
 	}
 	else if (GetState() == CEnemy::E_State::STATE_MOVE)
 	{

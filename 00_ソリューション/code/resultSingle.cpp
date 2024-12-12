@@ -128,8 +128,11 @@ HRESULT CResultSingle::Init(void)
 	CSound* pSound = CSound::GetInstance();	// サウンド情報
 	assert(pSound != nullptr);
 
-	// サウンドの再生
-	pSound->Play(CSound::LABEL_BGM_RESULT);
+	// サウンドの停止
+	pSound->Stop();
+
+	// BGM再生
+	Sound::Play(CSound::LABEL::LABEL_BGM_RESULT);
 
 	// 2Dオブジェクトの生成
 	Create2D();
