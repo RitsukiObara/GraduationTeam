@@ -26,6 +26,8 @@ CSound::CSound()
 	m_SoundLabelNext = LABEL_BGM_TITLE;								// 次のサウンドラベル
 	m_fSpeedFadeSound = 0.0f;									// サウンドがフェードするスピード
 	m_fVolumeSound = 0.0f;										// サウンドのボリューム
+	m_afVolumeControll[TYPE_BGM] = 1.0f;
+	m_afVolumeControll[TYPE_SE] = 1.0f;
 }
 
 //=============================================================================
@@ -462,7 +464,7 @@ HRESULT CSound::ReadChunkData(HANDLE hFile, void *pBuffer, DWORD dwBuffersize, D
 void CSound::SetVolume(LABEL label, float fVolume)
 {
 	//音量設定
-	m_apSourceVoice[label]->SetVolume(fVolume, 0);
+	m_apSourceVoice[label]->SetVolume(fVolume * m_afVolumeControll[m_aSoundInfo[label].type], 0);
 }
 
 //=============================================================================
