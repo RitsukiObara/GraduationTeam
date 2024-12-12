@@ -23,7 +23,7 @@ class CIce;
 class CFlowIce : public CObject
 {
 public:
-	CFlowIce(int nPriority = 2);	// コンストラクタ
+	CFlowIce(int nPriority = 4);	// コンストラクタ
 	~CFlowIce();	// デストラクタ
 
 	// メンバ関数
