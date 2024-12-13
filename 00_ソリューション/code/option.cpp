@@ -19,8 +19,8 @@ namespace
 {// UI配置の上から順に定義
 	// 「オプション」のテキスト
 	const string OPTION_TEXT_TEX_PATH = "data\\TEXTURE\\UI\\option_Text.png";
-	const D3DXVECTOR3 OPTION_TEXT_POS = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	const D3DXVECTOR2 OPTION_TEXT_SCALE = D3DXVECTOR2(0.0f, 0.0f);
+	const D3DXVECTOR3 OPTION_TEXT_POS = D3DXVECTOR3(0.1375f, 0.072f, 0.0f);
+	const D3DXVECTOR2 OPTION_TEXT_SCALE = D3DXVECTOR2(0.129f, 0.057f);
 
 	// 設定種類のテキスト
 	const string PARAM_TEXT_TEX_PATH[] =
@@ -29,18 +29,18 @@ namespace
 		"data\\TEXTURE\\UI\\option_SE.png",
 		"data\\TEXTURE\\UI\\option_Bibe.png"
 	};
-	const D3DXVECTOR3 PARAM_TEXT_POS = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// BGMのテキストの位置
-	const float PARAM_TEXT_POS_INTERVAL = 0.0f;							// 他のテキストの間隔（Y値のみ）
-	const D3DXVECTOR2 PARAM_TEXT_SCALE = D3DXVECTOR2(0.0f, 0.0f);
+	const D3DXVECTOR3 PARAM_TEXT_POS = D3DXVECTOR3(0.089f, 0.263f, 0.0f);	// BGMのテキストの位置
+	const float PARAM_TEXT_POS_INTERVAL = 0.25f;							// 他のテキストの間隔（Y値のみ）
+	const D3DXVECTOR2 PARAM_TEXT_SCALE = D3DXVECTOR2(0.086f, 0.075f);
 
 	// BGM・SE
 	namespace soundUI
 	{
 		// バー
 		const string BAR_TEX_PATH = "data\\TEXTURE\\UI\\option_Bar.png";
-		const float BAR_POS_X = 0.0f;	// バーの位置（Xのみ・Y = PARAM_TEXT_POS.y + PARAM_TEXT_POS_INTERVAL * 配置順）
-		const float BAR_WIDTH = 0.0f;	// バーの長さ（バーの点で使う）
-		const D3DXVECTOR2 BAR_SCALE = D3DXVECTOR2(0.0f, 0.0f);
+		const float BAR_POS_X = 0.422f;	// バーの位置（Xのみ・Y = PARAM_TEXT_POS.y + PARAM_TEXT_POS_INTERVAL * 配置順）
+		const float BAR_WIDTH = 0.375f;	// バーの長さ（バーの点で使う）
+		const D3DXVECTOR2 BAR_SCALE = D3DXVECTOR2(0.188f, 0.064f);
 		
 		// バーの上にある点
 		const string BARPOINT_TEX_PATH[] =
@@ -48,7 +48,7 @@ namespace
 			"data\\TEXTURE\\UI\\option_Bar_Select.png",		// 選択中
 			"data\\TEXTURE\\UI\\option_Bar_UnSelect.png"	// 非選択
 		};
-		const D3DXVECTOR2 BARPOINT_SCALE = D3DXVECTOR2(0.0f, 0.0f);
+		const D3DXVECTOR2 BARPOINT_SCALE = D3DXVECTOR2(0.018f, 0.036f);
 
 		// ペンギン
 		const string PENGUIN_TEX_PATH[COption::OPTIONPARAM::PARAM_MAX - 1] =
@@ -56,8 +56,8 @@ namespace
 			"data\\TEXTURE\\UI\\option_BGM_Icon.png",
 			"data\\TEXTURE\\UI\\option_SE_Icon.png"
 		};
-		const float PENGUIN_POS_X = 0.0f;	// ペンギンの位置（Xのみ）
-		const D3DXVECTOR2 PENGUIN_SCALE = D3DXVECTOR2(0.0f, 0.0f);
+		const float PENGUIN_POS_X = 0.881f;	// ペンギンの位置（Xのみ）
+		const D3DXVECTOR2 PENGUIN_SCALE = D3DXVECTOR2(0.071f, 0.125f);
 	}
 
 	// 振動
@@ -68,14 +68,14 @@ namespace
 			"data\\TEXTURE\\UI\\option_Bibe_On_Icon.png",
 			"data\\TEXTURE\\UI\\option_Bibe_Off_Icon.png"
 		};
-		const float ICON_POS_INTERVAL = 0.0f;	// アイコンの間隔（振動テキスト始点）
-		const D3DXVECTOR2 ICON_SCALE = D3DXVECTOR2(0.0f, 0.0f);
+		const float ICON_POS_INTERVAL = 0.278f;	// アイコンの間隔（振動テキスト始点）
+		const D3DXVECTOR2 ICON_SCALE = D3DXVECTOR2(0.071f, 0.125f);
 	}
 
 	// 戻るボタンUI
 	const string BACK_BUTTON_UI_TEX_PATH = "data\\TEXTURE\\UI\\B_Back.png";
-	const D3DXVECTOR3 BACK_BUTTON_UI_POS = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	const D3DXVECTOR2 BACK_BUTTON_UI_SCALE = D3DXVECTOR2(0.0f, 0.0f);
+	const D3DXVECTOR3 BACK_BUTTON_UI_POS = D3DXVECTOR3(0.12f, 0.92f, 0.0f);
+	const D3DXVECTOR2 BACK_BUTTON_UI_SCALE = D3DXVECTOR2(0.09f, 0.049f);
 }
 
 //=====================================================
@@ -183,11 +183,11 @@ void COption::CreateSoundUIObj(void)
 
 		// バー
 		pos = D3DXVECTOR3(soundUI::BAR_POS_X, PARAM_TEXT_POS.y + (PARAM_TEXT_POS_INTERVAL * cnt), 0.0f);
-		CreateSingleUI(&m_aSoundUIObj[cnt].bar, soundUI::BARPOINT_TEX_PATH[0], pos, soundUI::BAR_SCALE.x, soundUI::BAR_SCALE.y);
+		CreateSingleUI(&m_aSoundUIObj[cnt].bar, soundUI::BAR_TEX_PATH, pos, soundUI::BAR_SCALE.x, soundUI::BAR_SCALE.y);
 
 		// バーの点
 		pos = D3DXVECTOR3(0.5f, PARAM_TEXT_POS.y + (PARAM_TEXT_POS_INTERVAL * cnt), 0.0f);	// X値仮
-		CreateSingleUI(&m_aSoundUIObj[cnt].point, soundUI::BAR_TEX_PATH, pos, soundUI::BARPOINT_SCALE.x, soundUI::BARPOINT_SCALE.y);
+		CreateSingleUI(&m_aSoundUIObj[cnt].point, soundUI::BARPOINT_TEX_PATH[0], pos, soundUI::BARPOINT_SCALE.x, soundUI::BARPOINT_SCALE.y);
 
 		// ペンギン
 		pos = D3DXVECTOR3(soundUI::PENGUIN_POS_X, PARAM_TEXT_POS.y + (PARAM_TEXT_POS_INTERVAL * cnt), 0.0f);
