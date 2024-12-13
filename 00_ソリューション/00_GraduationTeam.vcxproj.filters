@@ -142,6 +142,9 @@
     <Filter Include="ソース ファイル\scene\game\resultMulti">
       <UniqueIdentifier>{3b5f3a1a-4e6a-4ce0-99b7-539938651dc6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\scene\option">
+      <UniqueIdentifier>{5064f572-e7d2-4c43-8249-bcc17352fe4c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="code\scene.cpp">
@@ -521,6 +524,9 @@
     </ClCompile>
     <ClCompile Include="code\resultMultiTimeUp.cpp">
       <Filter>ソース ファイル\scene\game\resultMulti</Filter>
+    </ClCompile>
+    <ClCompile Include="code\option.cpp">
+      <Filter>ソース ファイル\scene\option</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -913,6 +919,9 @@
     </ClInclude>
     <ClInclude Include="code\resultMultiTimeUp.h">
       <Filter>ソース ファイル\scene\game\resultMulti</Filter>
+    </ClInclude>
+    <ClInclude Include="code\option.h">
+      <Filter>ソース ファイル\scene\option</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
