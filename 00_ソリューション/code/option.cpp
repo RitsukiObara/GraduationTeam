@@ -38,7 +38,7 @@ COption::COption()
 	m_optionParam = PARAM_BGM;
 	m_fBGMVolume = 0.0f;
 	m_fSEVolume = 0.0f;
-	m_bibe = BIBE_ON;
+	m_Bibe = BIBE_ON;
 }
 
 //=====================================================
