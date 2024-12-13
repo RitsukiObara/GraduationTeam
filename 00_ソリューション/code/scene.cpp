@@ -18,6 +18,7 @@
 #include "tutorial.h"
 #include "ranking.h"
 #include "resultmulti.h"
+#include "option.h"
 #include "manager.h"
 #include "renderer.h"
 #include "camera.h"
@@ -223,6 +224,11 @@ CScene *CScene::Create(MODE mode)
 	case CScene::MODE_RESULTMULTI:
 
 		pScene = new CResultMulti;
+
+		break;
+	case CScene::MODE_OPTION:
+
+		pScene = new COption;
 
 		break;
 	default:
