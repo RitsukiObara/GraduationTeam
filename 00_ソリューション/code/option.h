@@ -57,7 +57,10 @@ public:
 
 private:
 	// メンバ関数
+	void CreateUIAll(void);			// UI生成全体
 	void CreateSoundUIObj(void);	// サウンド系UIオブジェクト生成
+	void CreateBibeUIObj(void);		// 振動UIオブジェクト生成
+	void CreateSingleUI(CUI** ppUI, string path, D3DXVECTOR3 pos, float width, float height);
 	void Input(void);				// 入力系処理
 	void Select(void);				// 項目選択
 	void SettingBGM(void);			// BGM設定
