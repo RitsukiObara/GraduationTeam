@@ -352,17 +352,20 @@ void COption::CreateBibeUIObj(void)
 void COption::SettingBGM(void)
 {
 	CInputManager* pInputMgr = CInputManager::GetInstance();
-	if (pInputMgr == nullptr)
+	CSound* pSound = CSound::GetInstance();
+	if (pInputMgr == nullptr || pSound == nullptr)
 		return;
 
 	// ˆÚ“®
 	if (pInputMgr->GetTrigger(CInputManager::BUTTON_AXIS_LEFT))
 	{// ãˆÚ“®
 		SettingSound(m_aSoundUIObj[PARAM_BGM].point, &m_fBGMVolume, m_fBGMVolume - 0.1f);
+		pSound->SetVolume(CSound::SOUNDTYPE::TYPE_BGM, m_fBGMVolume);
 	}
 	else if (pInputMgr->GetTrigger(CInputManager::BUTTON_AXIS_RIGHT))
 	{// ‰ºˆÚ“®
 		SettingSound(m_aSoundUIObj[PARAM_BGM].point, &m_fBGMVolume, m_fBGMVolume + 0.1f);
+		pSound->SetVolume(CSound::SOUNDTYPE::TYPE_BGM, m_fBGMVolume);
 	}
 }
 
@@ -392,17 +395,20 @@ void COption::MoveBGM(void)
 void COption::SettingSE(void)
 {
 	CInputManager* pInputMgr = CInputManager::GetInstance();
-	if (pInputMgr == nullptr)
+	CSound* pSound = CSound::GetInstance();
+	if (pInputMgr == nullptr || pSound == nullptr)
 		return;
 
 	// ˆÚ“®
 	if (pInputMgr->GetTrigger(CInputManager::BUTTON_AXIS_LEFT))
 	{// ãˆÚ“®
 		SettingSound(m_aSoundUIObj[PARAM_SE].point, &m_fSEVolume, m_fSEVolume - 0.1f);
+		pSound->SetVolume(CSound::SOUNDTYPE::TYPE_SE, m_fSEVolume);
 	}
 	else if (pInputMgr->GetTrigger(CInputManager::BUTTON_AXIS_RIGHT))
 	{// ‰ºˆÚ“®
 		SettingSound(m_aSoundUIObj[PARAM_SE].point, &m_fSEVolume, m_fSEVolume + 0.1f);
+		pSound->SetVolume(CSound::SOUNDTYPE::TYPE_SE, m_fSEVolume);
 	}
 }
 
