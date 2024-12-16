@@ -84,6 +84,7 @@ public:
 
 	void SetVolume(LABEL label, float fVolume);
 	void SetVolume(SOUNDTYPE type, float fVolume) { m_afVolumeControll[type] = fVolume; }
+	float GetVolume(SOUNDTYPE type) { return m_afVolumeControll[type]; }
 	void SetFade(LABEL LabelNow, LABEL LabelNext, float fSpeed);
 
 	static CSound *GetInstance(void) { return m_pSound; }
