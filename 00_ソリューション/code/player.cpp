@@ -966,11 +966,6 @@ bool CPlayer::Peck(void)
 	if (pIceManager == nullptr)
 		return false;
 
-	CInputJoypad* pInputJoypad = CInputJoypad::GetInstance();
-
-	if (pInputJoypad == nullptr)
-		return false;
-
 	// “Ë‚Á‚Â‚­ˆ—
 	D3DXVECTOR3 rot = GetRotation();
 	D3DXVECTOR3 pos = GetPosition();
