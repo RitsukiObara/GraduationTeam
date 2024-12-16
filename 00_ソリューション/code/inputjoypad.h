@@ -88,6 +88,8 @@ public:
 	float GetTriggerL(int nPlayer);
 	float GetTriggerR(int nPlayer);
 	D3DXVECTOR3 GetVecStickL(void);
+	bool GetVibration(void) { return m_bVibration; }
+	void SetVibration(bool frag) { m_bVibration = frag; }
 	void Vibration(int nPlayer, float fVib, int nTime);
 	void Vibration(float fVib, int nTime);
 
@@ -112,6 +114,7 @@ private:
 	bool m_abPressTB[MAX_PLAYER][TRIGGER_MAX];	// プレスの判定
 	BYTE m_abyTriggerL[MAX_PLAYER];	// 左トリガー
 	BYTE m_abyTriggerR[MAX_PLAYER];	// 右トリガー
+	bool m_bVibration;				// バイブ有無
 
 	static CInputJoypad *m_pJoyPad;	// 自身のポインタ
 };

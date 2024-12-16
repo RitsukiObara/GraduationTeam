@@ -47,6 +47,9 @@ const D3DXVECTOR3 POSV_DEFAULT_SELECTMODE = { 0.0f,200.0f,-2000.0f };	// ÉÇÅ[ÉhÉ
 const D3DXVECTOR3 POSR_DEFAULT_RESULTMULTI = { 800.0f,50.0f,-400.0f };		// É}ÉãÉ`ÉÇÅ[ÉhÇÃÉäÉUÉãÉgíÜÇÃÉfÉtÉHÉãÉgíçéãì_à íu
 const D3DXVECTOR3 POSV_DEFAULT_RESULTMULTI = { 800.0f,400.0f,-2400.0f };	// É}ÉãÉ`ÉÇÅ[ÉhÇÃÉäÉUÉãÉgíÜÇÃÉfÉtÉHÉãÉgéãì_à íu
 
+const D3DXVECTOR3 POSR_DEFAULT_OPTION = { 0.0f,50.0f,0.0f };	// ÉIÉvÉVÉáÉìÇÃÉfÉtÉHÉãÉgíçéãì_à íu
+const D3DXVECTOR3 POSV_DEFAULT_OPTION = { 0.0f,800.0f,-1.0f };	// ÉIÉvÉVÉáÉìÇÃÉfÉtÉHÉãÉgéãì_à íu
+
 //-----------------------------------
 // ÉvÉåÉCÉÑÅ[í«è]ÇÃíËêî
 //-----------------------------------
@@ -510,6 +513,32 @@ void CCameraStateSelectMode::Init(CCamera* pCamera)
 // çXêV
 //=====================================================
 void CCameraStateSelectMode::Update(CCamera* pCamera)
+{
+
+}
+
+//**************************************************************************
+// ÉIÉvÉVÉáÉì
+//**************************************************************************
+//=====================================================
+// èâä˙âª
+//=====================================================
+void CCameraStateOptionMode::Init(CCamera* pCamera)
+{
+	if (pCamera == nullptr)
+		return;
+
+	CCamera::Camera* pInfoCamera = pCamera->GetCamera();
+
+	// ÉJÉÅÉâéãì_ÅAíçéãì_à íuèâä˙âª
+	pInfoCamera->posR = POSR_DEFAULT_OPTION;
+	pInfoCamera->posV = POSV_DEFAULT_OPTION;
+}
+
+//=====================================================
+// çXêV
+//=====================================================
+void CCameraStateOptionMode::Update(CCamera* pCamera)
 {
 
 }

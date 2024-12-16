@@ -44,6 +44,7 @@ CInputJoypad::CInputJoypad()
 	ZeroMemory(&m_abTrigggerRStick, sizeof(m_abTrigggerRStick));
 	ZeroMemory(&m_abyTriggerL, sizeof(m_abyTriggerL));
 	ZeroMemory(&m_abyTriggerR, sizeof(m_abyTriggerR));
+	m_bVibration = true;
 }
 
 //====================================================
@@ -399,15 +400,17 @@ void CInputJoypad::Vibration(int nPlayer, float fVib, int nTime)
 #ifdef _DEBUG
 	return;
 #endif
+	if (m_bVibration)
+	{// ÉoÉCÉuêUìÆONÇÃéû
+		m_aVibration[nPlayer].wLeftMotorSpeed = (WORD)(USHRT_MAX * fVib);
+		m_aVibration[nPlayer].wRightMotorSpeed = (WORD)(USHRT_MAX * fVib);
+		m_aVibState[nPlayer] = PADVIB_USE;
 
-	m_aVibration[nPlayer].wLeftMotorSpeed = (WORD)(USHRT_MAX * fVib);
-	m_aVibration[nPlayer].wRightMotorSpeed = (WORD)(USHRT_MAX * fVib);
-	m_aVibState[nPlayer] = PADVIB_USE;
+		m_aVibTimer[nPlayer] = nTime;
 
-	m_aVibTimer[nPlayer] = nTime;
-
-	//êUìÆèÛë‘Çì`íB
-	XInputSetState(nPlayer, &m_aVibration[nPlayer]);
+		//êUìÆèÛë‘Çì`íB
+		XInputSetState(nPlayer, &m_aVibration[nPlayer]);
+	}
 }
 
 //====================================================
