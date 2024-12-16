@@ -140,4 +140,15 @@ private:
 
 };
 
+// ƒIƒvƒVƒ‡ƒ“‰æ–Ê
+class CCameraStateOptionMode : public CCameraState
+{
+public:
+	CCameraStateOptionMode() {}
+	void Init(CCamera* pCamera);
+	void Update(CCamera* pCamera) override;
+private:
+
+};
+
 #endif
