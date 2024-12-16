@@ -98,7 +98,20 @@ HRESULT COceanFlowUI::Init(void)
 
 	m_state = STATE_IN;
 
-	SetPosition(D3DXVECTOR3(0.09f, 0.07f, 0.0f));
+	if (CGame::GetInstance() == nullptr)
+		return E_FAIL;
+
+	CGame::E_GameMode gamemode = CGame::GetInstance()->GetGameMode();
+
+	// ƒ‚[ƒh–ˆ‚Ì–îˆóˆÊ’u
+	if (gamemode == CGame::MODE_SINGLE)
+	{
+		m_pArrow->SetPosition(D3DXVECTOR3(-1000.0f, 200.0f, 0.0f));
+	}
+	else
+	{
+		m_pArrow->SetPosition(D3DXVECTOR3(-1500.0f, 400.0f, 700.0f));
+	}
 
 	return S_OK;
 }
