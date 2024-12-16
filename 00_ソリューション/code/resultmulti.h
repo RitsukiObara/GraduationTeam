@@ -35,7 +35,7 @@ public:
 private:
 	// ƒƒ“ƒoŠÖ”
 	void SetUI(CUI** pUI, string path, D3DXVECTOR3 pos, float fWidth, float fHeight);
-	void InitNormal(int nIdxWinner);	// ’Êí‚Ì‰Šú‰»
+	void InitNormal(int nIdxWinner,int nPlayerNum);	// ’Êí‚Ì‰Šú‰»
 	void InitDraw(void);	// ˆø‚«•ª‚¯‚Ì‰Šú‰»
 
 	// ƒƒ“ƒo•Ï”
