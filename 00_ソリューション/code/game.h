@@ -33,7 +33,7 @@ class CGameManager;
 class CGame : public CScene
 {
 public:
-	static constexpr int MAX_TIME = 120;	// Å‘åŠÔ
+	static constexpr int MAX_TIME = 180;	// Å‘åŠÔ
 
 	enum E_State
 	{// ó‘Ô
