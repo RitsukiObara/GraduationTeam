@@ -205,10 +205,10 @@ namespace player
 {
 const string PATH_BODY[NUM_PLAYER] =	// プレイヤーの体
 {
-	"data\\MOTION\\motionPenguin_Pilot.txt",	// パイロット
-	"data\\MOTION\\motionPenguin_HeadBang.txt",	// ハチマキ
 	"data\\MOTION\\motionPenguin_Pirate.txt",	// 海賊
 	"data\\MOTION\\motionPenguin_SwimSuit.txt",	// 水着
+	"data\\MOTION\\motionPenguin_Pilot.txt",	// パイロット
+	"data\\MOTION\\motionPenguin_HeadBang.txt",	// ハチマキ
 };
 }
 

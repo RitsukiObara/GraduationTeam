@@ -159,8 +159,23 @@ HRESULT CTimer::Init(void)
 	// 数字のトランスフォームの設定
 	TransformNumber();
 
+	if (CGame::GetInstance() == nullptr)
+		return E_FAIL;
+
+	CGame::E_GameMode gamemode = CGame::GetInstance()->GetGameMode();
+
 	SetPosition(D3DXVECTOR3(0.48f, 0.07f, 0.0f));
-	SetSecond(CGame::MAX_TIME);
+
+	if (gamemode == CGame::MODE_SINGLE)
+	{
+		// シングル制限時間
+		SetSecond(CGame::MAX_TIME_SINGLE);
+	}
+	else
+	{
+		// マルチ制限時間
+		SetSecond(CGame::MAX_TIME_MULTI);
+	}
 
 	return S_OK;
 }
