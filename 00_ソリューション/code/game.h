@@ -33,7 +33,8 @@ class CGameManager;
 class CGame : public CScene
 {
 public:
-	static constexpr int MAX_TIME = 180;	// 最大時間
+	static constexpr int MAX_TIME_SINGLE = 120;	// シングルの最大時間
+	static constexpr int MAX_TIME_MULTI = 180;	// マルチの最大時間
 
 	enum E_State
 	{// 状態
@@ -75,6 +76,8 @@ public:
 	void DecreaseNumEnemy(void) { m_nNumEnemyMax--; }	// 敵の最大数
 	void AddEnemy(int nType);
 	int GetNumEnemyMax(void) { return m_nNumEnemyMax; }
+	E_GameMode GetGameMode(void) { return m_GameMode; }
+
 
 private:
 	// メンバ関数
