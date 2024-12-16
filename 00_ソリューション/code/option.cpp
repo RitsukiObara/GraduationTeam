@@ -33,6 +33,7 @@ namespace
 	const float OPTION_TEXT_SCALING_RANGE = 0.25f;				// 拡縮率（テキスト）
 	const float SELECTPARAM_SCALING_SPEED = 0.01f * D3DX_PI;	// 拡縮速度（選択項目）
 	const float SELECTPARAM_SCALING_RANGE = 0.22f;				// 拡縮率（選択項目）
+	const D3DXCOLOR NOSELECT_COLOR = D3DXCOLOR(0.7f, 0.7f, 0.7f, 0.8f);	// 非選択時の色
 
 	// 設定種類のテキスト
 	const string PARAM_TEXT_TEX_PATH[] =
@@ -53,6 +54,7 @@ namespace
 		const string BAR_TEX_PATH = "data\\TEXTURE\\UI\\option_Bar.png";
 		const float BAR_POS_X = 0.522f;	// バーの位置（Xのみ・Y = PARAM_TEXT_POS.y + PARAM_TEXT_POS_INTERVAL * 配置順）
 		const D3DXVECTOR2 BAR_SCALE = D3DXVECTOR2(0.234f, 0.064f);
+		const float BAR_LENGTH = 0.23f;
 		
 		// バーの上にある点
 		const string BARPOINT_TEX_PATH[] =
@@ -82,13 +84,18 @@ namespace
 		};
 		const float ICON_POS_INTERVAL = 0.278f;	// アイコンの間隔（振動テキスト始点）
 		const D3DXVECTOR2 ICON_SCALE = D3DXVECTOR2(0.071f, 0.125f);
-		const D3DXCOLOR NOSELECT_COLOR = D3DXCOLOR(0.7f, 0.7f, 0.7f, 0.8f);
 	}
 
 	// 戻るボタンUI
 	const string BACK_BUTTON_UI_TEX_PATH = "data\\TEXTURE\\UI\\B_Back.png";
 	const D3DXVECTOR3 BACK_BUTTON_UI_POS = D3DXVECTOR3(0.12f, 0.92f, 0.0f);
 	const D3DXVECTOR2 BACK_BUTTON_UI_SCALE = D3DXVECTOR2(0.09f, 0.049f);
+
+	// 選択ボタンUI
+	const string SELECT_BUTTON_UI_TEX_PATH = "data\\TEXTURE\\UI\\A_Select.png";
+	const string NOWSETTING_SELECT_BUTTON_UI_TEX_PATH = "data\\TEXTURE\\UI\\A_Enter.png";
+	const D3DXVECTOR3 SELECT_BUTTON_UI_POS = D3DXVECTOR3(0.88f, 0.92f, 0.0f);
+	const D3DXVECTOR2 SELECT_BUTTON_UI_SCALE = D3DXVECTOR2(0.09f, 0.049f);
 }
 
 //---------------------------------------------------------
@@ -116,7 +123,8 @@ COption::COption()
 	}
 	m_pVibrationText = nullptr;
 	for (int cnt = 0; cnt < sizeof(m_apVibrationPenguin) / sizeof(CUI*); cnt++) { m_apVibrationPenguin[cnt] = nullptr; }
-	m_pButtonUI = nullptr;
+	m_pBackButtonUI = nullptr;
+	m_pAButtonUI = nullptr;
 
 	m_optionParam = PARAM_BGM;
 	m_fOptionTextScale = 0.0f;
@@ -238,8 +246,9 @@ void COption::CreateUIAll(void)
 	// 振動
 	CreateVibrationUIObj();
 
-	// 戻るボタンUI
-	CreateSingleUI(&m_pButtonUI, BACK_BUTTON_UI_TEX_PATH, BACK_BUTTON_UI_POS, BACK_BUTTON_UI_SCALE.x, BACK_BUTTON_UI_SCALE.y);
+	// ボタンUI
+	CreateSingleUI(&m_pBackButtonUI, BACK_BUTTON_UI_TEX_PATH, BACK_BUTTON_UI_POS, BACK_BUTTON_UI_SCALE.x, BACK_BUTTON_UI_SCALE.y);
+	CreateSingleUI(&m_pAButtonUI, SELECT_BUTTON_UI_TEX_PATH, SELECT_BUTTON_UI_POS, SELECT_BUTTON_UI_SCALE.x, SELECT_BUTTON_UI_SCALE.y);
 
 	// UI設定
 	SettingSound(m_aSoundUIObj[PARAM_BGM].point, &m_fBGMVolume, 1.0f);
@@ -336,6 +345,12 @@ void COption::Select(void)
 	if (pInputMgr->GetTrigger(CInputManager::BUTTON_ENTER))
 	{// 決定
 		m_bSetting = true;
+
+		// AボタンUIのテクスチャ設定
+		if (m_pAButtonUI != nullptr)
+		{// テクスチャ割当
+			m_pAButtonUI->SetIdxTexture(CTexture::GetInstance()->Regist(&NOWSETTING_SELECT_BUTTON_UI_TEX_PATH[0]));
+		}
 	}
 }
 
@@ -351,13 +366,21 @@ void COption::MoveSelect(void)
 		{// 選択中
 			// サイズ設定
 			D3DXVECTOR2 scale = PARAM_TEXT_SCALE * ScaleChange(&m_fOptionTextScale, OPTION_TEXT_SCALING_SPEED, OPTION_TEXT_SCALING_RANGE);
-
 			apUI[cnt]->SetSize(scale.x, scale.y);
+			apUI[cnt]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 			apUI[cnt]->SetVtx();
 		}
 		else
 		{// 非選択
-			apUI[cnt]->SetSize(PARAM_TEXT_SCALE.x, PARAM_TEXT_SCALE.y);
+			if (m_bSetting == true)
+			{// 他の項目が設定中なら灰色にする
+				apUI[cnt]->SetCol(NOSELECT_COLOR);
+			}
+			else
+			{// 何も設定していなければ通常の色
+				apUI[cnt]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+			}
+			apUI[cnt]->SetSize(PARAM_TEXT_SCALE.x, PARAM_TEXT_SCALE.y);	// サイズは通常（設定中関係なく）
 			apUI[cnt]->SetVtx();
 		}
 	}
@@ -479,8 +502,8 @@ void COption::SettingSound(CUI* pUI, float* volumeBase, float volumeAfter)
 	universal::LimitValuefloat(volumeBase, 1.0f, 0.0f);
 
 	// UI位置計算
-	float pointPosLeft = soundUI::BAR_SCALE.x * *volumeBase * 2.0f;	// バーの左からの距離
-	float pointPos = soundUI::BAR_POS_X - (soundUI::BAR_SCALE.x) + pointPosLeft;	// 実際の位置
+	float pointPosLeft = soundUI::BAR_LENGTH * *volumeBase * 2.0f;	// バーの左からの距離
+	float pointPos = soundUI::BAR_POS_X - (soundUI::BAR_LENGTH) + pointPosLeft;	// 実際の位置
 
 	// UI設定
 	if (pUI != nullptr)
@@ -552,7 +575,7 @@ void COption::ColChangeVibration(void)
 		}
 		else
 		{// 非選択
-			m_apVibrationPenguin[cnt]->SetCol(bibeUI::NOSELECT_COLOR);
+			m_apVibrationPenguin[cnt]->SetCol(NOSELECT_COLOR);
 		}
 		m_apVibrationPenguin[cnt]->SetVtx();
 	}
@@ -568,9 +591,16 @@ void COption::BackSelect(void)
 		return;
 
 	// 戻る
-	if (pInputMgr->GetTrigger(CInputManager::BUTTON_BACK))
+	if (pInputMgr->GetTrigger(CInputManager::BUTTON_ENTER) ||
+		pInputMgr->GetTrigger(CInputManager::BUTTON_BACK))
 	{// 戻る
 		m_bSetting = false;
+
+		// AボタンUIのテクスチャ設定
+		if (m_pAButtonUI != nullptr)
+		{// テクスチャ割当
+			m_pAButtonUI->SetIdxTexture(CTexture::GetInstance()->Regist(&SELECT_BUTTON_UI_TEX_PATH[0]));
+		}
 	}
 }
 

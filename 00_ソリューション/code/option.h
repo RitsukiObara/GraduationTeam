@@ -80,11 +80,12 @@ private:
 
 	// メンバ変数
 	// オブジェクト系
-	CUI *m_pOptionText;							// 「オプション」のテキスト
-	SoundUIObject m_aSoundUIObj[PARAM_MAX - 1];	// サウンド系UIオブジェクト
+	CUI *m_pOptionText;								// 「オプション」のテキスト
+	SoundUIObject m_aSoundUIObj[PARAM_MAX - 1];		// サウンド系UIオブジェクト
 	CUI *m_pVibrationText;							// 振動のテキスト
-	CUI *m_apVibrationPenguin[VIBRATIONSWITCH_MAX];		// 振動有無UIのペンギン
-	CUI *m_pButtonUI;							// 戻るボタンのUI
+	CUI *m_apVibrationPenguin[VIBRATIONSWITCH_MAX];	// 振動有無UIのペンギン
+	CUI *m_pBackButtonUI;							// 戻るボタンのUI
+	CUI *m_pAButtonUI;								// AボタンのUI
 	
 	// 値系
 	static SettingFunc s_settingFunc[PARAM_MAX];	// 設定項目の関数に飛ぶ関数ポインタ
