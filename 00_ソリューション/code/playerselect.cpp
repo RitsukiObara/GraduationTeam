@@ -474,7 +474,7 @@ void CPlayerSelect::CheckStart(void)
 	bool bStart = true;
 
 
-	for (int i = 0; i < MAX_PLAYER; i++)
+	for (int i = 0; i < m_nNumPlayer; i++)
 	{
 		CPlayer *pPlayer = m_mapPlayer[m_apInputMgr[i]];
 
@@ -493,9 +493,9 @@ void CPlayerSelect::StartFade(void)
 {
 
 	// プレイヤーエンターフラグの設定
-	vector<bool> abEnter(MAX_PLAYER);
+	vector<bool> abEnter(m_nNumPlayer);
 
-	for (int i = 0; i < MAX_PLAYER; i++)
+	for (int i = 0; i < m_nNumPlayer; i++)
 	{
 		CPlayer *pPlayer = m_mapPlayer[m_apInputMgr[i]];
 
