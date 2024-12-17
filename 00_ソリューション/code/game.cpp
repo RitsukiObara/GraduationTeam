@@ -128,10 +128,7 @@ void CGame::Uninit(void)
 //=====================================================
 void CGame::Update(void)
 {
-	CFade *pFade = CFade::GetInstance();
-	CInputManager* pInputManager = CInputManager::GetInstance();
 	CInputKeyboard* pKeyboard = CInputKeyboard::GetInstance();
-	CSound* pSound = CSound::GetInstance();
 	COcean::E_Stream OceanFlow = CIceManager::GetInstance()->GetDirStreamNext();
 
 	if (!m_bStop)
@@ -140,15 +137,8 @@ void CGame::Update(void)
 		CScene::Update();
 	}
 
-	// ポーズ========================================
-	if (m_state != STATE_RESULT &&
-		pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE) &&
-		m_pPause == nullptr)
-	{
-		m_pPause = CPause::Create();
-		pSound->Stop(CSound::LABEL_SE_TIMELIMIT);
-		m_bPlayTimeLimitSE = false;
-	}
+	// ポーズの入力処理
+	InputPause();
 
 	// カメラ更新
 	UpdateCamera();
@@ -181,6 +171,38 @@ void CGame::Update(void)
 #ifdef _DEBUG
 	Debug();
 #endif
+}
+
+//=====================================================
+// ポーズの入力処理
+//=====================================================
+void CGame::InputPause(void)
+{
+	// リザルト状態の場合、この関数を抜ける
+	if (m_state == STATE_RESULT)
+		return;
+
+	// ポーズ画面が NULL じゃない場合、この関数を抜ける
+	if (m_pPause != nullptr)
+		return;
+
+	int nNumPlayer = CPlayer::GetNumPlayer();						// プレイヤーの総数
+
+	for (auto player : CPlayer::GetInstance())
+	{
+		CInputManager* pInputManager = player->GetInpuManager();	// インプットマネージャー
+		CSound* pSound = CSound::GetInstance();						// サウンドの情報
+
+		if (pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE))
+		{
+			m_pPause = CPause::Create(pInputManager);
+			pSound->Stop(CSound::LABEL_SE_TIMELIMIT);
+			m_bPlayTimeLimitSE = false;
+
+			// この関数を抜ける
+			return;
+		}
+	}
 }
 
 //=====================================================
