@@ -169,7 +169,7 @@ HRESULT COption::Init(void)
 
 		// ê›íË
 		SettingSound(m_aSoundUIObj[PARAM_BGM].point, &m_fBGMVolume, m_fBGMVolume);
-		SettingSound(m_aSoundUIObj[PARAM_SE].point, &m_fSEVolume, m_fBGMVolume);
+		SettingSound(m_aSoundUIObj[PARAM_SE].point, &m_fSEVolume, m_fSEVolume);
 	}
 
 	// îwåiäCê∂ê¨
