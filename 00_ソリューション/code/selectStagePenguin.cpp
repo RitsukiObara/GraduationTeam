@@ -13,6 +13,7 @@
 #include "collision.h"
 #include "debugproc.h"
 #include "ice.h"
+#include "MyEffekseer.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -30,12 +31,14 @@ const float ADD_MOVE = 4.0f;	// ˆÚ“®‚Ì’Ç‰Á—Ê
 const float RADIUS_COLLISION = 200.0f;	// ‹…‚Ì”»’è‚Ì”¼Œa
 
 const float FACT_ROT = 0.2f;	// ‰ñ“]ŒW”
+
+const int RIPPLE_CNT = 15;		// ”g–äoŒ»•b”
 }
 
 //=====================================================
 // ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 //=====================================================
-CSelectStagePenguin::CSelectStagePenguin(int nPriority) : CMotion(nPriority), m_move(), m_pInputMgr(nullptr), m_pClsnSphere(nullptr), m_bInput(false), m_pIce(nullptr)
+CSelectStagePenguin::CSelectStagePenguin(int nPriority) : CMotion(nPriority), m_move(), m_pInputMgr(nullptr), m_pClsnSphere(nullptr), m_bInput(false), m_pIce(nullptr), m_nRippleCnt(0)
 {
 
 }
@@ -102,6 +105,9 @@ HRESULT CSelectStagePenguin::Init(void)
 	if (m_pIce != nullptr)
 		m_pIce->SetTransform(RADIUS_ICE);
 
+	// ”g–ä‚ªo‚é‚Ü‚Å‚ÌƒJƒEƒ“ƒg
+	m_nRippleCnt = 0;
+
 	return S_OK;
 }
 
@@ -161,6 +167,19 @@ void CSelectStagePenguin::Update(void)
 		// ‚‚³‚ð•X‚Æ“¯‚¶‚É‚·‚é
 		SetPosition(D3DXVECTOR3(pos.x, posIce.y, pos.z));
 	}
+
+	// ”g–äoŒ»ƒJƒEƒ“ƒg‚ð‰ÁŽZ
+	m_nRippleCnt++;
+
+	if (m_nRippleCnt >= RIPPLE_CNT)
+	{
+		// ƒvƒŒƒCƒ„[‚É‡‚í‚¹‚Ä”g–ä‚ðo‚·
+		MyEffekseer::CreateEffect(CMyEffekseer::TYPE_RIPPLE, m_pIce->GetPosition(), m_pIce->GetRotation(), D3DXVECTOR3(100.0f, 100.0f, 100.0f));
+
+		m_nRippleCnt = 0;
+	}
+
+	
 
 #ifdef _DEBUG
 	Debug();

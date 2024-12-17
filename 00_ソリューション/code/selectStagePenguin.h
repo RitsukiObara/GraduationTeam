@@ -53,6 +53,7 @@ private:
 	CCollisionSphere *m_pClsnSphere;	// 球の判定
 	CIce *m_pIce;						// 足場の氷
 	bool m_bInput;						// 入力可能フラグ
+	int m_nRippleCnt;					// 波紋カウント
 };
 
 #endif
