@@ -35,7 +35,7 @@ const float ANGLE_FOLLOW = 0.33f;		// 追従時のカメラ角度
 const float SPPED_MOVE_FOLLOW = 0.09f;	// 追従時のカメラ速度
 const D3DXVECTOR3 POSR_GAME = { 0.0f,0.0f,-300.0f };		// ゲーム中の注視点位置
 const D3DXVECTOR3 POSV_GAME = { 0.0f,1544.0f,-681.0f };		// ゲーム中の視点位置
-const D3DXVECTOR3 POSR_MULTI = { -80.0f,0.0f,-330.0f };		// マルチ中の注視点位置
+const D3DXVECTOR3 POSR_MULTI = { -80.0f,0.0f,-270.0f };		// マルチ中の注視点位置
 const D3DXVECTOR3 POSV_MULTI = { -80.0f,1670.0f,-1170.0f };	// マルチ中の視点位置
 
 const D3DXVECTOR3 POSR_DEFAULT_SELECTSTAGE = { 0.0f,0.0f,-400.0f };		// ステージセレクト中のデフォルト注視点位置

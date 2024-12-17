@@ -169,7 +169,7 @@ HRESULT COption::Init(void)
 
 		// Ý’è
 		SettingSound(m_aSoundUIObj[PARAM_BGM].point, &m_fBGMVolume, m_fBGMVolume);
-		SettingSound(m_aSoundUIObj[PARAM_SE].point, &m_fSEVolume, m_fBGMVolume);
+		SettingSound(m_aSoundUIObj[PARAM_SE].point, &m_fSEVolume, m_fSEVolume);
 	}
 
 	// ”wŒiŠC¶¬
@@ -191,6 +191,8 @@ HRESULT COption::Init(void)
 	}
 
 	Camera::ChangeState(new CCameraStateOptionMode);
+
+	pSound->Play(CSound::LABEL_BGM_TITLE);
 
 	return S_OK;
 }
@@ -418,14 +420,16 @@ void COption::SettingBGM(void)
 
 	// ˆÚ“®
 	if (pInputMgr->GetTrigger(CInputManager::BUTTON_AXIS_LEFT))
-	{// ãˆÚ“®
+	{// ¶ˆÚ“®
 		SettingSound(m_aSoundUIObj[PARAM_BGM].point, &m_fBGMVolume, m_fBGMVolume - 0.1f);
 		pSound->SetVolume(CSound::SOUNDTYPE::TYPE_BGM, m_fBGMVolume);
+		pSound->SetVolume(CSound::LABEL_BGM_TITLE, 1.0f);
 	}
 	else if (pInputMgr->GetTrigger(CInputManager::BUTTON_AXIS_RIGHT))
-	{// ‰ºˆÚ“®
+	{// ‰EˆÚ“®
 		SettingSound(m_aSoundUIObj[PARAM_BGM].point, &m_fBGMVolume, m_fBGMVolume + 0.1f);
 		pSound->SetVolume(CSound::SOUNDTYPE::TYPE_BGM, m_fBGMVolume);
+		pSound->SetVolume(CSound::LABEL_BGM_TITLE, 1.0f);
 	}
 }
 
@@ -461,14 +465,16 @@ void COption::SettingSE(void)
 
 	// ˆÚ“®
 	if (pInputMgr->GetTrigger(CInputManager::BUTTON_AXIS_LEFT))
-	{// ãˆÚ“®
+	{// ¶ˆÚ“®
 		SettingSound(m_aSoundUIObj[PARAM_SE].point, &m_fSEVolume, m_fSEVolume - 0.1f);
 		pSound->SetVolume(CSound::SOUNDTYPE::TYPE_SE, m_fSEVolume);
+		pSound->Play(CSound::LABEL_SE_NOTPECK);
 	}
 	else if (pInputMgr->GetTrigger(CInputManager::BUTTON_AXIS_RIGHT))
-	{// ‰ºˆÚ“®
+	{// ‰EˆÚ“®
 		SettingSound(m_aSoundUIObj[PARAM_SE].point, &m_fSEVolume, m_fSEVolume + 0.1f);
 		pSound->SetVolume(CSound::SOUNDTYPE::TYPE_SE, m_fSEVolume);
+		pSound->Play(CSound::LABEL_SE_NOTPECK);
 	}
 }
 
