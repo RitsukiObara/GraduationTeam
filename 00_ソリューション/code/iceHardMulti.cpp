@@ -184,6 +184,9 @@ void CIceHardMulti::UpdateNormal(void)
 	if (m_fTimerJump > TIME_JUMP)
 	{// 一定時間乗ってたらジャンプさせる
 		StartJump();
+
+		// ジャンプするまでの時間をリセット
+		m_fTimerJump = 0.0f;
 	}
 
 	// 値の補正
