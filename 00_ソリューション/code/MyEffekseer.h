@@ -38,6 +38,7 @@ public:
 		TYPE_JUMP,			// ƒWƒƒƒ“ƒv
 		TYPE_DROP,			// …‚µ‚Ô‚«
 		TYPE_LANDING,		// ’…’n
+		TYPE_ICEJUMP,		// ’…•X
 		TYPE_MAX
 	};
 

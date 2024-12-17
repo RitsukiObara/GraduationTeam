@@ -222,6 +222,7 @@ void CIceHardMulti::UpdateJump(void)
 	{// ŠÔ‚ğ‰z‚¦‚½‚ç’Êí‚É–ß‚é
 		m_fTimerMove = 0.0f;
 		m_state = E_State::STATE_NORMAL;
+		MyEffekseer::CreateEffect(CMyEffekseer::TYPE_ICEJUMP, GetPosition(), GetRotation(), D3DXVECTOR3(100.0f, 100.0f, 100.0f));
 	}
 
 	m_fTimerMove += CManager::GetDeltaTime();
