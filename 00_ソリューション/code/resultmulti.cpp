@@ -160,7 +160,7 @@ HRESULT CResultMulti::Init(void)
 	m_bDraw = winner == -1;
 
 	if (!m_bDraw)	// ’Êí‚Ì‰Šú‰»
-		InitNormal(winner);
+		InitNormal(winner, playerNum);
 	else			// ˆø‚«•ª‚¯‚Ì‰Šú‰»
 		InitDraw();
 
@@ -173,7 +173,7 @@ HRESULT CResultMulti::Init(void)
 //=====================================================
 // ’Êí‚Ì‰Šú‰»
 //=====================================================
-void CResultMulti::InitNormal(int nIdxWinner)
+void CResultMulti::InitNormal(int nIdxWinner, int nPlayerNum)
 {
 	//-----------------------------------
 	// ŸÒ”Ô†UI¶¬
@@ -184,12 +184,11 @@ void CResultMulti::InitNormal(int nIdxWinner)
 	//-----------------------------------
 	// î•ñİ’è
 	//-----------------------------------
-	int playerNum = Penguin::MAX_PLAYER;
 	vector<bool> enablePlayer;
 
 	for (int cnt = 0; cnt < Penguin::MAX_PLAYER; cnt++)
 	{
-		if (cnt < playerNum)
+		if (cnt < nPlayerNum)
 		{
 			enablePlayer.push_back(true);
 		}

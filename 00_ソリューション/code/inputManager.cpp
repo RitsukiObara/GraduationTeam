@@ -291,14 +291,14 @@ void CInputManager::Update(void)
 	// ‚Â‚Â‚«
 	m_info.abTrigger[BUTTON_PECK] =
 	(
-		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_B, m_nID) ||
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_A, m_nID) ||
 		pKeyboard->GetTrigger(DIK_RETURN)
 	);
 
 	// ƒWƒƒƒ“ƒv
 	m_info.abTrigger[BUTTON_JUMP] =
 	(
-		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_A, m_nID) ||
+		pJoypad->GetTrigger(CInputJoypad::PADBUTTONS_B, m_nID) ||
 		pKeyboard->GetTrigger(DIK_SPACE)
 	);
 

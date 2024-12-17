@@ -46,25 +46,25 @@ const string PATH[CSelectMode::MODE_MAX] =
 {
 	"data\\TEXTURE\\UI\\single_mode.png",
 	"data\\TEXTURE\\UI\\party_mode.png",
-	//"data\\TEXTURE\\UI\\tutorial00.jpg"
+	"data\\TEXTURE\\UI\\option.png"
 };
 const float WIDTH[CSelectMode::MODE_MAX] =
 {
 	0.14f,
 	0.14f,
-	//0.5f
+	0.14f
 };
 const float HEIGHT[CSelectMode::MODE_MAX] =
 {
 	0.25f,
 	0.25f,
-	//0.5f
+	0.25f
 };
 const D3DXVECTOR3 POS[CSelectMode::MODE_MAX] =
 {
-	D3DXVECTOR3(0.195f, 0.48f, 0.0f),
-	D3DXVECTOR3(0.405f, 0.72f, 0.0f),
-	//D3DXVECTOR3(0.5f, 0.5f, 0.0f)
+	D3DXVECTOR3(0.195f, 0.295f, 0.0f),
+	D3DXVECTOR3(0.405f, 0.52f, 0.0f),
+	D3DXVECTOR3(0.195f, 0.735f, 0.0f)
 };
 const D3DXCOLOR NOSELECT_COLOR = D3DXCOLOR(0.7f, 0.7f, 0.7f, 0.8f);
 const float NOSELECT_ALPHA = 0.5f;	// ‘I‘ð‚³‚ê‚Ä‚¢‚È‚¢‚Æ‚«‚Ì•s“§–¾“x
@@ -98,7 +98,7 @@ namespace Penguin
 const vector<D3DXVECTOR3> POS =
 {
 	D3DXVECTOR3(400.0f, 10.0f, -1000.0f),
-	D3DXVECTOR3(-500.0f, 10.0f, 800.0f),
+	D3DXVECTOR3(1500.0f, 10.0f, -500.0f),
 	D3DXVECTOR3(2200.0f, 10.0f, 800.0f),
 	D3DXVECTOR3(950.0f, 10.0f, 700.0f)
 };
@@ -285,6 +285,9 @@ void CSelectMode::Update(void)
 			break;
 		case CSelectMode::MODE_PARTY:
 			pFade->SetFade(CScene::MODE_SELECTPLAYER);
+			break;
+		case CSelectMode::MODE_OPTION:
+			pFade->SetFade(CScene::MODE_OPTION);
 			break;
 		default:
 			assert(false);

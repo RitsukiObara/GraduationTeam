@@ -28,7 +28,7 @@ public:
 	{
 		MODE_SINGLE = 0,
 		MODE_PARTY,
-		//MODE_OPTION,
+		MODE_OPTION,
 		MODE_MAX
 	};
 
