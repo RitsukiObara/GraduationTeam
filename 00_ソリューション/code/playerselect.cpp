@@ -428,7 +428,7 @@ void CPlayerSelect::CreatePlayer(int nIdx, int nIdxInput)
 		pPlayer->SetPosition(POS_PLAYER_INIT);
 
 		// 入力マネージャーの割り当て
-		pPlayer->BindInputMgr(m_apInputMgr[nIdx]);
+		pPlayer->BindInputMgr(pInputMgr);
 
 		// プレイヤーIDの割り当て
 		pPlayer->SetID(nIdx);
