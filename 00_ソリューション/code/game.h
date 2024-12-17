@@ -81,6 +81,7 @@ public:
 
 private:
 	// メンバ関数
+	void InputPause(void);		// ポーズの入力処理
 	void UpdateCamera(void);
 	void ManageState(void);
 	void ToggleStop(void);

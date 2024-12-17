@@ -11,8 +11,6 @@
 #include "pause.h"
 #include "manager.h"
 #include "polygon2D.h"
-#include "inputkeyboard.h"
-#include "inputjoypad.h"
 #include "inputManager.h"
 #include "texture.h"
 #include "fade.h"
@@ -48,6 +46,7 @@ namespace
 //====================================================
 CPause::CPause()
 {
+	m_pInputManager = nullptr;
 	m_menu = MENU_RESUME;
 	m_state = STATE_NONE;
 	ZeroMemory(&m_apMenu[MENU_RESUME], sizeof(m_apMenu));
@@ -69,7 +68,7 @@ CPause::~CPause()
 //====================================================
 // 生成処理
 //====================================================
-CPause *CPause::Create(void)
+CPause *CPause::Create(CInputManager* pInput)
 {
 	CPause *pPause = nullptr;
 
@@ -78,6 +77,7 @@ CPause *CPause::Create(void)
 	if (pPause != nullptr)
 	{
 		pPause->Init();
+		pPause->m_pInputManager = pInput;
 	}
 
 	return pPause;
@@ -362,7 +362,6 @@ void CPause::ManageBg(void)
 //====================================================
 void CPause::Input(void)
 {
-	CInputManager *pInputManager = CInputManager::GetInstance();
 	CSound* pSound = CSound::GetInstance();
 	CFade *pFade = CFade::GetInstance();
 
@@ -378,13 +377,13 @@ void CPause::Input(void)
 		}
 	}
 
-	if (pInputManager == nullptr)
+	if (m_pInputManager == nullptr)
 	{
 		return;
 	}
 	
-	if ((pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE) || 
-		pInputManager->GetTrigger(CInputManager::BUTTON_BACK)) && 
+	if ((m_pInputManager->GetTrigger(CInputManager::BUTTON_PAUSE) || 
+		m_pInputManager->GetTrigger(CInputManager::BUTTON_BACK)) && 
 		m_state == STATE::STATE_NONE)
 	{
 		m_state = STATE_OUT;
@@ -400,7 +399,7 @@ void CPause::Input(void)
 	}
 
 	// 項目切り替え
-	if (pInputManager->GetTrigger(CInputManager::BUTTON_AXIS_DOWN))
+	if (m_pInputManager->GetTrigger(CInputManager::BUTTON_AXIS_DOWN))
 	{
 		nCountMove = 0;
 		m_menu = (MENU)((m_menu + 1) % 3);
@@ -413,7 +412,7 @@ void CPause::Input(void)
 		}
 	}
 
-	if (pInputManager->GetTrigger(CInputManager::BUTTON_AXIS_UP))
+	if (m_pInputManager->GetTrigger(CInputManager::BUTTON_AXIS_UP))
 	{
 		nCountMove = 0;
 		m_menu = (MENU)((m_menu + 3 - 1) % 3);
@@ -431,7 +430,7 @@ void CPause::Input(void)
 		m_apMenu[m_menu]->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	}
 
-	if (pInputManager->GetTrigger(CInputManager::BUTTON_ENTER))
+	if (m_pInputManager->GetTrigger(CInputManager::BUTTON_ENTER))
 	{// 選択項目にフェードする
 		if (pSound != nullptr)
 		{

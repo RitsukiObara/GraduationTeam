@@ -17,6 +17,7 @@
 // 前方宣言
 //*****************************************************
 class CUI;
+class CInputManager;
 
 //*****************************************************
 // クラス定義
@@ -35,7 +36,7 @@ public:
 	CPause();	// コンストラクタ
 	~CPause();	// デストラクタ
 
-	static CPause *Create(void);
+	static CPause* Create(CInputManager* pInput);
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
@@ -58,6 +59,7 @@ private:
 	void OffPosition(void);
 	void SelectMove(void);
 
+	CInputManager* m_pInputManager;		// インプットマネージャー
 	MENU m_menu;						// 選択項目
 	CUI *m_apMenu[MENU_MAX];			// メニュー項目の２Dオブジェクト
 	CUI *m_pButton;						// ボタンUI
