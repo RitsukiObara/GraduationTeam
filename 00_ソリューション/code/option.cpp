@@ -591,8 +591,7 @@ void COption::BackSelect(void)
 		return;
 
 	// –ß‚é
-	if (pInputMgr->GetTrigger(CInputManager::BUTTON_ENTER) ||
-		pInputMgr->GetTrigger(CInputManager::BUTTON_BACK))
+	if (pInputMgr->GetTrigger(CInputManager::BUTTON_ENTER))
 	{// –ß‚é
 		m_bSetting = false;
 
