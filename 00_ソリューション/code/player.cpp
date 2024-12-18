@@ -65,6 +65,8 @@ const int TIME_VIB_FLOW = 10;		// 流されてる時の振動時間
 
 const float GRAVITY = 0.98f;	// 重力
 
+const float HEIGHT_BLOW = 250.0f;	// 吹き飛ばしの高さ
+
 const float HEIGHT_UI = 0.1f;	// UIの高さ
 const D3DXVECTOR2 SIZE_UI = { 0.03f,0.06f };								// UIのサイズ
 const string PATH_PLAYERNUM = "data\\TEXTURE\\UI\\player_Count.png";	// プレイヤー番号テクスチャパス
@@ -1281,7 +1283,7 @@ void CPlayer::StayBlow(void)
 	if (m_state != E_State::STATE_BLOW)
 		return;
 
-	JumpToDest(m_pIceDestJump, jump::HEIGHT);
+	JumpToDest(m_pIceDestJump, HEIGHT_BLOW);
 
 	// 終了の判定
 	D3DXVECTOR3 posPlayer = GetPosition();

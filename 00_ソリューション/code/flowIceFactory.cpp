@@ -13,6 +13,7 @@
 #include "ice.h"
 #include "flowIce.h"
 #include "manager.h"
+#include "debugproc.h"
 
 //*****************************************************
 // 定数定義
@@ -21,7 +22,9 @@ namespace
 {
 const string PATH_TEXT = "data\\TEXT\\flowIce.txt";	// 流氷情報のファイルパス
 
-const float TIME_CREATE_FLOWICE = 15.0f;	// 流氷を作る時間
+const float TIME_CREATE_FLOWICE = 15.0f;					// 流氷を作る時間
+const float TIME_DIFF_CREATE = TIME_CREATE_FLOWICE * 0.7f;	// 流氷が流れてくる時間の差分
+
 const int ADD_CREATE_FLOWICE = 8;	// 流氷の生成する位置の増やすグリッド数
 }
 
@@ -193,8 +196,15 @@ void CFlowIceFct::Update(void)
 	// 経過時間加算
 	m_fTimerCreateFlowIce += CManager::GetDeltaTime();
 
+	// 氷の数の割合計算
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+	if (pIceMgr == nullptr)
+		return;
+
+	float fRate = pIceMgr->GetRateNumIce();
+
 	// 一定時間で流氷を流す
-	if (m_fTimerCreateFlowIce > TIME_CREATE_FLOWICE)
+	if (m_fTimerCreateFlowIce > TIME_CREATE_FLOWICE - TIME_DIFF_CREATE * (1.0f - fRate))
 	{
 		// 流氷の生成
 		CreateFlowIce();

@@ -1738,6 +1738,27 @@ CIce* CIceManager::GetRandomIce(int *pNumV, int *pNumH)
 }
 
 //=====================================================
+// •X‚Ì”‚ÌŠ„‡‚ğæ“¾
+//=====================================================
+float CIceManager::GetRateNumIce(void)
+{
+	int nNumIce = 0;
+
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			if (m_aGrid[i][j].pIce != nullptr)
+				nNumIce++;
+		}
+	}
+
+	int nNumGrid = m_nNumGridVirtical * m_nNumGridHorizontal;
+
+	return (float)nNumIce / (float)nNumGrid;
+}
+
+//=====================================================
 // •`‰æˆ—
 //=====================================================
 void CIceManager::Draw(void)
