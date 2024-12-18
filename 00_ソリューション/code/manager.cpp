@@ -30,6 +30,7 @@
 #include "cameraState.h"
 #include "MyEffekseer.h"
 #include "selectStageManager.h"
+#include "option.h"
 
 //*****************************************************
 // 静的メンバ変数宣言
@@ -37,7 +38,7 @@
 CCamera *CManager::m_pCamera = nullptr;						// カメラのポインタ
 CMyEffekseer* CManager::m_pMyEffekseer = nullptr;			// エフェクシアのポインタ
 CScene *CManager::m_pScene = nullptr;						// シーンへのポインタ
-CScene::MODE CManager::m_mode = CScene::MODE_GAME;			// 現在のモード
+CScene::MODE CManager::m_mode = CScene::MODE_TITLE;			// 現在のモード
 float CManager::m_fDeltaTime = 0.0f;						// 前回のフレームから経過した時間
 CManager *CManager::m_pManager = nullptr;					// 自身のポインタ
 
@@ -107,6 +108,9 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// エフェクシアの生成
 	CMyEffekseer::Create();
+
+	// オプションの情報読み込み
+	COption::LoadSetting();
 
 	return S_OK;
 }
