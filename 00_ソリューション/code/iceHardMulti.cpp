@@ -18,6 +18,7 @@
 #include "motion.h"
 #include "seals.h"
 #include "particle.h"
+#include "game.h"
 
 //*****************************************************
 // 定数定義
@@ -106,6 +107,9 @@ void CIceHardMulti::Update(void)
 {
 	// 継承クラスの更新
 	CIceHard::Update();
+
+	if (CGame::GetState() != CGame::E_State::STATE_NORMAL)
+		return;
 
 	// プレイヤーが乗ってる判定
 	IsOnPlayer();
