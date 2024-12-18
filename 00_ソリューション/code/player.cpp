@@ -598,12 +598,11 @@ void CPlayer::CollideIce(void)
 
 	D3DXVECTOR3 pos = GetPosition();
 	D3DXVECTOR3 posTemp = pos;
-
-	int nIdxV, nIdxH;
-	pIceMgr->GetNearestIce(pos, &nIdxV, &nIdxH);
+	
+	CIce *pIceForward = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
 
 	// グリッドの位置に合わせる
-	pIceMgr->Collide(&pos, nIdxV, nIdxH,RATE_CHANGE_GRID);
+	pIceMgr->Collide(&pos, m_nGridV, m_nGridH,RATE_CHANGE_GRID);
 
 	pos.y = posTemp.y;
 
@@ -726,6 +725,9 @@ bool CPlayer::CheckGridChange(void)
 		return false;
 
 	if (pIceForward->IsPeck())
+		return false;
+
+	if (IsOnTopAnyPlayer(nIdxV, nIdxH,this))
 		return false;
 
 	if ((nIdxV == m_nGridV &&
@@ -1092,6 +1094,12 @@ void CPlayer::SarchJumpIce(void)
 			continue;
 
 		if (pIceStand == apIce[i])
+			continue;
+
+		int nIdxJumpV;
+		int nIdxJumpH;
+		pIceMgr->GetIceIndex(apIce[i], &nIdxJumpV, &nIdxJumpH);
+		if (IsOnTopAnyPlayer(nIdxJumpV, nIdxJumpH, this))
 			continue;
 
 		D3DXVECTOR3 posPlayer = GetPosition();
@@ -1629,4 +1637,24 @@ void CPlayer::CheckStartDriftAll(void)
 		// 氷が無ければ漂流開始
 		pPlayer->StartFlows();
 	}
+}
+
+//=====================================================
+// プレイヤーが氷の上に乗っている判定
+//=====================================================
+bool CPlayer::IsOnTopAnyPlayer(int nIdxV, int nIdxH, CPlayer *pPlayer)
+{
+	for (CPlayer *pPlayerTarget : s_apPlayer)
+	{
+		if (pPlayerTarget == pPlayer)
+			continue;
+
+		int nIdxPlayerV = pPlayerTarget->GetGridV();
+		int nIdxPlayerH = pPlayerTarget->GetGridH();
+
+		if (nIdxPlayerV == nIdxV && nIdxPlayerH == nIdxH)
+			return true;
+	}
+
+	return false;
 }

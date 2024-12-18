@@ -197,12 +197,10 @@ void CFlowIce::StopAllIce(void)
 		pCamera->SetQuake(POW_CAMERAQUAKE_DEFAULT, POW_CAMERAQUAKE_DEFAULT, FRAME_CAMERAQUAKE_DEFAULT);
 
 	// コントローラーを振動させる
-	CInputJoypad* pInputJoypad = CInputJoypad::GetInstance();
+	vector<CPlayer*> apPlayer = CPlayer::GetInstance();
 
-	if (pInputJoypad == nullptr)
-		return;
-
-	pInputJoypad->Vibration(POW_VIB_CHAIN, TIME_VIB_CHAIN);
+	for (CPlayer *pPlayer : apPlayer)
+		pPlayer->VibJoypad(POW_VIB_CHAIN, TIME_VIB_CHAIN);
 }
 
 //=====================================================
