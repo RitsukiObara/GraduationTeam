@@ -40,7 +40,7 @@ const float FACT_ROTATION = 0.1f;	// 回転係数
 
 const float LINE_INPUT_MOVE = 0.3f;	// 移動するまでのスティック入力のしきい値
 const float RANGE_SELECT_ICE = D3DX_PI * 2 / 6;	// 氷を選択するときの角度の範囲
-const float RATE_CHANGE_GRID = 0.56f;	// 次のグリッドに移る判定の割合
+const float RATE_CHANGE_GRID = 0.58f;	// 次のグリッドに移る判定の割合
 
 const float TIME_MAX_SPEED = 1.0f;	// 最大速度に達するまでにかかる時間
 const float SPEED_MOVE_MAX = 2.5f;	// 最大移動速度
