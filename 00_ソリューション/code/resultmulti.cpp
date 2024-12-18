@@ -278,8 +278,8 @@ void CResultMulti::Update(void)
 		if (pFade->GetState() != CFade::FADE_NONE)
 			return;
 
-		// ステージプレイヤーに遷移
-		pFade->SetFade(CScene::MODE_SELECTPLAYER);
+		// セレクトモードに遷移
+		pFade->SetFade(CScene::MODE_SELECTMODE);
 
 		// サウンドの再生
 		pSound->Play(CSound::LABEL_SE_DECISION);
