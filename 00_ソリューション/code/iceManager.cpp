@@ -342,11 +342,11 @@ void CIceManager::StopIce(CIce *pIce)
 //=====================================================
 // 氷をつつけるかのチェック
 //=====================================================
-bool CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, E_Direction *pDir, CIce **ppIce)
+CIceManager::E_PeckResult CIceManager::CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, E_Direction *pDir, CIce **ppIce)
 {
 	if (nNumV < 0 || nNumV >= m_nNumGridVirtical ||
 		nNumH < 0 || nNumH >= m_nNumGridHorizontal)
-		return false;
+		return PECK_NONE_ICE;
 
 	CIce *pIceStand = m_aGrid[nNumV][nNumH].pIce;
 	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
@@ -448,7 +448,7 @@ bool CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos, bool
 	GetIceIndex(pIcePeck, &nNumBreakV, &nNumBreakH);
 
 	// 突っつける氷かのチェック
-	if (!CanPeck(pIcePeck, nNumBreakV, nNumBreakH))
+	if (CanPeck(pIcePeck, nNumBreakV, nNumBreakH) != PECK_OK)
 		return false;
 
 	// 氷を突っついた判定にする
@@ -565,22 +565,22 @@ bool CIceManager::PeckIce(int nIdxV, int nIdxH)
 //=====================================================
 // 突っつける氷かのチェック
 //=====================================================
-bool CIceManager::CanPeck(CIce* pIce, int nNumV, int nNumH)
+CIceManager::E_PeckResult CIceManager::CanPeck(CIce* pIce, int nNumV, int nNumH)
 {
 	if (pIce == nullptr)
-		return false;	// ヌルだったら突けない
+		return PECK_NONE_ICE;	// ヌルだったら突けない
 
 	if (!pIce->IsCanPeck())
-		return false;	// 突っつけないブロックなら突けない
+		return PECK_UNBREAKABLE;	// 突っつけないブロックなら突けない
 
 	if (pIce->IsPeck())
-		return false;	// 既に突っついていたら突けない
+		return PECK_ALREADY;	// 既に突っついていたら突けない
 
 	// なにかしら乗ってたら突けない
 	if (pIce->IsOnTopAnyObject())
-		return false;
+		return PECK_TOPANYOBJECT;
 
-	return true;
+	return PECK_OK;
 }
 
 //=====================================================

@@ -45,6 +45,15 @@ public:
 		PECKER_PLAYER3,		// 3番目のプレイヤー
 		PECKER_MAX
 	};
+	enum E_PeckResult
+	{
+		PECK_OK = 0,		// 突ける
+		PECK_NONE_ICE,		// 氷がない
+		PECK_UNBREAKABLE,	// 突っつけない
+		PECK_ALREADY,		// 既に突いてる
+		PECK_TOPANYOBJECT,	// 何かしら乗っている
+		PECKRESULT_MAX
+	};
 	// 構造体定義
 	struct S_Grid
 	{// グリッド情報
@@ -63,7 +72,7 @@ public:
 	CIce *CreateIce(int nGridV, int nGridH, CIce::E_Type type = CIce::E_Type::TYPE_NORMAL);	// 氷の生成
 	CIce *CreateFlowIce(int nGridV,int nGridH, CIce::E_Type type = CIce::E_Type::TYPE_NORMAL);	// 流氷の生成
 	void StopIce(CIce *pIce);	// 氷の停止
-	bool CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, E_Direction *pDir = nullptr,CIce **ppIce = nullptr);	// 氷をつつけるかのチェック
+	E_PeckResult CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, E_Direction *pDir = nullptr,CIce **ppIce = nullptr);	// 氷をつつけるかのチェック
 	bool PeckIce(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, bool *bResultBreak = nullptr);	// 氷をつつく
 	bool PeckIce(int nIdxV, int nIdxH);	// 氷をつつく
 	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// 氷の追加
@@ -119,7 +128,7 @@ private:
 	void SearchInvailStopIce(void);	// 無効な停止氷の検出
 	void SearchNotConnectIce(vector<CIce*> &rpIce);	// 繋がってない氷の検出
 	bool JudgeBetweenPeck(int nNumV, int nNumH);	// つっついた氷に挟まれてる判定
-	bool CanPeck(CIce* pIce,int nNumV, int nNumH);	// つっつける氷かのチェック
+	E_PeckResult CanPeck(CIce* pIce,int nNumV, int nNumH);	// つっつける氷かのチェック
 	void DisableFromHardIce(int nNumV, int nNumH,bool bPeck = true);	// 硬い氷から信号を出して、破壊信号を解除
 	void DisableFromPlayer(int nNumV, int nNumH, CIce *pIcePeck,vector<CIce*> apIce);	// プレイヤーから信号を出して、破壊信号を解除
 	void DisableBreak(int nNumV, int nNumH);					// 氷の破壊を解除
