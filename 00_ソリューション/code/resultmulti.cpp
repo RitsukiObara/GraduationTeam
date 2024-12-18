@@ -22,6 +22,7 @@
 #include "npcpenguin.h"
 #include "npcpenguinstate_resultmulti.h"
 #include "resultseal.h"
+#include "snow.h"
 
 //*****************************************************
 // 定数定義
@@ -85,6 +86,20 @@ namespace buttonUI
 	const float HEIGHT = 0.049f;
 	const D3DXVECTOR3 POS = D3DXVECTOR3(0.88f, 0.92f, 0.0f);
 }
+
+namespace Snow
+{
+	const int CNT_SNOW = 5;						// 雪が降るタイミング
+	const float MAX_HEIGHT = 1800.0f;				// 雪が降ってくる高さ
+	const int MAX_SNOW_RADIUS = 100;				// 最大雪の半径
+	const int MIN_SNOW_RADIUS = 20;					// 最低雪の半径
+	const int SNOW_LIFE = 200;						// 雪のライフ
+	const float SNOW_MOVE_SPED = -10.0f;			// 雪の移動速度
+	const int MAX_SNOW_POS = 2200;					// 雪の最大生成場所
+	const int MIN_SNOW_POS = -2200;					// 雪の最低生成場所
+	const int BLIZZARD_CNT = 800;					// 吹雪が来るまでのカウント
+}
+
 }
 
 //=====================================================
@@ -283,6 +298,13 @@ void CResultMulti::Update(void)
 
 		// サウンドの再生
 		pSound->Play(CSound::LABEL_SE_DECISION);
+	}
+
+	// 雪降らす処理
+	if (m_bDraw)
+	{
+		CSnow::SetSnow(Snow::MAX_SNOW_POS, Snow::MIN_SNOW_POS, Snow::MAX_HEIGHT, Snow::MAX_SNOW_RADIUS, Snow::MIN_SNOW_RADIUS,
+			Snow::SNOW_LIFE, D3DXVECTOR3(0.0f, Snow::SNOW_MOVE_SPED, 0.0f), Snow::CNT_SNOW);
 	}
 
 	// シーンの更新
