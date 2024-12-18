@@ -1719,7 +1719,7 @@ CIce* CIceManager::GetRandomIce(int *pNumV, int *pNumH)
 	universal::RemoveIfFromVector(apIce, [](CIce* ice) { return ice != nullptr && ice->IsPeck(); });
 
 	// サイズからランダムで氷を指定
-	int nRand = universal::RandRange((int)apIce.size() - 1, 0);
+	int nRand = universal::RandRange((int)apIce.size(), 0);
 
 	CIce *pIce = apIce[nRand];
 
