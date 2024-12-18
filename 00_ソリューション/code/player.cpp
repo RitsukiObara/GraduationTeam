@@ -861,6 +861,7 @@ void CPlayer::LimitInSideFlowIce(void)
 
 		if (pIceMgr->IsInIce(posPlayer, itIce,0.7f))
 		{// ã‚Éæ‚Á‚Ä‚½‚çˆÊ’u‚ð§ŒÀ
+			//pIceMgr->Collide(&posPlayer, itIce, 0.68f);	// ‚±‚±‚Ìˆø”“ü‚ê‚Ä‚ ‚°‚é‚Æ—¬•X‚Å•à‚¯‚é‚©‚à
 			pIceMgr->Collide(&posPlayer, itIce);
 			posPlayer.y = posIce.y;
 			SetPosition(posPlayer);
