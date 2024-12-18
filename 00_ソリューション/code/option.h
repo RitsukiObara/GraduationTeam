@@ -55,6 +55,10 @@ public:
 	virtual void Update(void);
 	virtual void Draw(void);
 
+	// 設定外部ファイル
+	static void SaveSetting(void);			// 設定保存
+	static void LoadSetting(void);			// 設定読み込み
+
 private:
 	typedef void (COption::*SettingFunc)(void);
 
@@ -91,9 +95,9 @@ private:
 	static SettingFunc s_settingFunc[PARAM_MAX];	// 設定項目の関数に飛ぶ関数ポインタ
 	OPTIONPARAM m_optionParam;	// 設定中項目
 	float m_fOptionTextScale;	// 設定中項目の拡縮（0～2PI）
-	float m_fBGMVolume;			// BGMボリューム
-	float m_fSEVolume;			// SEボリューム
-	VIBRATIONSWITCH m_Vibration;		// バイブ有無
+	static float m_fBGMVolume;			// BGMボリューム
+	static float m_fSEVolume;			// SEボリューム
+	static VIBRATIONSWITCH m_Vibration;		// バイブ有無
 	float m_fParamScale;		// 設定項目の拡縮（0～2PI）
 	bool m_bSetting;			// 設定中フラグ
 };

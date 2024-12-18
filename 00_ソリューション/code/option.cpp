@@ -96,7 +96,17 @@ namespace
 	const string NOWSETTING_SELECT_BUTTON_UI_TEX_PATH = "data\\TEXTURE\\UI\\A_Enter.png";
 	const D3DXVECTOR3 SELECT_BUTTON_UI_POS = D3DXVECTOR3(0.88f, 0.92f, 0.0f);
 	const D3DXVECTOR2 SELECT_BUTTON_UI_SCALE = D3DXVECTOR2(0.09f, 0.049f);
+
+	// 設定保存先
+	const string SETTING_SAVE_PATH = "data\\SETTING\\config.bin";
 }
+
+//---------------------------------------------------------
+// 静的メンバ
+//---------------------------------------------------------
+float COption::m_fBGMVolume = 1.0f;								// BGMボリューム
+float COption::m_fSEVolume = 1.0f;								// SEボリューム
+COption::VIBRATIONSWITCH COption::m_Vibration = VIBRATION_ON;	// バイブ有無
 
 //---------------------------------------------------------
 // 関数ポインタ
@@ -128,10 +138,7 @@ COption::COption()
 
 	m_optionParam = PARAM_BGM;
 	m_fOptionTextScale = 0.0f;
-	m_fBGMVolume = 0.0f;
-	m_fSEVolume = 0.0f;
 	m_fParamScale = 0.0f;
-	m_Vibration = VIBRATION_ON;
 	m_bSetting = false;
 }
 
@@ -160,16 +167,11 @@ HRESULT COption::Init(void)
 	CSound* pSound = CSound::GetInstance();
 	CInputJoypad* pJoypad = CInputJoypad::GetInstance();
 
-	if (pSound != nullptr && pJoypad != nullptr)
-	{
-		// 取得
-		m_fBGMVolume = pSound->GetVolume(CSound::SOUNDTYPE::TYPE_BGM);
-		m_fSEVolume = pSound->GetVolume(CSound::SOUNDTYPE::TYPE_SE);
-		m_Vibration = (pJoypad->GetVibration() == true) ? VIBRATION_ON : VIBRATION_OFF;
-
-		// 設定
+	if (pJoypad != nullptr)
+	{// 設定
 		SettingSound(m_aSoundUIObj[PARAM_BGM].point, &m_fBGMVolume, m_fBGMVolume);
 		SettingSound(m_aSoundUIObj[PARAM_SE].point, &m_fSEVolume, m_fSEVolume);
+		pJoypad->SetVibration((m_Vibration == VIBRATION_ON));
 	}
 
 	// 背景海生成
@@ -192,7 +194,8 @@ HRESULT COption::Init(void)
 
 	Camera::ChangeState(new CCameraStateOptionMode);
 
-	pSound->Play(CSound::LABEL_BGM_TITLE);
+	if(pSound != nullptr)
+		pSound->Play(CSound::LABEL_BGM_TITLE);
 
 	return S_OK;
 }
@@ -253,8 +256,8 @@ void COption::CreateUIAll(void)
 	CreateSingleUI(&m_pAButtonUI, SELECT_BUTTON_UI_TEX_PATH, SELECT_BUTTON_UI_POS, SELECT_BUTTON_UI_SCALE.x, SELECT_BUTTON_UI_SCALE.y);
 
 	// UI設定
-	SettingSound(m_aSoundUIObj[PARAM_BGM].point, &m_fBGMVolume, 1.0f);
-	SettingSound(m_aSoundUIObj[PARAM_SE].point, &m_fSEVolume, 1.0f);
+	SettingSound(m_aSoundUIObj[PARAM_BGM].point, &m_fBGMVolume, m_fBGMVolume);
+	SettingSound(m_aSoundUIObj[PARAM_SE].point, &m_fSEVolume, m_fSEVolume);
 	ColChangeVibration();
 }
 
@@ -352,6 +355,12 @@ void COption::Select(void)
 		if (m_pAButtonUI != nullptr)
 		{// テクスチャ割当
 			m_pAButtonUI->SetIdxTexture(CTexture::GetInstance()->Regist(&NOWSETTING_SELECT_BUTTON_UI_TEX_PATH[0]));
+		}
+
+		// 戻るボタンUIを透明化
+		if (m_pBackButtonUI != nullptr)
+		{
+			m_pBackButtonUI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 		}
 	}
 }
@@ -535,12 +544,12 @@ void COption::SettingVibration(void)
 	if (pInputMgr->GetTrigger(CInputManager::BUTTON_AXIS_LEFT))
 	{// 上移動
 		m_Vibration = (VIBRATIONSWITCH)(((int)m_Vibration - 1 + VIBRATIONSWITCH_MAX) % VIBRATIONSWITCH_MAX);
-		pJoypad->SetVibration((m_Vibration == VIBRATION_ON) ? true : false);
+		pJoypad->SetVibration((m_Vibration == VIBRATION_ON));
 	}
 	else if (pInputMgr->GetTrigger(CInputManager::BUTTON_AXIS_RIGHT))
 	{// 下移動
 		m_Vibration = (VIBRATIONSWITCH)(((int)m_Vibration + 1) % VIBRATIONSWITCH_MAX);
-		pJoypad->SetVibration((m_Vibration == VIBRATION_ON) ? true : false);
+		pJoypad->SetVibration((m_Vibration == VIBRATION_ON));
 	}
 
 	// 色変更
@@ -606,6 +615,15 @@ void COption::BackSelect(void)
 		{// テクスチャ割当
 			m_pAButtonUI->SetIdxTexture(CTexture::GetInstance()->Regist(&SELECT_BUTTON_UI_TEX_PATH[0]));
 		}
+
+		// 戻るボタンUIを不透明化
+		if (m_pBackButtonUI != nullptr)
+		{
+			m_pBackButtonUI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		}
+
+		// 設定を外部ファイルに保存
+		SaveSetting();
 	}
 }
 
@@ -636,4 +654,58 @@ float COption::ScaleChange(float* angle, float speed, float range)
 
 	// 結果返す
 	return sinf(*angle) * range + 1.0f;
+}
+
+//=====================================================
+// 設定保存
+//=====================================================
+void COption::SaveSetting(void)
+{
+	// ファイルを開く
+	std::ofstream outputFile(SETTING_SAVE_PATH, std::ios::binary);
+
+	if (!outputFile.is_open())
+		assert(false);
+
+	// データの保存
+	outputFile.write(reinterpret_cast<char*>(&m_fBGMVolume), sizeof(float));
+	outputFile.write(reinterpret_cast<char*>(&m_fSEVolume), sizeof(float));
+	outputFile.write(reinterpret_cast<char*>(&m_Vibration), sizeof(VIBRATIONSWITCH));
+
+	outputFile.close();
+}
+
+//=====================================================
+// 設定読み込み
+//=====================================================
+void COption::LoadSetting(void)
+{
+	// ファイルを開く
+	std::ifstream inputFile(SETTING_SAVE_PATH, std::ios::binary);
+
+	if (inputFile.is_open())
+	{// ファイルがある（読み込み
+		inputFile.read(reinterpret_cast<char*>(&m_fBGMVolume), sizeof(float));
+		inputFile.read(reinterpret_cast<char*>(&m_fSEVolume), sizeof(float));
+		inputFile.read(reinterpret_cast<char*>(&m_Vibration), sizeof(VIBRATIONSWITCH));
+
+		inputFile.close();
+	}
+	else
+	{// ファイルがない（初期設定）
+		m_fBGMVolume = 1.0f;
+		m_fSEVolume = 1.0f;
+		m_Vibration = VIBRATION_ON;
+		SaveSetting();	// ファイル生成
+	}
+
+	// 設定
+	CSound* pSound = CSound::GetInstance();
+	CInputJoypad* pJoypad = CInputJoypad::GetInstance();
+	if (pSound != nullptr && pJoypad != nullptr)
+	{// 設定
+		pSound->SetVolume(CSound::SOUNDTYPE::TYPE_BGM, m_fBGMVolume);
+		pSound->SetVolume(CSound::SOUNDTYPE::TYPE_SE, m_fSEVolume);
+		pJoypad->SetVibration((m_Vibration == VIBRATION_ON));
+	}
 }
