@@ -930,9 +930,9 @@ void CPlayer::InputPeck(void)
 	CIceManager::E_Direction dir;
 
 	CIce *pIcePeck = nullptr;
+	CIceManager::E_PeckResult pr = pIceManager->CheckPeck(m_nGridV, m_nGridH, rot.y, pos, &dir, &pIcePeck);
 
-	if (pIceManager->CheckPeck(m_nGridV, m_nGridH, rot.y, pos, &dir,&pIcePeck) &&
-		m_state == E_State::STATE_NORMAL)
+	if (pr == CIceManager::PECK_OK && m_state == E_State::STATE_NORMAL)
 	{// 突っつけるとき
 		// つっつきボタントリガーで氷を割る
 		if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_PECK))
@@ -950,10 +950,14 @@ void CPlayer::InputPeck(void)
 	}
 	else
 	{// 突っつけないとき
-		// ボタンを押しても弾かれる
-		if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_PECK))
-			SetMotion(MOTION::MOTION_CANNOTPECK);
+		if (pr == CIceManager::PECK_UNBREAKABLE || pr == CIceManager::PECK_TOPANYOBJECT)
+		{// 壊せないか何かしら乗っている
+			// ボタンを押しても弾かれる
+			if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_PECK))
+				SetMotion(MOTION::MOTION_CANNOTPECK);
+		}
 
+		// 何かしら突っつけない場合は線を出さない
 		if (m_pPeckLine != nullptr)
 			m_pPeckLine->EndMove();
 	}

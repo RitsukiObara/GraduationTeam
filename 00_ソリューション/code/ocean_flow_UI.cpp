@@ -37,7 +37,12 @@
 //*****************************************************
 namespace
 {
+	const float POS_SINGLE_X = -1000.0f;		// シングルプレイの矢印X座標
+	const float POS_SINGLE_Y = 200.0f;			// シングルプレイの矢印Y座標
 
+	const float POS_MULTI_X = -1500.0f;			// マルチプレイの矢印X座標
+	const float POS_MULTI_Y = 400.0f;			// マルチプレイの矢印Y座標
+	const float POS_MULTI_Z = 700.0f;			// マルチプレイの矢印Z座標
 }
 
 //*****************************************************
@@ -84,14 +89,26 @@ COceanFlowUI* COceanFlowUI::Create(void)
 //====================================================
 HRESULT COceanFlowUI::Init(void)
 {
-	m_pArrow = CObjectX::Create(D3DXVECTOR3(-1000.0f, 200.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	m_pArrow = CObjectX::Create(D3DXVECTOR3(POS_SINGLE_X, POS_SINGLE_Y, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	// 矢印モデルの初期化
 	if (m_pArrow != nullptr)
 	{
 		m_pArrow->Init();
 
-		m_pArrow->BindModel(CModel::Load("data\\MODEL\\other\\Arrow001.x"));
+		CGame::E_GameMode gamemode = CGame::GetInstance()->GetGameMode();
+
+		// モード毎の矢印位置
+		if (gamemode == CGame::MODE_SINGLE)
+		{
+			m_pArrow->BindModel(CModel::Load("data\\MODEL\\other\\Arrow001.x"));
+		}
+		else
+		{
+			m_pArrow->SetPosition(D3DXVECTOR3(POS_MULTI_X, POS_MULTI_Y, POS_MULTI_Z));
+
+			m_pArrow->BindModel(CModel::Load("data\\MODEL\\other\\Arrow002.x"));
+		}
 	}
 
 	CIceManager::GetInstance()->GetDirStream();
@@ -100,18 +117,6 @@ HRESULT COceanFlowUI::Init(void)
 
 	if (CGame::GetInstance() == nullptr)
 		return E_FAIL;
-
-	CGame::E_GameMode gamemode = CGame::GetInstance()->GetGameMode();
-
-	// モード毎の矢印位置
-	if (gamemode == CGame::MODE_SINGLE)
-	{
-		m_pArrow->SetPosition(D3DXVECTOR3(-1000.0f, 200.0f, 0.0f));
-	}
-	else
-	{
-		m_pArrow->SetPosition(D3DXVECTOR3(-1500.0f, 400.0f, 700.0f));
-	}
 
 	return S_OK;
 }
