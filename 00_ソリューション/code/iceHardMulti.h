@@ -44,12 +44,13 @@ private:
 	};
 
 	// メンバ関数
-	void IsOnPlayer(void);		// プレイヤーの検出
-	void UpdateState(void);		// 状態ごとの更新
-	void StartJump(void);		// 飛ばす処理
-	void UpdateNormal(void);	// 通常の更新
-	void UpdateJump(void);		// ジャンプの更新
-	void FollowSeal(void);		// アザラシの追従
+	void IsOnPlayer(void);				// プレイヤーの検出
+	void UpdateState(void);				// 状態ごとの更新
+	void StartJump(void);				// 飛ばす処理
+	void UpdateNormal(void);			// 通常の更新
+	void UpdateJump(void);				// ジャンプの更新
+	void FollowSeal(void);				// アザラシの追従
+	bool CheckOtherIceCanBlow(void);	// 自分以外にも飛べる氷があるかチェック
 
 	// メンバ変数
 	E_State m_state;					// 状態

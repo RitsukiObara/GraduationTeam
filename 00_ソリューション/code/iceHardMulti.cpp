@@ -247,6 +247,8 @@ void CIceHardMulti::StartJump(void)
 	if (pIceMgr == nullptr)
 		return;
 
+	bool bOther = CheckOtherIceCanBlow();
+
 	for (CPlayer *pPlayer : m_apPlayerJump)
 	{
 		if (pPlayer == nullptr)
@@ -263,6 +265,9 @@ void CIceHardMulti::StartJump(void)
 			pIce = pIceMgr->GetRandomIce();
 
 			if (pIce == nullptr)
+				continue;
+
+			if (bOther && pIce == this)
 				continue;
 
 			if (!pIce->IsPeck())
@@ -300,6 +305,28 @@ void CIceHardMulti::FollowSeal(void)
 	D3DXVECTOR3 pos = GetPosition();
 	pos.y = HEIGHT_SEAL;
 	m_pSeal->SetPosition(pos);
+}
+
+//=====================================================
+// 自分以外にも飛べる氷があるかチェック
+//=====================================================
+bool CIceHardMulti::CheckOtherIceCanBlow(void)
+{
+	vector<CIce*> apIce = CIce::GetInstance();
+
+	// 流氷の除外
+	universal::RemoveIfFromVector(apIce, [](CIce* ice) { return ice != nullptr && !ice->IsStop(); });
+
+	// つっつき氷の除外
+	universal::RemoveIfFromVector(apIce, [](CIce* ice) { return ice != nullptr && ice->IsPeck(); });
+
+	for (CIce *pIce : apIce)
+	{
+		if (pIce != this)
+			return true;
+	}
+
+	return false;
 }
 
 //=====================================================
