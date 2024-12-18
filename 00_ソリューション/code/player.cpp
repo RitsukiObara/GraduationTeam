@@ -1096,6 +1096,12 @@ void CPlayer::SarchJumpIce(void)
 		if (pIceStand == apIce[i])
 			continue;
 
+		int nIdxJumpV;
+		int nIdxJumpH;
+		pIceMgr->GetIceIndex(apIce[i], &nIdxJumpV, &nIdxJumpH);
+		if (IsOnTopAnyPlayer(nIdxJumpV, nIdxJumpH, this))
+			continue;
+
 		D3DXVECTOR3 posPlayer = GetPosition();
 		D3DXVECTOR3 posIce = apIce[i]->GetPosition();
 
