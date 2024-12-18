@@ -98,12 +98,13 @@ public:
 	void SetShadowPos(D3DXVECTOR3 pos);
 
 	// 静的メンバ関数
-	static CPlayer* Create(void);										// 生成処理
-	static vector<CPlayer*> GetInstance(void) { return s_apPlayer; }	// インスタンスの取得
-	static void EnableInputAll(bool bValue);							// 全プレイヤーの入力フラグ
-	static int GetNumPlayer(void) { return (int)s_apPlayer.size(); }	// プレイヤー数の取得
-	static void BindInputAllPlayer(void);								// 全プレイヤーに入力を割り振る
-	static void CheckStartDriftAll(void);								// 全プレイヤーの漂流確認
+	static CPlayer* Create(void);													// 生成処理
+	static vector<CPlayer*> GetInstance(void) { return s_apPlayer; }				// インスタンスの取得
+	static void EnableInputAll(bool bValue);										// 全プレイヤーの入力フラグ
+	static int GetNumPlayer(void) { return (int)s_apPlayer.size(); }				// プレイヤー数の取得
+	static void BindInputAllPlayer(void);											// 全プレイヤーに入力を割り振る
+	static void CheckStartDriftAll(void);											// 全プレイヤーの漂流確認
+	static bool IsOnTopAnyPlayer(int nIdxV,int nIdxH,CPlayer *pPlayer = nullptr);	// プレイヤーが上に乗っているかのチェック
 
 protected:
 	virtual void StartJump(void);	// ジャンプの開始
