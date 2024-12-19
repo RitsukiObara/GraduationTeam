@@ -160,8 +160,6 @@ private:
 	void StayBlow(void);	// 吹き飛ばし中の処理
 	void EndBlow(void);		// 吹き飛ばしの終了
 	
-	void FollowDirUI(void);	// 方向UIの追従
-
 	void Event(EVENT_INFO* pEventInfo) override;	// モーションイベント
 	void ManageMotion(void);						// モーションの管理
 
@@ -188,7 +186,6 @@ private:
 	CIce *m_pLandFlow;				// 漂流時に乗ってる氷のポインタ
 	CFlowIce *m_pLandSystemFlow;	// 乗ってる流氷システム
 	int m_nTimePeck;				// 氷を突いた回数
-	CPolygon3D *m_pDir;				// 方向を示すポリゴン
 	CPeckLine *m_pPeckLine;			// つっつき線
 	CShadow *m_pShadow;				// 影のポインタ
 

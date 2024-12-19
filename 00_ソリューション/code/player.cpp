@@ -217,25 +217,7 @@ void CPlayer::InitGridIdx(void)
 //=====================================================
 void CPlayer::CreateDirUI(void)
 {
-#if 0
-	// 生成
-	m_pDir = CPolygon3D::Create(GetPosition());
-	assert(m_pDir != nullptr);
-
-	// テクスチャ設定
-	int nIdxTexture = Texture::GetIdx(&DirUI::PATH_TEX[0]);
-	m_pDir->SetIdxTexture(nIdxTexture);
-
-	// サイズ設定
-	m_pDir->SetSize(DirUI::WIDTH, DirUI::HEIGHT);
-	m_pDir->SetVtx();
-
-	// ライティングの設定
-	m_pDir->EnableLighting(false);
-	m_pDir->EnableZtest(true);
-#else
 	m_pPeckLine = CPeckLine::Create(COL_LINE[GetID()], GetPosition());
-#endif
 }
 
 //=====================================================
@@ -243,7 +225,6 @@ void CPlayer::CreateDirUI(void)
 //=====================================================
 void CPlayer::Uninit(void)
 {
-	Object::DeleteObject((CObject**)&m_pDir);
 	Object::DeleteObject((CObject**)&m_pPeckLine);
 	Object::DeleteObject((CObject**)&m_pShadow);
 	Object::DeleteObject((CObject**)&m_pUI);
@@ -286,9 +267,6 @@ void CPlayer::Update(void)
 
 	if (m_state == STATE_FLOW)
 		StayFlow();	// 漂流中の処理
-
-	// 方向UIの追従
-	FollowDirUI();
 
 	if (m_pPeckLine != nullptr)
 		m_pPeckLine->SetPosition(GetPosition());
@@ -1337,19 +1315,6 @@ void CPlayer::EndBlow(void)
 	// ジャンプフラグを折る
 	m_bEnableJump = false;
 	m_fragMotion.bJump = false;
-}
-
-//=====================================================
-// 方向UIの追従
-//=====================================================
-void CPlayer::FollowDirUI(void)
-{
-	if (m_pDir == nullptr)
-		return;
-
-	D3DXVECTOR3 posPlayer = GetPosition();
-
-	m_pDir->SetPosition(posPlayer);
 }
 
 //=====================================================

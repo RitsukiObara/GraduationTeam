@@ -190,6 +190,9 @@ HRESULT CPlayerSelect::Init(void)
 		}
 	}
 
+	// BGM再生
+	Sound::Play(CSound::LABEL::LABEL_BGM_SELECTPLAYER);
+
 	return S_OK;
 }
 
@@ -468,6 +471,9 @@ void CPlayerSelect::Ready(int nIdx)
 //=====================================================
 void CPlayerSelect::CheckStart(void)
 {
+	if (m_bFade)
+		return;
+
 	if (m_nNumPlayer <= 1)
 		return;	// プレイヤーが複数人いない場合、通らない
 
@@ -483,7 +489,12 @@ void CPlayerSelect::CheckStart(void)
 	}
 
 	if (bStart)
+	{
+		// SE再生
+		Sound::Play(CSound::LABEL::LABEL_SE_MULTISTART);
+
 		StartFade();
+	}
 }
 
 //=====================================================
@@ -491,7 +502,6 @@ void CPlayerSelect::CheckStart(void)
 //=====================================================
 void CPlayerSelect::StartFade(void)
 {
-
 	// プレイヤーエンターフラグの設定
 	vector<bool> abEnter(m_nNumPlayer);
 
