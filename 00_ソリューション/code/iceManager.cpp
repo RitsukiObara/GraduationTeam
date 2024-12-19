@@ -518,7 +518,7 @@ bool CIceManager::PeckIce(int nIdxV, int nIdxH)
 	GetIceIndex(pIcePeck, &nNumBreakV, &nNumBreakH);
 
 	// “Ë‚Á‚Â‚¯‚é•X‚©‚Ìƒ`ƒFƒbƒN
-	if (!CanPeck(pIcePeck, nNumBreakV, nNumBreakH))
+	if (CanPeck(pIcePeck, nNumBreakV, nNumBreakH) != PECK_OK)
 		return false;
 
 	// •X‚ð“Ë‚Á‚Â‚¢‚½”»’è‚É‚·‚é
@@ -1325,8 +1325,6 @@ void CIceManager::Debug(void)
 	D3DXVECTOR3 vecDiff;
 
 	universal::ConvertScreenPosTo3D(&posNear, &posFar, &vecDiff);
-
-	std::map<CObject3D*, int> mapIcon;
 
 	for (int i = 0; i < m_nNumGridVirtical; i++)
 	{

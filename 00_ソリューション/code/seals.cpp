@@ -448,6 +448,9 @@ void CSeals::DecideNextStrollGrid(void)
 //=====================================================
 void CSeals::Death(void)
 {
+	if (IsDeath())
+		return;
+
 	// “GUI‚Ì“G”‚ğŒ¸Z
 	CUIEnemy *pUIEnemy = CUIEnemy::GetInstance();
 

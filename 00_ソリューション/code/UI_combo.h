@@ -27,9 +27,7 @@ public:
 	// —ñ‹“Œ^’è‹`
 	enum E_State
 	{// ó‘Ô
-		STATE_BESIDE = 0,	// ‰¡ˆÚ“®
-		STATE_VERTICAL,	// cˆÚ“®
-		STATE_WAIT,	// ‘Ø—¯ó‘Ô
+		STATE_WAIT = 0,	// ‘Ø—¯ó‘Ô
 		STATE_ERASE,	// Á‚µ‚Ä‚¢‚­
 		STATE_MAX
 	};

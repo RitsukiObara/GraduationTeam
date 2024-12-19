@@ -96,6 +96,8 @@ HRESULT CGameManagerMulti::Init(void)
 		pPlayer->ReLoadModel(&player::PATH_BODY[i][0]);
 
 		pPlayer->ShowNumber();
+
+		
 	}
 
 	// 全プレイヤーの入力割り当て

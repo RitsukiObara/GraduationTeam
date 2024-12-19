@@ -18,6 +18,7 @@ public:
 	typedef enum
 	{
 		LABEL_BGM_TITLE,				// タイトルBGM
+		LABEL_BGM_SELECTPLAYER,			// プレイヤー選択BGM
 		LABEL_BGM_TUTORIAL,				// チュートリアルBGM
 		LABEL_BGM_GAME01,				// ゲームBGM01
 		LABEL_BGM_RESULT,				// リザルトBGM
@@ -48,6 +49,7 @@ public:
 		LABEL_SE_PAUSE_ARROW,			// 移動
 		LABEL_SE_PAUSE_ENTER00,			// 決定
 		LABEL_SE_PAUSE_ENTER01,			// 決定
+		LABEL_SE_MULTISTART,			// マルチのスタート音
 
 		LABEL_SE_GAME_START,			// ゲームスタート
 
@@ -116,7 +118,8 @@ private:
 	SOUNDINFO m_aSoundInfo[LABEL_MAX] =
 	{
 		{ TYPE_BGM, "data/SOUND/BGM/BGM_Title.wav",-1 },			// タイトル画面BGM
-		{ TYPE_BGM, "data/SOUND/BGM/BGM_Result.wav",-1 },			// チュートリアル画面BGM（未）
+		{ TYPE_BGM, "data/SOUND/BGM/BGM_PlayerSelect.wav",-1 },		// プレイヤーエントリーBGM
+		{ TYPE_BGM, "data/SOUND/BGM/BGM_Tutorial.wav",-1 },			// チュートリアル画面BGM
 		{ TYPE_BGM, "data/SOUND/BGM/BGM_Game00.wav",-1 },			// ゲーム画面BGM
 		{ TYPE_BGM, "data/SOUND/BGM/BGM_Result.wav",-1 },			// リザルト画面BGM
 		{ TYPE_BGM, "data/SOUND/BGM/BGM_Option.wav",-1 },			// オプション画面BGM
@@ -146,6 +149,7 @@ private:
 		{ TYPE_SE, "data/SOUND/SE/SE_ENTER00.wav",0 },			// 選択
 		{ TYPE_SE, "data/SOUND/SE/SE_Enter01.wav",0 },			// 決定
 		{ TYPE_SE, "data/SOUND/SE/SE_Enter02.wav",0 },			// 決定
+		{ TYPE_SE, "data/SOUND/SE/SE_MultiStart.wav",0 },		// マルチスタート
 
 		{ TYPE_SE, "data/SOUND/SE/SE_GameStart.wav",0 },			// ゲームスタート
 

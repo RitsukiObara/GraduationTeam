@@ -37,7 +37,7 @@ const float SIZE_HEIGHT = 0.9f;		// サイズの幅
 const float SIZE_READY_INIT = 0.9f;		// READYの初期サイズ
 const float SIZE_READY_MOVE = -0.04f;		// READYの初期サイズ
 const float SIZE_READY_LIMIT = 0.3f;		// READYのサイズ制限
-const D3DXCOLOR READY_COLOR = { 1.0f, 0.8f, 0.0f, 1.0f };		// READYの色
+const D3DXCOLOR READY_COLOR = { 1.0f, 1.0f, 1.0f, 1.0f };		// READYの色
 const float RATE_HEIGHT_NUMBER = 1.4f;							// 数字の高さの割合
 const float RATE_WIDTH_GO = 1.4f;								// GO表記の幅の割合
 }
@@ -221,9 +221,6 @@ void CUIready::Update(void)
 
 		//ステートカウント加算
 		m_nStateCnt++;
-
-		// 色指定
-		m_Go->SetCol(READY_COLOR);
 
 		// サイズ指定
 		m_Go->SetSize(m_fsize * RATE_WIDTH_GO, m_fsize);
