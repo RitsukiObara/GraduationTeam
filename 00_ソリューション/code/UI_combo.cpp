@@ -285,6 +285,9 @@ void CUI_Combo::SetCombo(int nDigit)
 //=====================================================
 void CUI_Combo::AddCombo(CEnemy::TYPE type)
 {
+	if (CGame::GetState() != CGame::E_State::STATE_NORMAL)
+		return;
+
 	if (m_pScore != nullptr)
 	{
 		m_pScore->AddDestroyScore(type);

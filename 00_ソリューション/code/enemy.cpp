@@ -24,6 +24,7 @@
 #include "sound.h"
 #include "shadow.h"
 #include "player.h"
+#include "game.h"
 
 //*****************************************************
 // 定数定義
@@ -888,12 +889,15 @@ void CEnemy::EndFlows(void)
 //=====================================================
 void CEnemy::Death(void)
 {
-	// コンボ、撃破時のスコア加算
-	CUI_Combo* pUICombo = CUI_Combo::GetInstance();
-
-	if (pUICombo != nullptr)
+	if (CGame::GetState() == CGame::E_State::STATE_NORMAL)
 	{
-		pUICombo->AddCombo(m_type);
+		// コンボ、撃破時のスコア加算
+		CUI_Combo* pUICombo = CUI_Combo::GetInstance();
+
+		if (pUICombo != nullptr)
+		{
+			pUICombo->AddCombo(m_type);
+		}
 	}
 
 	// 終了処理を呼ぶ
