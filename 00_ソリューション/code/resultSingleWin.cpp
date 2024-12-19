@@ -80,6 +80,7 @@ const D3DXVECTOR3 POS_INIT[CResultSingleWin::E_ScoreCaption::CAPTION_MAX] =
 };
 const float HEIGHT_DEST = 0.43f;	// 目標の高さ
 const float DIFF_HEIGHT = HEIGHT_DEST - HEIGHT_INIT;	// 高さの差分
+const D3DXCOLOR COL = { 0.7f,1.0f,1.0f,1.0f };			// 色
 }
 
 //----------------------------
@@ -275,6 +276,7 @@ void CResultSingleWin::CreateOwnScore(void)
 
 		m_apNumberOwn[i]->SetPosition(scoreNumber::POS_INIT[i]);
 		m_apNumberOwn[i]->SetSizeAll(scoreNumber::WIDTH_NUMBER, scoreNumber::HEIGHT_NUMBER);
+		m_apNumberOwn[i]->SetColor(scoreNumber::COL);
 		m_apNumberOwn[i]->SetAlpha(0.0f);
 	}
 }
@@ -334,6 +336,7 @@ void CResultSingleWin::CreateRankingNumber(void)
 			pNumber->SetSizeAll(ranking::WIDTH_NUMBER,ranking::HEIGHT_NUMBER);
 
 			// アルファ値の初期設定
+			pNumber->SetColor(scoreNumber::COL);
 			pNumber->SetAlpha(ranking::ALPHA_INIT);
 
 			// ポインタを保存
