@@ -69,6 +69,7 @@ private:
 	void UpdateWait(void);			// 待機状態の更新
 
 	void Input(void);				// 入力処理
+	void BlinkUpdate(void);			// 更新項目の点滅
 
 	// メンバ変数
 	CUI *m_apCaptionScore[CAPTION_MAX];		// 自身のキャプションのポインタ
@@ -82,6 +83,7 @@ private:
 	E_State m_state;		// 状態
 	float m_fTimer;			// タイマー
 	int m_nIdxUpdate;		// 更新番号
+	float m_fTimerBlink;	// 点滅タイマー
 
 	// 状態更新の関数ポインタ型エイリアス定義
 	typedef void (CResultSingleWin::*FuncUpdateState)(void);

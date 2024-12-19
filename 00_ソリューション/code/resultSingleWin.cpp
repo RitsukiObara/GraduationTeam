@@ -81,6 +81,9 @@ const D3DXVECTOR3 POS_INIT[CResultSingleWin::E_ScoreCaption::CAPTION_MAX] =
 const float HEIGHT_DEST = 0.43f;	// 目標の高さ
 const float DIFF_HEIGHT = HEIGHT_DEST - HEIGHT_INIT;	// 高さの差分
 const D3DXCOLOR COL = { 0.7f,1.0f,1.0f,1.0f };			// 色
+const D3DXCOLOR COL_BLINK = { 0.3f,1.0f,0.3f,1.0f };	// 点滅色
+const float TIME_COL_INIT = 0.1f;						// 通常色の時間
+const float TIME_COL_BLINK = 0.1f;						// 点滅色の時間
 }
 
 //----------------------------
@@ -380,8 +383,7 @@ void CResultSingleWin::Update(void)
 {
 	assert(m_state > -1 && m_state < STATE_MAX);
 	if (s_aFuncUpdateState[m_state] != nullptr)
-	{ // 更新関数が指定されている場合
-
+	{// 更新関数が指定されている場合
 		// 各状態ごとの更新
 		(this->*(s_aFuncUpdateState[m_state]))();
 	}
@@ -391,6 +393,9 @@ void CResultSingleWin::Update(void)
 
 	// 入力処理
 	Input();
+
+	// 更新項目の点滅
+	BlinkUpdate();
 }
 
 //=====================================================
@@ -532,6 +537,34 @@ void CResultSingleWin::Input(void)
 
 	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_ENTER))
 		m_fTimer = aTimer[m_state];
+}
+
+//=====================================================
+// 更新項目の点滅処理
+//=====================================================
+void CResultSingleWin::BlinkUpdate(void)
+{
+	if (m_nIdxUpdate == -1)
+		return;	// 更新されてなかったら点滅しない
+
+	if (m_state < E_State::STATE_APPERRANKING)
+		return;	// 出現しなかったら点滅しない
+
+	m_fTimerBlink += CManager::GetDeltaTime();
+
+	if (m_fTimerBlink < scoreNumber::TIME_COL_INIT)
+	{
+		m_apRankingNumber[m_nIdxUpdate][0]->SetColor(scoreNumber::COL);
+		m_apRankingNumber[m_nIdxUpdate][1]->SetColor(scoreNumber::COL);
+	}
+	else
+	{
+		m_apRankingNumber[m_nIdxUpdate][0]->SetColor(scoreNumber::COL_BLINK);
+		m_apRankingNumber[m_nIdxUpdate][1]->SetColor(scoreNumber::COL_BLINK);
+	}
+
+	if (m_fTimerBlink > scoreNumber::TIME_COL_INIT + scoreNumber::TIME_COL_BLINK)
+		m_fTimerBlink = 0.0f;
 }
 
 //====================================================
