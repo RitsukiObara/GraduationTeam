@@ -67,8 +67,8 @@ const float GRAVITY = 0.98f;	// 重力
 
 const float HEIGHT_BLOW = 250.0f;	// 吹き飛ばしの高さ
 
-const float HEIGHT_UI = 0.1f;	// UIの高さ
-const D3DXVECTOR2 SIZE_UI = { 0.03f,0.06f };								// UIのサイズ
+const float HEIGHT_UI = 0.1f;											// UIの高さ
+const D3DXVECTOR2 SIZE_UI = { 0.03f,0.06f };							// UIのサイズ
 const string PATH_PLAYERNUM = "data\\TEXTURE\\UI\\player_Count.png";	// プレイヤー番号テクスチャパス
 
 //-------------------------------
@@ -861,6 +861,7 @@ void CPlayer::LimitInSideFlowIce(void)
 
 		if (pIceMgr->IsInIce(posPlayer, itIce,0.7f))
 		{// 上に乗ってたら位置を制限
+			//pIceMgr->Collide(&posPlayer, itIce, 0.68f);	// ここの引数入れてあげると流氷で歩けるかも
 			pIceMgr->Collide(&posPlayer, itIce);
 			posPlayer.y = posIce.y;
 			SetPosition(posPlayer);

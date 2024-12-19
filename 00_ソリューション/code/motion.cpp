@@ -983,7 +983,7 @@ void CMotion::SetAllCol(D3DXCOLOR col)
 		{
 			if (m_apParts[i]->pParts != nullptr)
 			{
-				m_apParts[i]->pParts->SetEmissiveCol(col);
+				m_apParts[i]->pParts->SetDeffuseCol(col,0);
 			}
 		}
 	}
@@ -1000,7 +1000,7 @@ void CMotion::ResetAllCol(void)
 		{
 			if (m_apParts[i]->pParts != nullptr)
 			{
-				m_apParts[i]->pParts->ResetColor();
+				m_apParts[i]->pParts->ResetMat();
 			}
 		}
 	}

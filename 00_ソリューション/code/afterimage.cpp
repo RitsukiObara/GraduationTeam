@@ -64,7 +64,7 @@ CAfterImage *CAfterImage::Create(D3DXMATRIX mtx, int nIdxModel, D3DXCOLOR col, i
 			// 初期化処理
 			pAlterImage->Init();
 			
-			pAlterImage->SetEmissiveCol(col);
+			pAlterImage->SetDeffuseCol(col);
 		}
 	}
 
@@ -103,13 +103,13 @@ void CAfterImage::Update(void)
 	// 継承クラスの更新
 	CObjectX::Update();
 
-	D3DXCOLOR col = GetEmissiveCol();
+	D3DXCOLOR col = GetDeffuseeCol();
 
 	m_nLife--;
 
 	col.a -= m_fDecAlpha;
 
-	SetEmissiveCol(col);
+	SetDeffuseCol(col);
 
 	if (m_nLife <= 0)
 	{

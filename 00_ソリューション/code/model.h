@@ -26,10 +26,11 @@ class CModel
 public:
 	typedef struct
 	{// モデルの構造体
-		int *pIdxTexture;	// テクスチャ番号へのポインタ
-		LPD3DXMESH pMesh;		//メッシュへのポインタ
-		LPD3DXBUFFER pBuffMat;	//マテリアルへのバッファ
-		DWORD dwNumMat;	//マテリアルの数
+		int *pIdxTexture;			// テクスチャ番号へのポインタ
+		LPD3DXMESH pMesh;			// メッシュへのポインタ
+		LPD3DXBUFFER pBuffMat;		// マテリアルへのバッファ
+		LPD3DXBUFFER pBuffMatOrg;	// 元のマテリアルへのバッファ
+		DWORD dwNumMat;				// マテリアルの数
 	}Model;
 
 	CModel();	// コンストラクタ
