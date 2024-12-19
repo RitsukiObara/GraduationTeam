@@ -222,9 +222,6 @@ void CUIready::Update(void)
 		//ステートカウント加算
 		m_nStateCnt++;
 
-		// 色指定
-		m_Go->SetCol(READY_COLOR);
-
 		// サイズ指定
 		m_Go->SetSize(m_fsize * RATE_WIDTH_GO, m_fsize);
 
