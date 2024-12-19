@@ -719,6 +719,9 @@ void CBears::DecideNextStrollGrid(void)
 //=====================================================
 void CBears::Death(void)
 {
+	if (IsDeath())
+		return;
+
 	// “GUI‚Ì“G”‚ğŒ¸Z
 	CUIEnemy *pUIEnemy = CUIEnemy::GetInstance();
 
