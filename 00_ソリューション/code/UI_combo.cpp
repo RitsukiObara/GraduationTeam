@@ -59,7 +59,7 @@ CUI_Combo::CUI_Combo()
 	m_Col = NORMAL_COLOR;
 	m_nValue = 0;
 	m_nCombo = 0;
-	m_State = STATE_BESIDE;
+	m_State = STATE_WAIT;
 	m_nCntState = 0;
 	m_ShiftPos = POS_INITIAL;
 }
@@ -103,7 +103,7 @@ HRESULT CUI_Combo::Init(void)
 	m_nCombo = COMBO_MIN;	// スコアの初期化
 	m_nValue = VALUE_COMBO;	// 桁数の初期化
 	m_fScaleNumber = COMBO_SCALE;	// 初期スケール設定
-	m_State = STATE_VERTICAL;	// 状態の初期化
+	m_State = STATE_WAIT;	// 状態の初期化
 	m_ShiftPos = D3DXVECTOR3(0.0f, 0.0f, COMBO_POS_Z);
 
 	// 初期位置の設定
@@ -148,19 +148,6 @@ void CUI_Combo::Update(void)
 	//コンボUIの状態
 	switch (m_State)
 	{
-	case STATE_BESIDE:
-		m_State = STATE_VERTICAL;
-		break;
-
-	case STATE_VERTICAL:
-
-		m_ShiftPos.z += MOVE_SPEED;
-
-		if (m_ShiftPos.z >= VERTICAL_STOP)
-			m_State = STATE_WAIT;
-
-		break;
-
 	case STATE_WAIT:
 
 		m_nCntState++;
