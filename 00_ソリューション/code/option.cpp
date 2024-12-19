@@ -66,11 +66,18 @@ namespace
 		// ペンギン
 		const string PENGUIN_TEX_PATH[COption::OPTIONPARAM::PARAM_MAX - 1] =
 		{
-			"data\\TEXTURE\\UI\\option_BGM_Icon.png",
-			"data\\TEXTURE\\UI\\option_SE_Icon.png"
+			"data\\TEXTURE\\UI\\option_BGM_Icon_Change.png",
+			"data\\TEXTURE\\UI\\option_SE_Icon_Change.png"
 		};
 		const float PENGUIN_POS_X = 0.881f;	// ペンギンの位置（Xのみ）
 		const D3DXVECTOR2 PENGUIN_SCALE = D3DXVECTOR2(0.071f, 0.125f);
+		const float PENGUIN_TEX_CHANGE_LINE[COption::VOLUME_LEVEL_MAX] =
+		{
+			0.0f,	// 0％（ペンギンしかいない）
+			0.1f,	// 最低限音鳴らしてる（ペンギンと小さなボリューム）
+			0.5f,	// 50％（普通のボリューム）
+			0.8f	// 80％（大き目のボリューム）
+		};
 	}
 
 	// 振動
@@ -287,6 +294,17 @@ void COption::CreateSoundUIObj(void)
 		pos = D3DXVECTOR3(soundUI::PENGUIN_POS_X, PARAM_TEXT_POS.y + (PARAM_TEXT_POS_INTERVAL * cnt), 0.0f);
 		CreateSingleUI(&m_aSoundUIObj[cnt].penguin, soundUI::PENGUIN_TEX_PATH[cnt], pos, soundUI::PENGUIN_SCALE.x, soundUI::PENGUIN_SCALE.y);
 	}
+
+	// ボリュームレベル計算
+	VOLUME_LEVEL level = CulcVolumeLevel(m_fBGMVolume);
+	m_aSoundUIObj[PARAM_BGM].penguin->SetTex(
+		D3DXVECTOR2((float)level / VOLUME_LEVEL_MAX, 0.0f), D3DXVECTOR2((float)(level + 1) / VOLUME_LEVEL_MAX, 1.0f));
+	m_aSoundUIObj[PARAM_BGM].penguin->SetVtx();
+
+	level = CulcVolumeLevel(m_fSEVolume);
+	m_aSoundUIObj[PARAM_SE].penguin->SetTex(
+		D3DXVECTOR2((float)level / VOLUME_LEVEL_MAX, 0.0f), D3DXVECTOR2((float)(level + 1) / VOLUME_LEVEL_MAX, 1.0f));
+	m_aSoundUIObj[PARAM_SE].penguin->SetVtx();
 }
 
 //=====================================================
@@ -461,6 +479,14 @@ void COption::MoveBGM(void)
 		m_aSoundUIObj[PARAM_BGM].point->SetSize(scale.x, scale.y);
 		m_aSoundUIObj[PARAM_BGM].point->SetVtx();
 	}
+	if (m_aSoundUIObj[PARAM_BGM].penguin != nullptr)
+	{
+		// ボリュームレベル計算
+		VOLUME_LEVEL level = CulcVolumeLevel(m_fBGMVolume);
+		m_aSoundUIObj[PARAM_BGM].penguin->SetTex(
+			D3DXVECTOR2((float)level / VOLUME_LEVEL_MAX, 0.0f), D3DXVECTOR2((float)(level + 1) / VOLUME_LEVEL_MAX, 1.0f));
+		m_aSoundUIObj[PARAM_BGM].penguin->SetVtx();
+	}
 }
 
 //=====================================================
@@ -505,6 +531,14 @@ void COption::MoveSE(void)
 	{
 		m_aSoundUIObj[PARAM_SE].point->SetSize(scale.x, scale.y);
 		m_aSoundUIObj[PARAM_SE].point->SetVtx();
+	}
+	if (m_aSoundUIObj[PARAM_SE].penguin != nullptr)
+	{
+		// ボリュームレベル計算
+		VOLUME_LEVEL level = CulcVolumeLevel(m_fSEVolume);
+		m_aSoundUIObj[PARAM_SE].penguin->SetTex(
+			D3DXVECTOR2((float)level / VOLUME_LEVEL_MAX, 0.0f), D3DXVECTOR2((float)(level + 1) / VOLUME_LEVEL_MAX, 1.0f));
+		m_aSoundUIObj[PARAM_SE].penguin->SetVtx();
 	}
 }
 
@@ -661,6 +695,26 @@ float COption::ScaleChange(float* angle, float speed, float range)
 
 	// 結果返す
 	return sinf(*angle) * range + 1.0f;
+}
+
+//=====================================================
+// 数値をボリュームレベルに変換
+//=====================================================
+COption::VOLUME_LEVEL COption::CulcVolumeLevel(float volume)
+{
+	VOLUME_LEVEL level = LEVEL_MUTE;
+	for (int cnt = 0; cnt < VOLUME_LEVEL_MAX; cnt++)
+	{
+		if (volume >= soundUI::PENGUIN_TEX_CHANGE_LINE[cnt])
+		{// 一定ボリューム以上ならレベル変更
+			level = (VOLUME_LEVEL)cnt;
+		}
+		else
+		{// ボリュームレベル確定
+			break;
+		}
+	}
+	return level;
 }
 
 //=====================================================
