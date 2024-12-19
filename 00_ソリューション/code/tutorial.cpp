@@ -25,6 +25,7 @@
 #include "texture.h"
 #include "gauge.h"
 #include "flowIceFactory.h"
+#include "sound.h"
 
 //*****************************************************
 // 定数定義
@@ -316,6 +317,9 @@ HRESULT CTutorial::Init(void)
 
 	// 流氷ファクトリーの生成
 	CFlowIceFct::Create();
+
+	// BGM再生
+	Sound::Play(CSound::LABEL::LABEL_BGM_TUTORIAL);
 
 	return S_OK;
 }

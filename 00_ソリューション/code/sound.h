@@ -116,7 +116,7 @@ private:
 	SOUNDINFO m_aSoundInfo[LABEL_MAX] =
 	{
 		{ TYPE_BGM, "data/SOUND/BGM/BGM_Title.wav",-1 },			// タイトル画面BGM
-		{ TYPE_BGM, "data/SOUND/BGM/BGM_Result.wav",-1 },			// チュートリアル画面BGM（未）
+		{ TYPE_BGM, "data/SOUND/BGM/BGM_Tutorial.wav",-1 },			// チュートリアル画面BGM（未）
 		{ TYPE_BGM, "data/SOUND/BGM/BGM_Game00.wav",-1 },			// ゲーム画面BGM
 		{ TYPE_BGM, "data/SOUND/BGM/BGM_Result.wav",-1 },			// リザルト画面BGM
 		{ TYPE_BGM, "data/SOUND/BGM/BGM_Option.wav",-1 },			// オプション画面BGM
