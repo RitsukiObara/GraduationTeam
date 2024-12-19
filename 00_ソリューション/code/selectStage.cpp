@@ -87,9 +87,7 @@ void CSelectStage::UpdateCamera(void)
 	CCamera *pCamera = CManager::GetCamera();
 
 	if (pCamera == nullptr)
-	{
 		return;
-	}
 
 	pCamera->Update();
 }

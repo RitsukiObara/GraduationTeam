@@ -44,8 +44,7 @@ namespace
 	};
 	const D3DXVECTOR3 PARAM_TEXT_POS = D3DXVECTOR3(0.139f, 0.263f, 0.0f);	// BGMのテキストの位置
 	const float PARAM_TEXT_POS_INTERVAL = 0.25f;							// 他のテキストの間隔（Y値のみ）
-	const D3DXVECTOR2 PARAM_TEXT_SCALE = D3DXVECTOR2(0.086f, 0.075f);
-
+	const D3DXVECTOR2 PARAM_TEXT_SCALE = D3DXVECTOR2(0.086f, 0.075f);		// パラメータテキストのスケール
 
 	// BGM・SE
 	namespace soundUI
