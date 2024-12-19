@@ -20,13 +20,13 @@ class CPolygon3D : public CObject3D
 public:
 	enum MODE
 	{
-		MODE_NORMAL = 0,	// 通常モード
-		MODE_BILLBOARD,	// ビルボード
+		MODE_NORMAL = 0,		// 通常モード
+		MODE_BILLBOARD,			// ビルボード
 		MODE_STRETCHBILLBOARD,	// ストレッチビルボード
 		MODE_MAX
 	};
 
-	CPolygon3D(int nPriority = 4);	// コンストラクタ
+	CPolygon3D(int nPriority = 6);	// コンストラクタ
 	~CPolygon3D();	// デストラクタ
 
 	HRESULT Init(void);
