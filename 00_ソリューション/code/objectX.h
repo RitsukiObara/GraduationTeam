@@ -44,25 +44,28 @@ public:
 	D3DXVECTOR3 GetVtxMin(void) { return m_vtxMin; }	// 取得処理
 	void SetVtxMax(D3DXVECTOR3 vtx) { m_vtxMax = vtx; }
 	void SetVtxMin(D3DXVECTOR3 vtx) { m_vtxMin = vtx; }
-	void SetEmissiveCol(D3DXCOLOR col) { m_col = col; m_bChangeCol = true; }
-	D3DXCOLOR GetEmissiveCol(void) { return m_col; }
-	void ResetColor(void) { m_bChangeCol = false; }
 	void EnableShadow(bool bEnable) { m_bShadow = bEnable; }
 	bool IsDisp(void) { return m_bDisp; }
 	void EnableDisp(bool bDisp) { m_bDisp = bDisp; }
+	D3DXMATERIAL GetMaterial(int nIdx);					// マテリアル
+	void SetMaterial(D3DXMATERIAL mat, int nIdx);
+	D3DXCOLOR GetDeffuseeCol(int nIdx = 0);
+	void SetDeffuseCol(D3DXCOLOR col, int nIdx = 0);
+	void ResetMat(void);
 
 private:
-	D3DXVECTOR3 m_posOld;	// 前回の位置
-	D3DXVECTOR3 m_move;	// 移動量
-	D3DXCOLOR m_col;	// 色
-	CModel::Model *m_pModel;
-	int m_nIdxModel;	// モデルの番号
-	float m_fRadius;	// モデルの半径
-	D3DXVECTOR3 m_vtxMax;	// 最大頂点
-	D3DXVECTOR3 m_vtxMin;	// 最小頂点
-	bool m_bChangeCol;
-	bool m_bShadow;
-	bool m_bDisp;	// 描画するかどうか
+	D3DXVECTOR3 m_posOld;			// 前回の位置
+	D3DXVECTOR3 m_move;				// 移動量
+	D3DXCOLOR m_col;				// 色
+	CModel::Model *m_pModel;		// モデル情報
+	int m_nIdxModel;				// モデルの番号
+	float m_fRadius;				// モデルの半径
+	D3DXVECTOR3 m_vtxMax;			// 最大頂点
+	D3DXVECTOR3 m_vtxMin;			// 最小頂点
+	vector<D3DXMATERIAL> m_aMat;	// 変化用のマテリアル
+	bool m_bChangeMat;				// 色変更フラグ
+	bool m_bShadow;					// 影描画フラグ
+	bool m_bDisp;					// 描画フラグ
 };
 
 #endif

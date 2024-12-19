@@ -91,6 +91,8 @@ namespace
 		};
 		const float ICON_POS_INTERVAL = 0.278f;	// アイコンの間隔（振動テキスト始点）
 		const D3DXVECTOR2 ICON_SCALE = D3DXVECTOR2(0.071f, 0.125f);
+		const float POW_VIB = 0.6f;				// 振動の強さ
+		const int TIME_VIB = 20;				// 振動の長さ
 	}
 
 	// 戻るボタンUI
@@ -576,14 +578,20 @@ void COption::SettingVibration(void)
 
 	// 移動
 	if (pInputMgr->GetTrigger(CInputManager::BUTTON_AXIS_LEFT))
-	{// 上移動
+	{// 左移動
 		m_Vibration = (VIBRATIONSWITCH)(((int)m_Vibration - 1 + VIBRATIONSWITCH_MAX) % VIBRATIONSWITCH_MAX);
 		pJoypad->SetVibration((m_Vibration == VIBRATION_ON));
+
+		if (m_Vibration == VIBRATION_ON)
+			pJoypad->Vibration(0,bibeUI::POW_VIB, bibeUI::TIME_VIB);
 	}
 	else if (pInputMgr->GetTrigger(CInputManager::BUTTON_AXIS_RIGHT))
-	{// 下移動
+	{// 右移動
 		m_Vibration = (VIBRATIONSWITCH)(((int)m_Vibration + 1) % VIBRATIONSWITCH_MAX);
 		pJoypad->SetVibration((m_Vibration == VIBRATION_ON));
+
+		if (m_Vibration == VIBRATION_ON)
+			pJoypad->Vibration(0,bibeUI::POW_VIB, bibeUI::TIME_VIB);
 	}
 
 	// 色変更

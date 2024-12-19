@@ -20,24 +20,26 @@
 //*****************************************************
 namespace
 {
-	const int TIME_DIGIT = 1;	// それぞれの桁数
-	const int TIME_SECOND = 3;	// 秒数
-	const int STATE_COUNT_MAX = 60;	// ステートのカウント最大値
-	const float DIST_NUMBER = 0.03f;	// 数字間の距離
-	const D3DXVECTOR2 SIZE_NORMAL_NUM = { 0.05f, 0.09f };	// 通常数字のサイズ
-	const float SIZE_NUM = 0.2f;	// Go数字のサイズ
-	const D3DXVECTOR3 POS_INITIAL = { 0.6f,0.5f,0.0f };	// 初期位置
-	const D3DXVECTOR3 POS_GO = { 0.5f,0.5f,0.0f };	// 初期位置
-	const string PATH_TEX_OK = "data\\TEXTURE\\UI\\start.png";	// コロンのテクスチャパス
-	const D3DXCOLOR NORMAL_COL = { 1.0f,1.0f,1.0f,1.0f };		//基準色
-	const int FRAME_CNT = 60;		// フレーム秒数
-	const int SECOND_ELAPSED = 1;		// 秒数経過
-	const float SIZE_WIDTH = 0.5f;		// サイズの幅
-	const float SIZE_HEIGHT = 0.9f;		// サイズの幅
-	const float SIZE_READY_INIT = 0.9f;		// READYの初期サイズ
-	const float SIZE_READY_MOVE = -0.04f;		// READYの初期サイズ
-	const float SIZE_READY_LIMIT = 0.3f;		// READYのサイズ制限
-	const D3DXCOLOR READY_COLOR = { 1.0f, 0.8f, 0.0f, 1.0f };		// READYの色
+const int TIME_DIGIT = 1;	// それぞれの桁数
+const int TIME_SECOND = 3;	// 秒数
+const int STATE_COUNT_MAX = 60;	// ステートのカウント最大値
+const float DIST_NUMBER = 0.03f;	// 数字間の距離
+const D3DXVECTOR2 SIZE_NORMAL_NUM = { 0.05f, 0.09f };	// 通常数字のサイズ
+const float SIZE_NUM = 0.2f;	// Go数字のサイズ
+const D3DXVECTOR3 POS_INITIAL = { 0.6f,0.5f,0.0f };	// 初期位置
+const D3DXVECTOR3 POS_GO = { 0.5f,0.5f,0.0f };	// 初期位置
+const string PATH_TEX_OK = "data\\TEXTURE\\UI\\start.png";	// コロンのテクスチャパス
+const D3DXCOLOR NORMAL_COL = { 1.0f,1.0f,1.0f,1.0f };		//基準色
+const int FRAME_CNT = 60;		// フレーム秒数
+const int SECOND_ELAPSED = 1;		// 秒数経過
+const float SIZE_WIDTH = 0.5f;		// サイズの幅
+const float SIZE_HEIGHT = 0.9f;		// サイズの幅
+const float SIZE_READY_INIT = 0.9f;		// READYの初期サイズ
+const float SIZE_READY_MOVE = -0.04f;		// READYの初期サイズ
+const float SIZE_READY_LIMIT = 0.3f;		// READYのサイズ制限
+const D3DXCOLOR READY_COLOR = { 1.0f, 0.8f, 0.0f, 1.0f };		// READYの色
+const float RATE_HEIGHT_NUMBER = 1.4f;							// 数字の高さの割合
+const float RATE_WIDTH_GO = 1.4f;								// GO表記の幅の割合
 }
 
 //=====================================================
@@ -160,7 +162,7 @@ void CUIready::Update(void)
 
 		for (int i = 0; i < E_Number::NUMBER_MAX; i++)
 		{
-			m_aNumber[i]->SetSizeAll(m_fsize, m_fsize);
+			m_aNumber[i]->SetSizeAll(m_fsize, m_fsize * RATE_HEIGHT_NUMBER);
 		}
 
 		// サイズ移動量
@@ -224,7 +226,7 @@ void CUIready::Update(void)
 		m_Go->SetCol(READY_COLOR);
 
 		// サイズ指定
-		m_Go->SetSize(m_fsize, m_fsize);
+		m_Go->SetSize(m_fsize * RATE_WIDTH_GO, m_fsize);
 
 		m_Go->SetVtx();
 
