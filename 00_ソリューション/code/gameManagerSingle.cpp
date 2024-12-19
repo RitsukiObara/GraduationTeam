@@ -33,7 +33,6 @@ namespace
 const string PATH_ENEMY_DEFAULT = "data\\TEXT\\enemy00.txt";		// 敵配置情報のテキスト
 const char* PATH_SAMPLE_ICESTAGE = "data\\TEXT\\ice_stage_00.txt";	// サンプルの初期配置
 const int SIZE_GRID = 10;											// ステージのサイズ
-
 }
 
 //=====================================================

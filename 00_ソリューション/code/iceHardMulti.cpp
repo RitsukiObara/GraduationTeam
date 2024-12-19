@@ -19,6 +19,7 @@
 #include "seals.h"
 #include "particle.h"
 #include "game.h"
+#include "sound.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -282,6 +283,9 @@ void CIceHardMulti::StartJump(void)
 		pPlayer->StartBlow(pIce);
 
 		pPlayer->VibJoypad(POW_VIB_BLOW, TIME_VIB_BLOW);
+
+		// SE‚ÌÄ¶
+		Sound::Play(CSound::LABEL_SE_BLOW_ICE);
 	}
 
 	// ‰Šú’l‚ðŒ»ÝˆÊ’u‚ÉÝ’è

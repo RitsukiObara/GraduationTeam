@@ -14,6 +14,7 @@
 #include "debugproc.h"
 #include "ice.h"
 #include "MyEffekseer.h"
+#include "player.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -33,6 +34,8 @@ const float RADIUS_COLLISION = 200.0f;	// ‹…‚Ì”»’è‚Ì”¼Œa
 const float FACT_ROT = 0.2f;	// ‰ñ“]ŒW”
 
 const int RIPPLE_CNT = 15;		// ”g–äoŒ»•b”
+
+const float LINE_MOVE = 0.9f;	// ˆÚ“®‚µ‚Ä‚é”»’f‚Ì‚µ‚«‚¢’l
 }
 
 //=====================================================
@@ -142,19 +145,23 @@ void CSelectStagePenguin::Update(void)
 
 		// ƒuƒƒbƒN”»’è
 		m_pClsnSphere->PushCollision(&pos, CCollision::TAG::TAG_BLOCK);
-
+		
 		pos.y = POS_INIT.y;
 
 		// ƒLƒƒƒ‰‚ÌˆÊ’u”½‰f
 		SetPosition(pos);
 	}
 
-	// –Ú•W‚ÌŒü‚«‚É•â³‚·‚é
-	float fRotDest = atan2f(-m_move.x, -m_move.z);
-
 	D3DXVECTOR3 rot = GetRotation();
-	universal::FactingRot(&rot.y, fRotDest, FACT_ROT);
-	SetRotation(rot);
+	float fSpeed = D3DXVec3Length(&m_move);
+	if (fSpeed > LINE_MOVE)
+	{
+		// –Ú•W‚ÌŒü‚«‚É•â³‚·‚é
+		float fRotDest = atan2f(-m_move.x, -m_move.z);
+
+		universal::FactingRot(&rot.y, fRotDest, FACT_ROT);
+		SetRotation(rot);
+	}
 
 	if (m_pIce != nullptr)
 	{// •X‚Ì’Ç]
@@ -178,8 +185,6 @@ void CSelectStagePenguin::Update(void)
 
 		m_nRippleCnt = 0;
 	}
-
-	
 
 #ifdef _DEBUG
 	Debug();
