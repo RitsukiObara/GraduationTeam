@@ -122,12 +122,12 @@ const float ALPHA_DIFF = ALPHA_DEST - ALPHA_INIT;	// 差分アルファ値
 namespace frame
 {
 const string PATH_TEX = "data\\TEXTURE\\UI\\result_ranking.png";	// テクスチャパス
-const D3DXCOLOR DEST_COL = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);			// 目標色
-const D3DXCOLOR INIT_COL = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f);			// 初期色
-const D3DXCOLOR DIFF_COL = DEST_COL - INIT_COL;							// 差分色
-const D3DXVECTOR3 INIT_POS = D3DXVECTOR3(0.5f, 0.76f, 0.0f);				// 初期位置
-const float WIDTH = 0.3f;	// 幅
-const float HEIGHT = 0.24f;	// 高さ
+const D3DXCOLOR DEST_COL = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);		// 目標色
+const D3DXCOLOR INIT_COL = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f);		// 初期色
+const D3DXCOLOR DIFF_COL = DEST_COL - INIT_COL;						// 差分色
+const D3DXVECTOR3 INIT_POS = D3DXVECTOR3(0.5f, 0.76f, 0.0f);		// 初期位置
+const float WIDTH = 0.3f;											// 幅
+const float HEIGHT = 0.24f;											// 高さ
 }
 }
 

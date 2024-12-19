@@ -50,12 +50,12 @@ CNumber3D::~CNumber3D()
 }
 
 //=====================================================
-//	初期化処理
+// 初期化処理
 //=====================================================
 HRESULT CNumber3D::Init(void)
 {
 	// テクスチャ番号取得
-	m_nIdxTexture = CTexture::GetInstance()->Regist("data\\TEXTURE\\UI\\number00.png");
+	m_nIdxTexture = CTexture::GetInstance()->Regist("data\\TEXTURE\\UI\\Number02.png");
 
 	for (int nCount = 0; nCount < m_nNumPlace; nCount++)
 	{

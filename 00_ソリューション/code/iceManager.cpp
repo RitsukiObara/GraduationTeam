@@ -1326,8 +1326,6 @@ void CIceManager::Debug(void)
 
 	universal::ConvertScreenPosTo3D(&posNear, &posFar, &vecDiff);
 
-	std::map<CObject3D*, int> mapIcon;
-
 	for (int i = 0; i < m_nNumGridVirtical; i++)
 	{
 		for (int j = 0; j < m_nNumGridHorizontal; j++)
