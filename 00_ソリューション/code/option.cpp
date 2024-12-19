@@ -549,7 +549,7 @@ void COption::SettingVibration(void)
 		pJoypad->SetVibration((m_Vibration == VIBRATION_ON));
 
 		if (m_Vibration == VIBRATION_ON)
-			pJoypad->Vibration(bibeUI::POW_VIB, bibeUI::TIME_VIB);
+			pJoypad->Vibration(0,bibeUI::POW_VIB, bibeUI::TIME_VIB);
 	}
 	else if (pInputMgr->GetTrigger(CInputManager::BUTTON_AXIS_RIGHT))
 	{// ‰EˆÚ“®
@@ -557,7 +557,7 @@ void COption::SettingVibration(void)
 		pJoypad->SetVibration((m_Vibration == VIBRATION_ON));
 
 		if (m_Vibration == VIBRATION_ON)
-			pJoypad->Vibration(bibeUI::POW_VIB, bibeUI::TIME_VIB);
+			pJoypad->Vibration(0,bibeUI::POW_VIB, bibeUI::TIME_VIB);
 	}
 
 	// F•ÏX
