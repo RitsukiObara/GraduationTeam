@@ -518,7 +518,7 @@ bool CIceManager::PeckIce(int nIdxV, int nIdxH)
 	GetIceIndex(pIcePeck, &nNumBreakV, &nNumBreakH);
 
 	// 突っつける氷かのチェック
-	if (!CanPeck(pIcePeck, nNumBreakV, nNumBreakH))
+	if (CanPeck(pIcePeck, nNumBreakV, nNumBreakH) != PECK_OK)
 		return false;
 
 	// 氷を突っついた判定にする
