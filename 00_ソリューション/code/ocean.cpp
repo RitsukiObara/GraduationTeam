@@ -313,15 +313,20 @@ void COcean::BgIceSetPosUp(void)
 {
 	float posX = (float)universal::RandRange(MAX_RANGE_LEFT, MAX_RANGE_RIGHT);
 	int type = universal::RandRange(bgice::BGICE_MODEL, 0);
+	CScene::MODE mode = CManager::GetMode();
 
-	m_nBgiceCnt++;
-
-	if (m_nBgiceCnt >= BGICE_CREATE_CNT)
+	// ÉQÅ[ÉÄÉÇÅ[ÉhéûÇ…îwåiïXèoÇ∑
+	if (mode == CScene::MODE_GAME)
 	{
-		// îwåiïXÇÃÉçÅ[Éh
-		CBgIce::Create(D3DXVECTOR3(posX, 0.0f, Z_UP), D3DXVECTOR3(0.0f, 0.0f, 0.0f), type);
+		m_nBgiceCnt++;
 
-		m_nBgiceCnt = 0;
+		if (m_nBgiceCnt >= BGICE_CREATE_CNT)
+		{
+			// îwåiïXÇÃÉçÅ[Éh
+			CBgIce::Create(D3DXVECTOR3(posX, 0.0f, Z_UP), D3DXVECTOR3(0.0f, 0.0f, 0.0f), type);
+
+			m_nBgiceCnt = 0;
+		}
 	}
 }
 
