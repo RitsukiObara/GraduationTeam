@@ -295,7 +295,7 @@ void CTimer::TransformNumber()
 			float fPosXLast = m_aNumber[i - 1]->GetPosition().x + aDigit[i - 1] * aSize[i - 1].x;
 			D3DXVECTOR3 posColon = { (pos.x + fPosXLast) / 2, pos.y, 0.0f };
 			m_aColon[nIdxColon]->SetPosition(posColon);	// 位置
-			m_aColon[nIdxColon]->SetSize(aSize[i].x, aSize[i].y);	// サイズ
+			m_aColon[nIdxColon]->SetSize(aSize[i].x * 0.7f, aSize[i].y);	// サイズ
 			m_aColon[nIdxColon]->SetVtx();
 		}
 	}
