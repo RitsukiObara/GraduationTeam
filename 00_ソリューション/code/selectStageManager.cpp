@@ -449,6 +449,9 @@ void CSelectStageManager::Select(void)
 {
 	CSound* pSound = CSound::GetInstance();
 
+	//=======================================
+	// 各オブジェクトが常に行う処理
+	//=======================================
 	for (int i = 0; i < (int)s_aInfoStage.size(); i++)
 	{
 		S_InfoStage *pInfoStage = s_aInfoStage[i];
@@ -467,6 +470,15 @@ void CSelectStageManager::Select(void)
 
 		// 判定の追従
 		pInfoStage->pCollision->SetPosition(pInfoStage->pModel->GetPosition());
+	}
+
+	//=======================================
+	// オブジェクトを選ぶ処理
+	//=======================================
+	bool bEnterOnce = false;
+	for (int i = 0; i < (int)s_aInfoStage.size(); i++)
+	{
+		S_InfoStage *pInfoStage = s_aInfoStage[i];
 
 		// 判定の一時拡大
 		pInfoStage->pCollision->SetRadius(RATE_SELECT_COLLISION * RADIUS_COLLISION_PUSHOUT_STAGE);
@@ -477,7 +489,7 @@ void CSelectStageManager::Select(void)
 		// 判定の大きさを戻す
 		pInfoStage->pCollision->SetRadius(RADIUS_COLLISION_PUSHOUT_STAGE);
 
-		if (bEnter)
+		if (bEnter && !bEnterOnce)
 		{
 			pInfoStage->state = E_StateStage::STATE_SELECT;
 
@@ -496,10 +508,10 @@ void CSelectStageManager::Select(void)
 					m_nIdxSelect = i;
 
 					StartEnter();
-
-					return;
 				}
 			}
+
+			bEnterOnce = true;
 		}
 		else
 			pInfoStage->state = E_StateStage::STATE_NORMAL;
