@@ -47,7 +47,7 @@ namespace
 CDestroyScore::CDestroyScore()
 {
 	m_nScore = 0;
-	m_state = CUI_Combo::STATE_BESIDE;
+	m_state = CUI_Combo::STATE_WAIT;
 	m_ShiftPos = POS_INITIAL;
 }
 
@@ -88,7 +88,7 @@ HRESULT CDestroyScore::Init(void)
 {
 	m_nScore = SCORE_MIN;	// スコアの初期化
 	m_fScaleNumber = SCORE_SCALE;	// 初期スケール設定
-	m_state = CUI_Combo::STATE_BESIDE;	// 状態の初期化
+	m_state = CUI_Combo::STATE_WAIT;	// 状態の初期化
 	m_ShiftPos = D3DXVECTOR3(0.0f, 0.0f, SCORE_POS_Z);
 
 	// 初期位置の設定
@@ -144,7 +144,6 @@ void CDestroyScore::UpdateNumber()
 #ifdef _DEBUG
 #if 1
 	CDebugProc::GetInstance()->Print("\n現在のスコア：[%d]", m_nScore);
-	//CDebugProc::GetInstance()->Print("\nスコアの位置：[%f,%f,%f]", pos.x, pos.y, pos.z);
 #endif
 #endif
 }
