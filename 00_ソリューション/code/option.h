@@ -37,6 +37,14 @@ public:
 		VIBRATION_OFF,
 		VIBRATIONSWITCH_MAX
 	};
+	enum VOLUME_LEVEL
+	{
+		LEVEL_MUTE = 0,	// 無音
+		LEVEL_LOW,		// 最低限
+		LEVEL_MIDDLE,	// 普通
+		LEVEL_HIGH,		// 大きめ
+		VOLUME_LEVEL_MAX
+	};
 
 	// サウンド系オブジェクト構造体
 	struct SoundUIObject
@@ -81,6 +89,7 @@ private:
 	void BackSelect(void);			// 選択状態に戻る
 	void CreateSingleUI(CUI** ppUI, string path, D3DXVECTOR3 pos, float width, float height);
 	float ScaleChange(float* angle,float speed, float range);	// サイズ変更
+	VOLUME_LEVEL CulcVolumeLevel(float volume);	// 数値をボリュームレベル列挙に変換
 
 	// メンバ変数
 	// オブジェクト系

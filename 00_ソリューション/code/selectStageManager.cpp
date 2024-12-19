@@ -480,6 +480,9 @@ void CSelectStageManager::Select(void)
 	{
 		S_InfoStage *pInfoStage = s_aInfoStage[i];
 
+		if (pInfoStage->pCollision == nullptr)
+			continue;
+
 		// ”»’è‚ÌˆêŽžŠg‘å
 		pInfoStage->pCollision->SetRadius(RATE_SELECT_COLLISION * RADIUS_COLLISION_PUSHOUT_STAGE);
 
