@@ -189,14 +189,14 @@ void COceanFlowUI::OceanRotState(void)
 void COceanFlowUI::OceanLevelState(void)
 {
 	float OceanFlowLevel = CIceManager::GetInstance()->GetOceanLevel();	//	ŠC—¬ƒŒƒxƒ‹‚ÌŽæ“¾
-	D3DXCOLOR fEmissiveCol = m_pArrow->GetEmissiveCol();	//	ŠC—¬UI‚ÌFŽæ“¾
+	D3DXCOLOR fEmissiveCol = m_pArrow->GetDeffuseeCol(0);	//	ŠC—¬UI‚ÌFŽæ“¾
 
 	float Colorrate = OceanFlowLevel / MAX_OCEANLEVEL;	// ŠC—¬Å‘åƒŒƒxƒ‹‚Æ‚ÌŠ„‡
 
 	// –Ú•W‚ÌF‚É‘JˆÚ
 	fEmissiveCol = D3DXCOLOR(0.8f + (0.2f * Colorrate), 0.8f - (0.6f * Colorrate), 0.2f, 1.0f);
 
-	m_pArrow->SetEmissiveCol(fEmissiveCol);
+	m_pArrow->SetDeffuseCol(fEmissiveCol,0);
 }
 
 //====================================================

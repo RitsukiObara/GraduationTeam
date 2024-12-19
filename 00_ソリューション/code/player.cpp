@@ -67,8 +67,8 @@ const float GRAVITY = 0.98f;	// 重力
 
 const float HEIGHT_BLOW = 250.0f;	// 吹き飛ばしの高さ
 
-const float HEIGHT_UI = 0.1f;	// UIの高さ
-const D3DXVECTOR2 SIZE_UI = { 0.03f,0.06f };								// UIのサイズ
+const float HEIGHT_UI = 0.1f;											// UIの高さ
+const D3DXVECTOR2 SIZE_UI = { 0.03f,0.06f };							// UIのサイズ
 const string PATH_PLAYERNUM = "data\\TEXTURE\\UI\\player_Count.png";	// プレイヤー番号テクスチャパス
 
 //-------------------------------

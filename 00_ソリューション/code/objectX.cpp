@@ -30,7 +30,7 @@ CObjectX::CObjectX(int nPriority) : CObject3D(nPriority)
 	m_col = { 0.0f,0.0f,0.0f,0.0f };
 	m_nIdxModel = -1;
 	m_fRadius = 0.0f;
-	m_bChangeCol = false;
+	m_bChangeMat = false;
 	m_bShadow = false;
 	m_pModel = nullptr;
 	m_bDisp = true;
@@ -142,11 +142,8 @@ void CObjectX::Draw(void)
 			// マテリアルの保存
 			matDef = pMat[nCntMat].MatD3D;
 
-			if (m_bChangeCol)
-			{
-				// 色の設定
-				pMat[nCntMat].MatD3D.Diffuse = m_col;
-			}
+			// マテリアルの設定
+			pMat[nCntMat] = m_aMat[nCntMat];
 
 			// マテリアル設定
 			pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
@@ -262,11 +259,8 @@ void CObjectX::JustDraw(void)
 			// マテリアルの保存
 			matDef = pMat[nCntMat].MatD3D;
 
-			if (m_bChangeCol)
-			{
-				// 色の設定
-				pMat[nCntMat].MatD3D.Diffuse = m_col;
-			}
+			// マテリアルの設定
+			pMat[nCntMat] = m_aMat[nCntMat];
 
 			// マテリアル設定
 			pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
@@ -301,7 +295,55 @@ void CObjectX::CalcMatrix(void)
 }
 
 //=====================================================
-//生成処理
+// マテリアル取得
+//=====================================================
+D3DXMATERIAL CObjectX::GetMaterial(int nIdx)
+{
+	assert(!m_aMat.empty());
+	assert(nIdx >= 0);
+	assert(nIdx < (int)m_aMat.size());
+
+	return m_aMat[nIdx];
+}
+
+//=====================================================
+// マテリアル設定
+//=====================================================
+void CObjectX::SetMaterial(D3DXMATERIAL mat, int nIdx)
+{
+	assert(!m_aMat.empty());
+	assert(nIdx >= 0);
+	assert(nIdx < (int)m_aMat.size());
+
+	m_aMat[nIdx] = mat;
+}
+
+//=====================================================
+// 拡散光取得
+//=====================================================
+D3DXCOLOR CObjectX::GetDeffuseeCol(int nIdx)
+{
+	assert(!m_aMat.empty());
+	assert(nIdx >= 0);
+	assert(nIdx < (int)m_aMat.size());
+
+	return m_aMat[nIdx].MatD3D.Diffuse;
+}
+
+//=====================================================
+// 拡散光設定
+//=====================================================
+void CObjectX::SetDeffuseCol(D3DXCOLOR col, int nIdx)
+{
+	assert(!m_aMat.empty());
+	assert(nIdx >= 0);
+	assert(nIdx < (int)m_aMat.size());
+
+	m_aMat[nIdx].MatD3D.Diffuse = col;
+}
+
+//=====================================================
+// 生成処理
 //=====================================================
 CObjectX *CObjectX::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nPriority)
 {
@@ -408,4 +450,26 @@ void CObjectX::BindModel(int nIdx)
 
 	// 半径設定
 	SetRadius();
+
+	// マテリアルリセット
+	ResetMat();
+}
+
+//=====================================================
+// マテリアルリセット
+//=====================================================
+void CObjectX::ResetMat(void)
+{
+	m_aMat.clear();
+
+	// マテリアルデータへのポインタを取得
+	D3DXMATERIAL *pMat = (D3DXMATERIAL*)m_pModel->pBuffMat->GetBufferPointer();
+
+	for (int nCntMat = 0; nCntMat < (int)m_pModel->dwNumMat; nCntMat++)
+	{
+		// マテリアルの保存
+		D3DXMATERIAL mat = pMat[nCntMat];
+
+		m_aMat.push_back(mat);
+	}
 }
