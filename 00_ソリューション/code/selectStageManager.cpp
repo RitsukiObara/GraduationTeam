@@ -58,7 +58,7 @@ const D3DXVECTOR3 INIT_POS_PLAYER = D3DXVECTOR3(0.0f, 0.0, -1300.0);	// プレイヤ
 
 const float HEIGHT_NUMBER = 0.14f;				// 名前の高さ
 const float ADULTWALL_LENGTH = 3850.0f;			// 大人の壁
-const D3DXVECTOR2 SIZE_NAME = { 0.25f, 0.06f };	// 名前のサイズ
+const D3DXVECTOR2 SIZE_NAME = { 0.25f, 0.09f };	// 名前のサイズ
 
 const float DEPTH_PENGUIN = -500.0f;				// ペンギンの奥行き
 
