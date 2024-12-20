@@ -847,7 +847,9 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 	int nIdxH = -1;
 	D3DXVECTOR3 posIce = pIce->GetPosition();
 
-	GetIdxGridFromPosition(posIce, &nIdxV, &nIdxH);
+	//GetNearestIce(posIce,&nIdxV,&nIdxH);
+
+	GetIdxGridFromPosition(posIce, &nIdxV, &nIdxH,0.6f);
 
 	if (nIdxV == -1 && nIdxH == -1)
 	{

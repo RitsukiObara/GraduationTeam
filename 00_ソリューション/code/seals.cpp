@@ -68,9 +68,7 @@ CSeals* CSeals::Create(void)
 	pSeals = new CSeals;
 
 	if (pSeals != nullptr)
-	{
 		pSeals->Init();
-	}
 
 	return pSeals;
 }

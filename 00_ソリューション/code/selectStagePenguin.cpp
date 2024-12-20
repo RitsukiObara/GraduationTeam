@@ -225,6 +225,17 @@ void CSelectStagePenguin::Debug(void)
 }
 
 //=====================================================
+// ˆÊ’uİ’è
+//=====================================================
+void CSelectStagePenguin::SetPosition(D3DXVECTOR3 pos)
+{
+	CMotion::SetPosition(pos);
+
+	if (m_pClsnSphere != nullptr)
+		m_pClsnSphere->SetPosition(pos);
+}
+
+//=====================================================
 // •`‰æˆ—
 //=====================================================
 void CSelectStagePenguin::Draw(void)
