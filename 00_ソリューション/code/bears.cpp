@@ -52,7 +52,7 @@ namespace charge
 {
 const float RATE_START = 0.7f;		// 突進を開始するのに氷に近づいてる割合
 const float RATE_RANGE = D3DX_PI / CIceManager::E_Direction::DIRECTION_MAX;	// 突撃の角度範囲
-const float SPEED_ONESTEP = 1.4f;	// 一歩の速度
+const float SPEED_ONESTEP = 0.9f;	// 一歩の速度
 }
 }
 
