@@ -9,7 +9,7 @@
 
 SETSTAGE	#0 第1ステージ　最初のステージ、やさしい　はじまりの島
 	MODEL = data\\MODEL\\object\\Stage_Obj000.x
-	POS = -1500.0 0.0 -2800.0
+	POS = -1800.0 100.0 -2600.0
 	PATHMAP = data\\TEXT\\ice_stage_00.txt
 	PATHENEMY = data\\TEXT\\enemy00.txt
 	PATHNAME = data\\TEXTURE\\UI\\stagename00.png
@@ -18,7 +18,7 @@ END_SETSTAGE
 
 SETSTAGE	#1 第2ステージ　二個つっつきで流す　ドーナツ海流
 	MODEL = data\\MODEL\\object\\Stage_Obj001.x
-	POS = 1500.0 0.0 -2800.0
+	POS = 1800.0 100.0 -2600.0
 	PATHMAP = data\\TEXT\\ice_stage_01.txt
 	PATHENEMY = data\\TEXT\\enemy01.txt
 	PATHNAME = data\\TEXTURE\\UI\\stagename01.png
@@ -27,7 +27,7 @@ END_SETSTAGE
 
 SETSTAGE	#2 第3ステージ　しろくま単体　しろくまのねどこ
 	MODEL = data\\MODEL\\object\\Stage_Obj002.x
-	POS = -2000.0 0.0 -1300.0
+	POS = -2500.0 100.0 -1200.0
 	PATHMAP = data\\TEXT\\ice_stage_02.txt
 	PATHENEMY = data\\TEXT\\enemy02.txt
 	PATHNAME = data\\TEXTURE\\UI\\stagename02.png
@@ -36,7 +36,7 @@ END_SETSTAGE
 
 SETSTAGE	#3 第4ステージ　あざらし一体、しろくま一体　コンビのなわばり
 	MODEL = data\\MODEL\\object\\Stage_Obj003.x
-	POS = 2000.0 0.0 -1300.0
+	POS = 2500.0 200.0 -1200.0
 	PATHMAP = data\\TEXT\\ice_stage_03.txt
 	PATHENEMY = data\\TEXT\\enemy03.txt
 	PATHNAME = data\\TEXTURE\\UI\\stagename03.png
@@ -45,7 +45,7 @@ END_SETSTAGE
 
 SETSTAGE	#4 第5ステージ　あざらし二体、しろくま二体　ハンターの群れ
 	MODEL = data\\MODEL\\object\\Stage_Obj004.x
-	POS = 0.0 0.0 200.0
+	POS = 0.0 200.0 200.0
 	PATHMAP = data\\TEXT\\ice_stage_04.txt
 	PATHENEMY = data\\TEXT\\enemy04.txt
 	PATHNAME = data\\TEXTURE\\UI\\stagename04.png
@@ -54,7 +54,7 @@ END_SETSTAGE
 
 SETSTAGE	#5 第6ステージ　HEX ICE SUVIVAL
 	MODEL = data\\MODEL\\object\\Stage_Obj005.x
-	POS = 0.0 0.0 3800.0
+	POS = 0.0 100.0 3800.0
 	PATHMAP = data\\TEXT\\ice_stage_05.txt
 	PATHENEMY = data\\TEXT\\enemy05.txt
 	PATHNAME = data\\TEXTURE\\UI\\stagename05.png
