@@ -23,6 +23,7 @@ public:
 		LABEL_BGM_GAME01,				// ゲームBGM01
 		LABEL_BGM_RESULT,				// リザルトBGM
 		LABEL_BGM_OPTION,				// オプションBGM
+		LABEL_BGM_SELECTSTAGE,			// ステージ選択BGM
 
 		LABEL_SE_COUNTDOWN,				// カウントダウン
 		LABEL_SE_COUNTSTART,			// 開始時スタート
@@ -124,6 +125,7 @@ private:
 		{ TYPE_BGM, "data/SOUND/BGM/BGM_Game00.wav",-1 },			// ゲーム画面BGM
 		{ TYPE_BGM, "data/SOUND/BGM/BGM_Result.wav",-1 },			// リザルト画面BGM
 		{ TYPE_BGM, "data/SOUND/BGM/BGM_Option.wav",-1 },			// オプション画面BGM
+		{ TYPE_BGM, "data/SOUND/BGM/BGM_StageSelect.wav",-1 },		// ステージ選択BGM
 
 		{ TYPE_SE, "data/SOUND/SE/SE_Count.wav",0 },				// カウントダウン
 		{ TYPE_SE, "data/SOUND/SE/SE_Start.wav",0 },				// 開始時スタート
