@@ -38,6 +38,7 @@ public:
 	// 変数取得・設定関数
 	void EnableInput(bool bValue) { m_bInput = bValue; }	// 入力可能フラグ
 	bool IsInput(void) { return m_bInput; }
+	void SetPosition(D3DXVECTOR3 pos);	// 位置設定
 
 	// 静的メンバ関数
 	static CSelectStagePenguin *Create(void);	// 生成処理
