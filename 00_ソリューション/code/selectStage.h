@@ -30,6 +30,8 @@ public:
 	void Update(void) override;
 	void Draw(void) override;
 
+	static void Load(const char* pPath);
+
 private:
 	// ƒƒ“ƒoŠÖ”
 	void UpdateCamera(void);
