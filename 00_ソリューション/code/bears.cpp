@@ -594,12 +594,12 @@ bool CBears::JudgeEndCharge(void)
 	//--------------------------
 	// “Ëi”»’è
 	//--------------------------
-	D3DXVECTOR3 posDest = pIceNext->GetPosition();
+	D3DXVECTOR3 posDest = pIceDest->GetPosition();
 
-	int nIdxV = GetGridV();
-	int nIdxH = GetGridH();
+	int nIdxDestV = GetGridVDest();
+	int nIdxDestH = GetGridHDest();
 
-	if (!CanCharge(posDest, nIdxV, nIdxH))
+	if (!CanCharge(posDest, nIdxDestV, nIdxDestH))
 	{// “ËŒ‚‚Å‚«‚È‚©‚Á‚½‚ç“ËiI—¹
 		return true;
 	}
