@@ -163,7 +163,7 @@ HRESULT CResultMulti::Init(void)
 	// BGM‚ÌÄ¶
 	CSound* pSound = CSound::GetInstance();
 	assert(pSound != nullptr);
-	pSound->Play(pSound->LABEL_BGM_TITLE);
+	pSound->Play(pSound->LABEL_BGM_RESULT);
 
 	// ‘ÎíŒ‹‰Êæ“¾
 	int playerNum = Penguin::MAX_PLAYER;
