@@ -58,7 +58,6 @@ HRESULT CSelectStage::Init(void)
 	// BGMçƒê∂
 	Sound::Play(CSound::LABEL::LABEL_BGM_SELECTSTAGE);
 	
-
 	return S_OK;
 }
 
