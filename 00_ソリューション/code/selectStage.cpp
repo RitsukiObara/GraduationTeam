@@ -17,13 +17,15 @@
 #include "debugproc.h"
 #include "skybox.h"
 #include "selectStageManager.h"
+#include "ice.h"
 
 //*****************************************************
 // マクロ定義
 //*****************************************************
 namespace
 {
-
+	const char* BG_ICE = { "data\\TEXT\\selectstageIce.txt" };		// 氷配置テキスト
+	const float RADIUS_ICE = 400.0f;	// 氷の半径
 }
 
 //*****************************************************
@@ -48,6 +50,9 @@ HRESULT CSelectStage::Init(void)
 
 	// ステージ選択管理クラスの生成
 	CSelectStageManager::Create();
+
+	// 氷の読み込み
+	Load(BG_ICE);
 
 	return S_OK;
 }
@@ -112,4 +117,80 @@ void CSelectStage::Debug(void)
 void CSelectStage::Draw(void)
 {
 
+}
+
+//=====================================================
+// 読込処理
+//=====================================================
+void CSelectStage::Load(const char* pPath)
+{
+	//変数宣言
+	char cTemp[MAX_STRING];
+
+	D3DXVECTOR3 pos;
+	D3DXVECTOR3 rot;
+
+	//ファイルから読み込む
+	FILE* pFile = fopen(pPath, "r");
+
+	if (pFile != nullptr)
+	{//ファイルが開けた場合
+		while (true)
+		{
+			//文字読み込み
+			(void)fscanf(pFile, "%s", &cTemp[0]);
+
+			if (strcmp(cTemp, "SET") == 0)
+			{//キースタート
+				while (strcmp(cTemp, "END_SET") != 0)
+				{//終わりまでキー設定
+
+					(void)fscanf(pFile, "%s", &cTemp[0]);
+
+					if (strcmp(cTemp, "POS") == 0)
+					{//位置取得
+						(void)fscanf(pFile, "%s", &cTemp[0]);
+
+						for (int nCntPos = 0; nCntPos < 3; nCntPos++)
+						{
+							(void)fscanf(pFile, "%f", &pos[nCntPos]);
+						}
+					}
+
+					if (strcmp(cTemp, "ROT") == 0)
+					{//向き取得
+						(void)fscanf(pFile, "%s", &cTemp[0]);
+
+						for (int nCntRot = 0; nCntRot < 3; nCntRot++)
+						{
+							(void)fscanf(pFile, "%f", &rot[nCntRot]);
+						}
+					}
+				}
+
+				// 氷の生成
+				CIce* pIce = CIce::Create(CIce::TYPE_NORMAL, CIce::STATE_NORMAL);
+				if (pIce == nullptr)
+					return;
+
+				// 位置セット
+				pIce->SetPosition(pos);
+
+				// 向きセット
+				pIce->SetRotation(rot);
+
+				// サイズセット
+				pIce->SetTransform(RADIUS_ICE);
+			}
+
+			if (strcmp(cTemp, "END_SCRIPT") == 0)
+				break;
+		}//while
+	}//file
+	else
+	{
+		assert(("SelectStageIce読み込みに失敗", false));
+	}
+
+	fclose(pFile);
 }
