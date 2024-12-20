@@ -575,7 +575,7 @@ bool CBears::JudgeEndCharge(void)
 	// 次の氷の取得
 	int nIdxVNext = GetGridVNext();
 	int nIdxHNext = GetGridHNext();
-	CIce *pIceNext = pIceMgr->GetGridIce(&nIdxVNext,&nIdxHNext);
+	CIce *pIceNext = pIceMgr->GetGridIce(&nIdxVNext, &nIdxHNext);
 
 	if (pIceNext == nullptr)
 		return true;
@@ -594,28 +594,14 @@ bool CBears::JudgeEndCharge(void)
 	//--------------------------
 	// 突進判定
 	//--------------------------
-	// プレイヤーインスタンスの取得
-	vector<CPlayer*> apPlayer = CPlayer::GetInstance();
+	D3DXVECTOR3 posDest = pIceNext->GetPosition();
 
-	if (apPlayer.empty())
-		return false;	// 配列が空なら終了
+	int nIdxV = GetGridV();
+	int nIdxH = GetGridH();
 
-	CPlayer *pPlayer = nullptr;	// 発見したプレイヤー
-
-	for (auto it : apPlayer)
-	{
-		D3DXVECTOR3 posPlayer = it->GetPosition();
-
-		if (it->GetState() == CPlayer::E_State::STATE_DEATH)
-			continue;
-
-		int nIdxPlayerV = it->GetGridV();
-		int nIdxPlayerH = it->GetGridH();
-
-		if (!CanCharge(posPlayer, nIdxPlayerV, nIdxPlayerH))
-		{// 突撃できなかったら突進終了
-			return true;
-		}
+	if (!CanCharge(posDest, nIdxV, nIdxH))
+	{// 突撃できなかったら突進終了
+		return true;
 	}
 
 	// ここまで通るなら突撃を終了しない
