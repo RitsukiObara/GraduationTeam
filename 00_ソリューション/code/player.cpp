@@ -1229,7 +1229,7 @@ void CPlayer::EndJump(void)
 	// ジャンプモーションフラグを折る
 	m_fragMotion.bJump = false;
 
-	if (CGame::GetState() == CGame::E_State::STATE_NORMAL)
+	if (CGame::GetState() == CGame::E_State::STATE_NORMAL || CGame::GetInstance() == nullptr)
 		EnableInput(true);
 
 	CIceManager* pIceMgr = CIceManager::GetInstance();
@@ -1303,7 +1303,7 @@ void CPlayer::EndBlow(void)
 	if (m_pIceDestJump == nullptr)
 		return;
 
-	if(CGame::GetState() == CGame::E_State::STATE_NORMAL)
+	if(CGame::GetState() == CGame::E_State::STATE_NORMAL || CGame::GetInstance() == nullptr)
 		EnableInput(true);	// 入力を有効化
 
 	// 目標氷をリセット
