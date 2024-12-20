@@ -203,7 +203,7 @@ HRESULT COption::Init(void)
 	Camera::ChangeState(new CCameraStateOptionMode);
 
 	if(pSound != nullptr)
-		pSound->Play(CSound::LABEL_BGM_TITLE);
+		pSound->Play(CSound::LABEL_BGM_OPTION);
 
 	return S_OK;
 }

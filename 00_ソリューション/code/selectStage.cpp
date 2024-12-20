@@ -18,6 +18,7 @@
 #include "skybox.h"
 #include "selectStageManager.h"
 #include "ice.h"
+#include "sound.h"
 
 //*****************************************************
 // É}ÉNÉçíËã`
@@ -53,6 +54,10 @@ HRESULT CSelectStage::Init(void)
 
 	// ïXÇÃì«Ç›çûÇ›
 	Load(BG_ICE);
+
+	// BGMçƒê∂
+	Sound::Play(CSound::LABEL::LABEL_BGM_SELECTSTAGE);
+	
 
 	return S_OK;
 }
