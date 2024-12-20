@@ -336,13 +336,16 @@ void COption::ModeSelectBack(void)
 	CFade* pFade = CFade::GetInstance();
 
 	CInputManager* pInput = CInputManager::GetInstance();
-
-	if (pInput == nullptr)
+	CSound* pSound = CSound::GetInstance();
+	if (pInput == nullptr || pSound == nullptr)
 		return;
 
 	if (pInput->GetTrigger(CInputManager::BUTTON_BACK))	// BACK押したとき
 	{
 		pFade->SetFade(CScene::MODE::MODE_SELECTMODE);
+
+		// サウンドの再生
+		pSound->Play(CSound::LABEL_SE_DECISION);
 	}
 }
 
@@ -352,17 +355,24 @@ void COption::ModeSelectBack(void)
 void COption::Select(void)
 {
 	CInputManager* pInputMgr = CInputManager::GetInstance();
-	if (pInputMgr == nullptr)
+	CSound* pSound = CSound::GetInstance();
+	if (pInputMgr == nullptr || pSound == nullptr)
 		return;
 
 	// 移動
 	if (pInputMgr->GetTrigger(CInputManager::BUTTON_AXIS_UP))
 	{// 上移動
 		m_optionParam = (OPTIONPARAM)(((int)m_optionParam - 1 + PARAM_MAX) % PARAM_MAX);
+
+		// サウンドの再生
+		pSound->Play(CSound::LABEL_SE_SELECT);
 	}
 	else if (pInputMgr->GetTrigger(CInputManager::BUTTON_AXIS_DOWN))
 	{// 下移動
 		m_optionParam = (OPTIONPARAM)(((int)m_optionParam + 1) % PARAM_MAX);
+
+		// サウンドの再生
+		pSound->Play(CSound::LABEL_SE_SELECT);
 	}
 
 	// 決定
@@ -381,6 +391,9 @@ void COption::Select(void)
 		{
 			m_pBackButtonUI->SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 		}
+
+		// サウンドの再生
+		pSound->Play(CSound::LABEL_SE_DECISION);
 	}
 }
 
@@ -452,12 +465,18 @@ void COption::SettingBGM(void)
 		SettingSound(m_aSoundUIObj[PARAM_BGM].point, &m_fBGMVolume, m_fBGMVolume - 0.1f);
 		pSound->SetVolume(CSound::SOUNDTYPE::TYPE_BGM, m_fBGMVolume);
 		pSound->SetVolume(CSound::LABEL_BGM_TITLE, 1.0f);
+
+		// サウンドの再生
+		pSound->Play(CSound::LABEL_SE_SELECT);
 	}
 	else if (pInputMgr->GetTrigger(CInputManager::BUTTON_AXIS_RIGHT))
 	{// 右移動
 		SettingSound(m_aSoundUIObj[PARAM_BGM].point, &m_fBGMVolume, m_fBGMVolume + 0.1f);
 		pSound->SetVolume(CSound::SOUNDTYPE::TYPE_BGM, m_fBGMVolume);
 		pSound->SetVolume(CSound::LABEL_BGM_TITLE, 1.0f);
+
+		// サウンドの再生
+		pSound->Play(CSound::LABEL_SE_SELECT);
 	}
 }
 
@@ -572,7 +591,8 @@ void COption::SettingVibration(void)
 {
 	CInputManager* pInputMgr = CInputManager::GetInstance();
 	CInputJoypad* pJoypad = CInputJoypad::GetInstance();
-	if (pInputMgr == nullptr || pJoypad == nullptr)
+	CSound* pSound = CSound::GetInstance();
+	if (pInputMgr == nullptr || pJoypad == nullptr || pSound == nullptr)
 		return;
 
 	// 移動
@@ -583,6 +603,9 @@ void COption::SettingVibration(void)
 
 		if (m_Vibration == VIBRATION_ON)
 			pJoypad->Vibration(0,bibeUI::POW_VIB, bibeUI::TIME_VIB);
+
+		// サウンドの再生
+		pSound->Play(CSound::LABEL_SE_SELECT);
 	}
 	else if (pInputMgr->GetTrigger(CInputManager::BUTTON_AXIS_RIGHT))
 	{// 右移動
@@ -591,6 +614,9 @@ void COption::SettingVibration(void)
 
 		if (m_Vibration == VIBRATION_ON)
 			pJoypad->Vibration(0,bibeUI::POW_VIB, bibeUI::TIME_VIB);
+
+		// サウンドの再生
+		pSound->Play(CSound::LABEL_SE_SELECT);
 	}
 
 	// 色変更
@@ -643,7 +669,8 @@ void COption::ColChangeVibration(void)
 void COption::BackSelect(void)
 {
 	CInputManager* pInputMgr = CInputManager::GetInstance();
-	if (pInputMgr == nullptr)
+	CSound* pSound = CSound::GetInstance();
+	if (pInputMgr == nullptr || pSound == nullptr)
 		return;
 
 	// 戻る
@@ -665,6 +692,9 @@ void COption::BackSelect(void)
 
 		// 設定を外部ファイルに保存
 		SaveSetting();
+
+		// サウンドの再生
+		pSound->Play(CSound::LABEL_SE_DECISION);
 	}
 }
 
