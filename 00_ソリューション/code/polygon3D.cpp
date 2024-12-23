@@ -58,7 +58,7 @@ HRESULT CPolygon3D::Init(void)
 
 	if (m_pVtxBuff == nullptr)
 	{
-		//頂点バッファの生成
+		// 頂点バッファの生成
 		pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * NUM_VTX_DEFAULT,
 			D3DUSAGE_WRITEONLY,
 			FVF_VERTEX_3D,

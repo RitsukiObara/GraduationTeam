@@ -606,7 +606,7 @@ bool DistCmpFlat(D3DXVECTOR3 posOwn, D3DXVECTOR3 posTarget, float fLengthMax, fl
 	D3DXVECTOR3 vecDiff = posTarget - posOwn;
 	float fLength = sqrtf(vecDiff.x * vecDiff.x + vecDiff.z * vecDiff.z);
 
-	if (fLength < fLengthMax)
+	if (fLength * fLength < fLengthMax * fLengthMax)
 	{
 		if (fDiff != nullptr)
 		{

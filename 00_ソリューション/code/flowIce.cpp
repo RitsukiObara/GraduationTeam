@@ -73,6 +73,19 @@ CFlowIce *CFlowIce::Create(void)
 //=====================================================
 HRESULT CFlowIce::Init(void)
 {
+#ifdef  _DEBUG
+	vector<D3DXCOLOR> aCol =
+	{
+		{1.0f,1.0f,0.0f,1.0f},
+		{1.0f,0.0f,0.0f,1.0f},
+		{1.0f,0.0f,1.0f,1.0f},
+		{0.0f,1.0f,1.0f,1.0f},
+	};
+
+	D3DXCOLOR col = universal::RandomFromVector(aCol);
+	m_colEffect = col;
+#endif //  _DEBUG
+
 	return S_OK;
 }
 
@@ -183,9 +196,12 @@ void CFlowIce::StopAllIce(void)
 
 	for (auto it : m_apIce)
 	{
-		it->ChangeState(new CIceStaeteNormal);
+		if (pIceManager->IsIceInGrid(it))
+			continue;
 
 		pIceManager->AddIce(it, it->GetPosition());
+
+		it->ChangeState(new CIceStaeteNormal);
 	}
 
 	Sound::Play(CSound::LABEL_SE_ICE_CHAIN);

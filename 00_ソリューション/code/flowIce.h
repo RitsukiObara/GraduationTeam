@@ -55,6 +55,7 @@ private:
 	vector<CIce*> m_apIce;	// 氷の配列
 	float m_fTimerDelete;	// 削除タイマー
 	bool m_bInScrnAllIce;	// 全ての氷がスクリーンに映ったフラグ
+	D3DXCOLOR m_colEffect;	// デバッグ用のエフェクト色
 
 	// 静的メンバ変数
 	static vector<CFlowIce*> s_vector;	// 格納用の配列

@@ -84,6 +84,7 @@ public:
 	bool GetIdxGridFromPosition(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH,float fRate = 0.7f);	// グリッド番号を位置から取得する処理
 	bool IsInIce(D3DXVECTOR3 pos, CIce *pIce, float fRate = 0.7f);	// 氷に乗ってるかの判定
 	bool SetIceInGrid(int nNumV, int nNumH, CIce *pIce);	// グリッドに氷を設定
+	bool CheckIceInGrid(int nNumV, int nNumH, CIce *pIce);	// グリッドに氷が入れるかのチェック
 	void GetIceIndex(CIce *pIce, int *pNumV, int *pNumH);	// 氷のグリッド番号を取得
 	CIce* GetLeftDownIdx(int *pNumV, int *pNumH);	// 左下の氷取得
 	CIce* GetLeftUpIdx(int *pNumV, int *pNumH);	// 左上の氷取得
@@ -92,6 +93,7 @@ public:
 	bool IsInGrid(D3DXVECTOR3 pos, float fRate);	// グリッド内かの取得
 	CIce* GetRandomIce(int *pNumV = nullptr, int *pNumH = nullptr);	// ランダムな氷の取得
 	float GetRateNumIce(void);	// 氷の数の割合を取得
+	bool IsIceInGrid(CIce *pIce);	// グリッドに氷があるかの確認
 
 	S_Grid GetLeftDownGrid(void) { return m_aGrid[0][0]; }												// 左下のグリッド取得
 	S_Grid GetLeftUpGrid(void) { return m_aGrid[m_nNumGridVirtical - 1][0]; }							// 左上のグリッド取得
@@ -103,6 +105,8 @@ public:
 	void Load(const char* pPath);	// 初期配置読み込み
 	void BindRippleElements(void);	// さざ波の属性を割り当てる処理
 	CIce *GetNearestIce(D3DXVECTOR3 pos, int *pNumV = nullptr, int *pNumH = nullptr);	// 最も近い氷の取得
+	S_Grid *GetNearestEmptyGrid(D3DXVECTOR3 pos, int *pNumV = nullptr, int *pNumH = nullptr, CIce *pIce = nullptr);	// 最も近い空グリッドの取得
+	S_Grid *GetNearestGrid(D3DXVECTOR3 pos, int *pNumV = nullptr, int *pNumH = nullptr);	// 最も近いグリッドの取得
 
 	// 変数取得・設定関数
 	D3DXVECTOR3 GetGridPosition(int *pNumV, int *pNumH);

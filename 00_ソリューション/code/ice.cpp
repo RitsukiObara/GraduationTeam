@@ -96,7 +96,7 @@ std::vector<CIce*> CIce::s_Vector = {};	// 自身のポインタ
 // コンストラクタ
 //=====================================================
 CIce::CIce(int nPriority) : CObject3D(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false), m_bPeck(false),
-m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false), m_bStop(nullptr), m_abRipleFrag(), m_nCntAnimFlash(0), m_rotDest(), m_fHeightOcean(0.0f),
+m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false), m_bStop(false), m_abRipleFrag(), m_nCntAnimFlash(0), m_rotDest(), m_fHeightOcean(0.0f),
 m_pCollision(nullptr)
 {
 	s_nNumAll++;
@@ -114,7 +114,7 @@ CIce::~CIce()
 //=====================================================
 // 生成処理
 //=====================================================
-CIce *CIce::Create(E_Type type,E_State state)
+CIce *CIce::Create(E_Type type,E_State state, int nIdxV, int nIdxH)
 {
 	CIce *pIce = nullptr;
 
@@ -138,6 +138,10 @@ CIce *CIce::Create(E_Type type,E_State state)
 
 		if (pIce != nullptr)
 		{
+			CIceManager *pIceMgr = CIceManager::GetInstance();
+			if (pIceMgr != nullptr && nIdxV != -1 && nIdxH != -1)
+				pIceMgr->SetIceInGrid(nIdxV, nIdxH, pIce);
+
 			pIce->m_state = state;
 			pIce->Init();
 		}
@@ -738,7 +742,7 @@ CIce *CIce::GetNearestIce(D3DXVECTOR3 pos)
 void CIceStaeteNormal::Init(CIce *pIce)
 {
 	pIce->EnableStop(true);
-
+	
 	// 漂着している番号を取得
 	CIceManager *pIceMgr = CIceManager::GetInstance();
 
@@ -763,7 +767,7 @@ void CIceStaeteNormal::Update(CIce *pIce)
 {
 	// 番号取得に失敗しているかの確認
 	bool bMove = CheckFailGetIndex(pIce);
-
+	
 	if(bMove)
 		MoveToGrid(pIce);	// グリッドに向かって移動する処理
 }
@@ -781,12 +785,9 @@ bool CIceStaeteNormal::CheckFailGetIndex(CIce *pIce)
 		if (pIceMgr == nullptr)
 			return false;
 
-		pIceMgr->GetIceIndex(pIce, &m_nIdxDriftV, &m_nIdxDriftH);
+		D3DXVECTOR3 pos = pIce->GetPosition();
 
-		if (m_nIdxDriftV == 0 && m_nIdxDriftH == 0)
-		{
-			int n = 0;
-		}
+		pIceMgr->GetNearestEmptyGrid(pos, &m_nIdxDriftV, &m_nIdxDriftH, pIce);
 
 		if (m_nIdxDriftV == -1 ||
 			m_nIdxDriftH == -1)
@@ -979,10 +980,8 @@ void CIceStateFlow::Uninit(CIce *pIce)
 //=====================================================
 void CIceStateFlow::Update(CIce *pIce)
 {
-	if (!m_bDrift)
-		UpdateSearchIce(pIce);	// 氷を探している時の更新
-	else
-		UpdateDriftIce(pIce);	// 漂着してるときの更新
+	// 氷を探している時の更新
+	UpdateSearchIce(pIce);
 
 	// 他の流氷との判定
 	CollideOtherFlow(pIce);
@@ -1017,6 +1016,8 @@ void CIceStateFlow::UpdateSearchIce(CIce *pIce)
 
 	pIce->MoveObjectOnIce(vecStream);
 
+	m_vecStream = vecStream;
+
 	// 氷との判定
 	CollideIce(pIce);
 }
@@ -1048,6 +1049,8 @@ void CIceStateFlow::UpdateDriftIce(CIce *pIce)
 	vecDiff *= fSpeedFlow;
 	pIce->Translate(D3DXVECTOR3(vecDiff.x,0.0f,vecDiff.z));
 
+	m_vecStream = vecDiff;
+
 	// グリッドの位置との距離がしきい値を下回ったら止める
 	bool bStop = universal::DistCmpFlat(posIce, posDrift, LINE_STOP_ICE, nullptr);
 
@@ -1074,7 +1077,7 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 		return;
 
 	D3DXVECTOR3 posIce = pIce->GetPosition();
-	bool bOk = pIceManager->GetIdxGridFromPosition(posIce, &nIdxV, &nIdxH);
+	pIceManager->GetNearestEmptyGrid(posIce - m_vecStream, &nIdxV, &nIdxH);
 
 	// 番号を保存
 	m_nIdxDriftV = nIdxV;
@@ -1097,32 +1100,32 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 
 	if (pIceManager->GetGridIce(&nIdxV, &nIdxH) != nullptr)
 	{// 既にその場に氷があったら通常状態に移行
+		pIceManager->AddIce(pIce,pIce->GetPosition());
 		pIce->ChangeState(new CIceStaeteNormal);
 		return;
 	}
-
+	
 	vector<CIce*> apIceHit;
-	m_bDrift = (this->*directionFuncs[stream])(pIce, m_nIdxDriftV, m_nIdxDriftH, apIceHit);
+	bool bHit = (this->*directionFuncs[stream])(pIce, m_nIdxDriftV, m_nIdxDriftH, apIceHit);
 
 #ifdef _DEBUG
 	D3DXVECTOR3 posEffect = pIceManager->GetGridPosition(&m_nIdxDriftV, &m_nIdxDriftH);
 	debug::Effect3DShort(posEffect, D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
 #endif
 
-	if (m_bDrift)
+	if (bHit)
 	{
 		// くっつきフラグ
 		bool bStick = false;
 
-		debug::Effect3DShort(pIce->GetPosition(), D3DXCOLOR(0.0f, 1.0f, 1.0f, 1.0f), 120);
 		// グリッドに氷情報を保存
-		if (pIceManager->SetIceInGrid(nIdxV, nIdxH, pIce))
+		if (pIceManager->CheckIceInGrid(nIdxV, nIdxH, pIce))
 		{
 			for (CIce* pIceHit : apIceHit)
 			{
 				if (pIceHit == nullptr)
 					continue;
-
+				
 				// パーティクルを発生
 				D3DXVECTOR3 pos = pIce->GetPosition();
 				D3DXVECTOR3 posHitIce = pIceHit->GetPosition();
@@ -1147,8 +1150,11 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 			}
 		}
 
-		if(bStick)
+		if (bStick)
+		{
+			pIceManager->AddIce(pIce,pIce->GetPosition());
 			pIce->ChangeState(new CIceStaeteNormal);
+		}
 	}
 }
 
@@ -1288,9 +1294,6 @@ void CIceStateFlow::CollideOtherFlow(CIce *pIceOwn)
 		{// 一定距離まで近づいていたらその速度の中間の値にする
 			float fTimeTarget = pIce->GetTimerStartMove();
 			float fTime = pIceOwn->GetTimerStartMove();
-
-			if (fTimeTarget > fTime)
-				int n = 0;
 
 			fTime += (fTimeTarget - fTime) * 0.5f;
 

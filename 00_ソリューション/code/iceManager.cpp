@@ -279,7 +279,7 @@ CIce *CIceManager::CreateIce(int nGridV, int nGridH, CIce::E_Type type)
 
 	CIce *pIce = nullptr;
 
-	pIce = CIce::Create(type);
+	pIce = CIce::Create(type, CIce::E_State::STATE_FLOWS, nGridV, nGridH);
 
 	if (pIce == nullptr)
 		return nullptr;
@@ -290,9 +290,6 @@ CIce *CIceManager::CreateIce(int nGridV, int nGridH, CIce::E_Type type)
 
 	// 光る処理の初期化
 	pIce->StartFlash();
-
-	// 氷を配列にセット
-	m_aGrid[nGridV][nGridH].pIce = pIce;
 
 	return pIce;
 }
@@ -713,7 +710,7 @@ CIce *CIceManager::GetNearestIce(D3DXVECTOR3 pos, int *pNumV, int *pNumH)
 
 			float fDiff = 0.0f;
 
-			if (universal::DistCmpFlat(pos, pIce->GetPosition(), fDistMin, &fDiff))
+			if (universal::DistCmpFlat(pos, m_aGrid[i][j].pos, fDistMin, &fDiff))
 			{
 				fDistMin = fDiff;
 
@@ -729,6 +726,76 @@ CIce *CIceManager::GetNearestIce(D3DXVECTOR3 pos, int *pNumV, int *pNumH)
 	}
 
 	return pIceNearest;
+}
+
+//=====================================================
+// 最も近い空グリッドの取得
+//=====================================================
+CIceManager::S_Grid *CIceManager::GetNearestEmptyGrid(D3DXVECTOR3 pos, int *pNumV, int *pNumH, CIce *pIce)
+{
+	float fDistMin = FLT_MAX;
+	S_Grid *pGrid = nullptr;
+
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			if (m_aGrid[i][j].pIce != nullptr)
+				continue;
+
+			float fDiff = 0.0f;
+
+			if (universal::DistCmpFlat(pos, m_aGrid[i][j].pos, fDistMin, &fDiff))
+			{
+				fDistMin = fDiff;
+
+				pGrid = &m_aGrid[i][j];
+
+				if (pNumV != nullptr && pNumH != nullptr)
+				{
+					*pNumV = i;
+					*pNumH = j;
+				}
+			}
+		}
+	}
+
+	if (pGrid != nullptr)
+		pGrid->pIce = pIce;
+
+	return pGrid;
+}
+
+//=====================================================
+// 最も近いグリッドの取得
+//=====================================================
+CIceManager::S_Grid *CIceManager::GetNearestGrid(D3DXVECTOR3 pos, int *pNumV, int *pNumH)
+{
+	float fDistMin = FLT_MAX;
+	S_Grid *pGrid = nullptr;
+
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			float fDiff = 0.0f;
+
+			if (universal::DistCmpFlat(pos, m_aGrid[i][j].pos, fDistMin, &fDiff))
+			{
+				fDistMin = fDiff;
+
+				pGrid = &m_aGrid[i][j];
+
+				if (pNumV != nullptr && pNumH != nullptr)
+				{
+					*pNumV = i;
+					*pNumH = j;
+				}
+			}
+		}
+	}
+
+	return pGrid;
 }
 
 //=====================================================
@@ -808,14 +875,14 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 {
 	int nIdxV = -1;
 	int nIdxH = -1;
-	D3DXVECTOR3 posIce = pIce->GetPosition();
-
-	GetIdxGridFromPosition(posIce, &nIdxV, &nIdxH);
+	
+	GetIdxGridFromPosition(pos, &nIdxV, &nIdxH);
 
 	if (nIdxV == -1 && nIdxH == -1)
 	{
-		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_ICEBREAK, pIce->GetPosition());
-		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_RIPPLE, pIce->GetPosition());
+		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_ICEBREAK, pos);
+		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_RIPPLE, pos);
+		DeleteIce(pIce);
 		pIce->Uninit();
 		return;
 	}
@@ -824,11 +891,15 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 
 	if (!bOk)
 	{// グリッドに無かったら壊す
-		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_ICEBREAK, pIce->GetPosition());
-		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_RIPPLE, pIce->GetPosition());
+		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_ICEBREAK, pos);
+		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_RIPPLE, pos);
 		DeleteIce(pIce);
 		pIce->Uninit();
+		return;
 	}
+
+	DeleteIce(pIce);
+	GetNearestEmptyGrid(pos, &nIdxV, &nIdxH);
 }
 
 //=====================================================
@@ -1454,6 +1525,19 @@ bool CIceManager::IsInIce(D3DXVECTOR3 pos, CIce *pIce, float fRate)
 //=====================================================
 bool CIceManager::SetIceInGrid(int nNumV, int nNumH, CIce *pIce)
 {
+	bool bResult = CheckIceInGrid(nNumV, nNumH, pIce);
+
+	if(bResult)
+		m_aGrid[nNumV][nNumH].pIce = pIce;
+
+	return bResult;
+}
+
+//=====================================================
+// グリッドに氷が入れるかのチェック
+//=====================================================
+bool CIceManager::CheckIceInGrid(int nNumV, int nNumH, CIce *pIce)
+{
 	if (nNumV < 0 || nNumV >= m_nNumGridVirtical ||
 		nNumH < 0 || nNumH >= m_nNumGridHorizontal)
 		return false;
@@ -1479,16 +1563,7 @@ bool CIceManager::SetIceInGrid(int nNumV, int nNumH, CIce *pIce)
 		return false;
 	}
 
-	if (m_aGrid[nNumV][nNumH].pIce == nullptr || m_aGrid[nNumV][nNumH].pIce == pIce)
-	{
-		m_aGrid[nNumV][nNumH].pIce = pIce;
-
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return (m_aGrid[nNumV][nNumH].pIce == nullptr || m_aGrid[nNumV][nNumH].pIce == pIce);
 }
 
 //=====================================================
@@ -1717,6 +1792,23 @@ float CIceManager::GetRateNumIce(void)
 	int nNumGrid = m_nNumGridVirtical * m_nNumGridHorizontal;
 
 	return (float)nNumIce / (float)nNumGrid;
+}
+
+//=====================================================
+// グリッドに氷があるかの確認
+//=====================================================
+bool CIceManager::IsIceInGrid(CIce *pIce)
+{
+	for (int i = 0; i < m_nNumGridVirtical; i++)
+	{
+		for (int j = 0; j < m_nNumGridHorizontal; j++)
+		{
+			if (m_aGrid[i][j].pIce == pIce)
+				return true;
+		}
+	}
+
+	return false;
 }
 
 //=====================================================

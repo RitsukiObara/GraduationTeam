@@ -97,7 +97,7 @@ public:
 	float GetTimerStartMove(void);
 
 	// 静的メンバ関数
-	static CIce *Create(E_Type type = E_Type::TYPE_NORMAL, E_State state = E_State::STATE_FLOWS);	// 生成処理
+	static CIce *Create(E_Type type = E_Type::TYPE_NORMAL, E_State state = E_State::STATE_FLOWS,int nIdxV = -1, int nIdxH = -1);	// 生成処理
 	static int GetNumAll(void) { return s_nNumAll; }	// 総数取得
 	static std::vector<CIce*> GetInstance(void) { return s_Vector; }
 	static CIce *GetNearestIce(D3DXVECTOR3 pos);	// 最も近い氷の取得
@@ -207,7 +207,7 @@ private:
 class CIceStateFlow : public CIceState
 {// 氷の流れステイト
 public:
-	CIceStateFlow() : m_bDrift(false), m_nIdxDriftV(0), m_nIdxDriftH(0), m_fTimerStartMove(0.0f){};	// コンストラクタ
+	CIceStateFlow() : m_nIdxDriftV(0), m_nIdxDriftH(0), m_fTimerStartMove(0.0f){};	// コンストラクタ
 	~CIceStateFlow() {};	// デストラクタ
 
 	void Init(CIce *pIce) override;	// 初期化
@@ -231,10 +231,10 @@ private:
 	void CollideOtherFlow(CIce *pIce);	// 他の流氷との判定
 
 	// メンバー変数
-	int m_bDrift;				// 漂着しているフラグ
 	int m_nIdxDriftV;			// 漂着するグリッドの縦番号
 	int m_nIdxDriftH;			// 漂着するグリッドの横番号
 	float m_fTimerStartMove;	// 移動開始タイマー
+	D3DXVECTOR3 m_vecStream;	// 流れのベクトル
 };
 
 class CIceStaeteSink : public CIceState
