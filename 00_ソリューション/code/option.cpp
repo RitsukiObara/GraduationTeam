@@ -340,7 +340,9 @@ void COption::ModeSelectBack(void)
 	if (pInput == nullptr || pSound == nullptr)
 		return;
 
-	if (pInput->GetTrigger(CInputManager::BUTTON_BACK))	// BACK‰Ÿ‚µ‚½‚Æ‚«
+	// BACK‰Ÿ‚µ‚½‚Æ‚«
+	if (pInput->GetTrigger(CInputManager::BUTTON_BACK) &&
+		pFade->GetState() == CFade::FADE_NONE)
 	{
 		pFade->SetFade(CScene::MODE::MODE_SELECTMODE);
 
