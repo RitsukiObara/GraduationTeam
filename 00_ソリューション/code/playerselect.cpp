@@ -484,7 +484,8 @@ void CPlayerSelect::CheckStart(void)
 	{
 		CPlayer *pPlayer = m_mapPlayer[m_apInputMgr[i]];
 
-		if (m_StandbyState[i] != E_StandyrState::STANDBY_OK && pPlayer != nullptr)
+		// 準備完了していない時またはプレイヤーが存在しない時
+		if (m_StandbyState[i] != E_StandyrState::STANDBY_OK || pPlayer == nullptr)
 			bStart = false;
 	}
 
@@ -586,8 +587,20 @@ void CPlayerSelect::Fade(void)
 //=====================================================
 void CPlayerSelect::Debug(void)
 {
+	int nCount = 0;	// カウント用引数
+
 	CInputKeyboard* pKeyboard = CInputKeyboard::GetInstance();
 	CDebugProc* pDebugProc = CDebugProc::GetInstance();
+	pDebugProc->Print("\n\n=====エントリー画面デバッグ=====", m_nNumPlayer);
+	// エントリー人数の表示
+	pDebugProc->Print("\nエントリー人数：%d", m_nNumPlayer);
+	for (int i = 0; i < m_nNumPlayer; i++)
+	{
+		if (m_StandbyState[i] == E_StandyrState::STANDBY_OK)
+			nCount++;
+	}
+	// 準備完了人数の表示
+	pDebugProc->Print("\n準備完了人数：%d\n", nCount);
 
 	if (pKeyboard == nullptr || pDebugProc == nullptr)
 		return;
