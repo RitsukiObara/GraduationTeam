@@ -38,7 +38,7 @@
 #define NUM_PLAYER (4)	// プレイヤーの最大数
 #define MAX_STRING (256)	// 文字数の最大
 #define CLASS_NAME				"WindowClass"					// ウィンドウクラスの名前
-#define WINDOW_NAME				"HEX ICE SUVIVAL"				// ウィンドウの名前(キャプション)
+#define WINDOW_NAME				"HEX ICE SURVIVAL"				// ウィンドウの名前(キャプション)
 #define COLOR_CLEAR (D3DCOLOR_RGBA(0, 0, 0, 255))	// 画面クリア色
 
 //*****************************************************
