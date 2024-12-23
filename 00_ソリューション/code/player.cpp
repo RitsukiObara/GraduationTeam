@@ -988,9 +988,6 @@ bool CPlayer::Peck(void)
 	if(bResultBreak)	// 破壊時のコントローラー振動
 		VibJoypad(POW_VIB_BREAK, TIME_VIB_BREAK);
 
-	// プレイヤーが漂流するかの確認
-	CheckStartDriftAll();
-
 	return bResultBreak;
 }
 

@@ -404,7 +404,6 @@ bool CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos, bool
 		nNumH < 0 || nNumH >= m_nNumGridHorizontal)
 		return false;
 
-	CIce *pIceStand = m_aGrid[nNumV][nNumH].pIce;
 	vector<CIce*> apIce = GetAroundIce(nNumV, nNumH);
 
 	int nNumBreakV = nNumV;
@@ -447,58 +446,13 @@ bool CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos, bool
 	// 番号を取得
 	GetIceIndex(pIcePeck, &nNumBreakV, &nNumBreakH);
 
-	// 突っつける氷かのチェック
-	if (CanPeck(pIcePeck, nNumBreakV, nNumBreakH) != PECK_OK)
-		return false;
-
-	// 氷を突っついた判定にする
-	if (pIcePeck)
-	{
-		pIcePeck->EnablePeck(true);
-		pIcePeck->ChangeState(new CIceStaeteBreak);
-		CSound::GetInstance()->Play(CSound::LABEL_SE_BREAK_ICE);
-	}
-
-	// 氷探索の再帰関数
-	FindIce(nNumBreakV, nNumBreakH, 0, pIceStand, apIce,false);
-
-	for (int i = 0; i < m_nNumGridVirtical; i++)
-	{
-		for (int j = 0; j < m_nNumGridHorizontal; j++)
-		{
-			if (m_aGrid[i][j].pIce == nullptr)
-				continue;
-
-			if (m_aGrid[i][j].pIce->IsCanPeck())
-				continue;
-
-			// 探索フラグの無効化
-			DisableFind();
-
-			// 壊れないブロックが行う信号解除
-			DisableFromHardIce(i, j);
-		}
-	}
-
-	// 探索フラグの無効化
-	DisableFind();
-
-	// 壊れるブロックをまとまりにする
-	SummarizeIce(nNumBreakV, nNumBreakH);
-
-	// 氷が壊れるフラグが立っていたら氷を壊す
-	bool bResultBreak = BreakIce();
-
-	if (pResultBreak != nullptr)
-		*pResultBreak = bResultBreak;
-
-	return true;
+	return PeckIce(nNumBreakV, nNumBreakH, pResultBreak);
 }
 
 //=====================================================
 // 番号でつっつく処理
 //=====================================================
-bool CIceManager::PeckIce(int nIdxV, int nIdxH)
+bool CIceManager::PeckIce(int nIdxV, int nIdxH, bool *pResultBreak)
 {
 	if (nIdxV < 0 || nIdxV >= m_nNumGridVirtical ||
 		nIdxH < 0 || nIdxH >= m_nNumGridHorizontal)
@@ -558,6 +512,15 @@ bool CIceManager::PeckIce(int nIdxV, int nIdxH)
 
 	// 氷が壊れるフラグが立っていたら氷を壊す
 	BreakIce();
+
+	// プレイヤーが漂流するかの確認
+	CPlayer::CheckStartDriftAll();
+
+	// 氷が壊れるフラグが立っていたら氷を壊す
+	bool bResultBreak = BreakIce();
+
+	if (pResultBreak != nullptr)
+		*pResultBreak = bResultBreak;
 
 	return true;
 }

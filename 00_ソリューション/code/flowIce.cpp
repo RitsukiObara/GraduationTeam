@@ -61,7 +61,7 @@ CFlowIce *CFlowIce::Create(void)
 	CFlowIce *pFlowice = nullptr;
 
 	pFlowice = new CFlowIce;
-
+	
 	if (pFlowice != nullptr)
 		pFlowice->Init();
 
@@ -177,7 +177,7 @@ void CFlowIce::CollideOtherFlowIce(void)
 void CFlowIce::StopAllIce(void)
 {
 	CIceManager *pIceManager = CIceManager::GetInstance();
-
+	
 	if (pIceManager == nullptr)
 		return;
 
