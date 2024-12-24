@@ -302,7 +302,7 @@ void CPlayer::Update(void)
 //=====================================================
 void CPlayer::JudgeNoIce(void)
 {
-	if (m_state == E_State::STATE_FLOW)
+	if (m_state == E_State::STATE_FLOW || m_state == E_State::STATE_BLOW)
 		return;	// •Y—¬’†‚Å‚ ‚ê‚Î’Ê‚ç‚È‚¢
 
 	CIceManager* pIceMgr = CIceManager::GetInstance();
@@ -311,9 +311,10 @@ void CPlayer::JudgeNoIce(void)
 		return;
 
 	// æ‚Á‚Ä‚¢‚é•X‚Ìæ“¾
-	CIce *pIce = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
+	int nIdx;
+	bool bResult = pIceMgr->GetIdxGridFromPosition(GetPosition(),&nIdx, &nIdx);
 
-	if (pIce == nullptr)
+	if (!bResult)
 		Hit(0.0f);	// æ‚Á‚Ä‚¢‚é•X‚ª‚È‚©‚Á‚½‚ç‘¦€
 }
 
