@@ -94,6 +94,9 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// テクスチャ管理の生成
 	CTexture::Create();
 
+	// オプションの情報読み込み
+	COption::LoadSetting();
+
 	// フェードの生成
 	CFade::Create();
 	CFade_FallIce::Create();
@@ -108,9 +111,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// エフェクシアの生成
 	CMyEffekseer::Create();
-
-	// オプションの情報読み込み
-	COption::LoadSetting();
 
 	return S_OK;
 }
