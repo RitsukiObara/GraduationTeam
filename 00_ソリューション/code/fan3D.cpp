@@ -300,8 +300,22 @@ void CFan3D::Draw(void)
 		pDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MULTIPLYADD);		// 色を加算
 		pDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);			// 2番目のUVを使用
 
+		pDevice->SetSamplerState(1,
+			D3DSAMP_ADDRESSU,
+			D3DTADDRESS_CLAMP);
+		pDevice->SetSamplerState(1,
+			D3DSAMP_ADDRESSV,
+			D3DTADDRESS_CLAMP);
+
 		// 描画
 		CFan::Draw();
+
+		pDevice->SetSamplerState(1,
+			D3DSAMP_ADDRESSU,
+			D3DTADDRESS_WRAP);
+		pDevice->SetSamplerState(1,
+			D3DSAMP_ADDRESSV,
+			D3DTADDRESS_WRAP);
 
 		// 設定を元に戻す
 		pDevice->SetTexture(1, NULL); // 2枚目のテクスチャを解除

@@ -11,6 +11,7 @@
 #include "playerTutorial.h"
 #include "manager.h"
 #include "inputManager.h"
+#include "iceManager.h"
 
 //*****************************************************
 // ’è”’è‹`
@@ -178,6 +179,25 @@ void CPlayerTutorial::AddProgress(CTutorial::E_State state)
 
 		m_bComplete = true;
 	}
+}
+
+//=====================================================
+// ƒqƒbƒgˆ—
+//=====================================================
+void CPlayerTutorial::Hit(float fDamage)
+{
+	// ‹ß‚­‚Ì•X‚ðŽæ“¾
+	CIceManager *pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return;
+
+	int nIdxV;
+	int nIdxH;
+	pIceManager->GetNearestIce(GetPosition(), &nIdxV, &nIdxH);
+
+	SetGridV(nIdxV);
+	SetGridH(nIdxH);
 }
 
 //=====================================================

@@ -297,6 +297,7 @@ void CIce::Update(void)
 
 	// ‚³‚´”g‚Ìˆ—
 	Ripples();
+	SmallRipples();
 
 	// ƒƒbƒVƒ…‚Ì’Ç]
 	FollowMesh();
@@ -507,6 +508,14 @@ void CIce::Ripples(void)
 	int nRand = universal::RandRange(ripple::MAX_TIME, ripple::MIN_TIME);
 
 	m_fSpawnTimeRipples = (float)nRand;
+}
+
+//=====================================================
+// ¬‚³‚¢‚³‚´”g‚Ìˆ—
+//=====================================================
+void CIce::SmallRipples(void)
+{
+
 }
 
 //=====================================================
