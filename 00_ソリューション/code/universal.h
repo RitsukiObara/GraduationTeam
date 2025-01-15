@@ -74,6 +74,7 @@ void ConvertScreenPosTo3D(D3DXVECTOR3 *pPosNear, D3DXVECTOR3 *pPosFar, D3DXVECTO
 D3DXVECTOR3 Vec3Cross(D3DXVECTOR3 vec1, D3DXVECTOR3 vec2);
 void ParentMtx(D3DXMATRIX *pMtx, D3DXMATRIX mtxParent, D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 float ParabolaY(float x, float a);
+float GetRandomDirection(void);
 
 //======================================
 // •ÏŠ·Œn

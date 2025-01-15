@@ -35,7 +35,8 @@ const char* CMyEffekseer::m_apEfkName[CMyEffekseer::TYPE_MAX] =		// エフェクトの
 	"data\\EFFEKSEER\\Effect\\jump.efkefc",			// ジャンプ
 	"data\\EFFEKSEER\\Effect\\drop.efkefc",			// 水しぶき
 	"data\\EFFEKSEER\\Effect\\landing.efkefc",		// 着地
-	"data\\EFFEKSEER\\Effect\\iceimpact.efkefc",		// 着地
+	"data\\EFFEKSEER\\Effect\\iceimpact.efkefc",	// 着地
+	"data\\EFFEKSEER\\Effect\\smallriple.efkefc",	// 小さいさざ波
 };
 CMyEffekseer *CMyEffekseer::s_pMyEffekseer = nullptr;	// 自身のポインタ
 

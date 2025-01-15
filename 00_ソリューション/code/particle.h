@@ -37,6 +37,7 @@ public:
 		TYPE_STAGESELECT_SNOW,	// ステージセレクトの雪の軌道
 		TYPE_LAND,				// 敵が氷に着地するときのパーティクル
 		TYPE_ENTERPLAYER,		// プレイヤーエンター時のパーティクル
+		TYPE_SMALLRIPLE,		// 小さいさざ波
 		TYPE_MAX
 	}TYPE;
 

@@ -35,6 +35,7 @@ namespace
 {
 const string PATH_TEX = "data\\TEXTURE\\MATERIAL\\ice001.jpg";				// テクスチャパス
 const string PATH_TEX_OVERRAY = "data\\TEXTURE\\MATERIAL\\iceanimation.jpg";	// オーバレイテクスチャパス
+const string PATH_TEX_RIPPLE = "data\\TEXTURE\\EFFECT\\ice002.png";	// さざ波のテクスチャパス
 const float SIZE_INIT = 100.0f;	// 初期サイズ
 const float HEIGHT_ICE = 50.0f;	// 氷の高さ
 const int NUM_CORNER = 6;	// 角の数
@@ -72,6 +73,9 @@ namespace ripple
 {
 const int MAX_TIME = 7;	// 生成にかかる最大時間
 const int MIN_TIME = 2;	// 生成にかかる最小時間
+
+const int MAX_TIME_SMALL = 60;	// 生成にかかる最大時間
+const int MIN_TIME_SMALL = 50;	// 生成にかかる最小時間
 }
 
 //------------------------------
@@ -97,7 +101,7 @@ std::vector<CIce*> CIce::s_Vector = {};	// 自身のポインタ
 //=====================================================
 CIce::CIce(int nPriority) : CObject3D(nPriority), m_state(E_State::STATE_NONE), m_bBreak(false), m_bCanFind(false), m_bPeck(false),
 m_pSide(nullptr),m_pUp(nullptr), m_pState(nullptr), m_bSink(false), m_bStop(false), m_abRipleFrag(), m_nCntAnimFlash(0), m_rotDest(), m_fHeightOcean(0.0f),
-m_pCollision(nullptr)
+m_pCollision(nullptr), m_pRipple(nullptr)
 {
 	s_nNumAll++;
 	s_Vector.push_back(this);
@@ -195,6 +199,19 @@ void CIce::CreateMesh(void)
 		}
 	}
 
+	if (m_pRipple == nullptr)
+	{
+		m_pRipple = CFan3D::Create(4, NUM_CORNER);
+
+		if (m_pRipple != nullptr)
+		{
+			int nIdxTexture = Texture::GetIdx(&PATH_TEX_RIPPLE[0]);
+			m_pRipple->SetIdxTexture(nIdxTexture);
+
+			m_pRipple->SetVtx();
+		}
+	}
+
 	if (m_pSide == nullptr)
 	{
 		m_pSide = CMeshCylinder::Create(NUM_CORNER);
@@ -211,6 +228,7 @@ void CIce::CreateMesh(void)
 void CIce::DeleteMesh(void)
 {
 	Object::DeleteObject((CObject**)&m_pUp);
+	Object::DeleteObject((CObject**)&m_pRipple);
 	Object::DeleteObject((CObject**)&m_pSide);
 }
 
@@ -515,7 +533,29 @@ void CIce::Ripples(void)
 //=====================================================
 void CIce::SmallRipples(void)
 {
+	D3DXVECTOR3 posEffect = GetPosition();
 
+	// タイマーでのせき止め
+	m_fTimerSmallRipples += 1.0f;
+
+	if (m_fTimerSmallRipples <= m_fSpawnTimeSmallRipples)
+		return;
+
+	// 向きのランダム設定
+	float fAngle = universal::GetRandomDirection();
+
+	// エフェクトの発生
+	posEffect.x += sinf(fAngle) * Grid::SIZE * 0.5f;
+	posEffect.z += cosf(fAngle) * Grid::SIZE * 0.5f;
+	posEffect.y -= HEIGHT_ICE;
+	//CParticle::Create(posEffect, CParticle::TYPE::TYPE_SMALLRIPLE);
+
+	// タイマーの再設定
+	m_fTimerSmallRipples = 0.0f;
+
+	int nRand = universal::RandRange(ripple::MAX_TIME_SMALL, ripple::MIN_TIME_SMALL);
+
+	m_fSpawnTimeSmallRipples = (float)nRand;
 }
 
 //=====================================================
@@ -534,6 +574,11 @@ void CIce::FollowMesh(void)
 	// 上の扇ポリゴンの設定
 	m_pUp->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	m_pUp->SetMatrixParent(mtx);
+
+	D3DXVECTOR3 posRipple = GetPosition();
+	posRipple.y -= HEIGHT_ICE;
+	m_pRipple->SetPosition(posRipple);
+	m_pRipple->SetVtx();
 
 	// サイドのシリンダーの設定
 	m_pSide->SetPosition(D3DXVECTOR3(0.0f, -HEIGHT_ICE, 0.0f));
@@ -669,6 +714,8 @@ void CIce::SetTransform(float fRadius)
 	m_pUp->SetRadius(fRadius * 0.5f);
 	m_pUp->SetPosition(posIce);
 	m_pUp->SetVtx();
+
+	m_pRipple->SetRadius(fRadius * 0.7f);
 
 	// サイドのシリンダーの設定
 	m_pSide->SetRadius(fRadius * 0.5f);

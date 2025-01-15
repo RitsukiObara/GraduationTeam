@@ -292,13 +292,17 @@ void CFan3D::Draw(void)
 
 		// 2枚目のテクスチャ設定
 		LPDIRECT3DTEXTURE9 pTexture2 = CTexture::GetInstance()->GetAddress(m_nIdxTextureOverRay);
-		pDevice->SetTexture(1, pTexture2);
 
-		// テクスチャステージの設定（2枚目のテクスチャ）
-		pDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);	// 2枚目のテクスチャの色
-		pDevice->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);	// 現在の色（1枚目）
-		pDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MULTIPLYADD);		// 色を加算
-		pDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);			// 2番目のUVを使用
+		if (pTexture2 != nullptr)
+		{
+			pDevice->SetTexture(1, pTexture2);
+
+			// テクスチャステージの設定（2枚目のテクスチャ）
+			pDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);	// 2枚目のテクスチャの色
+			pDevice->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);	// 現在の色（1枚目）
+			pDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MULTIPLYADD);		// 色を加算
+			pDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);			// 2番目のUVを使用
+		}
 
 		pDevice->SetSamplerState(1,
 			D3DSAMP_ADDRESSU,

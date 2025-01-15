@@ -39,6 +39,7 @@ public:
 		TYPE_DROP,			// …‚µ‚Ô‚«
 		TYPE_LANDING,		// ’…’n
 		TYPE_ICEJUMP,		// ’…•X
+		TYPE_SMALLRIPLE,	// ¬‚³‚¢‚³‚´”g
 		TYPE_MAX
 	};
 

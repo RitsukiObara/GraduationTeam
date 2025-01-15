@@ -475,6 +475,18 @@ float ParabolaY(float x, float a)
 }
 
 //========================================
+// ランダムな方向を取得
+//========================================
+float GetRandomDirection(void)
+{
+	float randomAngle = static_cast<float>(rand()) / RAND_MAX * 2.0f * D3DX_PI;
+
+	randomAngle -= D3DX_PI;
+
+	return randomAngle;
+}
+
+//========================================
 // オフセット設定処理
 //========================================
 void SetOffSet(D3DXMATRIX *pMtxWorldOffset, D3DXMATRIX mtxWorldOwner, D3DXVECTOR3 posOffset, D3DXVECTOR3 rot)

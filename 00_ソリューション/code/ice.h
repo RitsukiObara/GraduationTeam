@@ -127,6 +127,7 @@ private:
 
 	CFan3D *m_pUp;					// 上側に貼る扇ポリゴン
 	CMeshCylinder *m_pSide;			// サイドのシリンダー
+	CFan3D *m_pRipple;				// さざ波ポリゴン
 	CCollisionSphere *m_pCollision;	// 当たり判定
 
 	CIceState *m_pState;	// ステイトのポインタ
@@ -134,6 +135,9 @@ private:
 	bool m_abRipleFrag[COcean::E_Stream::STREAM_MAX];	// 流れごとのフラグ
 	float m_fTimerRipples;								// さざ波のタイマー
 	float m_fSpawnTimeRipples;							// さざ波の制限時間
+
+	float m_fTimerSmallRipples;		// 小さいさざ波のタイマー
+	float m_fSpawnTimeSmallRipples;	// 小さいさざ波の制限時間
 
 	float m_fTimerFlash;		// 光のタイマー
 	float m_fTimeStartFlash;	// 光の開始までの時間
