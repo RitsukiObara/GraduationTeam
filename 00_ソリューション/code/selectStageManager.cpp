@@ -93,7 +93,7 @@ vector<CSelectStageManager::S_InfoStage*> CSelectStageManager::s_aInfoStageMulti
 //=====================================================
 // コンストラクタ
 //=====================================================
-CSelectStageManager::CSelectStageManager() : m_pPenguin(nullptr), m_bEnter(false), m_fTimerFade(0.0f), m_nIdxSelect(0), m_pButtonUIBack(nullptr)
+CSelectStageManager::CSelectStageManager() : m_pBanner(nullptr),m_pPenguin(nullptr), m_bEnter(false), m_fTimerFade(0.0f), m_nIdxSelect(0), m_pButtonUIBack(nullptr)
 {
 
 }
@@ -125,12 +125,14 @@ HRESULT CSelectStageManager::Init(void)
 	CSkybox::Create();
 
 	// ステージ選択看板設置
-	CObjectX* pBanner = CObjectX::Create(BANNER_POS);
-	if (pBanner != nullptr)
+	if (m_pBanner == nullptr)
+		m_pBanner = CObjectX::Create(BANNER_POS);
+	
+	if (m_pBanner != nullptr)
 	{
 		// モデルの割り当て
-		pBanner->BindModel(CModel::Load(&PATH_BANNER[0]));
-		pBanner->SetScale(SCALE_BANNER);
+		m_pBanner->BindModel(CModel::Load(&PATH_BANNER[0]));
+		m_pBanner->SetScale(SCALE_BANNER);
 
 		// 看板用の判定の生成
 		CCollisionSphere *pCollision = CCollisionSphere::Create(CCollision::TAG::TAG_BLOCK, CCollision::TYPE::TYPE_SPHERE, this);
@@ -417,6 +419,12 @@ void CSelectStageManager::SetStage(void)
 void CSelectStageManager::Uninit(void)
 {
 	Object::DeleteObject((CObject**)&m_pButtonUIBack);
+	if (m_pBanner != nullptr)
+	{
+		m_pBanner->Uninit();
+		m_pBanner = nullptr;
+	}
+
 	Release();
 }
 
@@ -470,6 +478,14 @@ void CSelectStageManager::Select(void)
 
 		// 判定の追従
 		pInfoStage->pCollision->SetPosition(pInfoStage->pModel->GetPosition());
+	}
+
+	//=======================================
+	// 看板の波追従処理
+	//=======================================
+	if (m_pBanner != nullptr)
+	{
+		FollowOcean(m_pBanner);
 	}
 
 	//=======================================
@@ -580,6 +596,26 @@ void CSelectStageManager::FollowOcean(S_InfoStage *pInfoStage)
 	pos.y = fHeight;
 
 	pInfoStage->pModel->SetPosition(pos);
+}
+
+//=====================================================
+// 波に追従させる(ObjectX版)
+//=====================================================
+void CSelectStageManager::FollowOcean(CObjectX* pObject)
+{
+	COcean* pOcean = COcean::GetInstance();
+	if (pOcean == nullptr)
+		return;
+
+	if (pObject == nullptr)
+		return;
+
+	D3DXVECTOR3 pos = pObject->GetPosition();
+	float fHeight = pOcean->GetHeight(pos, nullptr);
+
+	pos.y = fHeight;
+
+	pObject->SetPosition(pos);
 }
 
 //=====================================================
