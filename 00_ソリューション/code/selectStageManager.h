@@ -79,7 +79,8 @@ private:
 	void SetStage(void);						// ステージの設置
 	void Select(void);							// 選択処理
 	void Scaling(S_InfoStage *pInfoStage);		// スケーリング処理
-	void FollowOcean(S_InfoStage *pInfoStage);	// 波に追従
+	void FollowOcean(S_InfoStage* pInfoStage);	// 波に追従
+	void FollowOcean(CObjectX* pObject);		// 波に追従(ObjectX版)
 	void SetParticle(int nIdx);					// パーティクルの発生
 
 	void StartEnter(void);	// エンター開始
@@ -97,6 +98,7 @@ private:
 	// メンバ変数
 	static vector<S_InfoStage*> s_aInfoStage;		// ステージ情報の配列
 	static vector<S_InfoStage*> s_aInfoStageMulti;	// マルチステージ情報の配列
+	CObjectX* m_pBanner;				// 看板オブジェクト
 	CSelectStagePenguin *m_pPenguin;	// ペンギン
 	bool m_bEnter;	// エンターしたフラグ
 	float m_fTimerFade;	// フェードまでのタイマー
