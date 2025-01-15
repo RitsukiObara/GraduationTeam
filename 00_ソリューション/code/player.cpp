@@ -314,8 +314,8 @@ void CPlayer::JudgeNoIce(void)
 	int nIdx;
 	bool bResult = pIceMgr->GetIdxGridFromPosition(GetPosition(),&nIdx, &nIdx);
 
-	if (!bResult)
-		Hit(0.0f);	// æ‚Á‚Ä‚¢‚é•X‚ª‚È‚©‚Á‚½‚ç‘¦Ž€
+	//if (!bResult)
+		//Hit(0.0f);	// æ‚Á‚Ä‚¢‚é•X‚ª‚È‚©‚Á‚½‚ç‘¦Ž€
 }
 
 //=====================================================
@@ -771,10 +771,6 @@ bool CPlayer::FindFlowIce(void)
 	if (pIceMgr == nullptr)
 		return false;
 
-	int nTemp;	// ‚»‚Ìê‚É•X‚ª–³‚©‚Á‚½‚çŽž‚Ì‚Ý•Y—¬
-	if (!pIceMgr->GetIdxGridFromPosition(GetPosition(), &nTemp, &nTemp, 1.0f))
-		return false;
-
 	vector<CFlowIce*> apSystemFlow = CFlowIce::GetInstance();
 
 	for (auto itSystem : apSystemFlow)
@@ -787,10 +783,14 @@ bool CPlayer::FindFlowIce(void)
 
 		for (auto itIce : apIce)
 		{
-			D3DXVECTOR3 posPlayer = GetPosition();
-			D3DXVECTOR3 posIce = itIce->GetPosition();
+			int nIdxIceV;
+			int nIdxIceH;
+			pIceMgr->GetIceIndex(itIce, &nIdxIceV, &nIdxIceH);
 
-			if (pIceMgr->IsInIce(posPlayer, itIce, 0.7f))
+			int nIdxPlayerV = GetGridV();
+			int nIdxPlayerH = GetGridH();
+
+			if(nIdxPlayerV == nIdxIceV && nIdxPlayerH == nIdxIceH)
 			{// ‚Ç‚ê‚©‚Éæ‚Á‚Ä‚¢‚½‚çŒ»Ý‚ÌƒVƒXƒeƒ€‚ð•Û‘¶‚µ‚ÄŠÖ”‚ðI—¹
 				m_pLandSystemFlow = itSystem;
 
@@ -811,7 +811,7 @@ void CPlayer::StayFlow(void)
 
 	if (pIceMgr == nullptr)
 		return;
-
+	
 	if (m_pLandSystemFlow == nullptr)
 		return;
 
@@ -890,14 +890,11 @@ void CPlayer::FlowDeath(void)
 //=====================================================
 void CPlayer::EndFlows(void)
 {
+	if (m_pLandSystemFlow != nullptr)
+		m_pLandSystemFlow->GetNerestGrid(GetPosition(), &m_nGridV, &m_nGridH);
+
 	m_state = E_State::STATE_NORMAL;
 	m_pLandSystemFlow = nullptr;
-
-	CIceManager* pIceMgr = CIceManager::GetInstance();
-	if (pIceMgr == nullptr)
-		return;
-
-	pIceMgr->GetNearestIce(GetPosition(), &m_nGridV, &m_nGridH);
 }
 
 //=====================================================
@@ -1230,13 +1227,6 @@ void CPlayer::EndJump(void)
 	if (CGame::GetState() == CGame::E_State::STATE_NORMAL || CGame::GetInstance() == nullptr)
 		EnableInput(true);
 
-	CIceManager* pIceMgr = CIceManager::GetInstance();
-
-	if (pIceMgr == nullptr)
-		return;
-
-	pIceMgr->GetIceIndex(m_pIceDestJump, &m_nGridV, &m_nGridH);
-
 	m_pIceDestJump = nullptr;
 }
 
@@ -1487,7 +1477,7 @@ void CPlayer::Debug(void)
 	if (pDebugProc == nullptr || pInputKeyboard == nullptr || pJoypad == nullptr || pInputMgr == nullptr || m_pShadow == nullptr)
 		return;
 
-#if 0
+#if 1
 	pDebugProc->Print("\nƒvƒŒƒCƒ„[î•ñ==========================");
 	pDebugProc->Print("\nc[%d]‰¡[%d]", m_nGridV, m_nGridH);
 	pDebugProc->Print("\nˆÊ’u[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
@@ -1614,8 +1604,8 @@ void CPlayer::CheckStartDriftAll(void)
 		int nIdxV = -1;
 		int nIdxH = -1;
 
-		if (!pIceMgr->GetIdxGridFromPosition(pPlayer->GetPosition(), &nIdxV, &nIdxH))
-			continue;
+		/*if (!pIceMgr->GetIdxGridFromPosition(pPlayer->GetPosition(), &nIdxV, &nIdxH))
+			continue;*/
 
 		if (pIceMgr->GetGridIce(&nIdxV, &nIdxH) != nullptr)
 			continue;

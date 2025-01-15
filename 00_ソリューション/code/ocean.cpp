@@ -44,6 +44,16 @@ const float X_LEFT = -2500.0f;						// X方向上方向
 const float X_RIGHT = 2500.0f;						// X方向下方向
 const int BGICE_CREATE_CNT = 40;					// 背景氷が生成されるフレーム数
 const float OCEANLEVEL_DEFAULT = 3.0f;				// デフォルトの海流の強さ
+
+//----------------------------------
+// スクロールの定数
+//----------------------------------
+namespace scroll
+{
+const string PATH_TEX_OVERLAY = "data\\TEXTURE\\BG\\lake00.png";	// オーバーレイテクスチャのパス
+const D3DXVECTOR2 SPEED_SCROLL = { 0.0003f,0.0001f };					// スクロール速度
+const D3DXVECTOR2 SPEED_SCROLL_OVERRAY = { -0.0001f,-0.0002f };		// スクロール速度
+}
 }
 
 //*****************************************************
@@ -99,13 +109,16 @@ HRESULT COcean::Init(void)
 {
 	m_nBgiceCnt = 0;
 	
+	// オーバレイテクスチャの設定
+	int nIdxTexture = Texture::GetIdx(&scroll::PATH_TEX_OVERLAY[0]);
+	SetIdxTextureOverRay(nIdxTexture);
+
 	CMeshField::Init();
 
 	CIceManager* pIceManager = CIceManager::GetInstance();
 
 	if (pIceManager != nullptr)
 	{ // 流氷マネージャーが NULL じゃない場合
-
 		// 保存用変数に現在の海流を設定する
 		m_nRandKeep = pIceManager->GetDirStream();
 	}
@@ -151,6 +164,10 @@ void COcean::Update(void)
 	universal::LimitRot(&m_fSpeed);
 
 	CMeshField::Wave(m_fSpeed);
+
+	// テクスチャのスクロール
+	Scroll(0, scroll::SPEED_SCROLL);
+	Scroll(1, scroll::SPEED_SCROLL_OVERRAY);
 }
 
 //=====================================================
@@ -159,12 +176,6 @@ void COcean::Update(void)
 void COcean::Draw(void)
 {
 	CMeshField::Draw();
-
-	// デバイスの取得
-	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();
-
-	//頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_3D);
 }
 
 //====================================================

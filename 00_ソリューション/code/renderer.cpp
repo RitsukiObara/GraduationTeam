@@ -175,10 +175,10 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindow)
 
 	m_pD3DDevice->SetSamplerState(1,
 		D3DSAMP_ADDRESSU,
-		D3DTADDRESS_CLAMP);
+		D3DTADDRESS_WRAP);
 	m_pD3DDevice->SetSamplerState(1,
 		D3DSAMP_ADDRESSV,
-		D3DTADDRESS_CLAMP);
+		D3DTADDRESS_WRAP);
 
 	//テクスチャステージステートの設定
 	m_pD3DDevice->SetTextureStageState(0,

@@ -31,7 +31,7 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	void Hit(float fDamage) override {};	// ヒット処理
+	void Hit(float fDamage) override;	// ヒット処理
 
 	// 静的メンバ関数
 	static CPlayerTutorial *Create(void);	// 生成処理

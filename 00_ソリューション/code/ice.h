@@ -104,10 +104,11 @@ public:
 
 private:
 	// ƒƒ“ƒoŠÖ”
-	void FollowWave(void);								// ”g‚É’Ç]‚·‚éˆ—
-	void SearchOnThis(void);							// ©g‚Éæ‚Á‚Ä‚é‚à‚Ì‚ÌŒŸo
-	void Tilt(void);									// —h‚ê‚Ìˆ—
-	void Ripples(void);									// ‚³‚´”g‚Ìˆ—
+	void FollowWave(void);		// ”g‚É’Ç]‚·‚éˆ—
+	void SearchOnThis(void);	// ©g‚Éæ‚Á‚Ä‚é‚à‚Ì‚ÌŒŸo
+	void Tilt(void);			// —h‚ê‚Ìˆ—
+	void Ripples(void);			// ‚³‚´”g‚Ìˆ—
+	void SmallRipples(void);	// ¬‚³‚¢‚³‚´”g‚Ìˆ—
 
 	void FollowMesh(void);		// ƒƒbƒVƒ…‚Ì’Ç]
 	void FollowCollision(void);	// ”»’è‚Ì’Ç]

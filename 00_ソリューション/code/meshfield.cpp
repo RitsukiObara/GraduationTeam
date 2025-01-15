@@ -26,19 +26,21 @@
 //*****************************************************
 namespace
 {
-	const char* TEX_FILE = "data\\TEXTURE\\BG\\map_sea.png";	// テクスチャのファイル
-	const float LENGTH = 300.0f;				// メッシュの一辺の長さ
-	const int MESH_U = 254;						// 横のブロック数
-	const int MESH_V = 254;						// 縦のブロック数
-	const int SPLIT_TEX = 4;					// テクスチャ分割数
-	const float ANGLE_SLIP = 0.7f;				// 坂を滑る角度
+const char* TEX_FILE = "data\\TEXTURE\\BG\\map_sea.png";	// テクスチャのファイル
+const float LENGTH = 300.0f;				// メッシュの一辺の長さ
+const int MESH_U = 254;						// 横のブロック数
+const int MESH_V = 254;						// 縦のブロック数
+const int SPLIT_TEX = 4;					// テクスチャ分割数
+const float ANGLE_SLIP = 0.7f;				// 坂を滑る角度
 
-	// 海流関連
-	const float OCEAN_SPEED = 80.0f;			// 海流の速度
-	const float OCEAN_SPEED_UP = 0.01875f;		// 波の速度増加量（構造変更前0.3fの16分の1）
-	const float OCEAN_SPEED_DOWN = 0.03125f;	// 波の速度減少量（構造変更前0.5fの16分の1）
-	const float OCEAN_SPEED_MAX = 5.0f;			// 波の速度最大値（構造変更前80.0fの16分の1）
-	const float OCEAN_SPEED_MULTIPLY = 5.0f;	// 氷の流れる速度->波の速度にする際の速度倍率
+// 海流関連
+const float OCEAN_SPEED = 80.0f;			// 海流の速度
+const float OCEAN_SPEED_UP = 0.01875f;		// 波の速度増加量（構造変更前0.3fの16分の1）
+const float OCEAN_SPEED_DOWN = 0.03125f;	// 波の速度減少量（構造変更前0.5fの16分の1）
+const float OCEAN_SPEED_MAX = 5.0f;			// 波の速度最大値（構造変更前80.0fの16分の1）
+const float OCEAN_SPEED_MULTIPLY = 5.0f;	// 氷の流れる速度->波の速度にする際の速度倍率
+
+const float LIMIT_SCROLL = 100.0f;	// スクロールの限界
 }
 
 //*****************************************************
@@ -54,6 +56,7 @@ CMeshField::CMeshField(int nPriority) : CObject3D(nPriority)
 	ZeroMemory(&m_MeshField, sizeof(m_MeshField));
 	m_pIdxBuff = nullptr;
 	m_nIdxTexture = -1;
+	m_nIdxTextureOverRay = -1;
 	m_pVtxBuff = nullptr;
 	m_fLengthMesh = 0.0f;
 	m_nDivNumU = 0;
@@ -141,16 +144,20 @@ HRESULT CMeshField::Init(void)
 	{// 頂点座標の設定
 		for (nCountU = 0; nCountU < m_nDivNumU + 1; nCountU++)
 		{
+			int nIdxVtx = nCountV * (m_nDivNumU + 1) + nCountU;
+
 			// 頂点座標
-			pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.x = (nCountU - m_nDivNumU * 0.5f) * m_fLengthMesh;
-			pVtx[nCountV * (m_nDivNumU + 1) + nCountU].pos.z = (((m_nDivNumU) * 0.5f) - nCountV) * m_fLengthMesh;
+			pVtx[nIdxVtx].pos.x = (nCountU - m_nDivNumU * 0.5f) * m_fLengthMesh;
+			pVtx[nIdxVtx].pos.z = (((m_nDivNumU) * 0.5f) - nCountV) * m_fLengthMesh;
 
 			// テクスチャ座標
-			pVtx[nCountV * (m_nDivNumU + 1) + nCountU].tex = D3DXVECTOR2
+			pVtx[nIdxVtx].tex = D3DXVECTOR2
 			(
 			    ((float)m_nDivTex / (float)m_nDivNumU) * nCountU,
 				((float)m_nDivTex / (float)m_nDivNumU) * nCountV
 			);
+
+			pVtx[nIdxVtx].tex2 = pVtx[nIdxVtx].tex;
 		}
 	}
 
@@ -800,6 +807,8 @@ void CMeshField::SetDivTex(int nDivTex)
 				((float)m_nDivTex / (float)m_nDivNumU) * nCountU,
 				((float)m_nDivTex / (float)m_nDivNumU) * nCountV
 			);
+
+			pVtx[nCountV * (m_nDivNumU + 1) + nCountU].tex2 = pVtx[nCountV * (m_nDivNumU + 1) + nCountU].tex;
 		}
 	}
 
@@ -926,6 +935,118 @@ void CMeshField::Wave(float fRot)
 }
 
 //=====================================================
+// スクロール処理
+//=====================================================
+void CMeshField::Scroll(int nIdx, D3DXVECTOR2 vec)
+{
+	// 頂点情報のポインタ
+	VERTEX_3D *pVtx;
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	if (nIdx == 0)
+	{
+		// テクスチャ座標に加算
+		for (int nCnt = 0; nCnt < m_MeshField.nNumVtx; nCnt++)
+			pVtx[nCnt].tex += vec;
+	}
+	else if (nIdx == 1)
+	{
+		// テクスチャ座標に加算
+		for (int nCnt = 0; nCnt < m_MeshField.nNumVtx; nCnt++)
+			pVtx[nCnt].tex2 += vec;
+	}
+	else
+		assert(false);
+
+	// 頂点バッファをアンロック
+	m_pVtxBuff->Unlock();
+
+	// スクロールの限界確認
+	CheckScroll();
+}
+
+//=====================================================
+// スクロールの限界チェック
+//=====================================================
+void CMeshField::CheckScroll(void)
+{
+	// 頂点情報のポインタ
+	VERTEX_3D *pVtx;
+
+	// 頂点バッファをロックし、頂点情報へのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	//-----------------------------
+	// 1番目のテクスチャ座標
+	//-----------------------------
+	bool bLimit = false;
+
+	for (int nCnt = 0; nCnt < m_MeshField.nNumVtx; nCnt++)
+	{
+		if (pVtx[nCnt].tex.x * pVtx[nCnt].tex.x > LIMIT_SCROLL * LIMIT_SCROLL)
+			bLimit = true;
+
+		if (pVtx[nCnt].tex.y * pVtx[nCnt].tex.y > LIMIT_SCROLL * LIMIT_SCROLL)
+			bLimit = true;
+	}
+
+	if (bLimit)
+	{
+		for (int nCnt = 0; nCnt < m_MeshField.nNumVtx; nCnt++)
+		{
+			if (pVtx[nCnt].tex.x > LIMIT_SCROLL)
+				pVtx[nCnt].tex.x -= LIMIT_SCROLL;
+
+			if (pVtx[nCnt].tex.x < -LIMIT_SCROLL)
+				pVtx[nCnt].tex.x += LIMIT_SCROLL;
+
+			if (pVtx[nCnt].tex.y > LIMIT_SCROLL)
+				pVtx[nCnt].tex.y -= LIMIT_SCROLL;
+
+			if (pVtx[nCnt].tex.y < -LIMIT_SCROLL)
+				pVtx[nCnt].tex.y += LIMIT_SCROLL;
+		}
+	}
+
+	//-----------------------------
+	// 2番目のテクスチャ座標
+	//-----------------------------
+	bLimit = false;
+
+	for (int nCnt = 0; nCnt < m_MeshField.nNumVtx; nCnt++)
+	{
+		if (pVtx[nCnt].tex2.x * pVtx[nCnt].tex2.x > LIMIT_SCROLL * LIMIT_SCROLL)
+			bLimit = true;
+
+		if (pVtx[nCnt].tex2.y * pVtx[nCnt].tex2.y > LIMIT_SCROLL * LIMIT_SCROLL)
+			bLimit = true;
+	}
+
+	if (bLimit)
+	{
+		for (int nCnt = 0; nCnt < m_MeshField.nNumVtx; nCnt++)
+		{
+			if (pVtx[nCnt].tex2.x > LIMIT_SCROLL)
+				pVtx[nCnt].tex2.x -= LIMIT_SCROLL;
+
+			if (pVtx[nCnt].tex2.x < -LIMIT_SCROLL)
+				pVtx[nCnt].tex2.x += LIMIT_SCROLL;
+
+			if (pVtx[nCnt].tex2.y > LIMIT_SCROLL)
+				pVtx[nCnt].tex2.y -= LIMIT_SCROLL;
+
+			if (pVtx[nCnt].tex2.y < -LIMIT_SCROLL)
+				pVtx[nCnt].tex2.y += LIMIT_SCROLL;
+		}
+	}
+
+	// 頂点バッファをアンロック
+	m_pVtxBuff->Unlock();
+}
+
+//=====================================================
 // 描画処理
 //=====================================================
 void CMeshField::Draw(void)
@@ -944,12 +1065,33 @@ void CMeshField::Draw(void)
 	//頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
 	
-	// テクスチャ設定
-	LPDIRECT3DTEXTURE9 pTexture = CTexture::GetInstance()->GetAddress(m_nIdxTexture);
-	pDevice->SetTexture(0, pTexture);
+	// 1枚目のテクスチャ設定
+	LPDIRECT3DTEXTURE9 pBaseTexture = CTexture::GetInstance()->GetAddress(m_nIdxTexture);
+	pDevice->SetTexture(0, pBaseTexture);
+	
+	// 2枚目のテクスチャ設定
+	LPDIRECT3DTEXTURE9 pTexture2 = CTexture::GetInstance()->GetAddress(m_nIdxTextureOverRay);
+
+	if (pTexture2 != nullptr)
+	{
+		pDevice->SetTexture(1, pTexture2);
+
+		// テクスチャステージの設定（2枚目のテクスチャ）
+		pDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);	// 2枚目のテクスチャの色
+		pDevice->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);	// 現在の色（1枚目）
+		pDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_ADDSMOOTH);		// 色を加算
+		pDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);			// 2番目のUVを使用
+	}
 
 	//ポリゴン描画
 	pDevice->DrawIndexedPrimitive (D3DPT_TRIANGLESTRIP, 0, 0, m_MeshField.nNumVtx, 0, m_MeshField.nNumIdx - 2);
+
+	// 設定を元に戻す
+	pDevice->SetTexture(1, NULL); // 2枚目のテクスチャを解除
+	pDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATE);		// 色を加算
+	pDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+	pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+	pDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
 }
 
 //=====================================================

@@ -220,6 +220,27 @@ void CFlowIce::StopAllIce(void)
 }
 
 //=====================================================
+// 一番近いグリッドを決める
+//=====================================================
+void CFlowIce::GetNearestGrid(void)
+{
+	CIceManager *pIceManager = CIceManager::GetInstance();
+
+	if (pIceManager == nullptr)
+		return;
+
+	for (auto it : m_apIce)
+	{
+		if (pIceManager->IsIceInGrid(it))
+			continue;
+
+		pIceManager->AddIce(it, it->GetPosition());
+
+		it->ChangeState(new CIceStaeteNormal);
+	}
+}
+
+//=====================================================
 // 上にあるものを止める
 //=====================================================
 void CFlowIce::StopOnTopObject(void)
@@ -292,11 +313,42 @@ void CFlowIce::CheckDelete(void)
 //=====================================================
 void CFlowIce::Debug(void)
 {
-	for (auto it : m_apIce)
-	{
-		D3DXVECTOR3 posIce = it->GetPosition();
 
-		//CEffect3D::Create(posIce, 50.0f, 5, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+}
+
+//=====================================================
+// 最も近いグリッドの取得
+//=====================================================
+void CFlowIce::GetNerestGrid(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH)
+{
+	CIceManager *pIceMgr = CIceManager::GetInstance();
+
+	if (pIceMgr == nullptr)
+		return;
+
+	float fDistMin = FLT_MAX;
+	CIce *pIceNearest = nullptr;
+
+	for (int i = 0; i < (int)m_apIce.size(); i++)
+	{
+		if (m_apIce[i] == nullptr)
+			continue;
+
+		CIce *pIce = m_apIce[i];
+
+		float fDiff = 0.0f;
+
+		if (universal::DistCmpFlat(pos, m_apIce[i]->GetPosition(), fDistMin, &fDiff))
+		{
+			fDistMin = fDiff;
+
+			pIceNearest = pIce;
+
+			if (pIdxV != nullptr && pIdxH != nullptr)
+			{
+				pIceMgr->GetIceIndex(pIceNearest, pIdxV, pIdxH);
+			}
+		}
 	}
 }
 

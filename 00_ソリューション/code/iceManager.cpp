@@ -507,11 +507,11 @@ bool CIceManager::PeckIce(int nIdxV, int nIdxH, bool *pResultBreak)
 	// 壊れるブロックをまとまりにする
 	SummarizeIce(nNumBreakV, nNumBreakH);
 
-	// 氷が壊れるフラグが立っていたら氷を壊す
-	BreakIce();
-
 	// プレイヤーが漂流するかの確認
 	CPlayer::CheckStartDriftAll();
+
+	// 氷が壊れるフラグが立っていたら氷を壊す
+	BreakIce();
 
 	// 氷が壊れるフラグが立っていたら氷を壊す
 	bool bResultBreak = BreakIce();
