@@ -56,13 +56,20 @@ public:
 	void SetDivTex(int nDivTex);
 	void Reset(void);
 	void Wave(float fRot);
+	void Scroll(int nIdx, D3DXVECTOR2 vec);
 
 	// 変数取得・設定関数
 	E_Ocean_Speed GetOceanSpeedState(void) { return m_eOcean_Speed_State; }	// 海流の速度状態の取得
 	void SetOceanSpeedState(E_Ocean_Speed fOceanSpeedState) { m_eOcean_Speed_State = fOceanSpeedState; }	// 海流の速度状態の設定
+	void SetIdxTextureOverRay(int nIdx) { m_nIdxTextureOverRay = nIdx; }			// オーバーレイテクスチャ番号
 
 private:
-	int m_nIdxTexture;	// テクスチャ番号
+	// メンバ関数
+	void CheckScroll(void);
+
+	// メンバ変数
+	int m_nIdxTexture;			// テクスチャ番号
+	int m_nIdxTextureOverRay;	// オーバーレイテクスチャ番号
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	//頂点バッファへのポインタ
 	LPDIRECT3DINDEXBUFFER9 m_pIdxBuff;	//インデックスバッファへのポインタ
 	MeshField m_MeshField;	//構造体の情報

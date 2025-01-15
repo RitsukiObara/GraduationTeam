@@ -31,11 +31,12 @@ public:
 	void Uninit(void);	// 終了
 	void Update(void);	// 更新
 	void Draw(void);	// 描画
+	void GetNerestGrid(D3DXVECTOR3 pos,int *pIdxV, int *pIdxH);	// 最も近いグリッドの取得
 
 	// 変数設定・取得処理
 	void AddIceToArray(CIce *pIce);
-	vector<CIce*> GetIce(void) { return m_apIce; }	// 氷の取得
-	
+	vector<CIce*> GetIce(void) { return m_apIce; }		// 氷の取得
+
 	// 静的メンバ関数
 	static CFlowIce *Create(void);	// 生成処理
 	static vector<CFlowIce*> GetInstance(void) { return s_vector; }	// インスタンス取得
@@ -46,6 +47,7 @@ private:
 	void CheckSomeIceStop(void);	// どれかの氷が止まっていないかのチェック
 	void CollideOtherFlowIce(void);	// 他の流氷との判定
 	void StopAllIce(void);			// 全ての氷を止める
+	void GetNearestGrid(void);		// 一番近いグリッドを決める
 	void StopOnTopObject(void);		// 上にあるオブジェクトを止める
 	void DeleteAllIce(void);		// 全氷の削除
 	void CheckDelete(void);			// 削除確認

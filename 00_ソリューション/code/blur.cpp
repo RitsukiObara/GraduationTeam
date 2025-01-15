@@ -377,10 +377,6 @@ void CBlur::OverlapLastTexture(void)
 
     // 描画
     pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-    
-    CDebugProc::GetInstance()->Print("\nブラー==============================");
-    CDebugProc::GetInstance()->Print("\nサイズ[%f]", m_fAddSizePolygon);
-    CDebugProc::GetInstance()->Print("\n濃さ[%f]", m_colPolygon.a);
 }
 
 //=====================================================

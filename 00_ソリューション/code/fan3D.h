@@ -45,7 +45,7 @@ public:
 private:
 	// メンバ変数
 	D3DXMATRIX m_mtxWorld;			// ワールドマトリックス
-	D3DXMATRIX m_mtxParent;	// 親マトリックス
+	D3DXMATRIX m_mtxParent;			// 親マトリックス
 	bool m_bBillboard;				// ビルボードかどうか
 	int m_nStartOffsetCount;		// 使用する波形の開始位置をずらすカウント
 	int m_nIdxTextureOverRay;		// オーバーレイテクスチャの設定
