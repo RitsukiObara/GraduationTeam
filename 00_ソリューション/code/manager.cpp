@@ -38,7 +38,7 @@
 CCamera *CManager::m_pCamera = nullptr;						// カメラのポインタ
 CMyEffekseer* CManager::m_pMyEffekseer = nullptr;			// エフェクシアのポインタ
 CScene *CManager::m_pScene = nullptr;						// シーンへのポインタ
-CScene::MODE CManager::m_mode = CScene::MODE_SELECTMODE;			// 現在のモード
+CScene::MODE CManager::m_mode = CScene::MODE_LOGO;			// 現在のモード
 float CManager::m_fDeltaTime = 0.0f;						// 前回のフレームから経過した時間
 CManager *CManager::m_pManager = nullptr;					// 自身のポインタ
 
@@ -94,6 +94,9 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// テクスチャ管理の生成
 	CTexture::Create();
 
+	// オプションの情報読み込み
+	COption::LoadSetting();
+
 	// フェードの生成
 	CFade::Create();
 	CFade_FallIce::Create();
@@ -108,9 +111,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// エフェクシアの生成
 	CMyEffekseer::Create();
-
-	// オプションの情報読み込み
-	COption::LoadSetting();
 
 	return S_OK;
 }

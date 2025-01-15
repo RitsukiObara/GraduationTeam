@@ -114,6 +114,9 @@ void CRankingSingle::Sort(void)
 {
 	// 降順にソート (valueを基準に)
 	std::sort(m_apRank.begin(), m_apRank.end(), [](S_InfoRank* a, S_InfoRank* b) { return a->nScore > b->nScore; });
+
+	// 昇順にソート (peckを基準に)
+	std::sort(m_apRank.begin(), m_apRank.end(), [](S_InfoRank* a, S_InfoRank* b) { return a->nTimePeck < b->nTimePeck; });
 }
 
 //====================================================
@@ -128,7 +131,7 @@ int CRankingSingle::AddRank(int nScore, int nTimePeck)
 	
 	S_InfoRank *pInfoMin = m_apRank[m_apRank.size() - 1];
 
-	if (pInfoMin->nScore < nScore)
+	if (pInfoMin->nScore <= nScore)
 	{
 		pInfoMin->nScore = nScore;
 		pInfoMin->nTimePeck = nTimePeck;

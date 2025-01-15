@@ -794,11 +794,14 @@ void COption::LoadSetting(void)
 
 	// Ý’è
 	CSound* pSound = CSound::GetInstance();
-	CInputJoypad* pJoypad = CInputJoypad::GetInstance();
-	if (pSound != nullptr && pJoypad != nullptr)
+	if (pSound != nullptr)
 	{// Ý’è
 		pSound->SetVolume(CSound::SOUNDTYPE::TYPE_BGM, m_fBGMVolume);
 		pSound->SetVolume(CSound::SOUNDTYPE::TYPE_SE, m_fSEVolume);
+	}
+	CInputJoypad* pJoypad = CInputJoypad::GetInstance();
+	if (pJoypad != nullptr)
+	{// Ý’è
 		pJoypad->SetVibration((m_Vibration == VIBRATION_ON));
 	}
 }
