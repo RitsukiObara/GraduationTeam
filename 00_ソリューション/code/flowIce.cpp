@@ -196,7 +196,7 @@ void CFlowIce::StopAllIce(void)
 
 	for (auto it : m_apIce)
 	{
-		if (!pIceManager->IsIceInGrid(it))
+		if (pIceManager->IsIceInGrid(it))
 			continue;
 
 		pIceManager->AddIce(it, it->GetPosition());
@@ -347,6 +347,9 @@ void CFlowIce::GetNerestGrid(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH)
 			if (pIdxV != nullptr && pIdxH != nullptr)
 			{
 				pIceMgr->GetIceIndex(pIceNearest, pIdxV, pIdxH);
+
+				if (*pIdxV == -1 && *pIdxH == -1)
+					int n = 0;
 			}
 		}
 	}
