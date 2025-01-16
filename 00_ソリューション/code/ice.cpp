@@ -201,18 +201,7 @@ void CIce::CreateMesh(void)
 		}
 	}
 
-	if (m_pRipple == nullptr)
-	{
-		m_pRipple = CFan3D::Create(4, NUM_CORNER);
-
-		if (m_pRipple != nullptr)
-		{
-			int nIdxTexture = Texture::GetIdx(&PATH_TEX_RIPPLE[0]);
-			m_pRipple->SetIdxTexture(nIdxTexture);
-
-			m_pRipple->SetVtx();
-		}
-	}
+	CreateRipple();
 
 	if (m_pSide == nullptr)
 	{
@@ -258,6 +247,33 @@ void CIce::CreateCollision(void)
 void CIce::DeleteCollision(void)
 {
 	Object::DeleteObject((CObject**)&m_pCollision);
+}
+
+//=====================================================
+// ‚³‚´”g‚Ì¶¬
+//=====================================================
+void CIce::CreateRipple(void)
+{
+	if (m_pRipple == nullptr)
+	{
+		m_pRipple = CFan3D::Create(4, NUM_CORNER);
+
+		if (m_pRipple != nullptr)
+		{
+			int nIdxTexture = Texture::GetIdx(&PATH_TEX_RIPPLE[0]);
+			m_pRipple->SetIdxTexture(nIdxTexture);
+
+			m_pRipple->SetVtx();
+		}
+	}
+}
+
+//=====================================================
+// ‚³‚´”g‚Ì”jŠü
+//=====================================================
+void CIce::DeleteRipple(void)
+{
+	Object::DeleteObject((CObject**)&m_pRipple);
 }
 
 //=====================================================
@@ -577,21 +593,24 @@ void CIce::FollowMesh(void)
 	m_pUp->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	m_pUp->SetMatrixParent(mtx);
 
-	// ‚³‚´”g‚Ìƒ|ƒŠƒSƒ“‚Ì’Ç]
-	D3DXVECTOR3 posDest = GetPosition();
-	posDest.y -= HEIGHT_ICE;
-
-	D3DXVECTOR3 posRipple = m_pRipple->GetPosition();
-	universal::MoveToDest(&posRipple, posDest, ripple::SPEED_FOLLOW);
-	m_pRipple->SetPosition(posRipple);
-	m_pRipple->SetVtx();
-
-	D3DXVECTOR3 rotRipple = { 0.0f,GetRotation().y,0.0f };
-	m_pRipple->SetRotation(rotRipple);
-
 	// ƒTƒCƒh‚ÌƒVƒŠƒ“ƒ_[‚ÌÝ’è
 	m_pSide->SetPosition(D3DXVECTOR3(0.0f, -HEIGHT_ICE, 0.0f));
 	m_pSide->SetMatrixParent(mtx);
+
+	if (m_pRipple != nullptr)
+	{
+		// ‚³‚´”g‚Ìƒ|ƒŠƒSƒ“‚Ì’Ç]
+		D3DXVECTOR3 posDest = GetPosition();
+		posDest.y -= HEIGHT_ICE - m_fHeightOcean;
+
+		D3DXVECTOR3 posRipple = m_pRipple->GetPosition();
+		universal::MoveToDest(&posRipple, posDest, ripple::SPEED_FOLLOW);
+		m_pRipple->SetPosition(posRipple);
+		m_pRipple->SetVtx();
+
+		D3DXVECTOR3 rotRipple = { 0.0f,GetRotation().y,0.0f };
+		m_pRipple->SetRotation(rotRipple);
+	}
 }
 
 //=====================================================

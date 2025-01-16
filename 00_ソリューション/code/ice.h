@@ -72,6 +72,8 @@ public:
 	void MoveObjectOnIce(D3DXVECTOR3 vecMove);	// 乗ってるオブジェクトを動かす
 	void CreateCollision(void);	// 判定の生成
 	void DeleteCollision(void);	// 判定の破棄
+	void CreateRipple(void);	// さざ波の生成
+	void DeleteRipple(void);	// さざ波の破棄
 
 	// 変数取得・設定関数
 	void SetState(E_State state) { m_state = state; }	// 状態

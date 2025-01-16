@@ -228,6 +228,9 @@ void CIceHardMulti::UpdateJump(void)
 		m_fTimerMove = 0.0f;
 		m_state = E_State::STATE_NORMAL;
 		MyEffekseer::CreateEffect(CMyEffekseer::TYPE_ICEJUMP, GetPosition(), GetRotation(), D3DXVECTOR3(100.0f, 100.0f, 100.0f));
+
+		// さざ波の生成
+		CreateRipple();
 	}
 
 	m_fTimerMove += CManager::GetDeltaTime();
@@ -300,6 +303,9 @@ void CIceHardMulti::StartJump(void)
 
 	// パーティクルの発生
 	MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_DROP, GetPosition());
+
+	// さざ波の破棄
+	DeleteRipple();
 }
 
 //=====================================================
