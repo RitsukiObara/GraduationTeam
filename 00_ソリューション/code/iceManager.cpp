@@ -900,6 +900,7 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 
 	DeleteIce(pIce);
 	GetNearestEmptyGrid(pos, &nIdxV, &nIdxH);
+	SetIceInGrid(nIdxV, nIdxH, pIce);
 }
 
 //=====================================================
