@@ -76,6 +76,8 @@ const int MIN_TIME = 2;	// 生成にかかる最小時間
 
 const int MAX_TIME_SMALL = 60;	// 生成にかかる最大時間
 const int MIN_TIME_SMALL = 50;	// 生成にかかる最小時間
+
+const float SPEED_FOLLOW = 0.23f;	// 追従速度
 }
 
 //------------------------------
@@ -575,10 +577,17 @@ void CIce::FollowMesh(void)
 	m_pUp->SetPosition(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	m_pUp->SetMatrixParent(mtx);
 
-	D3DXVECTOR3 posRipple = GetPosition();
-	posRipple.y -= HEIGHT_ICE;
+	// さざ波のポリゴンの追従
+	D3DXVECTOR3 posDest = GetPosition();
+	posDest.y -= HEIGHT_ICE;
+
+	D3DXVECTOR3 posRipple = m_pRipple->GetPosition();
+	universal::MoveToDest(&posRipple, posDest, ripple::SPEED_FOLLOW);
 	m_pRipple->SetPosition(posRipple);
 	m_pRipple->SetVtx();
+
+	D3DXVECTOR3 rotRipple = { 0.0f,GetRotation().y,0.0f };
+	m_pRipple->SetRotation(rotRipple);
 
 	// サイドのシリンダーの設定
 	m_pSide->SetPosition(D3DXVECTOR3(0.0f, -HEIGHT_ICE, 0.0f));
@@ -715,6 +724,10 @@ void CIce::SetTransform(float fRadius)
 	m_pUp->SetPosition(posIce);
 	m_pUp->SetVtx();
 
+	// さざ波ポリゴンの設定
+	D3DXVECTOR3 posRipple = GetPosition();
+	posRipple.y -= HEIGHT_ICE;
+	m_pRipple->SetPosition(posRipple);
 	m_pRipple->SetRadius(fRadius * 0.7f);
 
 	// サイドのシリンダーの設定
