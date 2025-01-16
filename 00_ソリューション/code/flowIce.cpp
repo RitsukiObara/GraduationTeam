@@ -196,7 +196,7 @@ void CFlowIce::StopAllIce(void)
 
 	for (auto it : m_apIce)
 	{
-		if (pIceManager->IsIceInGrid(it))
+		if (!pIceManager->IsIceInGrid(it))
 			continue;
 
 		pIceManager->AddIce(it, it->GetPosition());

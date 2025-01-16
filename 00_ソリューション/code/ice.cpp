@@ -1164,6 +1164,17 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 	if (pIceManager == nullptr)
 		return;
 
+	// グリッド内かのチェック
+	if (!pIceManager->GetIdxGridFromPosition(pIce->GetPosition(), &nIdxV, &nIdxH, 1.0f))
+		return;
+
+	if (pIceManager->GetGridIce(&nIdxV, &nIdxH) != nullptr)
+	{// 既にその場に氷があったら通常状態に移行
+		pIceManager->AddIce(pIce, pIce->GetPosition());
+		pIce->ChangeState(new CIceStaeteNormal);
+		return;
+	}
+
 	D3DXVECTOR3 posIce = pIce->GetPosition();
 	pIceManager->GetNearestEmptyGrid(posIce - m_vecStream, &nIdxV, &nIdxH);
 
@@ -1185,13 +1196,6 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 	// 漂着する氷があったら、フラグを立てて漂着グリッド番号を保存
 	if (m_nIdxDriftV == -1 || m_nIdxDriftH == -1)
 		return;
-
-	if (pIceManager->GetGridIce(&nIdxV, &nIdxH) != nullptr)
-	{// 既にその場に氷があったら通常状態に移行
-		pIceManager->AddIce(pIce,pIce->GetPosition());
-		pIce->ChangeState(new CIceStaeteNormal);
-		return;
-	}
 	
 	vector<CIce*> apIceHit;
 	bool bHit = (this->*directionFuncs[stream])(pIce, m_nIdxDriftV, m_nIdxDriftH, apIceHit);
