@@ -40,6 +40,8 @@ public:
 		TYPE_LANDING,		// ’…’n
 		TYPE_ICEJUMP,		// ’…•X
 		TYPE_SMALLRIPLE,	// ¬‚³‚¢‚³‚´”g
+		TYPE_ICESPARK,		// •X‚Ì‚©‚¯‚ç
+		TYPE_SPARK,			// •X‚Ì‰Î‰Ô
 		TYPE_MAX
 	};
 
