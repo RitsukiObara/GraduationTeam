@@ -109,9 +109,6 @@ void CIceHardMulti::Update(void)
 	// 継承クラスの更新
 	CIceHard::Update();
 
-	if (CGame::GetState() != CGame::E_State::STATE_NORMAL)
-		return;
-
 	// プレイヤーが乗ってる判定
 	IsOnPlayer();
 
@@ -127,6 +124,9 @@ void CIceHardMulti::Update(void)
 //=====================================================
 void CIceHardMulti::IsOnPlayer(void)
 {
+	if (CGame::GetState() != CGame::E_State::STATE_NORMAL)
+		return;
+
 	// 配列のクリア
 	m_apPlayerJump.clear();
 

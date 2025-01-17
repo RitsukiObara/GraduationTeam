@@ -13,6 +13,7 @@
 #include "ice.h"
 #include "flowIce.h"
 #include "manager.h"
+#include "game.h"
 #include "debugproc.h"
 
 //*****************************************************
@@ -193,6 +194,11 @@ void CFlowIceFct::Uninit(void)
 //=====================================================
 void CFlowIceFct::Update(void)
 {
+	// ゲーム中にの通常状態のみ更新が通る
+	if (CGame::GetInstance() != nullptr && 
+		CGame::GetState() != CGame::E_State::STATE_NORMAL)
+		return;
+
 	// 経過時間加算
 	m_fTimerCreateFlowIce += CManager::GetDeltaTime();
 

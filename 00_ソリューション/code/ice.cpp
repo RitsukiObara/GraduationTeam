@@ -26,6 +26,7 @@
 #include "player.h"
 #include "MyEffekseer.h"
 #include "collision.h"
+#include "game.h"
 #include "debugproc.h"
 
 //*****************************************************
@@ -1084,6 +1085,11 @@ void CIceStateFlow::Update(CIce *pIce)
 //=====================================================
 void CIceStateFlow::UpdateSearchIce(CIce *pIce)
 {
+	// ƒQ[ƒ€’†‚É‚Ì’Êíó‘Ô‚Ì‚İXV‚ª’Ê‚é
+	if (CGame::GetInstance() != nullptr &&
+		CGame::GetState() != CGame::E_State::STATE_NORMAL)
+		return;
+
 	CIceManager *pIceManager = CIceManager::GetInstance();
 
 	if (pIceManager == nullptr)
