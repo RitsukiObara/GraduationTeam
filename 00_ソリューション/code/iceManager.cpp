@@ -885,10 +885,10 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 	int nIdxV = -1;
 	int nIdxH = -1;
 	
-	GetIdxGridFromPosition(pos, &nIdxV, &nIdxH);
+	GetIdxGridFromPosition(pos, &nIdxV, &nIdxH,1.0f);
 
 	if (nIdxV == -1 && nIdxH == -1)
-	{
+	{// エリア外判定
 		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_ICEBREAK, pos);
 		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_RIPPLE, pos);
 		DeleteIce(pIce);
@@ -896,17 +896,7 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 		return;
 	}
 
-	bool bOk = SetIceInGrid(nIdxV, nIdxH, pIce);
-
-	if (!bOk)
-	{// グリッドに無かったら壊す
-		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_ICEBREAK, pos);
-		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_RIPPLE, pos);
-		DeleteIce(pIce);
-		pIce->Uninit();
-		return;
-	}
-
+	// 氷のセット
 	DeleteIce(pIce);
 	GetNearestEmptyGrid(pos, &nIdxV, &nIdxH);
 	SetIceInGrid(nIdxV, nIdxH, pIce);
