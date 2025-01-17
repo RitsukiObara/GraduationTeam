@@ -78,9 +78,6 @@ HRESULT CGameManagerMulti::Init(void)
 	// カメラのステイト設定
 	Camera::ChangeState(new CMultiGame);
 
-	// 基底クラスの初期化
-	CGameManager::Init();
-
 	for (int i = 0; i < (int)abFrag.size(); i++)
 	{
 		if (!abFrag[i])
@@ -97,6 +94,9 @@ HRESULT CGameManagerMulti::Init(void)
 
 		pPlayer->ShowNumber();
 	}
+
+	// 基底クラスの初期化
+	CGameManager::Init();
 
 	// 全プレイヤーの入力割り当て
 	CPlayer::BindInputAllPlayer();
