@@ -112,7 +112,7 @@ private:
 
 	// メンバ変数
 	D3DXVECTOR3 m_posDest;	// 目標位置
-	D3DXVECTOR3 m_posInitiial;	// 初期位置位置
+	D3DXVECTOR3 m_posInitial;	// 初期位置位置
 	D3DXVECTOR3 m_vecDiffInitial;	// 初期差分ベクトル
 	float m_fTimerMove;	// 移動タイマー
 	CResultSingle *m_pResult;	// リザルトのポインタ

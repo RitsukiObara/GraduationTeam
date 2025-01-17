@@ -18,6 +18,7 @@
 #include "title.h"
 #include "resultSingle.h"
 #include "player.h"
+#include "iceManager.h"
 #include "enemy.h"
 #include "selectStagePenguin.h"
 
@@ -67,8 +68,10 @@ const float SPEED_CLOSE = 0.1f;				// 近づく速度
 //-----------------------------------
 namespace resultSingle
 {
-const D3DXVECTOR3 POS_OFFSET = { 0.0f,100.0f,-500.0f };	// 目標地点のオフセット
-const float SPEED_POSR = 0.1f;							// 注視点の速度
+const D3DXVECTOR3 POS_OFFSET = { 0.0f,100.0f,-500.0f };			// 目標地点のオフセット
+const float SPEED_POSR = 0.1f;									// 注視点の速度
+const D3DXVECTOR3 POS_OFFSET_GRID = { 0.0f,300.0f,-500.0f };	// グリッド地点のオフセット
+
 }
 
 //-----------------------------------
@@ -396,7 +399,7 @@ void CCameraResultSingle::DecidePosDest(CCamera* pCamera)
 	CCamera::Camera *pInfoCamera = pCamera->GetCamera();
 
 	// カメラ現在地を初期位置に設定
-	m_posInitiial = pInfoCamera->posV;
+	m_posInitial = pInfoCamera->posV;
 
 	//-------------------------------
 	// 目標位置の設定
@@ -407,11 +410,26 @@ void CCameraResultSingle::DecidePosDest(CCamera* pCamera)
 	CPlayer *pPlayer = *apPlayer.begin();
 	assert(pPlayer != nullptr);
 
-	// プレイヤーの位置にオフセットを設定して、目標位置にする
-	m_posDest = pPlayer->GetPosition() + resultSingle::POS_OFFSET;
+	// プレイヤーのグリッド位置にオフセットを設定して、目標位置にする
+	int nIdxV = pPlayer->GetGridV();
+	int nIdxH = pPlayer->GetGridH();
+
+	if (pPlayer->GetState() == CPlayer::E_State::STATE_BLOW)
+	{// 吹き飛ばされたらグリッド基準にする
+		CIceManager *pIceMgr = CIceManager::GetInstance();
+		if (pIceMgr != nullptr)
+		{
+			D3DXVECTOR3 posGrid = pIceMgr->GetGridPosition(&nIdxV, &nIdxH);
+			m_posDest = posGrid + resultSingle::POS_OFFSET;
+		}
+	}
+	else
+	{
+		m_posDest = pPlayer->GetPosition() + resultSingle::POS_OFFSET;
+	}
 
 	// 初期差分ベクトルの設定
-	m_vecDiffInitial = m_posDest - m_posInitiial;
+	m_vecDiffInitial = m_posDest - m_posInitial;
 }
 
 //=====================================================
@@ -455,7 +473,7 @@ void CCameraResultSingle::MoveToPlayerFront(CCamera* pCamera)
 	float fTime = m_fTimerMove / CCameraResultSingle::TIME_MOVE;
 	float fRate = easing::EaseOutExpo(fTime);
 
-	pInfoCamera->posV = m_posInitiial + m_vecDiffInitial * fRate;
+	pInfoCamera->posV = m_posInitial + m_vecDiffInitial * fRate;
 
 	//-------------------------------
 	// 注視点の移動
