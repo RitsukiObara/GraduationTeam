@@ -452,13 +452,13 @@ bool CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos, bool
 	// 番号を取得
 	GetIceIndex(pIcePeck, &nNumBreakV, &nNumBreakH);
 
-	return PeckIce(nNumBreakV, nNumBreakH, pResultBreak);
+	return PeckIce(nNumBreakV, nNumBreakH, pResultBreak,nNumV,nNumH);
 }
 
 //=====================================================
 // 番号でつっつく処理
 //=====================================================
-bool CIceManager::PeckIce(int nIdxV, int nIdxH, bool *pResultBreak)
+bool CIceManager::PeckIce(int nIdxV, int nIdxH, bool *pResultBreak, int nIdxStandV, int nIdxStandH)
 {
 	if (nIdxV < 0 || nIdxV >= m_nNumGridVirtical ||
 		nIdxH < 0 || nIdxH >= m_nNumGridHorizontal)
@@ -477,8 +477,19 @@ bool CIceManager::PeckIce(int nIdxV, int nIdxH, bool *pResultBreak)
 	// 番号を取得
 	GetIceIndex(pIcePeck, &nNumBreakV, &nNumBreakH);
 
-	// 突っつける氷かのチェック
-	if (CanPeck(pIcePeck, nNumBreakV, nNumBreakH) != PECK_OK)
+	// 乗っている判定を自身のものと行っていない場合、つっつける
+	CIceManager::E_PeckResult resultPeck = CanPeck(pIcePeck, nNumBreakV, nNumBreakH);
+
+	if (nIdxStandV != -1 && nIdxStandH != -1)
+	{// 立っている番号があるとき、例外処理を行う
+		if (resultPeck == CIceManager::E_PeckResult::PECK_TOPANYOBJECT &&
+			(nIdxStandV != nIdxV || nIdxStandH != nIdxH))
+		{
+			resultPeck = CIceManager::E_PeckResult::PECK_OK;
+		}
+	}
+
+	if (resultPeck != PECK_OK)
 		return false;
 
 	// 氷を突っついた判定にする

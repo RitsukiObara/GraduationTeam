@@ -74,7 +74,7 @@ public:
 	void StopIce(CIce *pIce);	// •X‚Ì’âŽ~
 	E_PeckResult CheckPeck(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, E_Direction *pDir = nullptr,CIce **ppIce = nullptr);	// •X‚ð‚Â‚Â‚¯‚é‚©‚Ìƒ`ƒFƒbƒN
 	bool PeckIce(int nNumV, int nNumH, float fRot, D3DXVECTOR3 pos, bool *bResultBreak = nullptr);	// •X‚ð‚Â‚Â‚­
-	bool PeckIce(int nIdxV, int nIdxH, bool *bResultBreak = nullptr);	// •X‚ð‚Â‚Â‚­
+	bool PeckIce(int nIdxV, int nIdxH, bool *bResultBreak = nullptr,int nIdxStandV = -1, int nIdxStandH = -1);	// •X‚ð‚Â‚Â‚­
 	void AddIce(CIce *pIce, D3DXVECTOR3 pos);	// •X‚Ì’Ç‰Á
 	bool FindIce(int nNumV, int nNumH, int nIdx,CIce *pIceStand,vector<CIce*> apIceLast,bool bBreak);	// ƒAƒCƒX‚Ì”­Œ©
 	vector<CIce*> GetAroundIce(int nNumV, int nNumH);	// Žü•Ó‚Ì•X‚ðŽæ“¾
