@@ -115,7 +115,7 @@ void CBgIce::Draw(void)
 //=====================================================
 void CBgIce::Load(char* pPath)
 {
-	//•Ï”éŒ¾
+	// •Ï”éŒ¾
 	char cTemp[MAX_STRING];
 
 	D3DXVECTOR3 pos;

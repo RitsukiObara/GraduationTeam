@@ -1351,6 +1351,11 @@ void CPlayer::ManageMotion(void)
 		else if (nMotion != MOTION::MOTION_BLOW)
 			SetMotion(MOTION::MOTION_BLOW);
 	}
+	else if (CGame::GetInstance() != nullptr && CGame::GetState() == CGame::E_State::STATE_RESULT)
+	{// èüóòÉÇÅ[ÉVÉáÉì
+		if (nMotion != MOTION_VICTORY)
+			SetMotion(MOTION_VICTORY);
+	}
 	else if (nMotion == MOTION::MOTION_MULTIAPPEAR && !bFinish)
 	{
 

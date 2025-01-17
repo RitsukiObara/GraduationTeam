@@ -186,9 +186,10 @@ HRESULT CIce::Init(void)
 //=====================================================
 void CIce::CreateMesh(void)
 {
+	// 上のメッシュ
 	if (m_pUp == nullptr)
 	{
-		m_pUp = CFan3D::Create(4, NUM_CORNER);
+		m_pUp = CFan3D::Create(3, NUM_CORNER);
 
 		if (m_pUp != nullptr)
 		{
@@ -201,8 +202,10 @@ void CIce::CreateMesh(void)
 		}
 	}
 
+	// さざ波の生成
 	CreateRipple();
 
+	// 側面のポリゴンの生成
 	if (m_pSide == nullptr)
 	{
 		m_pSide = CMeshCylinder::Create(NUM_CORNER);
@@ -210,6 +213,7 @@ void CIce::CreateMesh(void)
 		m_pSide->SetIdxTexture(nIdxTexture);
 	}
 
+	// トランスフォームの設定
 	SetTransform(Grid::SIZE);
 }
 
