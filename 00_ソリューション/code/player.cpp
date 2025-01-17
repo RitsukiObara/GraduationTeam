@@ -945,13 +945,22 @@ void CPlayer::InputPeck(void)
 	}
 	else
 	{// “Ë‚Á‚Â‚¯‚È‚¢‚Æ‚«
-		if (pr == CIceManager::PECK_UNBREAKABLE || pr == CIceManager::PECK_TOPANYOBJECT)
-		{// ‰ó‚¹‚È‚¢‚©‰½‚©‚µ‚çæ‚Á‚Ä‚¢‚é
+		if (pr == CIceManager::PECK_TOPANYOBJECT)
+		{// ‰½‚©‚µ‚çæ‚Á‚Ä‚¢‚é
 			// ƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚Ä‚à’e‚©‚ê‚é
 			if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_PECK))
 				SetMotion(MOTION::MOTION_CANNOTPECK);
 		}
-
+		else if (pr == CIceManager::PECK_UNBREAKABLE)
+		{// ‰ó‚¹‚È‚¢•X‚Ìê‡
+			D3DXVECTOR3 posIce = pIcePeck->GetPosition();
+			// ƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚Ä‚à’e‚©‚ê‚é
+			if (m_pInputMgr->GetTrigger(CInputManager::BUTTON_PECK))
+			{
+				MyEffekseer::CreateEffect(CMyEffekseer::TYPE_SPARK, posIce);
+				SetMotion(MOTION::MOTION_CANNOTPECK);
+			}
+		}
 		// ‰½‚©‚µ‚ç“Ë‚Á‚Â‚¯‚È‚¢ê‡‚Íü‚ðo‚³‚È‚¢
 		if (m_pPeckLine != nullptr)
 			m_pPeckLine->EndMove();

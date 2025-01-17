@@ -1299,6 +1299,7 @@ void CIceManager::BreakPeck(int nNumV, int nNumH)
 			// 沈みパーティクルの発生
 			D3DXVECTOR3 posIce = apIce[i]->GetPosition();
 			CParticle::Create(posIce, CParticle::TYPE::TYPE_BUBBLE_SINK);
+			MyEffekseer::CreateEffect(CMyEffekseer::TYPE_ICESPARK, posIce);
 		}
 	}
 
