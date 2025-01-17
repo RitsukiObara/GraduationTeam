@@ -389,7 +389,16 @@ CIceManager::E_PeckResult CIceManager::CheckPeck(int nNumV, int nNumH, float fRo
 	GetIceIndex(pIcePeck, &nNumBreakV, &nNumBreakH);
 
 	// 突っつける氷かのチェック
-	return CanPeck(pIcePeck, nNumBreakV, nNumBreakH);
+	CIceManager::E_PeckResult resultPeck = CanPeck(pIcePeck, nNumBreakV, nNumBreakH);
+
+	// 乗っている判定を自身のものと行っていない場合、つっつける
+	if (resultPeck == CIceManager::E_PeckResult::PECK_TOPANYOBJECT && 
+		(nNumBreakV != nNumV || nNumBreakH != nNumH))
+	{
+		resultPeck = CIceManager::E_PeckResult::PECK_OK;
+	}
+
+	return resultPeck;
 }
 
 //=====================================================

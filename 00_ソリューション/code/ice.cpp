@@ -34,28 +34,27 @@
 //*****************************************************
 namespace
 {
-const string PATH_TEX = "data\\TEXTURE\\MATERIAL\\ice001.jpg";				// テクスチャパス
+const string PATH_TEX = "data\\TEXTURE\\MATERIAL\\ice001.jpg";					// テクスチャパス
 const string PATH_TEX_OVERRAY = "data\\TEXTURE\\MATERIAL\\iceanimation.jpg";	// オーバレイテクスチャパス
-const string PATH_TEX_RIPPLE = "data\\TEXTURE\\EFFECT\\ice002.png";	// さざ波のテクスチャパス
-const float SIZE_INIT = 100.0f;	// 初期サイズ
-const float HEIGHT_ICE = 50.0f;	// 氷の高さ
-const int NUM_CORNER = 6;	// 角の数
+const string PATH_TEX_RIPPLE = "data\\TEXTURE\\EFFECT\\ice002.png";				// さざ波のテクスチャパス
+const float SIZE_INIT = 100.0f;									// 初期サイズ
+const float SIZE_COLLIDE = 200.0f;								// 判定サイズの初期値
+const float HEIGHT_ICE = 50.0f;									// 氷の高さ
+const int NUM_CORNER = 6;										// 角の数
 const D3DXVECTOR3 ROT_UP_INIT = { D3DX_PI * 0.5f,0.0f,0.0f };	// 上側の初期向き
 
-const float TIME_REPAIR_ICE = 13.0f;	// 氷の修復にかかる時間
-const int MAX_SCALE = 50; // スケールの最大値
-const int MIN_SCALE = 20; // スケールの最小値
+const float TIME_REPAIR_ICE = 13.0f;									// 氷の修復にかかる時間
+const int MAX_SCALE = 50;												// スケールの最大値
+const int MIN_SCALE = 20;												// スケールの最小値
 const string PATH_ICE_DEBRIS = "data\\MODEL\\block\\Drift_ice_piece.x";	// 破片氷のモデルパス
-const float SPEED_SINK = 5.0f;	// 沈む速度
-const float HEIGHT_DELETE = -100.0f;	// 削除するまでの高さ
+const float SPEED_SINK = 5.0f;											// 沈む速度
+const float HEIGHT_DELETE = -100.0f;									// 削除するまでの高さ
 
-const float HEIGHT_DEFAULT_FROM_OCEAN = 50.0f;	// 海からのデフォルトの高さ
+const float HEIGHT_DEFAULT_FROM_OCEAN = 50.0f;		// 海からのデフォルトの高さ
 const float HEIGHT_NORMALSINK_FROM_OCEAN = 10.0f;	// 海からの通常沈む高さ
 
 const float LINE_STOP_ICE = 1.0f;	// 氷が止まるしきい値
-
 const float TIME_MAXSPEED = 10.0f;	// 最大速度になるまでの時間
-
 const float RATE_COLLISION = 1.0f;	// 判定の割合
 //------------------------------
 // 傾きの定数
@@ -415,7 +414,7 @@ bool CIce::IsOnTopAnyObject(void)
 {
 	vector<CGameObject*> apObject;
 
-	GetOnTopObject(apObject);
+	GetOnTopObject(apObject,1.2f);
 
 	// 上にどれかが乗ってたら真を返す
 	for (CGameObject* object : apObject)
@@ -423,7 +422,7 @@ bool CIce::IsOnTopAnyObject(void)
 		D3DXVECTOR3 posObject = object->GetPosition();
 		D3DXVECTOR3 pos = GetPosition();
 
-		if (universal::DistCmpFlat(pos, posObject, SIZE_INIT, nullptr))
+		if (universal::DistCmpFlat(pos, posObject, SIZE_COLLIDE, nullptr))
 		{// 何かが乗ってるので真を返す
 			return true;
 		}
@@ -462,7 +461,6 @@ void CIce::GetOnTopObject(vector<CGameObject*> &rVector, float fRate)
 			rVector.push_back(object);
 		}
 	}
-
 }
 
 //=====================================================
