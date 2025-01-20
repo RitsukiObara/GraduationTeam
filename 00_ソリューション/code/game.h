@@ -18,6 +18,7 @@
 #include "stageResultUI.h"
 #include "pause.h"
 #include "ocean_flow_UI.h"
+#include "resultSingle.h"
 
 //*****************************************************
 // 前方宣言
@@ -78,6 +79,9 @@ public:
 	int GetNumEnemyMax(void) { return m_nNumEnemyMax; }
 	E_GameMode GetGameMode(void) { return m_GameMode; }
 
+	// 静的メンバ関数
+	static void SetResult(CResultSingle::E_Result result) { s_result = result; };
+	static CResultSingle::E_Result GetResult(void) { return s_result; }
 
 private:
 	// メンバ関数
@@ -103,8 +107,9 @@ private:
 	bool m_bPlayTimeLimitSE;			// タイムリミットSEフラグ
 
 	// 静的メンバ変数
-	static E_State m_state;	// 状態
-	static CGame *m_pGame;	// 自身のポインタ
+	static E_State m_state;						// 状態
+	static CGame *m_pGame;						// 自身のポインタ
+	static CResultSingle::E_Result s_result;	// リザルト
 };
 
 namespace game
