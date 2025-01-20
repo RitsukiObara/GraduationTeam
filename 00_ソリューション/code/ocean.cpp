@@ -188,10 +188,10 @@ void COcean::SetNextOceanRot(void)
 		return;
 
 	// Œü‚«•ÏX
-	do
-	{
-		m_nRandNextKeep = universal::RandRange(COcean::E_Stream::STREAM_MAX, COcean::E_Stream::STREAM_UP);
-	} while (m_nRandKeep == m_nRandNextKeep);	// Ÿ‚ÌŒü‚«‚ª•Ï‚í‚é‚Ü‚Å—”‚ğ‰ñ‚·
+	m_nRandNextKeep = universal::RandRange(COcean::E_Stream::STREAM_MAX, COcean::E_Stream::STREAM_UP);
+
+	if(m_nRandKeep == m_nRandNextKeep)
+		m_nRandNextKeep = (COcean::E_Stream)((m_nRandNextKeep + 1) % COcean::E_Stream::STREAM_MAX);
 
 	// •ÏXŠÔİ’è
 	m_fRotChangeTime = OCEAN_ROT_CHANGE_TIME_DEFAULT + (float)universal::RandRange(OCEAN_ROT_CHANGE_TIME_DEGREE, 0);
