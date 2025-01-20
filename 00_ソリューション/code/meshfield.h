@@ -19,7 +19,7 @@
 class CMeshField : public CObject3D
 {
 public:
-	CMeshField(int nPriority = 3);	// コンストラクタ
+	CMeshField(int nPriority = 2);	// コンストラクタ
 	~CMeshField();	// デストラクタ
 
 	typedef struct

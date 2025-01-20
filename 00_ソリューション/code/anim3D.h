@@ -19,7 +19,7 @@
 class CAnim3D : public CPolygon3D
 {
 public:
-	CAnim3D(int nPriority = 6);	// コンストラクタ
+	CAnim3D(int nPriority = 4);	// コンストラクタ
 	~CAnim3D();	// デストラクタ
 
 	static CAnim3D *Create(D3DXVECTOR3 pos, int nNumAnim, int nTimeAnim, bool bLoop = false);

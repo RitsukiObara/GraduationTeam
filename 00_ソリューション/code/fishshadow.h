@@ -28,7 +28,7 @@ const float TIME_APPER = DELAY_AFTER_VANISH + TIME_VANISH;	// 魚影が出る時間
 class CFishShadow : public CAnim3D
 {
 public:
-	CFishShadow(int nPriority = 3);	// コンストラクタ
+	CFishShadow(int nPriority = 2);	// コンストラクタ
 	~CFishShadow();	// デストラクタ
 
 	HRESULT Init(void);
