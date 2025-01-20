@@ -485,7 +485,7 @@ bool CIceManager::PeckIce(int nIdxV, int nIdxH, bool *pResultBreak, int nIdxStan
 		if (resultPeck == CIceManager::E_PeckResult::PECK_TOPANYOBJECT &&
 			(nIdxStandV != nIdxV || nIdxStandH != nIdxH))
 		{
-			resultPeck = CIceManager::E_PeckResult::PECK_OK;
+			//resultPeck = CIceManager::E_PeckResult::PECK_OK;
 		}
 	}
 

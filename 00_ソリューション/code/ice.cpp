@@ -414,7 +414,7 @@ bool CIce::IsOnTopAnyObject(void)
 {
 	vector<CGameObject*> apObject;
 
-	GetOnTopObject(apObject,1.2f);
+	GetOnTopObject(apObject,1.5f);
 
 	// ã‚É‚Ç‚ê‚©‚ªæ‚Á‚Ä‚½‚ç^‚ğ•Ô‚·
 	for (CGameObject* object : apObject)

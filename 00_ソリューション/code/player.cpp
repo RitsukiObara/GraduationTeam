@@ -51,8 +51,8 @@ const float FACT_ROTATION_TURN = 0.2f;	// U‚èŒü‚«‰ñ“]ŒW”
 
 const float RANGE_ROT_FORWARD = D3DX_PI * 2 / CIceManager::E_Direction::DIRECTION_MAX;	// ‘Oi‚·‚é‚Ì‚É”»’f‚·‚éŠp“x
 
-const float DEATH_VIBRATION_POWER = 0.7f;	// Ž€–SŽž‚ÌU“®‹­‚³
-const int DEATH_VIBRATION_TIME = 30;			// Ž€–SŽž‚ÌU“®ŽžŠÔ
+const float DEATH_VIBRATION_POWER = 0.6f;	// Ž€–SŽž‚ÌU“®‹­‚³
+const int DEATH_VIBRATION_TIME = 30;		// Ž€–SŽž‚ÌU“®ŽžŠÔ
 
 const float PECK_VIBRATION_POWER = 0.5f;	// Š„‚éŽž‚ÌU“®‹­‚³
 const int PECK_VIBRATION_TIME = 10;			// Š„‚éŽž‚ÌU“®ŽžŠÔ
@@ -60,7 +60,7 @@ const int PECK_VIBRATION_TIME = 10;			// Š„‚éŽž‚ÌU“®ŽžŠÔ
 const float POW_VIB_BREAK = 0.8f;	// ‰ó‚µ‚½Žž‚ÌU“®‹­‚³
 const int TIME_VIB_BREAK = 50;		// ‰ó‚µ‚½Žž‚ÌU“®ŽžŠÔ
 
-const float POW_VIB_FLOW = 0.7f;	// —¬‚³‚ê‚Ä‚éŽž‚ÌU“®‹­‚³
+const float POW_VIB_FLOW = 0.5f;	// —¬‚³‚ê‚Ä‚éŽž‚ÌU“®‹­‚³
 const int TIME_VIB_FLOW = 10;		// —¬‚³‚ê‚Ä‚éŽž‚ÌU“®ŽžŠÔ
 
 const float GRAVITY = 0.98f;	// d—Í
