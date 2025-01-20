@@ -748,6 +748,9 @@ bool CPlayer::CheckGridChange(void)
 //=====================================================
 bool CPlayer::StartFlows(void)
 {
+	if (m_state == E_State::STATE_BLOW)
+		return false;
+
 	if (FindFlowIce())
 	{// 漂流する氷が見つかれば、漂流状態へ移行
 		m_state = E_State::STATE_FLOW;
@@ -793,8 +796,19 @@ bool CPlayer::FindFlowIce(void)
 			if(nIdxPlayerV == nIdxIceV && nIdxPlayerH == nIdxIceH)
 			{// どれかに乗っていたら現在のシステムを保存して関数を終了
 				m_pLandSystemFlow = itSystem;
-
 				return true;
+			}
+			else
+			{// 番号が一致しないが、距離は近い場合
+				// 一定距離以内ならシステムの保存
+				D3DXVECTOR3 posIce = itIce->GetPosition();
+				D3DXVECTOR3 posPlayer = GetPosition();
+
+				if (universal::DistCmpFlat(posPlayer, posIce, Grid::SIZE * 0.5f, nullptr))
+				{
+					m_pLandSystemFlow = itSystem;
+					return true;
+				}
 			}
 		}
 	}
@@ -1218,6 +1232,10 @@ void CPlayer::JumpToDest(CIce *pIceDest, float fHeightJump)
 	// 高さを反映
 	D3DXVECTOR3 pos = posPlayer;
 	pos.y = m_posInitJump.y + fHeight;
+
+	if (pos.y < posIce.y)
+		pos.y = posIce.y;
+
 	SetPosition(pos);
 }
 
@@ -1312,6 +1330,9 @@ void CPlayer::EndBlow(void)
 	// ジャンプフラグを折る
 	m_bEnableJump = false;
 	m_fragMotion.bJump = false;
+
+	// 漂流の開始チェック
+	StartFlows();
 }
 
 //=====================================================
@@ -1617,9 +1638,6 @@ void CPlayer::CheckStartDriftAll(void)
 	{
 		int nIdxV = -1;
 		int nIdxH = -1;
-
-		/*if (!pIceMgr->GetIdxGridFromPosition(pPlayer->GetPosition(), &nIdxV, &nIdxH))
-			continue;*/
 
 		if (pIceMgr->GetGridIce(&nIdxV, &nIdxH) != nullptr)
 			continue;
