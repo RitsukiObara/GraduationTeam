@@ -55,7 +55,7 @@ public:
 		MODE_MAX
 	};
 
-	CGame();	// コンストラクタ
+	CGame();		// コンストラクタ
 	~CGame() {};	// デストラクタ
 
 	static CGame *GetInstance(void) { return m_pGame; }
