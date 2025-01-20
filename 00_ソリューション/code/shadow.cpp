@@ -23,6 +23,10 @@ const D3DXCOLOR COL_INIT = { 0.0f,0.0f,0.0f,1.0f };				// 初期色
 const string PATH_TEX = "data\\TEXTURE\\EFFECT\\effect000.png";	// テクスチャパス
 
 const float RATE_COLLIDE_ICE = 1.0f;	// 氷との判定の割合
+
+const float RATE_RADIUS_HEIGHT = 0.15f;		// 高さによる半径の変化幅
+const float RATE_DENSITY_HEIGHT = 0.002f;	// 高さによる濃さの変化幅
+const float MINDENSITY = 0.1f;				// 濃さの最低値
 }
 
 //*****************************************************
@@ -63,6 +67,7 @@ HRESULT CShadow::Init(void)
 	SetIdxTexture(nIdxTexture);
 
 	// サイズ設定
+	m_fRadiusInitial = SIZE_INIT;
 	SetSize(SIZE_INIT, SIZE_INIT);
 	SetVtx();
 
@@ -149,6 +154,32 @@ void CShadow::SetPosition(D3DXVECTOR3 pos)
 
 	if (!CollideIce())	// 氷に当たらなかったら海との判定を行う
 		CollideOcean();
+
+	SetRadiusHeight(pos, GetPosition());
+}
+
+//=====================================================
+// 高さによる半径の設定
+//=====================================================
+void CShadow::SetRadiusHeight(D3DXVECTOR3 pos, D3DXVECTOR3 posNew)
+{
+	float fHeightDiff = pos.y - posNew.y;
+	float fRadius = SIZE_INIT;
+
+	// 高さによる半径の計算
+	fRadius += fHeightDiff * RATE_RADIUS_HEIGHT;
+
+	// 半径反映
+	SetSize(fRadius, fRadius);
+	SetVtx();
+
+	// 濃さの計算
+	float fDensity = 1.0f;
+	fDensity -= fHeightDiff * RATE_DENSITY_HEIGHT;
+
+	universal::LimitValuefloat(&fDensity, 1.0f, MINDENSITY);
+
+	SetAlpha(fDensity);
 }
 
 //=====================================================
