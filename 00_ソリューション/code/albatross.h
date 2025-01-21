@@ -45,9 +45,12 @@ private:
 		MOTION_MAX
 	};
 
+	// ƒƒ“ƒoŠÖ”
+	void ChangeHead(void);	// “ª‚ğ•Ï‚¦‚é
 	void Stream(COcean::E_Stream dir);
 	void CheckPlaySE(void);	// –Â‚«º—¬‚·
 
+	// ƒƒ“ƒo•Ï”
 	D3DXVECTOR3 m_Move;		// ˆÚ“®—Ê
 	float m_fPlaySETime;	// –Â‚«º—¬‚·ŠÔ
 };

@@ -20,15 +20,17 @@
 //*****************************************************
 namespace
 {
-	const std::string PATH_BODY = "data\\MOTION\\motionAlbatross.txt";	// アホウドリのパス
+const std::string PATH_BODY = "data\\MOTION\\motionAlbatross.txt";				// アホウドリのパス
+const std::string PATH_BODY_OBARA = "data\\MOTION\\motionAlbatrossObara.txt";	// 小原アホウドリのパス
 
-	const float HEIGHT_APPER = 400.0f;	// 出現時の高さ
-	const float WIDTH_APPER = 340.0f;	// 出現時の横のずれ
-	const float POS_X = 1750.0f;	// アホウドリの出現位置X
-	const float POS_Z = 1300.0f;	// アホウドリの出現位置Z
-	const float POS_Y = 500.0f;	// アホウドリの出現位置Y
+const float HEIGHT_APPER = 400.0f;	// 出現時の高さ
+const float WIDTH_APPER = 340.0f;	// 出現時の横のずれ
+const float POS_X = 1750.0f;	// アホウドリの出現位置X
+const float POS_Z = 1300.0f;	// アホウドリの出現位置Z
+const float POS_Y = 500.0f;	// アホウドリの出現位置Y
 
-	const float PLAYSE_TIME = 1.2f;	// 鳴き声流す間隔
+const float PLAYSE_TIME = 1.2f;	// 鳴き声流す間隔
+const float RATE_OBARA = 0.03f;	// 小原になる確率
 }
 
 //=====================================================
@@ -117,7 +119,21 @@ HRESULT CAlbatross::Init(void)
 
 	SetMotion(MOTION_FLY);
 
+	// 頭を変える処理
+	ChangeHead();
+
 	return S_OK;
+}
+
+//=====================================================
+// 頭を変える処理
+//=====================================================
+void CAlbatross::ChangeHead(void)
+{
+	float fRate = (float)rand() / (float)RAND_MAX;
+
+	if(fRate < RATE_OBARA)
+		ReLoadModel(&PATH_BODY_OBARA[0]);
 }
 
 //=====================================================
