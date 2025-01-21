@@ -37,7 +37,8 @@
 //*****************************************************
 namespace
 {
-const float SIZE_UI_PLAYERNUMBER = 0.05f;	// プレイヤーナンバーUIのサイズ
+const float SIZE_WIDTH_PLAYERNUMBER = 0.05f;	// プレイヤーナンバーUIのサイズ(幅)
+const float SIZE_HEIGHT_PLAYERNUMBER = 0.07f;	// プレイヤーナンバーUIのサイズ(高さ)
 const float HEIGHT_UI_PLAYERNUMBER = 0.8f;	// プレイヤーナンバーUIの位置の高さ
 
 const string PATH_UI_STANDBY = "data\\TEXTURE\\UI\\standby.png";		// スタンドバイテクスチャのパス
@@ -135,7 +136,7 @@ HRESULT CPlayerSelect::Init(void)
 		m_apPlayerUI[nCount] = CUI::Create();
 		if (m_apPlayerUI[nCount] != nullptr)
 		{
-			m_apPlayerUI[nCount]->SetSize(SIZE_UI_PLAYERNUMBER, SIZE_UI_PLAYERNUMBER);
+			m_apPlayerUI[nCount]->SetSize(SIZE_WIDTH_PLAYERNUMBER, SIZE_HEIGHT_PLAYERNUMBER);
 			m_apPlayerUI[nCount]->SetPosition(D3DXVECTOR3(0.1f + fRateOnePlayer * nCount, HEIGHT_UI_PLAYERNUMBER, 0.0f));
 			m_apPlayerUI[nCount]->SetTex(D3DXVECTOR2(0.0f + fRateOnePlayer * nCount, 0.0f), D3DXVECTOR2(fRateOnePlayer + fRateOnePlayer * nCount, 1.0f));
 			m_apPlayerUI[nCount]->SetIdxTexture(nIdx[0]);

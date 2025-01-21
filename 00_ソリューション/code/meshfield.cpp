@@ -62,6 +62,8 @@ CMeshField::CMeshField(int nPriority) : CObject3D(nPriority)
 	m_nDivNumU = 0;
 	m_nDivNumV = 0;
 	m_fOceanSpeed = 0.0f;
+	m_fAcceleOcean = 0.0f;
+	m_fMaxSpeed = 0.0f;
 	m_eOcean_Speed_State = OCEAN_STATE_NONE;
 	m_col = { 0.0f,0.0f,0.0f,0.0f };
 }
@@ -108,6 +110,8 @@ HRESULT CMeshField::Init(void)
 	m_nDivNumV = MESH_V;
 	m_col = { 1.0f,1.0f,1.0f,1.0f };
 	m_fOceanSpeed = OCEAN_SPEED;
+	m_fMaxSpeed = OCEAN_SPEED_MAX;
+	m_fAcceleOcean = OCEAN_SPEED_UP;
 
 	// “Çˆ—
 	Load("data\\BYNARY\\field00.bin");
@@ -861,7 +865,7 @@ void CMeshField::Wave(float fRot)
 	// ŠC—¬‚Ì‘¬“x‚ªã‚ª‚Á‚Ä‚¢‚éó‘Ô‚Ì
 	if (m_eOcean_Speed_State == OCEAN_STATE_UP)
 	{
-		oceanSpeed += OCEAN_SPEED_UP;
+		oceanSpeed += m_fAcceleOcean;
 
 		if (nOceanRot != nOceanRotNext)
 		{
@@ -873,7 +877,7 @@ void CMeshField::Wave(float fRot)
 	// ŠC—¬‚Ì‘¬“x‚ª‰º‚ª‚Á‚Ä‚¢‚éó‘Ô‚Ì
 	if (m_eOcean_Speed_State == OCEAN_STATE_DOWN)
 	{
-		oceanSpeed -= OCEAN_SPEED_DOWN;
+		oceanSpeed -= m_fAcceleOcean * 2;
 	}
 
 	if (oceanSpeed < 0.0f)
@@ -881,7 +885,7 @@ void CMeshField::Wave(float fRot)
 		m_eOcean_Speed_State = OCEAN_STATE_UP;
 	}
 
-	if (oceanSpeed > OCEAN_SPEED_MAX)
+	if (oceanSpeed > m_fMaxSpeed)
 	{
 		m_eOcean_Speed_State = OCEAN_STATE_NONE;
 	}

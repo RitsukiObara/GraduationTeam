@@ -1335,6 +1335,7 @@ void CIceManager::Debug(void)
 
 	pDebugProc->Print("\n•X‚Ìî•ñ=====================");
 	pDebugProc->Print("\n•X‚Ì‘”[%d]", CIce::GetNumAll());
+	pDebugProc->Print("\nŠC—¬ƒŒƒxƒ‹[%f]", m_fOceanLevel);
 
 	CInputKeyboard *pKeyboard = CInputKeyboard::GetInstance();
 

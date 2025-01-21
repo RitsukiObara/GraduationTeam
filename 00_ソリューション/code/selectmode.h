@@ -42,6 +42,7 @@ public:
 	
 private:
 	// メンバ関数
+	void Input(void);					// 入力
 	void ChangeSelectMode(int move);	// モード移動処理
 	void UpdateSelectModeUI(void);		// モードUI見た目更新処理
 

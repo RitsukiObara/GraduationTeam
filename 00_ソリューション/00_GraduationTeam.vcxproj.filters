@@ -31,9 +31,6 @@
     <Filter Include="ソース ファイル\mesh">
       <UniqueIdentifier>{2717f949-5acd-4758-8e37-609be8116b51}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\imgui">
-      <UniqueIdentifier>{c130dcf7-147f-46b5-a707-9bb1a60e9d6d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\lib">
       <UniqueIdentifier>{7a9f491c-a4b4-4271-853a-7d91d2787b77}</UniqueIdentifier>
     </Filter>
@@ -144,6 +141,9 @@
     </Filter>
     <Filter Include="ソース ファイル\scene\option">
       <UniqueIdentifier>{5064f572-e7d2-4c43-8249-bcc17352fe4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\input\imgui">
+      <UniqueIdentifier>{c130dcf7-147f-46b5-a707-9bb1a60e9d6d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -262,22 +262,22 @@
       <Filter>ソース ファイル\base</Filter>
     </ClCompile>
     <ClCompile Include="code\backends\imgui_impl_dx9.cpp">
-      <Filter>ソース ファイル\imgui</Filter>
+      <Filter>ソース ファイル\input\imgui</Filter>
     </ClCompile>
     <ClCompile Include="code\backends\imgui_impl_win32.cpp">
-      <Filter>ソース ファイル\imgui</Filter>
+      <Filter>ソース ファイル\input\imgui</Filter>
     </ClCompile>
     <ClCompile Include="code\imgui.cpp">
-      <Filter>ソース ファイル\imgui</Filter>
+      <Filter>ソース ファイル\input\imgui</Filter>
     </ClCompile>
     <ClCompile Include="code\imgui_draw.cpp">
-      <Filter>ソース ファイル\imgui</Filter>
+      <Filter>ソース ファイル\input\imgui</Filter>
     </ClCompile>
     <ClCompile Include="code\imgui_tables.cpp">
-      <Filter>ソース ファイル\imgui</Filter>
+      <Filter>ソース ファイル\input\imgui</Filter>
     </ClCompile>
     <ClCompile Include="code\imgui_widgets.cpp">
-      <Filter>ソース ファイル\imgui</Filter>
+      <Filter>ソース ファイル\input\imgui</Filter>
     </ClCompile>
     <ClCompile Include="code\myLib.cpp">
       <Filter>ソース ファイル\base</Filter>
@@ -645,28 +645,28 @@
       <Filter>ソース ファイル\VFX</Filter>
     </ClInclude>
     <ClInclude Include="code\backends\imgui_impl_dx9.h">
-      <Filter>ソース ファイル\imgui</Filter>
+      <Filter>ソース ファイル\input\imgui</Filter>
     </ClInclude>
     <ClInclude Include="code\backends\imgui_impl_win32.h">
-      <Filter>ソース ファイル\imgui</Filter>
+      <Filter>ソース ファイル\input\imgui</Filter>
     </ClInclude>
     <ClInclude Include="code\imconfig.h">
-      <Filter>ソース ファイル\imgui</Filter>
+      <Filter>ソース ファイル\input\imgui</Filter>
     </ClInclude>
     <ClInclude Include="code\imgui.h">
-      <Filter>ソース ファイル\imgui</Filter>
+      <Filter>ソース ファイル\input\imgui</Filter>
     </ClInclude>
     <ClInclude Include="code\imgui_internal.h">
-      <Filter>ソース ファイル\imgui</Filter>
+      <Filter>ソース ファイル\input\imgui</Filter>
     </ClInclude>
     <ClInclude Include="code\imstb_rectpack.h">
-      <Filter>ソース ファイル\imgui</Filter>
+      <Filter>ソース ファイル\input\imgui</Filter>
     </ClInclude>
     <ClInclude Include="code\imstb_textedit.h">
-      <Filter>ソース ファイル\imgui</Filter>
+      <Filter>ソース ファイル\input\imgui</Filter>
     </ClInclude>
     <ClInclude Include="code\imstb_truetype.h">
-      <Filter>ソース ファイル\imgui</Filter>
+      <Filter>ソース ファイル\input\imgui</Filter>
     </ClInclude>
     <ClInclude Include="code\meshCube.h">
       <Filter>ソース ファイル\mesh</Filter>

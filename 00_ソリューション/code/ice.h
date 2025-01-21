@@ -45,10 +45,10 @@ public:
 	};
 	enum E_TypeShake
 	{// —h‚ê‚ÌŽí—Þ
-		SHAKE_NONE = 0,	// ‰½‚à‚µ‚Ä‚¢‚È‚¢ó‘Ô
+		SHAKE_NONE = 0,		// ‰½‚à‚µ‚Ä‚¢‚È‚¢ó‘Ô
 		SHAKE_SINK_NORMAL,	// ’Êí‚Ì’¾‚Ý
-		SHAKE_SINK_BIG,	// ‘å‚«‚È’¾‚Ý
-		SHAKE_RETURN,	// ’Êí–ß‚è
+		SHAKE_SINK_BIG,		// ‘å‚«‚È’¾‚Ý
+		SHAKE_RETURN,		// ’Êí–ß‚è
 		SHAKE_RETURN_BIG,	// ‘å‚«‚È–ß‚è
 		SHAKE_MAX
 	};
