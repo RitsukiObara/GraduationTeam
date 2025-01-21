@@ -74,6 +74,7 @@ COcean::COcean(int nPriority) : CMeshField(nPriority)
 	m_fProgressTime = 0.0f;
 	m_fRotChangeTime = 0.0f;
 	m_nBgiceCnt = 0;
+	m_fRateLevel = 0.0f;
 }
 
 //=====================================================
@@ -128,6 +129,9 @@ HRESULT COcean::Init(void)
 	// 法線のリセット処理
 	CMeshField::ResetNormal();
 
+	// 海流の強さ初期設定
+	m_fRateLevel = FLOW_LEVEL_MULTIPLY;
+
 	return S_OK;
 }
 
@@ -155,7 +159,7 @@ void COcean::Update(void)
 
 	CMeshField::Update();
 
-	m_fSpeed += FLOW_LEVEL_MULTIPLY * OceanFlowLevel;
+	m_fSpeed += m_fRateLevel * OceanFlowLevel;
 
 	BgIceRotState();
 	//OceanCycleTimer();
@@ -188,10 +192,10 @@ void COcean::SetNextOceanRot(void)
 		return;
 
 	// 向き変更
-	do
-	{
-		m_nRandNextKeep = universal::RandRange(COcean::E_Stream::STREAM_MAX, COcean::E_Stream::STREAM_UP);
-	} while (m_nRandKeep == m_nRandNextKeep);	// 次の向きが変わるまで乱数を回す
+	m_nRandNextKeep = universal::RandRange(COcean::E_Stream::STREAM_MAX, COcean::E_Stream::STREAM_UP);
+
+	if(m_nRandKeep == m_nRandNextKeep)
+		m_nRandNextKeep = (COcean::E_Stream)((m_nRandNextKeep + 1) % COcean::E_Stream::STREAM_MAX);
 
 	// 変更時間設定
 	m_fRotChangeTime = OCEAN_ROT_CHANGE_TIME_DEFAULT + (float)universal::RandRange(OCEAN_ROT_CHANGE_TIME_DEGREE, 0);

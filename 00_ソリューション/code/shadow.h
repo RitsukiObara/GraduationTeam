@@ -30,8 +30,9 @@ public:
 	void Uninit(void) override;
 	void Update(void) override;
 	void Draw(void) override;
-	void SetPosition(D3DXVECTOR3 pos) override;	// 位置の設定
+	void SetPosition(D3DXVECTOR3 pos) override;									// 位置の設定
 	void SetJustPosition(D3DXVECTOR3 pos) { CPolygon3D::SetPosition(pos); };	// 位置の設定
+	void SetRadiusHeight(D3DXVECTOR3 pos, D3DXVECTOR3 posNew);					// 高さによる半径の設定
 
 	// 静的メンバ関数
 	static CShadow *Create(int nPriority = 4);	// 生成処理
@@ -40,6 +41,9 @@ private:
 	// メンバ関数
 	bool CollideIce(void);		// 氷との判定
 	void CollideOcean(void);	// 海との判定
+
+	// メンバ変数
+	float m_fRadiusInitial;	// 初期半径
 };
 
 #endif

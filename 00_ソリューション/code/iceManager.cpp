@@ -395,7 +395,7 @@ CIceManager::E_PeckResult CIceManager::CheckPeck(int nNumV, int nNumH, float fRo
 	if (resultPeck == CIceManager::E_PeckResult::PECK_TOPANYOBJECT && 
 		(nNumBreakV != nNumV || nNumBreakH != nNumH))
 	{
-		resultPeck = CIceManager::E_PeckResult::PECK_OK;
+		//resultPeck = CIceManager::E_PeckResult::PECK_OK;
 	}
 
 	return resultPeck;
@@ -485,7 +485,7 @@ bool CIceManager::PeckIce(int nIdxV, int nIdxH, bool *pResultBreak, int nIdxStan
 		if (resultPeck == CIceManager::E_PeckResult::PECK_TOPANYOBJECT &&
 			(nIdxStandV != nIdxV || nIdxStandH != nIdxH))
 		{
-			resultPeck = CIceManager::E_PeckResult::PECK_OK;
+			//resultPeck = CIceManager::E_PeckResult::PECK_OK;
 		}
 	}
 

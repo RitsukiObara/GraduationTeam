@@ -33,7 +33,6 @@ public:
 		STATE_END,				// I—¹ó‘Ô
 		STATE_MAX
 	};
-
 	// ƒŠƒUƒ‹ƒg‚Ìí—Ş
 	enum E_Result
 	{

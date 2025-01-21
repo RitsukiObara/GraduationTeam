@@ -62,7 +62,8 @@ const int TIME_LIMIT_SE_PLAY_TIME = 10;		// タイムリミットSE流し始める時間
 // 静的メンバ変数宣言
 //*****************************************************
 CGame::E_State CGame::m_state = STATE_NONE;	// 状態
-CGame *CGame::m_pGame = nullptr;	// 自身のポインタ
+CGame *CGame::m_pGame = nullptr;			// 自身のポインタ
+CResultSingle::E_Result CGame::s_result = CResultSingle::E_Result::RESULT_WIN;	// リザルト
 
 //=====================================================
 // コンストラクタ

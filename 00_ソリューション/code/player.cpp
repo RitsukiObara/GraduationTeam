@@ -51,8 +51,8 @@ const float FACT_ROTATION_TURN = 0.2f;	// êUÇËå¸Ç´âÒì]åWêî
 
 const float RANGE_ROT_FORWARD = D3DX_PI * 2 / CIceManager::E_Direction::DIRECTION_MAX;	// ëOêiÇ∑ÇÈÇÃÇ…îªífÇ∑ÇÈäpìx
 
-const float DEATH_VIBRATION_POWER = 0.7f;	// éÄñSéûÇÃêUìÆã≠Ç≥
-const int DEATH_VIBRATION_TIME = 30;			// éÄñSéûÇÃêUìÆéûä‘
+const float DEATH_VIBRATION_POWER = 0.6f;	// éÄñSéûÇÃêUìÆã≠Ç≥
+const int DEATH_VIBRATION_TIME = 30;		// éÄñSéûÇÃêUìÆéûä‘
 
 const float PECK_VIBRATION_POWER = 0.5f;	// äÑÇÈéûÇÃêUìÆã≠Ç≥
 const int PECK_VIBRATION_TIME = 10;			// äÑÇÈéûÇÃêUìÆéûä‘
@@ -60,7 +60,7 @@ const int PECK_VIBRATION_TIME = 10;			// äÑÇÈéûÇÃêUìÆéûä‘
 const float POW_VIB_BREAK = 0.8f;	// âÛÇµÇΩéûÇÃêUìÆã≠Ç≥
 const int TIME_VIB_BREAK = 50;		// âÛÇµÇΩéûÇÃêUìÆéûä‘
 
-const float POW_VIB_FLOW = 0.7f;	// ó¨Ç≥ÇÍÇƒÇÈéûÇÃêUìÆã≠Ç≥
+const float POW_VIB_FLOW = 0.5f;	// ó¨Ç≥ÇÍÇƒÇÈéûÇÃêUìÆã≠Ç≥
 const int TIME_VIB_FLOW = 10;		// ó¨Ç≥ÇÍÇƒÇÈéûÇÃêUìÆéûä‘
 
 const float GRAVITY = 0.98f;	// èdóÕ
@@ -259,11 +259,11 @@ void CPlayer::Update(void)
 	// êÅÇ´îÚÇŒÇµíÜÇÃèàóù
 	StayBlow();
 
-	// ì¸óÕèàóù
-	Input();
-
 	// ïXÇ™Ç»Ç¢îªíË
 	JudgeNoIce();
+
+	// ì¸óÕèàóù
+	Input();
 
 	if (m_state == STATE_FLOW)
 		StayFlow();	// ïYó¨íÜÇÃèàóù
@@ -312,10 +312,10 @@ void CPlayer::JudgeNoIce(void)
 
 	// èÊÇ¡ÇƒÇ¢ÇÈïXÇÃéÊìæ
 	int nIdx;
-	bool bResult = pIceMgr->GetIdxGridFromPosition(GetPosition(),&nIdx, &nIdx);
+	bool bResult = pIceMgr->GetIdxGridFromPosition(GetPosition(),&nIdx, &nIdx,1.3f);
 
-	//if (!bResult)
-		//Hit(0.0f);	// èÊÇ¡ÇƒÇ¢ÇÈïXÇ™Ç»Ç©Ç¡ÇΩÇÁë¶éÄ
+	if (!bResult)
+		Hit(0.0f);	// èÊÇ¡ÇƒÇ¢ÇÈïXÇ™Ç»Ç©Ç¡ÇΩÇÁë¶éÄ
 }
 
 //=====================================================
@@ -748,6 +748,9 @@ bool CPlayer::CheckGridChange(void)
 //=====================================================
 bool CPlayer::StartFlows(void)
 {
+	if (m_state == E_State::STATE_BLOW)
+		return false;
+
 	if (FindFlowIce())
 	{// ïYó¨Ç∑ÇÈïXÇ™å©Ç¬Ç©ÇÍÇŒÅAïYó¨èÛë‘Ç÷à⁄çs
 		m_state = E_State::STATE_FLOW;
@@ -793,8 +796,19 @@ bool CPlayer::FindFlowIce(void)
 			if(nIdxPlayerV == nIdxIceV && nIdxPlayerH == nIdxIceH)
 			{// Ç«ÇÍÇ©Ç…èÊÇ¡ÇƒÇ¢ÇΩÇÁåªç›ÇÃÉVÉXÉeÉÄÇï€ë∂ÇµÇƒä÷êîÇèIóπ
 				m_pLandSystemFlow = itSystem;
-
 				return true;
+			}
+			else
+			{// î‘çÜÇ™àÍívÇµÇ»Ç¢Ç™ÅAãóó£ÇÕãﬂÇ¢èÍçá
+				// àÍíËãóó£à»ì‡Ç»ÇÁÉVÉXÉeÉÄÇÃï€ë∂
+				D3DXVECTOR3 posIce = itIce->GetPosition();
+				D3DXVECTOR3 posPlayer = GetPosition();
+
+				if (universal::DistCmpFlat(posPlayer, posIce, Grid::SIZE * 0.5f, nullptr))
+				{
+					m_pLandSystemFlow = itSystem;
+					return true;
+				}
 			}
 		}
 	}
@@ -1218,6 +1232,10 @@ void CPlayer::JumpToDest(CIce *pIceDest, float fHeightJump)
 	// çÇÇ≥ÇîΩâf
 	D3DXVECTOR3 pos = posPlayer;
 	pos.y = m_posInitJump.y + fHeight;
+
+	if (pos.y < posIce.y)
+		pos.y = posIce.y;
+
 	SetPosition(pos);
 }
 
@@ -1312,6 +1330,9 @@ void CPlayer::EndBlow(void)
 	// ÉWÉÉÉìÉvÉtÉâÉOÇê‹ÇÈ
 	m_bEnableJump = false;
 	m_fragMotion.bJump = false;
+
+	// ïYó¨ÇÃäJénÉ`ÉFÉbÉN
+	StartFlows();
 }
 
 //=====================================================
@@ -1360,7 +1381,7 @@ void CPlayer::ManageMotion(void)
 		else if (nMotion != MOTION::MOTION_BLOW)
 			SetMotion(MOTION::MOTION_BLOW);
 	}
-	else if (CGame::GetInstance() != nullptr && CGame::GetState() == CGame::E_State::STATE_RESULT)
+	else if (CGame::GetInstance() != nullptr && CGame::GetState() == CGame::E_State::STATE_RESULT && CGame::GetResult() == CResultSingle::E_Result::RESULT_WIN)
 	{// èüóòÉÇÅ[ÉVÉáÉì
 		if (nMotion != MOTION_VICTORY)
 			SetMotion(MOTION_VICTORY);
@@ -1617,9 +1638,6 @@ void CPlayer::CheckStartDriftAll(void)
 	{
 		int nIdxV = -1;
 		int nIdxH = -1;
-
-		/*if (!pIceMgr->GetIdxGridFromPosition(pPlayer->GetPosition(), &nIdxV, &nIdxH))
-			continue;*/
 
 		if (pIceMgr->GetGridIce(&nIdxV, &nIdxH) != nullptr)
 			continue;

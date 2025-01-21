@@ -34,6 +34,7 @@
 #include "inputkeyboard.h"
 #include "MyEffekseer.h"
 #include "tutorial.h"
+#include "fade_fallice.h"
 
 //*****************************************************
 // 定数定義
@@ -239,6 +240,38 @@ void CSelectMode::Uninit(void)
 //=====================================================
 void CSelectMode::Update(void)
 {
+	CSnow::SetSnow(MAX_SNOW_POS, MIN_SNOW_POS, MAX_HEIGHT, MAX_SNOW_RADIUS, MIN_SNOW_RADIUS,
+		SNOW_LIFE, D3DXVECTOR3(0.0f, SNOW_MOVE_SPED, 0.0f), CNT_SNOW);
+
+	m_nSnowStormCnt++;
+
+	// 吹雪を生成
+	if (m_nSnowStormCnt == BLIZZARD_CNT)
+	{
+		D3DXVECTOR3 posEffect = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		D3DXVECTOR3 rotEffect = { 0.0f,0.0f,0.0f };
+
+		// エフェクトの生成
+		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_BLIZZARD, posEffect, rotEffect);
+
+		m_nSnowStormCnt = 0;
+	}
+
+	// 入力処理
+	Input();
+
+	// モードUI見た目更新処理
+	UpdateSelectModeUI();
+
+	// シーンの更新
+	CScene::Update();
+}
+
+//=====================================================
+// 入力
+//=====================================================
+void CSelectMode::Input(void)
+{
 	CInputManager *pInputMgr = CInputManager::GetInstance();
 	assert(pInputMgr != nullptr);
 
@@ -248,8 +281,11 @@ void CSelectMode::Update(void)
 	CSound* pSound = CSound::GetInstance();	// サウンド情報
 	assert(pSound != nullptr);
 
-	CSnow::SetSnow(MAX_SNOW_POS, MIN_SNOW_POS, MAX_HEIGHT, MAX_SNOW_RADIUS, MIN_SNOW_RADIUS,
-		SNOW_LIFE, D3DXVECTOR3(0.0f, SNOW_MOVE_SPED, 0.0f), CNT_SNOW);
+	CFade_FallIce *pFadeFallIe = CFade_FallIce::GetInstance();
+	assert(pFadeFallIe != nullptr);
+
+	if (pFadeFallIe->GetState() != CFade::FADE::FADE_NONE)
+		return;
 
 	// モードの移動
 	if (pInputMgr->GetTrigger(CInputManager::E_Button::BUTTON_AXIS_UP))
@@ -303,26 +339,6 @@ void CSelectMode::Update(void)
 	{
 		pFade->SetFade(CScene::MODE_TITLE);
 	}
-
-	m_nSnowStormCnt++;
-
-	// 吹雪を生成
-	if (m_nSnowStormCnt == BLIZZARD_CNT)
-	{
-		D3DXVECTOR3 posEffect = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		D3DXVECTOR3 rotEffect = { 0.0f,0.0f,0.0f };
-
-		// エフェクトの生成
-		MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_BLIZZARD, posEffect, rotEffect);
-
-		m_nSnowStormCnt = 0;
-	}
-
-	// モードUI見た目更新処理
-	UpdateSelectModeUI();
-
-	// シーンの更新
-	CScene::Update();
 }
 
 //=====================================================

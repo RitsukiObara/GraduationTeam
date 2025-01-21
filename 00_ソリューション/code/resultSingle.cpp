@@ -101,6 +101,8 @@ CResultSingle *CResultSingle::Create(E_Result result)
 
 	CResultSingle *pResult = nullptr;
 	
+	CGame::SetResult(result);
+
 	if (result == RESULT_TIMEOVER && gameManager::IsMulti())
 		pResult = new CResultMultiTimeUp;	// マルチのタイムアップ
 	else if(result == RESULT_WIN)
