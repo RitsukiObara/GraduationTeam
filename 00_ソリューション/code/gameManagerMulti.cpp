@@ -25,6 +25,9 @@ namespace
 {
 const char* PATH_SAMPLE_ICESTAGE = "data\\TEXT\\icestagemulti00.txt";	// サンプルの初期配置
 const int SIZE_GRID = 15;												// ステージのサイズ
+const float RATE_LEVEL_FINAL = 0.027f;									// サドンデスの海流の強さ
+const int NUM_PLAYER_SUDDONDEATH = 2;									// サドンデスになるプレイヤーの数
+const int TIME_SUDDONDEATH = 60;										// サドンデスになる残り時間
 }
 
 //=====================================================
@@ -128,6 +131,8 @@ void CGameManagerMulti::Update(void)
 {
 	// 基底クラスの更新
 	CGameManager::Update();
+
+
 }
 
 //=====================================================
@@ -150,8 +155,59 @@ void CGameManagerMulti::UpdateNormal(void)
 	// プレイヤー管理
 	ManagePlayer();
 
+	// 海流の強さ管理
+	ManageLevelOcean();
+
 	// ゲーム終了の確認
 	CheckEndGame();
+}
+
+//=====================================================
+// 海流の強さの管理
+//=====================================================
+void CGameManagerMulti::ManageLevelOcean(void)
+{
+	// 海流を速くする条件
+	bool bAccele = false;
+
+	// 加速判定
+	bAccele = JudgeAccele();
+
+	if (bAccele)
+	{// 海流の強さを設定
+		COcean *pOcean = COcean::GetInstance();
+
+		if (pOcean != nullptr)
+		{
+			pOcean->SetRateLevel(RATE_LEVEL_FINAL);
+		}
+	}
+}
+
+//=====================================================
+// 加速する判定
+//=====================================================
+bool CGameManagerMulti::JudgeAccele(void)
+{
+	// プレイヤーが2人になったら
+	vector<CPlayer*> apPlayer = CPlayer::GetInstance();
+
+	if (apPlayer.size() <= NUM_PLAYER_SUDDONDEATH)
+		return true;
+
+	// 残り時間が少なくなったら
+	CGame *pGame = CGame::GetInstance();
+
+	if (pGame != nullptr)
+	{
+		int nTime = pGame->GetTimeSecond();
+
+		if(nTime <= TIME_SUDDONDEATH)
+			return true;
+	}
+
+	// 何の条件にも通らなかったら加速しない
+	return false;
 }
 
 //=====================================================

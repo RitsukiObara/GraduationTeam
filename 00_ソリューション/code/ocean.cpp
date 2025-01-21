@@ -74,6 +74,7 @@ COcean::COcean(int nPriority) : CMeshField(nPriority)
 	m_fProgressTime = 0.0f;
 	m_fRotChangeTime = 0.0f;
 	m_nBgiceCnt = 0;
+	m_fRateLevel = 0.0f;
 }
 
 //=====================================================
@@ -128,6 +129,9 @@ HRESULT COcean::Init(void)
 	// 法線のリセット処理
 	CMeshField::ResetNormal();
 
+	// 海流の強さ初期設定
+	m_fRateLevel = FLOW_LEVEL_MULTIPLY;
+
 	return S_OK;
 }
 
@@ -155,7 +159,7 @@ void COcean::Update(void)
 
 	CMeshField::Update();
 
-	m_fSpeed += FLOW_LEVEL_MULTIPLY * OceanFlowLevel;
+	m_fSpeed += m_fRateLevel * OceanFlowLevel;
 
 	BgIceRotState();
 	//OceanCycleTimer();

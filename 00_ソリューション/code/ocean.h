@@ -43,6 +43,8 @@ public:
 	E_Stream GetNowDirStream(void) { return (COcean::E_Stream)m_nRandKeep; }
 	E_Stream GetNextDirStream(void) { return (COcean::E_Stream)m_nRandNextKeep; }
 	void SetNextOceanRot(void);	// 次の海流の向き設定
+	void SetRateLevel(float fRate) { m_fRateLevel = fRate; }	// レベルに対する海流の変化量
+	float GetRateLevel(void) { return m_fRateLevel; }
 
 private:
 	// メンバ関数
@@ -56,6 +58,7 @@ private:
 
 	// メンバ変数
 	float m_fSpeed;				// 海流のスピード
+	float m_fRateLevel;			// レベルに対する海流の変化量
 	D3DXVECTOR3 m_fRot;			// 海流の向き
 	static COcean* m_pOcean;	// 自身のポインタ
 	int m_nRandKeep;			// ランダム関数の保存用

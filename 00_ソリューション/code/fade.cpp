@@ -114,10 +114,10 @@ HRESULT CFade::Init(void)
 //=====================================================
 void CFade::Uninit(void)
 {
-	if (m_pVtxBuff != NULL)
+	if (m_pVtxBuff != nullptr)
 	{// 頂点バッファの破棄
 		m_pVtxBuff->Release();
-		m_pVtxBuff = NULL;
+		m_pVtxBuff = nullptr;
 	}
 
 	delete this;
@@ -191,7 +191,7 @@ void CFade::Draw(void)
 	pDevice->SetFVF(FVF_VERTEX_2D);
 
 	//テクスチャ設定
-	pDevice->SetTexture(0, NULL);
+	pDevice->SetTexture(0, nullptr);
 
 	//ポリゴンの描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
