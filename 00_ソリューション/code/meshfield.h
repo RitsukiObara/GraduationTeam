@@ -59,27 +59,34 @@ public:
 	void Scroll(int nIdx, D3DXVECTOR2 vec);
 
 	// 変数取得・設定関数
-	E_Ocean_Speed GetOceanSpeedState(void) { return m_eOcean_Speed_State; }	// 海流の速度状態の取得
+	E_Ocean_Speed GetOceanSpeedState(void) { return m_eOcean_Speed_State; }									// 海流の速度状態の取得
 	void SetOceanSpeedState(E_Ocean_Speed fOceanSpeedState) { m_eOcean_Speed_State = fOceanSpeedState; }	// 海流の速度状態の設定
-	void SetIdxTextureOverRay(int nIdx) { m_nIdxTextureOverRay = nIdx; }			// オーバーレイテクスチャ番号
+	void SetIdxTextureOverRay(int nIdx) { m_nIdxTextureOverRay = nIdx; }									// オーバーレイテクスチャ番号
+	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff(void) { return m_pVtxBuff; }											// 頂点バッファ
+	void SetMaxSpeed(float fSpeed) { m_fMaxSpeed = fSpeed; }												// 最大速度
+	float GetMaxSpeed(void) { return m_fMaxSpeed; }
+	void SetAccele(float fAccele) { m_fAcceleOcean = fAccele; }	// 海流の加速量
+	float GetAccele(void) { return m_fAcceleOcean; }
 
 private:
 	// メンバ関数
 	void CheckScroll(void);
 
 	// メンバ変数
-	int m_nIdxTexture;			// テクスチャ番号
-	int m_nIdxTextureOverRay;	// オーバーレイテクスチャ番号
-	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	//頂点バッファへのポインタ
-	LPDIRECT3DINDEXBUFFER9 m_pIdxBuff;	//インデックスバッファへのポインタ
-	MeshField m_MeshField;	//構造体の情報
-	D3DXCOLOR m_col;	// 色
+	int m_nIdxTexture;					// テクスチャ番号
+	int m_nIdxTextureOverRay;			// オーバーレイテクスチャ番号
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点バッファへのポインタ
+	LPDIRECT3DINDEXBUFFER9 m_pIdxBuff;	// インデックスバッファへのポインタ
+	MeshField m_MeshField;				// 構造体の情報
+	D3DXCOLOR m_col;					// 色
 	E_Ocean_Speed m_eOcean_Speed_State;	// 海流の速度状態
-	float m_fLengthMesh;	// メッシュ一辺の長さ
+	float m_fLengthMesh;				// メッシュ一辺の長さ
 	int m_nDivNumU;
 	int m_nDivNumV;
 	int m_nDivTex;
-	float m_fOceanSpeed;	// 海流の速度
+	float m_fOceanSpeed;				// 海流の速度
+	float m_fAcceleOcean;				// 加速量
+	float m_fMaxSpeed;					// 最大速度
 	static CMeshField *m_pMeshField;	// 自身のポインタ
 };
 #endif

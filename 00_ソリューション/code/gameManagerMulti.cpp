@@ -25,9 +25,12 @@ namespace
 {
 const char* PATH_SAMPLE_ICESTAGE = "data\\TEXT\\icestagemulti00.txt";	// サンプルの初期配置
 const int SIZE_GRID = 15;												// ステージのサイズ
-const float RATE_LEVEL_FINAL = 0.027f;									// サドンデスの海流の強さ
+const float MAX_SPEED_SUDDONDEATH = 10.0f;								// サドンデスの海流の強さ
+const float ACCELE_SUDDONDEATH = 0.036f;								// サドンデスの海流の加速量
 const int NUM_PLAYER_SUDDONDEATH = 2;									// サドンデスになるプレイヤーの数
-const int TIME_SUDDONDEATH = 60;										// サドンデスになる残り時間
+const int TIME_SUDDONDEATH = 60;										// サドンデスになる残り時間]
+const float TIME_CHANGE_SUDDONDEATH = 10.0f;							// サドンデスで海流の変わる速さ
+
 }
 
 //=====================================================
@@ -179,7 +182,9 @@ void CGameManagerMulti::ManageLevelOcean(void)
 
 		if (pOcean != nullptr)
 		{
-			pOcean->SetRateLevel(RATE_LEVEL_FINAL);
+			pOcean->SetMaxSpeed(MAX_SPEED_SUDDONDEATH);
+			pOcean->SetAccele(ACCELE_SUDDONDEATH);
+			pOcean->SetBaseTimeChangeRot(TIME_CHANGE_SUDDONDEATH);
 		}
 	}
 }

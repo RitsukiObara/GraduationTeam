@@ -148,7 +148,7 @@ private:
 	// メンバ変数
 	int m_nNumGridVirtical;	// 縦グリッドの数
 	int m_nNumGridHorizontal;	// 横グリッドの数
-	float m_fOceanLevel;	//	海流の強さ
+	float m_fOceanLevel;	// 海流の強さ
 	vector<vector<S_Grid>> m_aGrid;	// グリッドの配列
 	COcean::E_Stream m_dirStream;	// 海流の方向
 	COcean::E_Stream m_dirStreamNext;	// 次の海流の方向

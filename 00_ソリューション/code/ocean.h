@@ -45,6 +45,8 @@ public:
 	void SetNextOceanRot(void);	// 次の海流の向き設定
 	void SetRateLevel(float fRate) { m_fRateLevel = fRate; }	// レベルに対する海流の変化量
 	float GetRateLevel(void) { return m_fRateLevel; }
+	void SetBaseTimeChangeRot(float fTime) { m_fBaseTimeChangeRot = fTime; }	// 向きを変更するときの基準時間
+	float GetBaseTimeChangeRot(void) { return m_fBaseTimeChangeRot; }
 
 private:
 	// メンバ関数
@@ -61,6 +63,7 @@ private:
 	float m_fRateLevel;			// レベルに対する海流の変化量
 	D3DXVECTOR3 m_fRot;			// 海流の向き
 	static COcean* m_pOcean;	// 自身のポインタ
+	float m_fBaseTimeChangeRot;	// 向きを変更するときの基準時間
 	int m_nRandKeep;			// ランダム関数の保存用
 	int m_nRandNextKeep;		// 次のランダム関数の保存用
 	float m_fProgressTime;		// 経過時間
