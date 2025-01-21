@@ -259,11 +259,11 @@ void CPlayer::Update(void)
 	// ‚«”ò‚Î‚µ’†‚Ìˆ—
 	StayBlow();
 
-	// “ü—Íˆ—
-	Input();
-
 	// •X‚ª‚È‚¢”»’è
 	JudgeNoIce();
+
+	// “ü—Íˆ—
+	Input();
 
 	if (m_state == STATE_FLOW)
 		StayFlow();	// •Y—¬’†‚Ìˆ—
@@ -312,10 +312,10 @@ void CPlayer::JudgeNoIce(void)
 
 	// æ‚Á‚Ä‚¢‚é•X‚Ìæ“¾
 	int nIdx;
-	bool bResult = pIceMgr->GetIdxGridFromPosition(GetPosition(),&nIdx, &nIdx);
+	bool bResult = pIceMgr->GetIdxGridFromPosition(GetPosition(),&nIdx, &nIdx,1.3f);
 
-	//if (!bResult)
-		//Hit(0.0f);	// æ‚Á‚Ä‚¢‚é•X‚ª‚È‚©‚Á‚½‚ç‘¦€
+	if (!bResult)
+		Hit(0.0f);	// æ‚Á‚Ä‚¢‚é•X‚ª‚È‚©‚Á‚½‚ç‘¦€
 }
 
 //=====================================================
