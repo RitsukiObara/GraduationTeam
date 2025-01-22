@@ -231,6 +231,7 @@ void CManager::Update(void)
 			pKeyboard->GetPress(DIK_R))
 		{
 			CTexture::GetInstance()->ChangeAllToObara();
+			CFade_FallIce::GetInstance()->ChangeOBRTexture();
 		}
 	}
 #endif
