@@ -106,9 +106,6 @@ void CIceHardMulti::Uninit(void)
 //=====================================================
 void CIceHardMulti::Update(void)
 {
-	// 継承クラスの更新
-	CIceHard::Update();
-
 	// プレイヤーが乗ってる判定
 	IsOnPlayer();
 
@@ -117,6 +114,9 @@ void CIceHardMulti::Update(void)
 
 	// アザラシの追従
 	FollowSeal();
+
+	// 継承クラスの更新
+	CIceHard::Update();
 }
 
 //=====================================================
@@ -231,6 +231,10 @@ void CIceHardMulti::UpdateJump(void)
 
 		// さざ波の生成
 		CreateRipple();
+
+		// トランスフォームの設定
+		SetHeightOcean(0.0f);
+		SetTransform(Grid::SIZE);
 	}
 
 	m_fTimerMove += CManager::GetDeltaTime();

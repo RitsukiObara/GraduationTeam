@@ -751,6 +751,7 @@ void CIce::SetTransform(float fRadius)
 	posRipple.y -= HEIGHT_ICE;
 	m_pRipple->SetPosition(posRipple);
 	m_pRipple->SetRadius(fRadius * 0.7f);
+	m_pRipple->SetVtx();
 
 	// サイドのシリンダーの設定
 	m_pSide->SetRadius(fRadius * 0.5f);

@@ -125,6 +125,9 @@ HRESULT COcean::Init(void)
 		m_nRandKeep = pIceManager->GetDirStream();
 	}
 
+	// 向きを変更するときの基準時間初期化
+	m_fBaseTimeChangeRot = OCEAN_ROT_CHANGE_TIME_DEFAULT;
+
 	SetNextOceanRot();	// 最初に次の向き設定
 
 	// 法線のリセット処理
@@ -132,9 +135,6 @@ HRESULT COcean::Init(void)
 
 	// 海流の強さ初期設定
 	m_fRateLevel = FLOW_LEVEL_MULTIPLY;
-
-	// 向きを変更するときの基準時間初期化
-	m_fBaseTimeChangeRot = OCEAN_ROT_CHANGE_TIME_DEFAULT;
 
 	return S_OK;
 }
