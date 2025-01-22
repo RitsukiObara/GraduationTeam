@@ -105,7 +105,7 @@ public:
 	void Load(const char* pPath);	// 初期配置読み込み
 	void BindRippleElements(void);	// さざ波の属性を割り当てる処理
 	CIce *GetNearestIce(D3DXVECTOR3 pos, int *pNumV = nullptr, int *pNumH = nullptr);	// 最も近い氷の取得
-	S_Grid *GetNearestEmptyGrid(D3DXVECTOR3 pos, int *pNumV = nullptr, int *pNumH = nullptr, CIce *pIce = nullptr);	// 最も近い空グリッドの取得
+	S_Grid *GetNearestEmptyGrid(D3DXVECTOR3 pos, int *pNumV = nullptr, int *pNumH = nullptr, CIce *pIce = nullptr,float fDistMax = FLT_MAX);	// 最も近い空グリッドの取得
 	S_Grid *GetNearestGrid(D3DXVECTOR3 pos, int *pNumV = nullptr, int *pNumH = nullptr);	// 最も近いグリッドの取得
 
 	// 変数取得・設定関数

@@ -167,6 +167,9 @@ void CFlowIce::CheckSomeIceStop(void)
 {
 	for (auto it : m_apIce)
 	{
+#ifdef _DEBUG
+		CEffect3D::Create(it->GetPosition(), 60.0f, 2, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+#endif
 		if (it->IsStop())
 		{// Ž~‚Ü‚Á‚Ä‚¢‚é‚È‚ç‘S‚Ä‚Ì•X‚ðŽ~‚ß‚é
 			StopAllIce();

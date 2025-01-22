@@ -1209,11 +1209,6 @@ void CIceStateFlow::CollideIce(CIce *pIce)
 	vector<CIce*> apIceHit;
 	bool bHit = (this->*directionFuncs[stream])(pIce, m_nIdxDriftV, m_nIdxDriftH, apIceHit);
 
-#ifdef _DEBUG
-	D3DXVECTOR3 posEffect = pIceManager->GetGridPosition(&m_nIdxDriftV, &m_nIdxDriftH);
-	debug::Effect3DShort(posEffect, D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
-#endif
-
 	if (bHit)
 	{
 		// ‚­‚Á‚Â‚«ƒtƒ‰ƒO

@@ -751,9 +751,9 @@ CIce *CIceManager::GetNearestIce(D3DXVECTOR3 pos, int *pNumV, int *pNumH)
 //=====================================================
 // 最も近い空グリッドの取得
 //=====================================================
-CIceManager::S_Grid *CIceManager::GetNearestEmptyGrid(D3DXVECTOR3 pos, int *pNumV, int *pNumH, CIce *pIce)
+CIceManager::S_Grid *CIceManager::GetNearestEmptyGrid(D3DXVECTOR3 pos, int *pNumV, int *pNumH, CIce *pIce, float fDistMax)
 {
-	float fDistMin = FLT_MAX;
+	float fDistMin = fDistMax;
 	S_Grid *pGrid = nullptr;
 
 	for (int i = 0; i < m_nNumGridVirtical; i++)
@@ -896,7 +896,9 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 	int nIdxV = -1;
 	int nIdxH = -1;
 	
-	GetIdxGridFromPosition(pos, &nIdxV, &nIdxH,1.0f);
+	// 氷のセット
+	DeleteIce(pIce);
+	GetNearestEmptyGrid(pos, &nIdxV, &nIdxH,nullptr,Grid::SIZE);
 
 	if (nIdxV == -1 && nIdxH == -1)
 	{// エリア外判定
@@ -906,11 +908,8 @@ void CIceManager::AddIce(CIce *pIce, D3DXVECTOR3 pos)
 		pIce->Uninit();
 		return;
 	}
-
-	// 氷のセット
-	DeleteIce(pIce);
-	GetNearestEmptyGrid(pos, &nIdxV, &nIdxH);
-	SetIceInGrid(nIdxV, nIdxH, pIce);
+	else
+		SetIceInGrid(nIdxV, nIdxH, pIce);
 }
 
 //=====================================================
