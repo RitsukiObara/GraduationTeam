@@ -165,6 +165,26 @@ LPDIRECT3DTEXTURE9 CTexture::GetAddress(int nIdx)
 	}
 }
 
+//=====================================================
+// 全てを小原にする
+//=====================================================
+void CTexture::ChangeAllToObara(void)
+{
+	LPDIRECT3DDEVICE9 pDevice = Renderer::GetDevice();
+
+	LPDIRECT3DTEXTURE9 pTex;
+
+	// テクスチャの読込
+	if (D3DXCreateTextureFromFile
+	(pDevice, "data\\TEXTURE\\MATERIAL\\obaraface.png", &pTex) == E_FAIL)
+		return;
+
+	for (int i = 0; i < m_nNumAll; i++)
+	{
+		if(m_apTexture[i] != nullptr)
+			m_apTexture[i] = pTex;
+	}
+}
 
 namespace Texture
 {

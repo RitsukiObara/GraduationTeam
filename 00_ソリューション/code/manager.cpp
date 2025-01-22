@@ -221,6 +221,18 @@ void CManager::Update(void)
 	ImGui::SetNextWindowSize(ImVec2(500, 500), ImGuiCond_Appearing);
 
 	ImGui::Begin("Edit");
+
+	CInputKeyboard *pKeyboard = CInputKeyboard::GetInstance();
+
+	if (pKeyboard != nullptr)
+	{
+		if (pKeyboard->GetPress(DIK_O) &&
+			pKeyboard->GetPress(DIK_B) &&
+			pKeyboard->GetPress(DIK_R))
+		{
+			CTexture::GetInstance()->ChangeAllToObara();
+		}
+	}
 #endif
 
 	// フェード更新
