@@ -32,6 +32,7 @@ public:
 	void Draw(void);
 	virtual void SetFade(CScene::MODE modeNext, bool bTrans = true) override;
 	static CFade_FallIce* GetInstance(void) { return m_pFade; }
+	void ChangeOBRTexture(void);
 private:
 	int m_nCounterFrame;								// 次の落下カウンタ
 	int m_nCounterPattern;								// 次落とすパターン

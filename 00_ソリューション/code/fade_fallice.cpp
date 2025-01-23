@@ -300,3 +300,23 @@ void CFade_FallIce::SetFade(CScene::MODE modeNext, bool bTrans)
 		m_nCounterPattern = -1;
 	}
 }
+
+//=====================================================
+// テクスチャの小原化
+//=====================================================
+void CFade_FallIce::ChangeOBRTexture(void)
+{
+	LPDIRECT3DDEVICE9 pDevice = CRenderer::GetInstance()->GetDevice();	// デバイスの取得
+
+	if (m_pTexture != nullptr)
+	{
+		m_pTexture->Release();
+		m_pTexture = nullptr;
+	}
+
+	if (m_pTexture == nullptr)
+	{
+		D3DXCreateTextureFromFile
+		(pDevice, "data\\TEXTURE\\MATERIAL\\obaraface.png", &m_pTexture);
+	}
+}
