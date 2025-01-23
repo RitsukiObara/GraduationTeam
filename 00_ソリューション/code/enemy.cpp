@@ -940,7 +940,7 @@ void CEnemy::Debug(void)
 	if (pInputKeyboard->GetTrigger(DIK_7))
 		Death();
 
-#if 1
+#if 0
 	pDebugProc->Print("\n敵情報==========================");
 	pDebugProc->Print("\n位置[%f,%f,%f]", GetPosition().x, GetPosition().y, GetPosition().z);
 	pDebugProc->Print("\n現在グリッド[%d,%d]", m_nGridV, m_nGridH);

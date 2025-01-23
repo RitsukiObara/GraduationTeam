@@ -776,6 +776,9 @@ bool CPlayer::FindFlowIce(void)
 
 	vector<CFlowIce*> apSystemFlow = CFlowIce::GetInstance();
 
+	int nIdxPlayerV = GetGridV();
+	int nIdxPlayerH = GetGridH();
+
 	for (auto itSystem : apSystemFlow)
 	{
 		if (itSystem == nullptr)
@@ -790,11 +793,9 @@ bool CPlayer::FindFlowIce(void)
 			int nIdxIceH;
 			pIceMgr->GetIceIndex(itIce, &nIdxIceV, &nIdxIceH);
 
-			int nIdxPlayerV = GetGridV();
-			int nIdxPlayerH = GetGridH();
-
 			if(nIdxPlayerV == nIdxIceV && nIdxPlayerH == nIdxIceH)
 			{// どれかに乗っていたら現在のシステムを保存して関数を終了
+				CEffect3D::Create(itIce->GetPosition(), 200.0f, 120, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
 				m_pLandSystemFlow = itSystem;
 				return true;
 			}
@@ -803,6 +804,8 @@ bool CPlayer::FindFlowIce(void)
 				// 一定距離以内ならシステムの保存
 				D3DXVECTOR3 posIce = itIce->GetPosition();
 				D3DXVECTOR3 posPlayer = GetPosition();
+
+				CEffect3D::Create(posIce, 200.0f, 120, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 
 				if (universal::DistCmpFlat(posPlayer, posIce, Grid::SIZE * 0.5f, nullptr))
 				{
@@ -1630,18 +1633,8 @@ void CPlayer::BindInputAllPlayer(void)
 //=====================================================
 void CPlayer::CheckStartDriftAll(void)
 {
-	CIceManager* pIceMgr = CIceManager::GetInstance();
-	if (pIceMgr == nullptr)
-		return;
-
 	for (CPlayer *pPlayer : s_apPlayer)
 	{
-		int nIdxV = -1;
-		int nIdxH = -1;
-
-		if (pIceMgr->GetGridIce(&nIdxV, &nIdxH) != nullptr)
-			continue;
-
 		// 氷が無ければ漂流開始
 		pPlayer->StartFlows();
 	}
