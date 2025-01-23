@@ -1,0 +1,32 @@
+#====================================================================
+#
+# 敵配置情報[enemy.txt]
+# Author：Momoya Takayama
+#
+#====================================================================
+# スポーンパターン：[右上：0][左上：1][右下：2][左下：3]
+#====================================================================
+
+SETENEMY
+	DELAY = 7.0f
+	TYPE = 0
+	SPAWN = 0
+END_SETENEMY
+
+SETENEMY
+	DELAY = 8.0f
+	TYPE = 0
+	SPAWN = 3
+END_SETENEMY
+
+SETENEMY
+	DELAY = 9.0f
+	TYPE = 0
+	SPAWN = 2
+END_SETENEMY
+
+SETENEMY
+	DELAY = 20.0f
+	TYPE = 0
+	SPAWN = 1
+END_SETENEMY
