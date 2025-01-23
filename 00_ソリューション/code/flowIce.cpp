@@ -17,6 +17,7 @@
 #include "player.h"
 #include "camera.h"
 #include "inputjoypad.h"
+#include "debugproc.h"
 
 //*****************************************************
 // 定数定義
@@ -168,7 +169,7 @@ void CFlowIce::CheckSomeIceStop(void)
 	for (auto it : m_apIce)
 	{
 #ifdef _DEBUG
-		CEffect3D::Create(it->GetPosition(), 60.0f, 2, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+		//CEffect3D::Create(it->GetPosition(), 60.0f, 2, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 #endif
 		if (it->IsStop())
 		{// 止まっているなら全ての氷を止める
@@ -316,7 +317,7 @@ void CFlowIce::CheckDelete(void)
 //=====================================================
 void CFlowIce::Debug(void)
 {
-
+	CDebugProc::GetInstance()->Print("\n流氷システムの総数[%d]", s_vector.size());
 }
 
 //=====================================================
