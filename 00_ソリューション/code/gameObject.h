@@ -35,6 +35,17 @@ public:
 	D3DXVECTOR3 GetRotation(void) { return m_rot; }	// 向き
 	void SetRotation(D3DXVECTOR3 rot) { m_rot = rot; }
 
+	// 静的メンバ関数
+	static inline CGameObject* Create(void)
+	{
+		CGameObject* obj = new CGameObject;
+
+		if (obj != nullptr)
+			obj->Init();
+
+		return obj;
+	}// 生成処理
+
 private:
 	// メンバ変数
 	D3DXVECTOR3 m_pos;	// 位置

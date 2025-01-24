@@ -21,6 +21,7 @@
 #include "UI.h"
 #include "inputManager.h"
 #include "iceManager.h"
+#include "gameManager.h"
 
 //*****************************************************
 // マクロ定義
@@ -37,18 +38,21 @@
 //*****************************************************
 namespace
 {
-	const float POS_SINGLE_X = -1000.0f;		// シングルプレイの矢印X座標
-	const float POS_SINGLE_Y = 200.0f;			// シングルプレイの矢印Y座標
+const D3DXVECTOR3 POS_SINGLE = { -1000.0f,200.0f,0.0f };	// シングルプレイ時の矢印の位置
+const D3DXVECTOR3 POS_MULTI = { -1500.0f ,400.0f,700.0f };	// マルチプレイ時の矢印の位置
 
-	const float POS_MULTI_X = -1500.0f;			// マルチプレイの矢印X座標
-	const float POS_MULTI_Y = 400.0f;			// マルチプレイの矢印Y座標
-	const float POS_MULTI_Z = 700.0f;			// マルチプレイの矢印Z座標
+const string PATH_MODEL_SINGLE = "data\\MODEL\\other\\Arrow001.x";	// シングル時のモデルパス
+const string PATH_MODEL_MULTI = "data\\MODEL\\other\\Arrow002.x";	// マルチ時のモデルパス
+
+const float TIMEMAX_SHAKE = 5.0f;		// 矢印の揺れの最大時間
+const float SPEED_SHAKE_INIT = 0.1f;	// 矢印の初期揺れ速度
+const float MAGNITUDE_SHAKE = 100.0f;	// 揺れの規模
 }
 
 //*****************************************************
 // 静的メンバ変数宣言
 //*****************************************************
-COceanFlowUI* COceanFlowUI::m_pOceanFlowUI = nullptr;	// 自身のポインタ
+COceanFlowUI* COceanFlowUI::s_pOceanFlowUI = nullptr;	// 自身のポインタ
 
 //====================================================
 // コンストラクタ
@@ -56,6 +60,10 @@ COceanFlowUI* COceanFlowUI::m_pOceanFlowUI = nullptr;	// 自身のポインタ
 COceanFlowUI::COceanFlowUI()
 {
 	m_state = STATE_NONE;
+	m_pDir = nullptr;
+	m_pArrow = nullptr;
+	m_fTimerShakeArrow = 0.0f;
+	m_fSpeedShakeArrow = 0.0f;
 }
 
 //====================================================
@@ -71,17 +79,17 @@ COceanFlowUI::~COceanFlowUI()
 //====================================================
 COceanFlowUI* COceanFlowUI::Create(void)
 {
-	if (m_pOceanFlowUI == nullptr)
+	if (s_pOceanFlowUI == nullptr)
 	{
-		m_pOceanFlowUI = new COceanFlowUI;
+		s_pOceanFlowUI = new COceanFlowUI;
 
-		if (m_pOceanFlowUI != nullptr)
+		if (s_pOceanFlowUI != nullptr)
 		{
-			m_pOceanFlowUI->Init();
+			s_pOceanFlowUI->Init();
 		}
 	}
 
-	return m_pOceanFlowUI;
+	return s_pOceanFlowUI;
 }
 
 //====================================================
@@ -89,36 +97,63 @@ COceanFlowUI* COceanFlowUI::Create(void)
 //====================================================
 HRESULT COceanFlowUI::Init(void)
 {
-	m_pArrow = CObjectX::Create(D3DXVECTOR3(POS_SINGLE_X, POS_SINGLE_Y, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	// 方向用の空のオブジェクト生成
+	CreateDir();
+
+	// 矢印の生成
+	CreateArrow();
+
+	// 値の初期化
+	m_state = STATE_IN;
+	m_fSpeedShakeArrow = SPEED_SHAKE_INIT;
+
+	return S_OK;
+}
+
+//====================================================
+// 方向用の空のオブジェクト生成
+//====================================================
+void COceanFlowUI::CreateDir(void)
+{
+	if (m_pDir != nullptr)
+		return;
+
+	m_pDir = CObject3D::Create();
+
+	// 位置の設定
+	if (m_pDir != nullptr)
+	{
+		bool bMulti = gameManager::IsMulti();
+
+		// モード毎の位置
+		if (bMulti)
+			m_pDir->SetPosition(POS_MULTI);
+		else
+			m_pDir->SetPosition(POS_SINGLE);
+	}
+}
+
+//====================================================
+// 矢印生成
+//====================================================
+void COceanFlowUI::CreateArrow(void)
+{
+	if (m_pArrow != nullptr)
+		return;
+
+	m_pArrow = CObjectX::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 	// 矢印モデルの初期化
 	if (m_pArrow != nullptr)
 	{
-		m_pArrow->Init();
-
 		CGame::E_GameMode gamemode = CGame::GetInstance()->GetGameMode();
 
 		// モード毎の矢印位置
 		if (gamemode == CGame::MODE_SINGLE)
-		{
-			m_pArrow->BindModel(CModel::Load("data\\MODEL\\other\\Arrow001.x"));
-		}
+			m_pArrow->BindModel(CModel::Load(&PATH_MODEL_SINGLE[0]));
 		else
-		{
-			m_pArrow->SetPosition(D3DXVECTOR3(POS_MULTI_X, POS_MULTI_Y, POS_MULTI_Z));
-
-			m_pArrow->BindModel(CModel::Load("data\\MODEL\\other\\Arrow002.x"));
-		}
+			m_pArrow->BindModel(CModel::Load(&PATH_MODEL_MULTI[0]));
 	}
-
-	CIceManager::GetInstance()->GetDirStream();
-
-	m_state = STATE_IN;
-
-	if (CGame::GetInstance() == nullptr)
-		return E_FAIL;
-
-	return S_OK;
 }
 
 //====================================================
@@ -130,11 +165,10 @@ void COceanFlowUI::Uninit(void)
 	if (m_pArrow != nullptr)
 	{
 		m_pArrow->Uninit();
-
 		m_pArrow = nullptr;
 	}
 
-	m_pOceanFlowUI = nullptr;
+	s_pOceanFlowUI = nullptr;
 
 	Release();
 }
@@ -156,8 +190,11 @@ void COceanFlowUI::Update(void)
 //====================================================
 void COceanFlowUI::OceanRotState(void)
 {
+	if (m_pDir == nullptr)
+		return;
+
 	int OceanFlowKeep = CIceManager::GetInstance()->GetDirStreamNext();
-	D3DXVECTOR3 Rot = m_pArrow->GetRotation();
+	D3DXVECTOR3 Rot = m_pDir->GetRotation();
 
 	//	矢印が海流の向きに流れる処理
 	if (OceanFlowKeep == COcean::STREAM_UP)
@@ -180,7 +217,7 @@ void COceanFlowUI::OceanRotState(void)
 		universal::FactingRot(&Rot.y, 0.0f, 0.02f);
 	}
 
-	m_pArrow->SetRotation(Rot);
+	m_pDir->SetRotation(Rot);
 }
 
 //====================================================
@@ -188,6 +225,12 @@ void COceanFlowUI::OceanRotState(void)
 //====================================================
 void COceanFlowUI::OceanLevelState(void)
 {
+	if (m_pArrow == nullptr || m_pDir == nullptr)
+		return;
+
+	if (CIceManager::GetInstance() == nullptr)
+		return;
+
 	float OceanFlowLevel = CIceManager::GetInstance()->GetOceanLevel();	//	海流レベルの取得
 	D3DXCOLOR fEmissiveCol = m_pArrow->GetDeffuseeCol(0);	//	海流UIの色取得
 
@@ -197,6 +240,34 @@ void COceanFlowUI::OceanLevelState(void)
 	fEmissiveCol = D3DXCOLOR(0.8f + (0.2f * Colorrate), 0.8f - (0.6f * Colorrate), 0.2f, 1.0f);
 
 	m_pArrow->SetDeffuseCol(fEmissiveCol,0);
+
+	// 矢印の前後移動を追加
+	ShakeArrow(Colorrate);
+
+	// 矢印の親子付け
+	D3DXMATRIX mtx = m_pDir->GetMatrix();
+	m_pArrow->SetMatrixParent(mtx);
+}
+
+//====================================================
+// 矢印の揺れ
+//====================================================
+void COceanFlowUI::ShakeArrow(float fRate)
+{
+	if (m_pArrow == nullptr)
+		return;
+
+	// サインカーブ計算
+	float fSin = universal::CalcSinWave(m_fTimerShakeArrow, TIMEMAX_SHAKE);
+
+	float fShake = MAGNITUDE_SHAKE * fSin;
+
+	m_pArrow->SetPosition(D3DXVECTOR3(fShake, 0.0f, 0.0f));
+
+	m_fTimerShakeArrow += m_fSpeedShakeArrow * fRate;
+
+	// タイマーを範囲内に収める
+	m_fTimerShakeArrow = std::fmod(m_fTimerShakeArrow, TIMEMAX_SHAKE);
 }
 
 //====================================================
