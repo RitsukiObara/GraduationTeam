@@ -487,6 +487,22 @@ float GetRandomDirection(void)
 }
 
 //========================================
+// sinカーブの計算
+//========================================
+float CalcSinWave(float fValueCurrent, float fValueMax)
+{
+	// 0割り防止
+	if (fValueMax == 0.0)
+		return 0.0;
+
+	// 現在の値を[0, 2π]の範囲にマッピング
+	float fValue = (fValueCurrent / fValueMax) * 2.0f * D3DX_PI;
+
+	// sinカーブの値を計算
+	return std::sin(fValue);
+}
+
+//========================================
 // オフセット設定処理
 //========================================
 void SetOffSet(D3DXMATRIX *pMtxWorldOffset, D3DXMATRIX mtxWorldOwner, D3DXVECTOR3 posOffset, D3DXVECTOR3 rot)
