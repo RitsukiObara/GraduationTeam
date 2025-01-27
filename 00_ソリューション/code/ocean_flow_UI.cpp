@@ -108,7 +108,7 @@ HRESULT COceanFlowUI::Init(void)
 	CreateArrow();
 
 	// コンパスの生成
-	CreateCompass();
+	//CreateCompass();
 
 	// 値の初期化
 	m_state = STATE_IN;
