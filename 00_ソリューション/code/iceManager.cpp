@@ -190,7 +190,7 @@ void CIceManager::ManageStateIce(void)
 				j == 0 ||
 				j == m_nNumGridHorizontal - 1)
 			{
-				CEffect3D::Create(m_aGrid[i][j].pos, 50.0f, 3, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+				//CEffect3D::Create(m_aGrid[i][j].pos, 50.0f, 3, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 			}
 #endif
 

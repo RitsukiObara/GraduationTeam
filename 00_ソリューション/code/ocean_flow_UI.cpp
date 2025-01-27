@@ -44,6 +44,9 @@ const D3DXVECTOR3 POS_MULTI = { -1500.0f ,400.0f,700.0f };	// マルチプレイ時の矢
 const string PATH_MODEL_SINGLE = "data\\MODEL\\other\\Arrow001.x";	// シングル時のモデルパス
 const string PATH_MODEL_MULTI = "data\\MODEL\\other\\Arrow002.x";	// マルチ時のモデルパス
 
+const string PATH_COMPASS_SINGLE = "data\\MODEL\\other\\Compass00.x";	// シングル時のコンパスモデルパス
+const string PATH_COMPASS_MULTI = "data\\MODEL\\other\\Compass01.x";	// マルチ時のコンパスモデルパス
+
 const float TIMEMAX_SHAKE = 5.0f;		// 矢印の揺れの最大時間
 const float SPEED_SHAKE_INIT = 0.1f;	// 矢印の初期揺れ速度
 const float MAGNITUDE_SHAKE = 100.0f;	// 揺れの規模
@@ -62,6 +65,7 @@ COceanFlowUI::COceanFlowUI()
 	m_state = STATE_NONE;
 	m_pDir = nullptr;
 	m_pArrow = nullptr;
+	m_pCompass = nullptr;
 	m_fTimerShakeArrow = 0.0f;
 	m_fSpeedShakeArrow = 0.0f;
 }
@@ -102,6 +106,9 @@ HRESULT COceanFlowUI::Init(void)
 
 	// 矢印の生成
 	CreateArrow();
+
+	// コンパスの生成
+	CreateCompass();
 
 	// 値の初期化
 	m_state = STATE_IN;
@@ -153,6 +160,34 @@ void COceanFlowUI::CreateArrow(void)
 			m_pArrow->BindModel(CModel::Load(&PATH_MODEL_SINGLE[0]));
 		else
 			m_pArrow->BindModel(CModel::Load(&PATH_MODEL_MULTI[0]));
+	}
+}
+
+//====================================================
+// コンパス生成
+//====================================================
+void COceanFlowUI::CreateCompass(void)
+{
+	if (m_pCompass != nullptr)
+		return;
+
+	m_pCompass = CObjectX::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+
+	if (m_pCompass != nullptr)
+	{// 初期化
+		bool bMulti = gameManager::IsMulti();
+
+		// モード毎の設定
+		if (bMulti)
+		{
+			m_pCompass->SetPosition(POS_MULTI);
+			m_pCompass->BindModel(CModel::Load(&PATH_COMPASS_MULTI[0]));
+		}
+		else
+		{
+			m_pCompass->SetPosition(POS_SINGLE);
+			m_pCompass->BindModel(CModel::Load(&PATH_COMPASS_SINGLE[0]));
+		}
 	}
 }
 

@@ -46,11 +46,13 @@ private:
 	// メンバ関数
 	void CreateDir(void);			// 方向オブジェクト生成
 	void CreateArrow(void);			// 矢印生成
+	void CreateCompass(void);		// コンパス生成
 	void OceanRotState(void);		// 海流の向き補正処理
 	void OceanLevelState(void);		// 海流レベルのUI処理
 	void ShakeArrow(float fRate);	// 矢印の揺れ
 
 	CObjectX* m_pArrow;						// 矢印のモデル
+	CObjectX* m_pCompass;					// コンパスのモデル
 	CObject3D* m_pDir;						// 方向用のオブジェクト
 	STATE m_state;							// 状態
 	float m_fTimerShakeArrow;				// 矢印揺らすためのタイマー

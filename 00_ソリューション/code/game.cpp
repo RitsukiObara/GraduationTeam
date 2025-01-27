@@ -153,23 +153,7 @@ void CGame::Update(void)
 		UpdatePause();
 	}
 
-
-	if (pKeyboard->GetTrigger(DIK_L))
-	{// アザラシ生成
-		CEnemy::Create((int)CEnemy::TYPE::TYPE_SEALS);
-	}
-
-	if (pKeyboard->GetTrigger(DIK_K))
-	{// シロクマ生成
-		CEnemy::Create((int)CEnemy::TYPE::TYPE_BEARS);
-	}
-
-	if (pKeyboard->GetTrigger(DIK_O))
-	{// アホウドリ生成
-		CAlbatross::Create(OceanFlow);
-	}
-
-#ifdef _DEBUG
+#ifndef _DEBUG
 	Debug();
 #endif
 }

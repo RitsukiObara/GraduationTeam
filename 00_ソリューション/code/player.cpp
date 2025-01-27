@@ -795,7 +795,7 @@ bool CPlayer::FindFlowIce(void)
 
 			if(nIdxPlayerV == nIdxIceV && nIdxPlayerH == nIdxIceH)
 			{// どれかに乗っていたら現在のシステムを保存して関数を終了
-				CEffect3D::Create(itIce->GetPosition(), 200.0f, 120, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
+				//CEffect3D::Create(itIce->GetPosition(), 200.0f, 120, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
 				m_pLandSystemFlow = itSystem;
 				return true;
 			}
@@ -805,7 +805,7 @@ bool CPlayer::FindFlowIce(void)
 				D3DXVECTOR3 posIce = itIce->GetPosition();
 				D3DXVECTOR3 posPlayer = GetPosition();
 
-				CEffect3D::Create(posIce, 200.0f, 120, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+				//CEffect3D::Create(posIce, 200.0f, 120, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 
 				if (universal::DistCmpFlat(posPlayer, posIce, Grid::SIZE * 0.5f, nullptr))
 				{
@@ -1573,7 +1573,7 @@ void CPlayer::Debug(void)
 	if (pIceMgr == nullptr)
 		return;
 
-	CEffect3D::Create(pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH), 50.0f, 5, D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
+	//CEffect3D::Create(pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH), 50.0f, 5, D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
 }
 
 //=====================================================
