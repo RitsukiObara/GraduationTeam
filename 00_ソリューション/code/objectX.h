@@ -19,7 +19,7 @@
 class CObjectX : public CObject3D
 {
 public:
-	CObjectX(int nPriority = 3);	// コンストラクタ
+	CObjectX(int nPriority = 5);	// コンストラクタ
 	~CObjectX();	// デストラクタ
 
 	HRESULT Init(void);

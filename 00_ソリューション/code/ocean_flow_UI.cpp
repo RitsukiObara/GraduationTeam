@@ -49,7 +49,7 @@ const string PATH_COMPASS_MULTI = "data\\MODEL\\other\\Compass01.x";	// マルチ時
 
 const float TIMEMAX_SHAKE = 5.0f;		// 矢印の揺れの最大時間
 const float SPEED_SHAKE_INIT = 0.1f;	// 矢印の初期揺れ速度
-const float MAGNITUDE_SHAKE = 100.0f;	// 揺れの規模
+const float MAGNITUDE_SHAKE = 50.0f;	// 揺れの規模
 }
 
 //*****************************************************
@@ -104,11 +104,11 @@ HRESULT COceanFlowUI::Init(void)
 	// 方向用の空のオブジェクト生成
 	CreateDir();
 
+	// コンパスの生成
+	CreateCompass();
+
 	// 矢印の生成
 	CreateArrow();
-
-	// コンパスの生成
-	//CreateCompass();
 
 	// 値の初期化
 	m_state = STATE_IN;
@@ -160,6 +160,9 @@ void COceanFlowUI::CreateArrow(void)
 			m_pArrow->BindModel(CModel::Load(&PATH_MODEL_SINGLE[0]));
 		else
 			m_pArrow->BindModel(CModel::Load(&PATH_MODEL_MULTI[0]));
+
+		m_pArrow->EnableZtest(true);
+		m_pArrow->Add2D();
 	}
 }
 
@@ -188,6 +191,10 @@ void COceanFlowUI::CreateCompass(void)
 			m_pCompass->SetPosition(POS_SINGLE);
 			m_pCompass->BindModel(CModel::Load(&PATH_COMPASS_SINGLE[0]));
 		}
+
+		m_pCompass->SetScale(0.7f);
+		m_pCompass->EnableZtest(true);
+		m_pCompass->Add2D();
 	}
 }
 
@@ -274,7 +281,7 @@ void COceanFlowUI::OceanLevelState(void)
 	// 目標の色に遷移
 	fEmissiveCol = D3DXCOLOR(0.8f + (0.2f * Colorrate), 0.8f - (0.6f * Colorrate), 0.2f, 1.0f);
 
-	m_pArrow->SetDeffuseCol(fEmissiveCol,0);
+	m_pArrow->SetDeffuseCol(fEmissiveCol,1);
 
 	// 矢印の前後移動を追加
 	ShakeArrow(Colorrate);

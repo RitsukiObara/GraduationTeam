@@ -63,6 +63,7 @@ HRESULT CObject3D::Init(void)
 void CObject3D::Uninit(void)
 {
 	Remove3D();
+	Remove2D();
 
 	CGameObject::Uninit();
 }

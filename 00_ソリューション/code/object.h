@@ -70,11 +70,11 @@ public:
 	void SetAlphaTest(DWORD dValue) { m_dAlpha = dValue; }
 	DWORD GetAlpha(void) { return m_dAlpha; }
 	void EnableBlur(bool bBlur) { m_bBlur = bBlur; }
+	void Add3D(void);		// 3Dに追加
+	void Add2D(void);		// 2Dに追加
 
 protected:
 	void Release(void);		// 個別リリース処理
-	void Add3D(void);		// 3Dに追加
-	void Add2D(void);		// 2Dに追加
 	void Remove3D(void);	// 3D除外
 	void Remove2D(void);	// 2D除外
 
