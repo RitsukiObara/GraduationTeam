@@ -118,6 +118,9 @@ CObject::~CObject()
 //=====================================================
 void CObject::Add3D(void)
 {
+	for (auto& list : s_aDraw2D)
+		list.remove(this);
+
 	s_aDraw3D[m_nPriority].push_back(this);
 }
 
@@ -126,6 +129,9 @@ void CObject::Add3D(void)
 //=====================================================
 void CObject::Add2D(void)
 {
+	for (auto& list : s_aDraw3D)
+		list.remove(this);
+
 	s_aDraw2D[m_nPriority].push_back(this);
 }
 

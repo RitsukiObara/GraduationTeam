@@ -19,7 +19,7 @@
 class CParts : public CObjectX
 {
 public:
-	CParts();	// コンストラクタ
+	CParts(int nPriority = 4);	// コンストラクタ
 	~CParts();	// デストラクタ
 
 	// メンバ関数
