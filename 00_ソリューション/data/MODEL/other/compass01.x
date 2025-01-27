@@ -275,7 +275,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\gt\\GraduationTeam\\00_ƒ\\ƒŠƒ…[ƒVƒ‡ƒ“\\data\\TEXTURE\\MATERIAL\\compass.jpg";
+    "data\\TEXTURE\\MATERIAL\\compass.jpg";
    }
   }
   Material {
