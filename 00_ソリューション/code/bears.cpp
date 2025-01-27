@@ -149,7 +149,7 @@ void CBears::SetApperTransform(void)
 	SetRotation(rot);
 
 	// oŒ»‚·‚éêŠ‚É…‚µ‚Ô‚«‚ğ”­¶
-	CParticle::Create(posApper, CParticle::TYPE::TYPE_DROP);
+	MyEffekseer::CreateEffect(CMyEffekseer::TYPE_UPPERENEMY, posApper);
 
 	// ƒ‚[ƒVƒ‡ƒ“‚ğ‰Šúİ’è
 	SetMotion(E_Motion::MOTION_STARTJUMP);

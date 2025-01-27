@@ -42,6 +42,7 @@ public:
 		TYPE_SMALLRIPLE,	// ¬‚³‚¢‚³‚´”g
 		TYPE_ICESPARK,		// •X‚Ì‚©‚¯‚ç
 		TYPE_SPARK,			// •X‚Ì‰Î‰Ô
+		TYPE_UPPERENEMY,	// “G‚ÌoŒ»
 		TYPE_MAX
 	};
 
