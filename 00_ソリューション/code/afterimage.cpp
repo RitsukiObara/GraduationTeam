@@ -79,8 +79,10 @@ HRESULT CAfterImage::Init(void)
 	// 継承クラスの初期化
 	CObjectX::Init();
 
+	// アルファ値の減少量設定
 	m_fDecAlpha = 1.0f / m_nLife;
 
+	// ブラーしないオブジェクトに設定
 	EnableBlur(false);
 
 	return S_OK;
@@ -112,9 +114,7 @@ void CAfterImage::Update(void)
 	SetDeffuseCol(col);
 
 	if (m_nLife <= 0)
-	{
 		Uninit();
-	}
 }
 
 //=====================================================

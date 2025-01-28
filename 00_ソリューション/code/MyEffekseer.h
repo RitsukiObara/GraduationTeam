@@ -43,6 +43,7 @@ public:
 		TYPE_ICESPARK,		// •X‚Ì‚©‚¯‚ç
 		TYPE_SPARK,			// •X‚Ì‰Î‰Ô
 		TYPE_UPPERENEMY,	// “G‚ÌoŒ»
+		TYPE_PECK,			// ‚Â‚Á‚Â‚«
 		TYPE_MAX
 	};
 

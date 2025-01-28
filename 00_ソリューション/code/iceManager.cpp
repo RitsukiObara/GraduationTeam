@@ -449,6 +449,9 @@ bool CIceManager::PeckIce(int nNumV, int nNumH, float fRot,D3DXVECTOR3 pos, bool
 	if (pIcePeck == nullptr)
 		return false;
 
+	// エフェクトの発生
+	MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_PECK, pIcePeck->GetPosition());
+
 	// 番号を取得
 	GetIceIndex(pIcePeck, &nNumBreakV, &nNumBreakH);
 
@@ -479,15 +482,6 @@ bool CIceManager::PeckIce(int nIdxV, int nIdxH, bool *pResultBreak, int nIdxStan
 
 	// 乗っている判定を自身のものと行っていない場合、つっつける
 	CIceManager::E_PeckResult resultPeck = CanPeck(pIcePeck, nNumBreakV, nNumBreakH);
-
-	if (nIdxStandV != -1 && nIdxStandH != -1)
-	{// 立っている番号があるとき、例外処理を行う
-		if (resultPeck == CIceManager::E_PeckResult::PECK_TOPANYOBJECT &&
-			(nIdxStandV != nIdxV || nIdxStandH != nIdxH))
-		{
-			//resultPeck = CIceManager::E_PeckResult::PECK_OK;
-		}
-	}
 
 	if (resultPeck != PECK_OK)
 		return false;

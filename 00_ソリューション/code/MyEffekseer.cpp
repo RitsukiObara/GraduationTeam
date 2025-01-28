@@ -40,6 +40,7 @@ const char* CMyEffekseer::m_apEfkName[CMyEffekseer::TYPE_MAX] =		// エフェクトの
 	"data\\EFFEKSEER\\Effect\\breakice.efkefc",		// 氷のかけら
 	"data\\EFFEKSEER\\Effect\\spark.efkefc",		// 氷の火花
 	"data\\EFFEKSEER\\Effect\\spraywater.efkefc",	// 敵の出現
+	"data\\EFFEKSEER\\Effect\\breakice.efkefc",		// つっつき
 };
 CMyEffekseer *CMyEffekseer::s_pMyEffekseer = nullptr;	// 自身のポインタ
 

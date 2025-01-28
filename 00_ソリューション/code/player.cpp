@@ -955,7 +955,6 @@ void CPlayer::InputPeck(void)
 			if (pIcePeck != nullptr)
 			{
 				D3DXVECTOR3 posIce = pIcePeck->GetPosition();
-
 				m_pPeckLine->StartMove(posIce);
 			}
 		}
