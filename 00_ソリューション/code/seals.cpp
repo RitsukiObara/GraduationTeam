@@ -491,6 +491,14 @@ void CSeals::ManageMotion(void)
 
 	if (nMotion == E_Motion::MOTION_STARTJUMP)
 	{// ジャンプ開始モーション
+		// パーティクルの発生
+		D3DXMATRIX mtx = GetParts(3)->pParts->GetMatrix();
+		D3DXMATRIX mtxOffset;
+		universal::SetOffSet(&mtxOffset, mtx, D3DXVECTOR3(0.0f, 0.0f, 70.0f));
+		D3DXVECTOR3 pos = { mtxOffset._41,mtxOffset._42,mtxOffset._43 };
+
+		CParticle::Create(pos, CParticle::TYPE::TYPE_SMALLDROP);
+
 		if (bFinish)	// 終わり次第滞空モーションへ移行
 			SetMotion(E_Motion::MOTION_STAYJUMP);
 	}

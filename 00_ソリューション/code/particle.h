@@ -38,6 +38,7 @@ public:
 		TYPE_LAND,				// 敵が氷に着地するときのパーティクル
 		TYPE_ENTERPLAYER,		// プレイヤーエンター時のパーティクル
 		TYPE_SMALLRIPLE,		// 小さいさざ波
+		TYPE_SMALLDROP,			// 水滴
 		TYPE_MAX
 	}TYPE;
 
