@@ -44,6 +44,7 @@ public:
 		TYPE_SPARK,			// 氷の火花
 		TYPE_UPPERENEMY,	// 敵の出現
 		TYPE_PECK,			// つっつき
+		TYPE_DAMAGE,		// ダメージ
 		TYPE_MAX
 	};
 

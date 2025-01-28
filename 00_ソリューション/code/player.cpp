@@ -1488,8 +1488,7 @@ void CPlayer::Hit(float fDamage)
 
 	// パーティクルの発生
 	D3DXVECTOR3 pos = GetPosition();
-	CParticle::Create(pos, CParticle::TYPE::TYPE_HITENEMY);
-	CParticle::Create(pos, CParticle::TYPE::TYPE_STAR_HIT);
+	MyEffekseer::CreateEffect(CMyEffekseer::TYPE::TYPE_DAMAGE, pos);
 
 	// 操作可能フラグを折る
 	m_bEnableInput = false;
