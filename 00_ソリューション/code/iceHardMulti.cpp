@@ -235,6 +235,8 @@ void CIceHardMulti::UpdateJump(void)
 		// トランスフォームの設定
 		SetHeightOcean(0.0f);
 		SetTransform(Grid::SIZE);
+
+		return;
 	}
 
 	m_fTimerMove += CManager::GetDeltaTime();
