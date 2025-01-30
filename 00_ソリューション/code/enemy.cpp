@@ -624,11 +624,6 @@ void CEnemy::MoveToNextGrid(void)
 	// 差分ベクトルをスピード分に正規化
 	universal::VecConvertLength(&vecDiff, m_fSpeedMove);
 	SetMove(vecDiff);
-	
-#ifdef _DEBUG
-	//CEffect3D::Create(posNext, 100.0f, 5, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	//CEffect3D::Create(pos, 100.0f, 5, D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f));
-#endif
 }
 
 //=====================================================
@@ -950,15 +945,6 @@ void CEnemy::Debug(void)
 
 	//pDebugProc->Print("\n現在の状態[%d]", m_state);
 #endif
-
-	CIceManager *pIceMgr = CIceManager::GetInstance();
-
-	if (pIceMgr == nullptr)
-		return;
-
-	debug::Effect3DShort(pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH), D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-	debug::Effect3DShort(pIceMgr->GetGridPosition(&m_nGridVNext, &m_nGridHNext), D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f));
-	debug::Effect3DShort(pIceMgr->GetGridPosition(&m_nGridVDest, &m_nGridHDest), D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));
 }
 
 //=====================================================

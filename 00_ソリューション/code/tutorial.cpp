@@ -506,9 +506,6 @@ void CTutorial::ProgressState(void)
 	// 状態を進める
 	m_state = (E_State)(m_state + 1);
 
-	if (m_state == E_State::STATE_ALBATROSS)
-		int n = 0;
-
 	// カウンターのリセット
 	m_nCntProgress = 0;
 

@@ -74,19 +74,6 @@ CFlowIce *CFlowIce::Create(void)
 //=====================================================
 HRESULT CFlowIce::Init(void)
 {
-#ifdef  _DEBUG
-	vector<D3DXCOLOR> aCol =
-	{
-		{1.0f,1.0f,0.0f,1.0f},
-		{1.0f,0.0f,0.0f,1.0f},
-		{1.0f,0.0f,1.0f,1.0f},
-		{0.0f,1.0f,1.0f,1.0f},
-	};
-
-	D3DXCOLOR col = universal::RandomFromVector(aCol);
-	m_colEffect = col;
-#endif //  _DEBUG
-
 	return S_OK;
 }
 
@@ -168,9 +155,6 @@ void CFlowIce::CheckSomeIceStop(void)
 {
 	for (auto it : m_apIce)
 	{
-#ifdef _DEBUG
-		//CEffect3D::Create(it->GetPosition(), 60.0f, 2, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-#endif
 		if (it->IsStop())
 		{// Ž~‚Ü‚Á‚Ä‚¢‚é‚È‚ç‘S‚Ä‚Ì•X‚ðŽ~‚ß‚é
 			StopAllIce();
@@ -351,9 +335,6 @@ void CFlowIce::GetNerestGrid(D3DXVECTOR3 pos, int *pIdxV, int *pIdxH)
 			if (pIdxV != nullptr && pIdxH != nullptr)
 			{
 				pIceMgr->GetIceIndex(pIceNearest, pIdxV, pIdxH);
-
-				if (*pIdxV == -1 && *pIdxH == -1)
-					int n = 0;
 			}
 		}
 	}

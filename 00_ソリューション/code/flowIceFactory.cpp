@@ -70,10 +70,6 @@ HRESULT CFlowIceFct::Init(void)
 	// “Çˆ—
 	Load();
 
-#ifdef _DEBUG
-	CreateFlowIce();
-#endif
-
 	return S_OK;
 }
 

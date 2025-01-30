@@ -61,23 +61,23 @@ SETSTAGE	#5 第6ステージ　HEX ICE SUVIVAL
 	DIR_STREAM = 0
 END_SETSTAGE
 
-SETSTAGE	#6 第7ステージ　裏1
+//SETSTAGE	#6 第7ステージ　裏1
 	MODEL = data\\MODEL\\object\\Stage_Obj005.x
 	POS = -3000.0 100.0 2000.0
 	PATHMAP = data\\TEXT\\ice_stage_06.txt
 	PATHENEMY = data\\TEXT\\enemy06.txt
 	PATHNAME = data\\TEXTURE\\UI\\stagename05.png
 	DIR_STREAM = 0
-END_SETSTAGE
+//END_SETSTAGE
 
-SETSTAGE	#7 第8ステージ　裏2
+//SETSTAGE	#7 第8ステージ　裏2
 	MODEL = data\\MODEL\\object\\Stage_Obj005.x
 	POS = 3000.0 100.0 2000.0
 	PATHMAP = data\\TEXT\\ice_stage_07.txt
 	PATHENEMY = data\\TEXT\\enemy07.txt
 	PATHNAME = data\\TEXTURE\\UI\\stagename05.png
 	DIR_STREAM = 0
-END_SETSTAGE
+//END_SETSTAGE
 
 
 END_SCRIPT

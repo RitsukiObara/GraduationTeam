@@ -106,9 +106,7 @@ void CUIManager::Update(void)
 //=====================================================
 void CUIManager::Draw(void)
 {
-#ifdef _DEBUG
 
-#endif
 }
 
 //=====================================================

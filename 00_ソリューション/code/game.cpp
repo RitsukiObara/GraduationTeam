@@ -153,7 +153,7 @@ void CGame::Update(void)
 		UpdatePause();
 	}
 
-#ifndef _DEBUG
+#ifdef _DEBUG
 	Debug();
 #endif
 }

@@ -82,7 +82,7 @@ HRESULT CGameManagerSingle::Init(void)
 	//------------------------------------
 	// 敵数表示UI生成
 	CUIEnemy::Create();
-
+	
 	// プレイヤー生成
 	m_pPlayer = CPlayer::Create();
 

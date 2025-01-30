@@ -184,16 +184,6 @@ void CIceManager::ManageStateIce(void)
 	{
 		for (int j = 0; j < m_nNumGridHorizontal; j++)
 		{
-#ifdef _DEBUG
-			if (i == 0 ||
-				i == m_nNumGridVirtical - 1 ||
-				j == 0 ||
-				j == m_nNumGridHorizontal - 1)
-			{
-				//CEffect3D::Create(m_aGrid[i][j].pos, 50.0f, 3, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-			}
-#endif
-
 			if (m_aGrid[i][j].pIce == nullptr)
 				continue;
 
@@ -863,10 +853,6 @@ bool CIceManager::FindIce(int nNumV, int nNumH, int nIdx, CIce *pIceStand, vecto
 		m_aGrid[nNumV][nNumH].pIce->EnableBreak(true);
 	}
 
-#ifdef _DEBUG
-	//CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-#endif
-
 	// 再帰関数の深さをインクリメント
 	nIdx++;
 
@@ -1010,10 +996,6 @@ void CIceManager::DisableFromPlayer(int nNumV, int nNumH, CIce *pIcePeck, vector
 	m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
 	m_aGrid[nNumV][nNumH].pIce->EnableBreak(false);
 
-#ifdef _DEBUG
-	//CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-#endif
-
 	// 周辺グリッドの計算
 	int aV[DIRECTION_MAX] = {};
 	int aH[DIRECTION_MAX] = {};
@@ -1072,10 +1054,6 @@ void CIceManager::DisableBreak(int nNumV, int nNumH)
 	// 探索済みフラグを立てる
 	m_aGrid[nNumV][nNumH].pIce->EnableCanFind(false);
 	m_aGrid[nNumV][nNumH].pIce->EnableBreak(false);
-
-#ifdef _DEBUG
-	//CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 50.0f, 60, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-#endif
 
 	// 周辺グリッドの計算
 	vector<CIce*> apIce(DIRECTION_MAX);
@@ -1196,10 +1174,6 @@ void CIceManager::SaveFlowIce(int nNumV, int nNumH, CFlowIce *pFlowIce)
 
 	// 自身を流氷に追加
 	pFlowIce->AddIceToArray(m_aGrid[nNumV][nNumH].pIce);
-
-#ifdef _DEBUG
-	//CEffect3D::Create(m_aGrid[nNumV][nNumH].pIce->GetPosition(), 100, 120, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
-#endif
 
 	for (int i = 0; i < DIRECTION_MAX; i++)
 	{
@@ -1410,8 +1384,6 @@ void CIceManager::Debug(void)
 
 			if (!bHit)
 				continue;
-
-			debug::Effect3DShort(posIce, D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
 
 			if (pMouse->GetTrigger(CInputMouse::BUTTON_LMB))
 			{// クリックしたらパーツ番号の決定

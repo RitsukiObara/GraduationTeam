@@ -1151,10 +1151,6 @@ void CIceStateFlow::UpdateDriftIce(CIce *pIce)
 	// グリッドの位置との距離がしきい値を下回ったら止める
 	bool bStop = universal::DistCmpFlat(posIce, posDrift, LINE_STOP_ICE, nullptr);
 
-#ifdef _DEBUG
-	//CEffect3D::Create(posIce, 100.0f, 5, D3DXCOLOR(1.0f, 0.0f, 1.0f, 1.0f));
-#endif
-
 	if (bStop)
 		return;
 }
