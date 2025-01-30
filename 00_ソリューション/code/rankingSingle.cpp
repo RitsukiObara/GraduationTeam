@@ -57,7 +57,7 @@ CRankingSingle *CRankingSingle::Create(string pathSave)
 //====================================================
 HRESULT CRankingSingle::Init(void)
 {
-#if 1
+#if 0
 	Reset();	// ƒŠƒZƒbƒgˆ—
 
 	Save();
