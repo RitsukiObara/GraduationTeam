@@ -884,10 +884,10 @@ void CPlayer::LimitInSideFlowIce(void)
 
 	if (m_pLandFlow != nullptr)
 	{// ‚à‚µ‚Ç‚Ì•X‚É‚àˆø‚Á‚©‚©‚ç‚È‚¯‚ê‚ÎA‘O‰ñ‚Ì•X‚Æ‚Ì”»’è‚ðs‚¤
-		D3DXVECTOR3 posPlayer = GetPosition();
+		/*D3DXVECTOR3 posPlayer = GetPosition();
 		pIceMgr->Collide(&posPlayer, m_pLandFlow);
 		posPlayer.y = m_pLandFlow->GetPosition().y;
-		SetPosition(posPlayer);
+		SetPosition(posPlayer);*/
 	}
 }
 
@@ -1571,7 +1571,7 @@ void CPlayer::Debug(void)
 	if (pIceMgr == nullptr)
 		return;
 
-	//CEffect3D::Create(pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH), 50.0f, 5, D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
+	CEffect3D::Create(pIceMgr->GetGridPosition(&m_nGridV, &m_nGridH), 50.0f, 5, D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f));
 }
 
 //=====================================================

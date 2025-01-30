@@ -539,7 +539,7 @@ bool CIceManager::PeckIce(int nIdxV, int nIdxH, bool *pResultBreak, int nIdxStan
 //=====================================================
 // 突っつける氷かのチェック
 //=====================================================
-CIceManager::E_PeckResult CIceManager::CanPeck(CIce* pIce, int nNumV, int nNumH)
+CIceManager::E_PeckResult CIceManager::CanPeck(CIce* pIce, int nNumV, int nNumH, CObject *pOwn)
 {
 	if (pIce == nullptr)
 		return PECK_NONE_ICE;	// ヌルだったら突けない
@@ -554,7 +554,38 @@ CIceManager::E_PeckResult CIceManager::CanPeck(CIce* pIce, int nNumV, int nNumH)
 	if (pIce->IsOnTopAnyObject())
 		return PECK_TOPANYOBJECT;
 
+	// プレイヤーが乗ってたらダメ
+	if(CheckIdxPlayer(pOwn,nNumV,nNumH))
+		return PECK_TOPANYOBJECT;
+
 	return PECK_OK;
+}
+
+//=====================================================
+// プレイヤー番号の探索
+//=====================================================
+bool CIceManager::CheckIdxPlayer(CObject *pObject,int nNumV, int nNumH)
+{
+	vector<CPlayer*> apPlayer = CPlayer::GetInstance();
+
+	for (CPlayer *pPlayer : apPlayer)
+	{
+		if (pPlayer == nullptr)
+			continue;
+
+		int nGridV = pPlayer->GetGridV();
+		int nGridH = pPlayer->GetGridH();
+
+		if (nNumV == nGridH && nNumV == nGridH)
+		{
+			if (pObject == pPlayer)
+				return false;
+
+			return true;
+		}
+	}
+
+	return false;
 }
 
 //=====================================================

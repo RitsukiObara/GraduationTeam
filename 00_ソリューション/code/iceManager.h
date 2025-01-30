@@ -133,7 +133,8 @@ private:
 	void SearchInvailStopIce(void);	// 無効な停止氷の検出
 	void SearchNotConnectIce(vector<CIce*> &rpIce);	// 繋がってない氷の検出
 	bool JudgeBetweenPeck(int nNumV, int nNumH);	// つっついた氷に挟まれてる判定
-	E_PeckResult CanPeck(CIce* pIce,int nNumV, int nNumH);	// つっつける氷かのチェック
+	E_PeckResult CanPeck(CIce* pIce,int nNumV, int nNumH,CObject *pOwn = nullptr);	// つっつける氷かのチェック
+	bool CheckIdxPlayer(CObject *pObject, int nNumV, int nNumH);
 	void DisableFromHardIce(int nNumV, int nNumH,bool bPeck = true);	// 硬い氷から信号を出して、破壊信号を解除
 	void DisableFromPlayer(int nNumV, int nNumH, CIce *pIcePeck,vector<CIce*> apIce);	// プレイヤーから信号を出して、破壊信号を解除
 	void DisableBreak(int nNumV, int nNumH);					// 氷の破壊を解除
