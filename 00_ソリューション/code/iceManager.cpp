@@ -576,11 +576,8 @@ bool CIceManager::CheckIdxPlayer(CObject *pObject,int nNumV, int nNumH)
 		int nGridV = pPlayer->GetGridV();
 		int nGridH = pPlayer->GetGridH();
 
-		if (nNumV == nGridH && nNumV == nGridH)
+		if (nNumV == nGridH && nNumH == nGridH)
 		{
-			if (pObject == pPlayer)
-				return false;
-
 			return true;
 		}
 	}
@@ -706,6 +703,9 @@ void CIceManager::Collide(D3DXVECTOR3 *pPos, int nIdxV, int nIdxH, float fRate)
 void CIceManager::Collide(D3DXVECTOR3 *pPos, CIce *pIce, float fRate)
 {
 	if (pPos == nullptr)
+		return;
+
+	if (pIce == nullptr)
 		return;
 
 	D3DXVECTOR3 posGrid = pIce->GetPosition();

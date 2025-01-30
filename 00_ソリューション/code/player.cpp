@@ -598,8 +598,16 @@ void CPlayer::CollideIce(void)
 	
 	CIce *pIceForward = pIceMgr->GetGridIce(&m_nGridV, &m_nGridH);
 
+	if (pIceForward == nullptr)
+	{
+		if (m_state == CPlayer::E_State::STATE_NORMAL)
+		{
+			pIceMgr->GetNearestIce(pos, &m_nGridV, &m_nGridH);
+		}
+	}
+
 	// グリッドの位置に合わせる
-	pIceMgr->Collide(&pos, m_nGridV, m_nGridH,RATE_CHANGE_GRID);
+	pIceMgr->Collide(&pos, pIceForward,RATE_CHANGE_GRID);
 
 	pos.y = posTemp.y;
 
