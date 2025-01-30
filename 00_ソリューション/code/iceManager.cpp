@@ -576,7 +576,7 @@ bool CIceManager::CheckIdxPlayer(CObject *pObject,int nNumV, int nNumH)
 		int nGridV = pPlayer->GetGridV();
 		int nGridH = pPlayer->GetGridH();
 
-		if (nNumV == nGridH && nNumH == nGridH)
+		if (nNumV == nGridV && nNumH == nGridH)
 		{
 			return true;
 		}
